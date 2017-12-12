@@ -1,4 +1,4 @@
-package mx.gob.cultura.util;
+package mx.gob.cultura.commons;
 
 import java.net.MalformedURLException;
 import java.net.URL;

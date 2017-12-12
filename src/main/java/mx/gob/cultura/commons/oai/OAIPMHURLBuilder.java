@@ -1,7 +1,7 @@
 package mx.gob.cultura.util.oai;
 
-import mx.gob.cultura.util.URLBuilder;
-import mx.gob.cultura.util.URLBuilderBase;
+import mx.gob.cultura.commons.URLBuilder;
+import mx.gob.cultura.commons.URLBuilderBase;
 
 import java.net.MalformedURLException;
 import java.net.URL;

@@ -1,4 +1,4 @@
-package mx.gob.cultura.util;
+package mx.gob.cultura.commons;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
