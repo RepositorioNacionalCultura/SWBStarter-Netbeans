@@ -1,4 +1,4 @@
-package mx.gob.cultura.exception;
+package mx.gob.cultura.commons.exception;
 
 public class IndexException extends Exception {
 
