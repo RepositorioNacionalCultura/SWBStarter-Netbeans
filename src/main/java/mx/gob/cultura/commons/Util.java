@@ -12,6 +12,7 @@ import org.semanticwb.datamanager.SWBDataSource;
 import org.semanticwb.datamanager.SWBScriptEngine;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -27,70 +28,6 @@ import java.util.Map;
  */
 public final class Util {
     private Util() { }
-
-    /**
-     * Carga la colección de Replace a un HashMap<ocurrencia, reemplazo>
-     *
-     * @param engine Utilizado para poder cargar la colección de Replace en un HashMap
-     * @return HashMap con DataSource cargado en memoria.
-     */
-    public static HashMap<String,String> loadOccurrences( SWBScriptEngine engine) {
-        SWBDataSource datasource = null;
-        HashMap<String,String> hm = new HashMap();
-
-        if (null != engine) {
-            try {
-                datasource = engine.getDataSource("Replace");
-                DataObject r = new DataObject();
-                DataObject data = new DataObject();
-                r.put("data", data);
-
-                DataObject ret = datasource.fetch(r);
-                String occurrence = "";
-                String replace = "";
-
-                DataList rdata = ret.getDataObject("response").getDataList("data");
-                DataObject dobj = null;
-                if (!rdata.isEmpty()) {
-                    for (int i = 0; i < rdata.size(); i++) {
-                        dobj = rdata.getDataObject(i);  // DataObject de Replace
-                        occurrence = dobj.getString("occurrence");
-                        replace = dobj.getString("replace");
-                        hm.put(occurrence, replace);
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("Error al cargar el DataSource. " + e.getMessage());
-                e.printStackTrace(System.out);
-            }
-        } else {
-            System.out.println("Error al cargar el DataSource al HashMap, falta inicializar el engine.");
-            return null;
-        }
-
-        return hm;
-    }
-
-    /**
-     * Reemplaza las ocurrencias en el string recibido
-     *
-     * @param hm HashMap con las ocurrencias y su reemplazo previamente cargado
-     * @param oaistr Stream del registro OAI a revisar
-     * @return String con todas las ocurrencias reemplazadas.
-     */
-    public static String replaceOccurrences(HashMap<String,String> hm, String oaistr) {
-        if (null != hm && null!=oaistr) {
-                String occurrence = "";
-                String replace = "";
-                Iterator<String> it = hm.keySet().iterator();
-                while (it.hasNext()) {
-                    occurrence = it.next();
-                    replace = hm.get(occurrence);
-                     oaistr = oaistr.replace(occurrence, replace);
-                }
-        }
-        return oaistr;
-    }
     
     public static String makeRequest(URL theUrl, boolean XMLSupport)  {
         HttpURLConnection con = null;
@@ -207,6 +144,11 @@ public final class Util {
             return ret;
         }
 
+        /**
+         * Closes an ElasticSearch {@link RestHighLevelClient} associated with @host and @port.
+         * @param host Hostname of client
+         * @param port Port number of client
+         */
         public static void closeElasticClient(String host, int port) {
             RestHighLevelClient ret = elasticClients.get(host + ":" + String.valueOf(port));
             if (null != ret) {
@@ -237,6 +179,49 @@ public final class Util {
      * Inner class to encapsulate methods related to SWBForms DataManager actions.
      */
     public static final class SWBForms {
+
+        /**
+         * Carga la colección de Replace a un HashMap<ocurrencia, reemplazo>
+         *
+         * @param engine Utilizado para poder cargar la colección de Replace en un HashMap
+         * @return HashMap con DataSource cargado en memoria.
+         */
+        public static HashMap<String,String> loadOccurrences( SWBScriptEngine engine) {
+            SWBDataSource datasource = null;
+            HashMap<String,String> hm = new HashMap();
+
+            if (null != engine) {
+                try {
+                    datasource = engine.getDataSource("Replace");
+                    DataObject r = new DataObject();
+                    DataObject data = new DataObject();
+                    r.put("data", data);
+
+                    DataObject ret = datasource.fetch(r);
+                    String occurrence = "";
+                    String replace = "";
+
+                    DataList rdata = ret.getDataObject("response").getDataList("data");
+                    DataObject dobj = null;
+                    if (!rdata.isEmpty()) {
+                        for (int i = 0; i < rdata.size(); i++) {
+                            dobj = rdata.getDataObject(i);  // DataObject de Replace
+                            occurrence = dobj.getString("occurrence");
+                            replace = dobj.getString("replace");
+                            hm.put(occurrence, replace);
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error al cargar el DataSource. " + e.getMessage());
+                    e.printStackTrace(System.out);
+                }
+            } else {
+                System.out.println("Error al cargar el DataSource al HashMap, falta inicializar el engine.");
+                return null;
+            }
+
+            return hm;
+        }
 
         /**
          * Converts a {@link BasicDBObject} into a MongoDB {@link com.mongodb.DBObject}
@@ -279,6 +264,59 @@ public final class Util {
                 ret.add(toBasicDB(it.next()));
             }
             return ret;
+        }
+    }
+
+    /**
+     * Inner class to encapsulate methods related with File manipulation
+     */
+    public static final class FILE {
+
+        /**
+         * Reads {@link java.io.FileInputStream} content as a {@link String}
+         * @param fis {@link FileInputStream} to read from
+         * @param encoding Name of encoding to use on content read.
+         * @return String wirh {@link FileInputStream} content.
+         */
+        public static String readFromStream(FileInputStream fis, String encoding) {
+            StringBuilder ret = new StringBuilder();
+
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(fis))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    ret.append(line);
+                }
+            } catch (IOException ioex) {
+                ioex.printStackTrace();
+            }
+
+            return ret.toString();
+        }
+    }
+
+    /**
+     * Inner class to encapsulate methods related with String manipulation
+     */
+    public static final class TEXT {
+        /**
+         * Reemplaza las ocurrencias en el string recibido
+         *
+         * @param hm HashMap con las ocurrencias y su reemplazo previamente cargado
+         * @param oaistr Stream del registro OAI a revisar
+         * @return String con todas las ocurrencias reemplazadas.
+         */
+        public static String replaceOccurrences(HashMap<String,String> hm, String oaistr) {
+            if (null != hm && null!=oaistr) {
+                String occurrence = "";
+                String replace = "";
+                Iterator<String> it = hm.keySet().iterator();
+                while (it.hasNext()) {
+                    occurrence = it.next();
+                    replace = hm.get(occurrence);
+                    oaistr = oaistr.replace(occurrence, replace);
+                }
+            }
+            return oaistr;
         }
     }
 }
