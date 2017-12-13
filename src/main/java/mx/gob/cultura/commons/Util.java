@@ -206,6 +206,31 @@ public final class Util {
             }
             return ret;
         }
+
+        public static void closeElasticClient(String host, int port) {
+            RestHighLevelClient ret = elasticClients.get(host + ":" + String.valueOf(port));
+            if (null != ret) {
+                try {
+                    ret.close();
+                    elasticClients.remove(host + ":" + String.valueOf(port), ret);
+                } catch (IOException ioex) {
+                    ioex.printStackTrace();
+                }
+            }
+        }
+
+        /**
+         * Closes all instances of {@link RestHighLevelClient}s.
+         */
+        public static void closeElasticClients() {
+            for (RestHighLevelClient c : elasticClients.values()) {
+                try {
+                    c.close();
+                } catch (IOException ioex) {
+                    ioex.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
