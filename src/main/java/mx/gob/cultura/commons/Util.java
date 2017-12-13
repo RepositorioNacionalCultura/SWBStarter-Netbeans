@@ -11,10 +11,7 @@ import org.semanticwb.datamanager.DataObject;
 import org.semanticwb.datamanager.SWBDataSource;
 import org.semanticwb.datamanager.SWBScriptEngine;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -273,12 +270,12 @@ public final class Util {
     public static final class FILE {
 
         /**
-         * Reads {@link java.io.FileInputStream} content as a {@link String}
+         * Reads {@link java.io.InputStream} content as a {@link String}
          * @param fis {@link FileInputStream} to read from
          * @param encoding Name of encoding to use on content read.
-         * @return String wirh {@link FileInputStream} content.
+         * @return String wirh {@link InputStream} content.
          */
-        public static String readFromStream(FileInputStream fis, String encoding) {
+        public static String readFromStream(InputStream fis, String encoding) {
             StringBuilder ret = new StringBuilder();
 
             try (BufferedReader br = new BufferedReader(new InputStreamReader(fis))) {
