@@ -178,6 +178,27 @@ public final class Util {
     public static final class SWBForms {
 
         /**
+         * Reemplaza las ocurrencias en el string recibido
+         *
+         * @param hm HashMap con las ocurrencias y su reemplazo previamente cargado
+         * @param oaistr Stream del registro OAI a revisar
+         * @return String con todas las ocurrencias reemplazadas.
+         */
+        public static String replaceOccurrences(HashMap<String,String> hm, String oaistr) {
+            if (null != hm && null!=oaistr) {
+                String occurrence = "";
+                String replace = "";
+                Iterator<String> it = hm.keySet().iterator();
+                while (it.hasNext()) {
+                    occurrence = it.next();
+                    replace = hm.get(occurrence);
+                    oaistr = oaistr.replace(occurrence, replace);
+                }
+            }
+            return oaistr;
+        }
+
+        /**
          * Carga la colección de Replace a un HashMap<ocurrencia, reemplazo>
          *
          * @param engine Utilizado para poder cargar la colección de Replace en un HashMap
