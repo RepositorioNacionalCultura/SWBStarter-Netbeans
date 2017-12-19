@@ -24,9 +24,14 @@ import java.util.Map;
  * @author Hasdai Pacheco
  */
 public final class Util {
+    public static final String ENV_DEVELOPMENT = "DEV";
+    public static final String ENV_TESTING = "TEST";
+    public static final String ENV_QA = "QA";
+    public static final String ENV_PRODUCTION = "PROD";
+
     private Util() { }
     
-    public static String makeRequest(URL theUrl, boolean XMLSupport)  {
+    public static String makeRequest(URL theUrl, boolean XMLSupport) {
         HttpURLConnection con = null;
         StringBuilder response = new StringBuilder();
         String errorMsg = null;
@@ -80,7 +85,17 @@ public final class Util {
         } while (isConnOk == false && retries < 5);
         return errorMsg!=null?errorMsg:response.toString();
     }
-    
+
+    /**
+     * Gets environment configuration.
+     * @return Value of REPO_DEVENV environment property. Defaults to production.
+     */
+    public static String getEnvironmentName() {
+        String env = System.getenv("REPO_DEVENV");
+        if (null == env) env = ENV_PRODUCTION;
+        return env;
+    }
+
     /**
      * Inner class to encapsulate methods related to DataBase actions.
      */
