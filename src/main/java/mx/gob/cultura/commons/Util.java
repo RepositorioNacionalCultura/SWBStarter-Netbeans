@@ -167,7 +167,7 @@ public final class Util {
          * Gets time-based UUID for indexing objects.
          * @return String representation of a time-based UUID.
          */
-        public String getUUID() {
+        public static String getUUID() {
             return UUIDs.base64UUID();
         }
     }
