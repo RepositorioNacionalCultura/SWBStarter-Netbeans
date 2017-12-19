@@ -11,9 +11,12 @@ import org.semanticwb.datamanager.DataObject;
 import org.semanticwb.datamanager.SWBDataSource;
 import org.semanticwb.datamanager.SWBScriptEngine;
 
+import javax.activation.MimeType;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -291,8 +294,13 @@ public final class Util {
          */
         public static String readFromStream(InputStream fis, String encoding) {
             StringBuilder ret = new StringBuilder();
+            String enc = StandardCharsets.UTF_8.name();
 
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(fis))) {
+            if (null != encoding && !enc.isEmpty()) {
+                enc = encoding;
+            }
+
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(fis, enc))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     ret.append(line);
