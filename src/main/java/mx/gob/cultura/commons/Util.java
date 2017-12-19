@@ -6,6 +6,7 @@ import com.mongodb.MongoClient;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.UUIDs;
 import org.semanticwb.datamanager.DataList;
 import org.semanticwb.datamanager.DataObject;
 import org.semanticwb.datamanager.SWBDataSource;
@@ -100,37 +101,10 @@ public final class Util {
     }
 
     /**
-     * Inner class to encapsulate methods related to DataBase actions.
+     * Inner class to encapsulate methods related to ElasticSearch actions.
      */
-    public static final class DB {
-        private static HashMap<String, MongoClient> mongoClients = new HashMap<>();
+    public static final class ELASTICSEARCH {
         private static HashMap<String, RestHighLevelClient> elasticClients = new HashMap<>();
-
-        /**
-         * Gets a {@link MongoClient} instance with default host and port.
-         *
-         * @return MongoClient instance object.
-         */
-        public static MongoClient getMongoClient() {
-            return getMongoClient("localhost", 27017);
-        }
-
-        /**
-         * Gets a {@link MongoClient} instance with given host and port.
-         *
-         * @param host MongoDB server host.
-         * @param port MongoDB server port.
-         * @return MongoClient instance object.
-         */
-        public static MongoClient getMongoClient(String host, int port) {
-            MongoClient ret = mongoClients.get(host + ":" + String.valueOf(port));
-            if (null == ret) {
-                ret = new MongoClient(host, port);
-                mongoClients.put(host + ":" + String.valueOf(port), ret);
-            }
-
-            return ret;
-        }
 
         /**
          * Gets a {@link RestHighLevelClient} instance with default host and port.
@@ -187,6 +161,47 @@ public final class Util {
                     ioex.printStackTrace();
                 }
             }
+        }
+
+        /**
+         * Gets time-based UUID for indexing objects.
+         * @return String representation of a time-based UUID.
+         */
+        public String getUUID() {
+            return UUIDs.base64UUID();
+        }
+    }
+
+    /**
+     * Inner class to encapsulate methods related to MongoDB actions.
+     */
+    public static final class MONGODB {
+        private static HashMap<String, MongoClient> mongoClients = new HashMap<>();
+
+        /**
+         * Gets a {@link MongoClient} instance with default host and port.
+         *
+         * @return MongoClient instance object.
+         */
+        public static MongoClient getMongoClient() {
+            return getMongoClient("localhost", 27017);
+        }
+
+        /**
+         * Gets a {@link MongoClient} instance with given host and port.
+         *
+         * @param host MongoDB server host.
+         * @param port MongoDB server port.
+         * @return MongoClient instance object.
+         */
+        public static MongoClient getMongoClient(String host, int port) {
+            MongoClient ret = mongoClients.get(host + ":" + String.valueOf(port));
+            if (null == ret) {
+                ret = new MongoClient(host, port);
+                mongoClients.put(host + ":" + String.valueOf(port), ret);
+            }
+
+            return ret;
         }
     }
 
