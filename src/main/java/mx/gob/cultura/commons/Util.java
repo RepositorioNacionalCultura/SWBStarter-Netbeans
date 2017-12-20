@@ -5,10 +5,12 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.UUIDs;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.rest.RestStatus;
 import org.semanticwb.datamanager.DataList;
 import org.semanticwb.datamanager.DataObject;
 import org.semanticwb.datamanager.SWBDataSource;
@@ -192,7 +194,11 @@ public final class Util {
             req.source(objectJson, XContentType.JSON);
 
             try {
-                client.index(req);
+                IndexResponse resp = client.index(req);
+                if (resp.status().getStatus() == RestStatus.CREATED.getStatus() ||
+                        resp.status().getStatus() == RestStatus.OK.getStatus()) {
+                    ret = resp.getId();
+                }
             } catch (IOException ioex) {
                 ioex.printStackTrace();
             }
