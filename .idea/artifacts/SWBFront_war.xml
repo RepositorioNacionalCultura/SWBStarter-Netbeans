@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="SWBFront:war">
+    <output-path>$PROJECT_DIR$/SWB/target</output-path>
+    <root id="archive" name="SWBFront-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="SWBFront:war exploded" />
+    </root>
+  </artifact>
+</component>

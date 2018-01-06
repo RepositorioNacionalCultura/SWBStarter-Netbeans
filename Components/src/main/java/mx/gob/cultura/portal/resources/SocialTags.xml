@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<admresource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xslfile>admresource.xslt</xslfile>
+    <form name="frmSocialTagsResource" action="true" method="POST">
+        <admdbconnmgr defconn="true"/>
+        <fieldset>
+            <input type="TEXT" name="url" label="EndPoint URL:" required="true"/>
+            <input type="TEXT" name="fburl" label="Facebook Canonical URL:" required="true"/>
+            <input type="TEXT" name="appId" label="Facebook APP ID:"/>
+        </fieldset>
+        <fieldset>
+            <input type="submit" name="btnSave" id="btnSave" value="Guardar"/>
+            <input type="reset"  name="btnReset" id="btnReset" value="Restablecer" />
+        </fieldset>
+    </form>
+</admresource>

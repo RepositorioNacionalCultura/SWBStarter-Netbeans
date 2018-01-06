@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SWBStarter/SWBStarter.iml" filepath="$PROJECT_DIR$/SWBStarter/SWBStarter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Components/Components.iml" filepath="$PROJECT_DIR$/Components/Components.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SWB/SWBFront.iml" filepath="$PROJECT_DIR$/SWB/SWBFront.iml" />
+      <module fileurl="file://$PROJECT_DIR$/front.iml" filepath="$PROJECT_DIR$/front.iml" />
     </modules>
   </component>
 </project>
