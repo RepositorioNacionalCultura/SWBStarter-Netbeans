@@ -106,6 +106,9 @@ public final class Util {
      * Inner class to encapsulate methods related to ElasticSearch actions.
      */
     public static final class ELASTICSEARCH {
+        public static final String REPO_INDEX = "cultura";
+        public static final String REPO_INDEX_TEST = "cultura_test";
+
         private static HashMap<String, RestHighLevelClient> elasticClients = new HashMap<>();
 
         /**
@@ -204,6 +207,14 @@ public final class Util {
             }
 
             return ret;
+        }
+
+        /**
+         * Gets index name to work with according to environment configuration.
+         * @return Name of index to use.
+         */
+        public static String getIndexName() {
+            return Util.ENV_DEVELOPMENT.equals(Util.getEnvironmentName()) ? REPO_INDEX_TEST : REPO_INDEX;
         }
     }
 
