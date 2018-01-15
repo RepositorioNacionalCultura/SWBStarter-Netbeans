@@ -224,11 +224,13 @@ public final class Util {
          */
         public static ArrayList<String> indexObjects(RestHighLevelClient client, String indexName, String typeName, ArrayList<String> objects) {
             ArrayList<String> ret = new ArrayList<>();
+            BulkRequest request = new BulkRequest();
+
             for (String obj : objects) {
                 String id = ELASTICSEARCH.getUUID();
-
-                BulkRequest request = new BulkRequest();
-                request.add(new IndexRequest(indexName, typeName, id).source(XContentType.JSON, obj));
+                IndexRequest req = new IndexRequest(indexName, typeName, id);
+                req.source(obj, XContentType.JSON);
+                request.add(req);
 
                 try {
                     BulkResponse resp = client.bulk(request);
