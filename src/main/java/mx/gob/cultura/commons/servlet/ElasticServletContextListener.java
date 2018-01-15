@@ -100,8 +100,10 @@ public class ElasticServletContextListener implements ServletContextListener {
             String mapping = Util.FILE.readFromStream(is, StandardCharsets.UTF_8.name());
             JSONObject mp = new JSONObject(mapping);
             JSONObject aliases = new JSONObject();
-            aliases.put(config.getIndexName(), new JSONObject());
+            aliases.put(config.getIndexName(), "{}");
             mp.put("aliases", aliases);
+
+            System.out.println(mp.toString(2));
 
             ret = Util.ELASTICSEARCH.createIndex(c, Util.ELASTICSEARCH.REPO_INDEX_TEST, mapping);
 
