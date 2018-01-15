@@ -103,12 +103,10 @@ public class ElasticServletContextListener implements ServletContextListener {
                 String jsonString = Util.FILE.readFromStream(datas, StandardCharsets.UTF_8.name());
 
                 JSONArray data = new JSONArray(jsonString);
-                for (int i = 0; i < data.length(); i++) {
-                    JSONObject o = data.getJSONObject(i);
+                for (Object ob : data.toList()) {
+                    JSONObject o = (JSONObject) ob;
                     o.put("indexcreated", System.currentTimeMillis());
                     objs.add(o.toString());
-                    //IndexRequest request = new IndexRequest(indexName, "bic");
-                    //request.source(o.toString(), XContentType.JSON);
                 }
 
                 List<String> indexed = Util.ELASTICSEARCH.indexObjects(c, indexName, "bic", objs);
