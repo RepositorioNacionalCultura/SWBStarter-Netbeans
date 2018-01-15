@@ -4,6 +4,11 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import org.apache.http.HttpHost;
+import org.elasticsearch.action.DocWriteRequest;
+import org.elasticsearch.action.DocWriteResponse;
+import org.elasticsearch.action.bulk.BulkItemResponse;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RestClient;
@@ -20,6 +25,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -108,7 +114,6 @@ public final class Util {
     public static final class ELASTICSEARCH {
         public static final String REPO_INDEX = "cultura";
         public static final String REPO_INDEX_TEST = "cultura_test";
-
         private static HashMap<String, RestHighLevelClient> elasticClients = new HashMap<>();
 
         /**
@@ -206,6 +211,41 @@ public final class Util {
                 ioex.printStackTrace();
             }
 
+            return ret;
+        }
+
+        /**
+         * Indexes a list of objects in ElasticSearch using bulk API.
+         * @param objects List of objects Strings in JSON format.
+         * @param client {@link RestHighLevelClient} object.
+         * @param indexName Name of index to use.
+         * @param typeName Name of type in index.
+         * @return List of identifiers of indexed objects.
+         */
+        public static ArrayList<String> indexObjects(ArrayList<String> objects, RestHighLevelClient client, String indexName, String typeName) {
+            ArrayList<String> ret = new ArrayList<>();
+            for (String obj : objects) {
+                String id = ELASTICSEARCH.getUUID();
+
+                BulkRequest request = new BulkRequest();
+                request.add(new IndexRequest(indexName, typeName, id).source(XContentType.JSON, obj));
+
+                try {
+                    BulkResponse resp = client.bulk(request);
+                    for (BulkItemResponse itemResponse : resp) {
+                        DocWriteResponse r = itemResponse.getResponse();
+                        if (itemResponse.getOpType() == DocWriteRequest.OpType.INDEX || itemResponse.getOpType() == DocWriteRequest.OpType.CREATE) {
+                            IndexResponse indexResponse = (IndexResponse) r;
+                            if (indexResponse.status().getStatus() == RestStatus.CREATED.getStatus() ||
+                                    indexResponse.status().getStatus() == RestStatus.OK.getStatus()) {
+                                ret.add(indexResponse.getId());
+                            }
+                        }
+                    }
+                } catch (IOException ioex) {
+                    ioex.printStackTrace();
+                }
+            }
             return ret;
         }
 
