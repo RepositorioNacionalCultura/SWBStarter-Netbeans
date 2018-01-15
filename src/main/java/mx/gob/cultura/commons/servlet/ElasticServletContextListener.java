@@ -99,15 +99,10 @@ public class ElasticServletContextListener implements ServletContextListener {
         InputStream is = getClass().getClassLoader().getResourceAsStream("indexmapping_cultura.json");
         if (null != is) {
             String mapping = Util.FILE.readFromStream(is, StandardCharsets.UTF_8.name());
-            HttpEntity body = new NStringEntity(mapping, ContentType.APPLICATION_JSON);
-            HashMap<String, String> params = new HashMap<>();
+            ret = Util.ELASTICSEARCH.createIndex(c, config.getIndexName(), mapping);
 
-            try {
-                Response resp = c.getLowLevelClient().performRequest("PUT", "/"+ config.getIndexName(), params, body);
+            if (ret) {
                 System.out.println("Index " + config.getIndexName() + " created...");
-                ret = resp.getStatusLine().getStatusCode() == RestStatus.OK.getStatus();
-            } catch (IOException ioex) {
-                ioex.printStackTrace();
             }
         }
 
