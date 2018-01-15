@@ -35,32 +35,31 @@ public class ElasticServletContextListener implements ServletContextListener {
      */
     public ElasticServletContextListener () {
         config = loadConfigProperties();
-        c = Util.ELASTICSEARCH.getElasticClient(config.getElasticHost(), config.getElasticPort());
     }
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        System.out.println("Starting ElasticSearch index...");
+        c = Util.ELASTICSEARCH.getElasticClient(config.getElasticHost(), config.getElasticPort());
 
-        try {
-            Response resp = c.getLowLevelClient().performRequest("HEAD", config.getIndexName());
-            if(resp.getStatusLine().getStatusCode() != RestStatus.OK.getStatus()) {
-                createESIndex();
-            } else {
-                System.out.println("Index "+ config.getIndexName() +" already exists...");
-            }
-        } catch (IOException ioex) {
-            ioex.printStackTrace();
-        }
-
-        try {
-            //Remove test index if env is production
-            if (Util.ENV_PRODUCTION.equals(config.getEnvName())) {
+        //Remove test index if env is production
+        if (Util.ENV_PRODUCTION.equals(config.getEnvName())) {
+            try {
                 System.out.println("Removing test index...");
-                Response resp = c.getLowLevelClient().performRequest("DELETE", Util.ELASTICSEARCH.REPO_INDEX_TEST);
+                c.getLowLevelClient().performRequest("DELETE", Util.ELASTICSEARCH.REPO_INDEX_TEST);
+            } catch (IOException ioex) {
+                System.out.println("Test index was not removed");
             }
-        } catch (IOException ioex) {
-            ioex.printStackTrace();
+        } else {
+            try {
+                Response resp = c.getLowLevelClient().performRequest("HEAD", Util.ELASTICSEARCH.REPO_INDEX_TEST);
+                if(resp.getStatusLine().getStatusCode() != RestStatus.OK.getStatus()) {
+                    createESTestIndex();
+                } else {
+                    System.out.println("Index "+ Util.ELASTICSEARCH.REPO_INDEX_TEST +" already exists...");
+                }
+            } catch (IOException ioex) {
+                ioex.printStackTrace();
+            }
         }
     }
 
@@ -90,24 +89,29 @@ public class ElasticServletContextListener implements ServletContextListener {
     }
 
     /**
-     * Creates default ElasticSearch index for cultural objects.
+     * Creates default ElasticSearch test index for cultural objects.
      * @return true if creation succeeds, false otherwise
      */
-    private boolean createESIndex() {
+    private boolean createESTestIndex() {
         boolean ret = false;
-        System.out.println("Creating index "+ config.getIndexName() +"...");
+        System.out.println("Creating index "+ Util.ELASTICSEARCH.REPO_INDEX_TEST +"...");
         InputStream is = getClass().getClassLoader().getResourceAsStream("indexmapping_cultura.json");
         if (null != is) {
             String mapping = Util.FILE.readFromStream(is, StandardCharsets.UTF_8.name());
-            ret = Util.ELASTICSEARCH.createIndex(c, config.getIndexName(), mapping);
+            JSONObject mp = new JSONObject(mapping);
+            JSONObject aliases = new JSONObject();
+            aliases.put(config.getIndexName(), new JSONObject(""));
+            mp.put("aliases", aliases);
+
+            ret = Util.ELASTICSEARCH.createIndex(c, Util.ELASTICSEARCH.REPO_INDEX_TEST, mapping);
 
             if (ret) {
-                System.out.println("Index " + config.getIndexName() + " created...");
+                System.out.println("Index " + Util.ELASTICSEARCH.REPO_INDEX_TEST + " created with alias "+ config.getIndexName());
             }
         }
 
         //Load test data
-        if (ret && Util.ENV_DEVELOPMENT.equals(config.getEnvName())) {
+        if (ret) {
             InputStream datas = getClass().getClassLoader().getResourceAsStream("data.json");
             if (null != datas) {
                 ArrayList<String> objs = new ArrayList<>();
@@ -125,7 +129,7 @@ public class ElasticServletContextListener implements ServletContextListener {
                     jsex.printStackTrace();
                 }
 
-                List<String> indexed = Util.ELASTICSEARCH.indexObjects(c, config.getIndexName(), "bic", objs);
+                List<String> indexed = Util.ELASTICSEARCH.indexObjects(c, Util.ELASTICSEARCH.REPO_INDEX_TEST, config.getIndexType(), objs);
             }
         }
         return ret;
