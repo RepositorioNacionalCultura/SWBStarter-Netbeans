@@ -105,7 +105,7 @@ public class ElasticServletContextListener implements ServletContextListener {
 
             System.out.println(mp.toString(2));
 
-            ret = Util.ELASTICSEARCH.createIndex(c, Util.ELASTICSEARCH.REPO_INDEX_TEST, mapping);
+            ret = Util.ELASTICSEARCH.createIndex(c, Util.ELASTICSEARCH.REPO_INDEX_TEST, mp.toString());
 
             if (ret) {
                 System.out.println("Index " + Util.ELASTICSEARCH.REPO_INDEX_TEST + " created with alias "+ config.getIndexName());
