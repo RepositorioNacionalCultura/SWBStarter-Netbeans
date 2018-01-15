@@ -104,7 +104,7 @@ public class ElasticServletContextListener implements ServletContextListener {
 
                 try {
                     JSONArray data = new JSONArray(jsonString);
-                    System.out.println("Loading "+ data.length() +"objects from test data");
+                    System.out.println("Loading "+ data.length() +" objects from test data");
                     for (int i = 0; i < data.length(); i++) {
                         JSONObject o = data.getJSONObject(i);
                         o.put("indexcreated", System.currentTimeMillis());
