@@ -18,7 +18,9 @@ import javax.servlet.ServletContextListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * {@link ServletContextListener} that manages ElasticSearch client creation and index initialization.
@@ -97,23 +99,21 @@ public class ElasticServletContextListener implements ServletContextListener {
             System.out.println("Loading test data");
             InputStream datas = getClass().getClassLoader().getResourceAsStream("data.json");
             if (null != datas) {
+                ArrayList<String> objs = new ArrayList<>();
                 String jsonString = Util.FILE.readFromStream(datas, StandardCharsets.UTF_8.name());
+
                 JSONArray data = new JSONArray(jsonString);
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject o = data.getJSONObject(i);
                     o.put("indexcreated", System.currentTimeMillis());
-                    IndexRequest request = new IndexRequest(indexName, "bic");
-                    request.source(o.toString(), XContentType.JSON);
-
-                    try {
-                        IndexResponse indexResponse = c.index(request);
-                    } catch (IOException ioex) {
-                        ioex.printStackTrace();
-                    }
+                    objs.add(o.toString());
+                    //IndexRequest request = new IndexRequest(indexName, "bic");
+                    //request.source(o.toString(), XContentType.JSON);
                 }
+
+                List<String> indexed = Util.ELASTICSEARCH.indexObjects(c, indexName, "bic", objs);
             }
         }
-
         return ret;
     }
 }
