@@ -11,6 +11,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.rest.RestStatus;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.servlet.ServletContextEvent;
@@ -96,19 +97,21 @@ public class ElasticServletContextListener implements ServletContextListener {
 
         //Load test data
         if (ret && Util.ENV_DEVELOPMENT.equals(envName)) {
-            System.out.println("Loading test data");
             InputStream datas = getClass().getClassLoader().getResourceAsStream("data.json");
             if (null != datas) {
                 ArrayList<String> objs = new ArrayList<>();
                 String jsonString = Util.FILE.readFromStream(datas, StandardCharsets.UTF_8.name());
 
-                JSONArray data = new JSONArray(jsonString);
-                for (int i = 0; i < data.length(); i++) {
-                    JSONObject o = data.getJSONObject(i);
-                    o.put("indexcreated", System.currentTimeMillis());
-                    objs.add(o.toString());
-                    //IndexRequest request = new IndexRequest(indexName, "bic");
-                    //request.source(o.toString(), XContentType.JSON);
+                try {
+                    JSONArray data = new JSONArray(jsonString);
+                    System.out.println("Loading "+ data.length() +"objects from test data");
+                    for (int i = 0; i < data.length(); i++) {
+                        JSONObject o = data.getJSONObject(i);
+                        o.put("indexcreated", System.currentTimeMillis());
+                        objs.add(o.toString());
+                    }
+                } catch (JSONException jsex) {
+                    jsex.printStackTrace();
                 }
 
                 List<String> indexed = Util.ELASTICSEARCH.indexObjects(c, indexName, "bic", objs);
