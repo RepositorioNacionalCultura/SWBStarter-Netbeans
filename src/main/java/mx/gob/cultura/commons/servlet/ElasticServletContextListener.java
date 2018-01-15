@@ -36,6 +36,14 @@ public class ElasticServletContextListener implements ServletContextListener {
      * Constructor. Creates a new instance of {@link ElasticServletContextListener}.
      */
     public ElasticServletContextListener () {
+        InputStream is = getClass().getClassLoader().getResourceAsStream("app.properties");
+
+        if (null != is) {
+            System.out.println(">>>>>Resource loaded");
+        } else {
+            System.out.println(">>>>>Resource not loaded");
+        }
+
         c = Util.ELASTICSEARCH.getElasticClient();
         indexName = Util.ELASTICSEARCH.getIndexName();
         envName = Util.getEnvironmentName();
