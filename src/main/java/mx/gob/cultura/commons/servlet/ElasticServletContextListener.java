@@ -1,14 +1,12 @@
 package mx.gob.cultura.commons.servlet;
 
 import mx.gob.cultura.commons.Util;
+import mx.gob.cultura.commons.config.AppConfig;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.rest.RestStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * {@link ServletContextListener} that manages ElasticSearch client creation and index initialization.
@@ -29,16 +28,14 @@ import java.util.List;
  */
 public class ElasticServletContextListener implements ServletContextListener {
     private RestHighLevelClient c;
-    private String indexName;
-    private String envName;
+    AppConfig config;
 
     /**
      * Constructor. Creates a new instance of {@link ElasticServletContextListener}.
      */
     public ElasticServletContextListener () {
-        c = Util.ELASTICSEARCH.getElasticClient();
-        indexName = Util.ELASTICSEARCH.getIndexName();
-        envName = Util.getEnvironmentName();
+        config = loadConfigProperties();
+        c = Util.ELASTICSEARCH.getElasticClient(config.getElasticHost(), config.getElasticPort());
     }
 
     @Override
@@ -46,11 +43,11 @@ public class ElasticServletContextListener implements ServletContextListener {
         System.out.println("Starting ElasticSearch index...");
 
         try {
-            Response resp = c.getLowLevelClient().performRequest("HEAD", indexName);
+            Response resp = c.getLowLevelClient().performRequest("HEAD", config.getIndexName());
             if(resp.getStatusLine().getStatusCode() != RestStatus.OK.getStatus()) {
                 createESIndex();
             } else {
-                System.out.println("Index "+ indexName +" already exists...");
+                System.out.println("Index "+ config.getIndexName() +" already exists...");
             }
         } catch (IOException ioex) {
             ioex.printStackTrace();
@@ -58,7 +55,7 @@ public class ElasticServletContextListener implements ServletContextListener {
 
         try {
             //Remove test index if env is production
-            if (Util.ENV_PRODUCTION.equals(envName)) {
+            if (Util.ENV_PRODUCTION.equals(config.getEnvName())) {
                 System.out.println("Removing test index...");
                 Response resp = c.getLowLevelClient().performRequest("DELETE", Util.ELASTICSEARCH.REPO_INDEX_TEST);
             }
@@ -74,12 +71,31 @@ public class ElasticServletContextListener implements ServletContextListener {
     }
 
     /**
+     * Loads configuration from application properties.
+     * @return {@link AppConfig} object.
+     */
+    private AppConfig loadConfigProperties() {
+        InputStream is = getClass().getClassLoader().getResourceAsStream("app.properties");
+        Properties props = new Properties();
+
+        if (null != is) {
+            try {
+                props.load(is);
+            } catch (IOException ioex) {
+                ioex.printStackTrace();
+            }
+        }
+
+        return AppConfig.getConfigObject(props);
+    }
+
+    /**
      * Creates default ElasticSearch index for cultural objects.
      * @return true if creation succeeds, false otherwise
      */
     private boolean createESIndex() {
         boolean ret = false;
-        System.out.println("Creating index "+ indexName +"...");
+        System.out.println("Creating index "+ config.getIndexName() +"...");
         InputStream is = getClass().getClassLoader().getResourceAsStream("indexmapping_cultura.json");
         if (null != is) {
             String mapping = Util.FILE.readFromStream(is, StandardCharsets.UTF_8.name());
@@ -87,8 +103,8 @@ public class ElasticServletContextListener implements ServletContextListener {
             HashMap<String, String> params = new HashMap<>();
 
             try {
-                Response resp = c.getLowLevelClient().performRequest("PUT", "/"+ indexName, params, body);
-                System.out.println("Index " + indexName + " created...");
+                Response resp = c.getLowLevelClient().performRequest("PUT", "/"+ config.getIndexName(), params, body);
+                System.out.println("Index " + config.getIndexName() + " created...");
                 ret = resp.getStatusLine().getStatusCode() == RestStatus.OK.getStatus();
             } catch (IOException ioex) {
                 ioex.printStackTrace();
@@ -96,7 +112,7 @@ public class ElasticServletContextListener implements ServletContextListener {
         }
 
         //Load test data
-        if (ret && Util.ENV_DEVELOPMENT.equals(envName)) {
+        if (ret && Util.ENV_DEVELOPMENT.equals(config.getEnvName())) {
             InputStream datas = getClass().getClassLoader().getResourceAsStream("data.json");
             if (null != datas) {
                 ArrayList<String> objs = new ArrayList<>();
@@ -114,7 +130,7 @@ public class ElasticServletContextListener implements ServletContextListener {
                     jsex.printStackTrace();
                 }
 
-                List<String> indexed = Util.ELASTICSEARCH.indexObjects(c, indexName, "bic", objs);
+                List<String> indexed = Util.ELASTICSEARCH.indexObjects(c, config.getIndexName(), "bic", objs);
             }
         }
         return ret;
