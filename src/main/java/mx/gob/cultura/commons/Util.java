@@ -222,7 +222,7 @@ public final class Util {
          * @param typeName Name of type in index.
          * @return List of identifiers of indexed objects.
          */
-        public static ArrayList<String> indexObjects(ArrayList<String> objects, RestHighLevelClient client, String indexName, String typeName) {
+        public static ArrayList<String> indexObjects(RestHighLevelClient client, String indexName, String typeName, ArrayList<String> objects) {
             ArrayList<String> ret = new ArrayList<>();
             for (String obj : objects) {
                 String id = ELASTICSEARCH.getUUID();
