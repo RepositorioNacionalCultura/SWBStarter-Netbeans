@@ -3,7 +3,10 @@ package mx.gob.cultura.commons;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.nio.entity.NStringEntity;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.bulk.BulkItemResponse;
@@ -11,6 +14,7 @@ import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.UUIDs;
@@ -257,6 +261,27 @@ public final class Util {
          */
         public static String getIndexName() {
             return Util.ENV_DEVELOPMENT.equals(Util.getEnvironmentName()) ? REPO_INDEX_TEST : REPO_INDEX;
+        }
+
+        /**
+         * Creates an index in ElasticSearch.
+         * @param client {@link RestHighLevelClient} object.
+         * @param indexName Name of index to use.
+         * @param mapping JSON String of index mapping.
+         * @return true if index is created, false otherwise.
+         */
+        public static boolean createIndex(RestHighLevelClient client, String indexName, String mapping) {
+            boolean ret = false;
+                HttpEntity body = new NStringEntity(mapping, ContentType.APPLICATION_JSON);
+                HashMap<String, String> params = new HashMap<>();
+
+                try {
+                    Response resp = client.getLowLevelClient().performRequest("PUT", "/"+ indexName, params, body);
+                    ret = resp.getStatusLine().getStatusCode() == RestStatus.OK.getStatus();
+                } catch (IOException ioex) {
+                    ioex.printStackTrace();
+                }
+            return ret;
         }
     }
 
