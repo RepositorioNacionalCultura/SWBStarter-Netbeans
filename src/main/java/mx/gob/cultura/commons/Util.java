@@ -7,6 +7,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
+import org.apache.log4j.Logger;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.bulk.BulkItemResponse;
@@ -40,6 +41,7 @@ import java.util.Map;
  * @author Hasdai Pacheco
  */
 public final class Util {
+    private static final Logger logger = Logger.getLogger(Util.class);
     public static final String ENV_DEVELOPMENT = "DEV";
     public static final String ENV_TESTING = "TEST";
     public static final String ENV_QA = "QA";
@@ -53,17 +55,19 @@ public final class Util {
         String errorMsg = null;
         int retries = 0;
         boolean isConnOk = false;
+
         do {
+            logger.trace("Trying to make request to URL " + theUrl.toString());
             try {
                 con = (HttpURLConnection) theUrl.openConnection();
                 isConnOk = true;
                 //AQUI SE PIDE EN XML
                 if (XMLSupport) {
+                    logger.trace("Setting XML request header");
                     con.setRequestProperty("accept", "application/xml");
                 }
                 con.setRequestMethod("GET");
                 //System.out.println("content type:" + con.getContentType());
-
 
                 int statusCode = con.getResponseCode();
 
@@ -82,6 +86,7 @@ public final class Util {
                 }
 
             } catch (IOException e) {
+                logger.trace("Failed connection to URL "+theUrl+". Retrying");
                 if (null != con) {
                     con.disconnect();
                 }
@@ -92,9 +97,10 @@ public final class Util {
                     te.printStackTrace();
                 }
 
-                e.printStackTrace();
+                //e.printStackTrace();
                 isConnOk = false;
                 if(retries==5){
+                    logger.trace("Max number of retries reached ("+retries+")");
                     errorMsg="#Error: No se puede conectar al servidor#";
                 }
             }
@@ -159,7 +165,7 @@ public final class Util {
                     ret.close();
                     elasticClients.remove(host + ":" + String.valueOf(port), ret);
                 } catch (IOException ioex) {
-                    ioex.printStackTrace();
+                    logger.error("Error while closing ES client", ioex);
                 }
             }
         }
@@ -172,7 +178,7 @@ public final class Util {
                 try {
                     c.close();
                 } catch (IOException ioex) {
-                    ioex.printStackTrace();
+                    logger.error("Error while closing ES clients", ioex);
                 }
             }
         }
@@ -212,7 +218,7 @@ public final class Util {
                     ret = resp.getId();
                 }
             } catch (IOException ioex) {
-                ioex.printStackTrace();
+                logger.error("Error making index request for object with id "+objectId, ioex);
             }
 
             return ret;
@@ -249,7 +255,7 @@ public final class Util {
                         }
                     }
                 } catch (IOException ioex) {
-                    ioex.printStackTrace();
+                    logger.error("Error indexing objects in bulk request", ioex);
                 }
             }
             return ret;
@@ -272,15 +278,15 @@ public final class Util {
          */
         public static boolean createIndex(RestHighLevelClient client, String indexName, String mapping) {
             boolean ret = false;
-                HttpEntity body = new NStringEntity(mapping, ContentType.APPLICATION_JSON);
-                HashMap<String, String> params = new HashMap<>();
+            HttpEntity body = new NStringEntity(mapping, ContentType.APPLICATION_JSON);
+            HashMap<String, String> params = new HashMap<>();
 
-                try {
-                    Response resp = client.getLowLevelClient().performRequest("PUT", "/"+ indexName, params, body);
-                    ret = resp.getStatusLine().getStatusCode() == RestStatus.OK.getStatus();
-                } catch (IOException ioex) {
-                    ioex.printStackTrace();
-                }
+            try {
+                Response resp = client.getLowLevelClient().performRequest("PUT", "/"+ indexName, params, body);
+                ret = resp.getStatusLine().getStatusCode() == RestStatus.OK.getStatus();
+            } catch (IOException ioex) {
+                logger.error("Error creating index "+indexName, ioex);
+            }
             return ret;
         }
     }
@@ -354,11 +360,10 @@ public final class Util {
                         }
                     }
                 } catch (Exception e) {
-                    System.out.println("Error al cargar el DataSource. " + e.getMessage());
-                    e.printStackTrace(System.out);
+                    logger.error("Error al cargar el DataSource. " + e.getMessage());
                 }
             } else {
-                System.out.println("Error al cargar el DataSource al HashMap, falta inicializar el engine.");
+                logger.error("Error al cargar el DataSource al HashMap, falta inicializar el engine.");
                 return null;
             }
 
@@ -434,7 +439,7 @@ public final class Util {
                     ret.append(line);
                 }
             } catch (IOException ioex) {
-                ioex.printStackTrace();
+                logger.error("Error reading file", ioex);
             }
 
             return ret.toString();
