@@ -1,4 +1,4 @@
-package mx.gob.cultura.util.oai;
+package mx.gob.cultura.commons.oai;
 
 import mx.gob.cultura.commons.URLBuilder;
 import mx.gob.cultura.commons.URLBuilderBase;
