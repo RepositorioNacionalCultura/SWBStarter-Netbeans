@@ -10,7 +10,7 @@
           <element id="archive" name="Components.jar">
             <element id="module-output" name="Components" />
           </element>
-          <element id="file-copy" path="$MAVEN_REPOSITORY$/com/github/swbforms/SWBDataManager/master-1.0-SNAPSHOT-g362e8de-8/SWBDataManager-master-1.0-SNAPSHOT-g362e8de-8.jar" output-file-name="SWBDataManager.jar" />
+          <element id="file-copy" path="$MAVEN_REPOSITORY$/com/github/SWBForms/SWBDataManager/master-1.0-SNAPSHOT-g48bb1fc-12/SWBDataManager-master-1.0-SNAPSHOT-g48bb1fc-12.jar" output-file-name="SWBDataManager.jar" />
           <element id="file-copy" path="$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar" output-file-name="gson.jar" />
           <element id="file-copy" path="$MAVEN_REPOSITORY$/org/semanticwb/SWBBase/5.0/SWBBase-5.0.jar" output-file-name="SWBBase.jar" />
           <element id="file-copy" path="$MAVEN_REPOSITORY$/log4j/log4j/1.2.17/log4j-1.2.17.jar" output-file-name="log4j.jar" />

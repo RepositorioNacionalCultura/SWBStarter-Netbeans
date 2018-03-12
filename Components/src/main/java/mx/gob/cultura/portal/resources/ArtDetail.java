@@ -8,7 +8,9 @@ package mx.gob.cultura.portal.resources;
 import mx.gob.cultura.portal.request.GetBICRequest;
 import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Utils;
+import org.semanticwb.Logger;
 import org.semanticwb.SWBPlatform;
+import org.semanticwb.SWBUtils;
 import org.semanticwb.portal.api.GenericAdmResource;
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceException;
@@ -20,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.logging.Logger;
 
 /**
  *
@@ -31,7 +32,7 @@ public class ArtDetail extends GenericAdmResource {
     private static final String POSITION = "n";
     private static final String IDENTIFIER = "id";
     private static final String MODE_DIGITAL = "DIGITAL";
-    private static final Logger LOG = Logger.getLogger(ArtDetail.class.getName());
+    private static final Logger LOG = SWBUtils.getLogger(ArtDetail.class);
     
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
@@ -78,7 +79,7 @@ public class ArtDetail extends GenericAdmResource {
             request.setAttribute("paramRequest", paramRequest);
             rd.include(request, response);
         } catch (ServletException se) {
-            LOG.info(se.getMessage());
+            LOG.error(se);
         }
     }
     
@@ -120,7 +121,7 @@ public class ArtDetail extends GenericAdmResource {
             request.setAttribute("paramRequest", paramRequest);
             rd.include(request, response);
         } catch (ServletException se) {
-            LOG.info(se.getMessage());
+            LOG.error(se);
         }
     }
 }
