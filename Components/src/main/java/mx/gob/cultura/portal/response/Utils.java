@@ -1,0 +1,101 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package mx.gob.cultura.portal.response;
+
+import java.io.Writer;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.text.SimpleDateFormat;
+import static java.lang.Integer.parseInt;
+
+/**
+ *
+ * @author sergio.tellez
+ */
+public class Utils {
+    
+    public static final HashMap m = new HashMap();
+	
+    static {
+	m.put(34, "");   // ""
+	m.put(40, "");   // (
+	m.put(41, "");   // )
+	m.put(47, "");   // /
+	m.put(60, "");   // <
+	m.put(61, "");   // =
+	m.put(62, "");   // >
+        m.put(123, "");  // {
+        m.put(125, "");  // }
+    }
+    
+    public static String suprXSS(String str) {
+	try {
+            StringWriter writer = new StringWriter((int)(str.length() * 1.5));
+            dispersion(writer, str);
+            return writer.toString();
+	}catch (IOException ioe) {
+            ioe.printStackTrace();
+            return null;  
+	}
+    }
+
+    public static void dispersion(Writer writer, String str) throws IOException {
+    	int len = str.length();
+    	for (int i = 0; i < len; i++) {
+            char c = str.charAt(i);
+            int ascii = (int) c;
+            String entityName = (String) m.get(ascii);
+            if (entityName == null) {
+                if (c > 0x7F) {
+                    writer.write("&#");
+                    writer.write(Integer.toString(c, 10));
+                    writer.write(';');
+    		} else {
+                    writer.write(c);
+    		}
+            } else {
+    		writer.write(entityName);
+            }
+    	}
+    }
+    
+    public static Date convert(String sDate) {
+        if (null == sDate || sDate.isEmpty()) return null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            return sdf.parse(sDate);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return new Date();
+        }
+    }
+    
+    public static int toInt(Object obj) {
+        if (null == obj) return -1;
+        int result = 0;	
+        if (obj instanceof Long){
+            result = ((Long)obj).intValue();
+        } else if (obj instanceof Integer){
+            result = ((Integer)obj);
+        } else if (obj instanceof BigDecimal){
+            result = ((BigDecimal)obj).intValue();
+        } else if (obj instanceof BigInteger){
+            result = ((BigInteger)obj).intValue();
+        } else if (obj instanceof Double){
+            result = ((Double)obj).intValue();
+        } else if (obj instanceof String){
+            result = parseInt((String)obj);
+        } else if (obj instanceof Number){		
+            result = ((Number)obj).intValue();
+        }	
+        return result;
+    }
+}

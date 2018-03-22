@@ -42,12 +42,15 @@ public class ListBICRequest {
         }
 
         if (null != url) {
+            System.out.println("making request to:"+url);
             try {
                 HttpURLConnection connection = (HttpURLConnection)url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("Accept", "application/json");
                 InputStream is = connection.getInputStream();
                 String jsonText = SWBUtils.IO.readInputStream(is, "UTF-8");
+                System.out.println("---result---");
+                System.out.println(jsonText);
                 Gson gson = new Gson();
                 Type documentType = new TypeToken<Document>(){}.getType();
                 doc = gson.fromJson(jsonText, documentType);

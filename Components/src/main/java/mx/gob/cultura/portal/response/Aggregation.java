@@ -13,14 +13,16 @@ import java.io.Serializable;
  * @author sergio.tellez
  */
 public class Aggregation implements Serializable {
-
-    private static final long serialVersionUID = 7895964432008759515L;
+    
+    private DateRange interval;
     
     private List<CountName> dates;
     
     private List<CountName> holders;
     
     private List<CountName> resourcetypes;
+    
+    private static final long serialVersionUID = 7895964432008759515L;
 
     public List<CountName> getHolders() {
         return holders;
@@ -44,5 +46,13 @@ public class Aggregation implements Serializable {
 
     public void setDates(List<CountName> dates) {
         this.dates = dates;
+    }
+    
+    public DateRange getInterval() {
+        return interval;
+    }
+
+    public void setInterval(DateRange interval) {
+        this.interval = interval;
     }
 }

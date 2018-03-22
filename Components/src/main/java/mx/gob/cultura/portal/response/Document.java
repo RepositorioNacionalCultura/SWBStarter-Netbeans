@@ -16,8 +16,8 @@ public class Document implements Serializable {
 
     private static final long serialVersionUID = 9122010588538798702L;
     
-    private int total;
     private String took;
+    private Integer total;
     private List<Entry> records;
     private List<Aggregation> aggs;
 
@@ -29,16 +29,11 @@ public class Document implements Serializable {
         this.records = records;
     }
 
-    @Override
-    public String toString() {
-        return "Document{" + "total=" + total + ", records=" + records + '}';
-    }
-
-    public int getTotal() {
+    public Integer getTotal() {
         return total;
     }
 
-    public void setTotal(int total) {
+    public void setTotal(Integer total) {
         this.total = total;
     }
 
@@ -56,5 +51,10 @@ public class Document implements Serializable {
 
     public void setAggs(List<Aggregation> aggs) {
         this.aggs = aggs;
+    }
+    
+    @Override
+    public String toString() {
+        return "Document{" + "total=" + total + ", records=" + records + '}';
     }
 }

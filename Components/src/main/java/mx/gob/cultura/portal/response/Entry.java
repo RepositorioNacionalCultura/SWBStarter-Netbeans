@@ -5,8 +5,8 @@
  */
 package mx.gob.cultura.portal.response;
 
-import java.util.List;
 import java.io.Serializable;
+import java.util.List;
 /**
  *
  * @author sergio.tellez
@@ -28,6 +28,8 @@ public class Entry implements Serializable {
     private List<String> resourcetype;
     private List<Identifier> identifier;
     private List<DigitalObject> digitalobject;
+    
+    private Integer position;
 
     public Stats getResourcestats() {
         return resourcestats;
@@ -127,6 +129,14 @@ public class Entry implements Serializable {
 
     public void setDigitalobject(List<DigitalObject> digitalobject) {
         this.digitalobject = digitalobject;
+    }
+    
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 
     private void init() {

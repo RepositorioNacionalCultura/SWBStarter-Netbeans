@@ -16,9 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -102,7 +100,7 @@ public class PagerAction extends GenericResource {
         String url = "/swbadmin/jsp/rnc/rows.jsp";
         if (null != request.getParameter("m") && "l".equalsIgnoreCase(request.getParameter("m")))
             request.setAttribute("mode", "row lista");
-        else request.setAttribute("mode", "row");
+        else request.setAttribute("mode", "card-columns");
         request.setAttribute("m",request.getParameter("m"));
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
@@ -115,7 +113,7 @@ public class PagerAction extends GenericResource {
 
     public void doSort(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
         String url = "/swbadmin/jsp/rnc/rows.jsp";
-        request.setAttribute("mode", "row");
+        request.setAttribute("mode", "card-columns");
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
             rd.include(request, response);
@@ -165,6 +163,14 @@ public class PagerAction extends GenericResource {
             //ArrayList rowsPage = getRows(pagenum, rows);
             session.setAttribute(PAGE_LIST, rows);
             session.setAttribute("NUM_RECORDS_VISIBLE", rows.size());
+            int first = 0;
+            int last = 0;
+            first = (pagenum-1)*PAGE_NUM_ROW+1;
+            last = first+PAGE_NUM_ROW-1;
+            if (last>total)
+		last = total;
+            session.setAttribute("FIRST_RECORD", first);
+            session.setAttribute("LAST_RECORD", last);
         }catch(Exception e) {
             LOG.info(e.getMessage());
         }
