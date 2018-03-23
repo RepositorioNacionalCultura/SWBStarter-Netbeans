@@ -25,6 +25,7 @@ public class Utilities {
         ret.append("  function fbShare() {\n");
         ret.append("    FB.ui({\n");
         ret.append("      method: 'share',\n");
+        ret.append("      display: 'popup',\n");
         ret.append("      href: '");
         ret.append(request.getRequestURL());
         ret.append("?");
