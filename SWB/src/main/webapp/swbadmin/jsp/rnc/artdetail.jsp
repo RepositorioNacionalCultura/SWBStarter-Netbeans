@@ -105,8 +105,8 @@
                 </div>
 		<div class="explo2 row">
                     <div class="col-3">
-                    <!-- llamada a funcion para compartir -->
-                    <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
+                        <!-- llamada a funcion para compartir -->
+                        <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
                     </div>
                     <div class="col-3">
                         <span class="ion-social-twitter"></span>
@@ -199,7 +199,7 @@
                 <p class="vermas"><a href="#">Ves más <span class="ion-plus-circled"></span></a></p>
             </div>
             <div class="col-12 col-sm-6  col-md-3 col-lg-3 order-md-3 order-sm-3 order-3 clave">
-		<div class="redes">
+		            <div class="redes">
                     <!-- llamada a funcion para compartir -->
                     <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
                     <span class="ion-social-twitter"></span>
