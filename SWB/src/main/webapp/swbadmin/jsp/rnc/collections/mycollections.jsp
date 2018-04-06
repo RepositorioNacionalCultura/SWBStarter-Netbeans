@@ -214,7 +214,9 @@
                     </a>
                 </div>
                 <div class="mosaico-txt ">
-                    <p><span class="ion-locked rojo"></span> <%=c.getTitle()%></p>
+                    <p>
+                        <% if (!c.getStatus()) { %><span class="ion-locked rojo"><% } else { %><span class="ion-unlocked rojo"><% }%>
+                            </span><%=c.getTitle()%></p>
                     <p>Curada por: <%=paramRequest.getUser().getFullName()%></p>
                     <a href="#"><span class="ion-social-facebook"></span></a>
                     <a href="#"><span class="ion-social-twitter"></span></a>
