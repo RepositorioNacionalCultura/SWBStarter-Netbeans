@@ -9,47 +9,52 @@
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
     String msg = "Agregar colección";
-    SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
+    SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     SWBResourceURL saveURL = paramRequest.getActionUrl();
     saveURL.setMode(SWBResourceURL.Mode_VIEW);
     saveURL.setAction(MyCollections.ACTION_ADD);
-    Collection c = (Collection)request.getAttribute("collection");
+    Collection c = (Collection) request.getAttribute("collection");
     if (c == null) {
         c = new Collection("", false, "");
         msg = "No se encontró la colección solicitada";
-    }else if (null != c.getId()) {
-	msg = "Editar colección";
-	saveURL.setAction(SWBResourceURL.Action_EDIT);
+    } else if (null != c.getId()) {
+        msg = "Editar colección";
+        saveURL.setAction(SWBResourceURL.Action_EDIT);
         saveURL.setParameter(MyCollections.IDENTIFIER, c.getId().toString());
     }
 %>
 
-<div class="modal-dialog">
+<div class="modal-dialog modal-exh modal-2col" role="document">
     <div class="modal-content">
-	<div class="modal-header">
-            <h4 class="modal-title"><%=msg%></h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-	</div>
-	<div class="modal-body">
-            <p>
-		<form id="saveCollForm" action="<%=saveURL.toString()%>" method="post">
-                    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 car-img2">
-			<div class="card-body">
-                            <span class="card-title">* Nombre: </span><input type="text" name="title" maxlength="100" size="40" value="<%=c.getTitle()%>"/><div id="dialog-msg-edit"></div>
-			</div>
-			<div class="card-body">
-                            <span class="card-title">Descripción: </span><textarea name="description" rows="4" cols="40" maxlength="500" wrap="hard"><%=c.getDescription()%></textarea>
-			</div>
-			<div class="card-body">
-                            <span class="card-title">Público: </span><input type="checkbox" name="status" <% if (c.getStatus()) out.println(" checked"); %> />
-			</div>
-                    </div>
-		</form>
-            </p>
-	</div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-sm rojo" data-dismiss="modal">Cerrar</button>
-            <button type="button" onclick="saveEdit('<%=saveURL.toString()%>');" class="btn btn-sm rojo">Guardar</button>
-	</div>
+        <div class="row">
+            <div class="col-4 col-sm-5 modal-col1">
+                <div class="modal-izq">
+                    <img src="/work/models/repositorio/img/cabecera-colaborar.jpg">    
+                </div>
+            </div>
+            <div class="col-8 col-sm-7 modal-col2">
+                <div class="modal-header">
+                    <h4 class="modal-title oswM rojo">EDITAR COLECCIÓN</h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span class="ion-ios-close-outline"></span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="saveCollForm" action="<%=saveURL.toString()%>" method="post">
+                        <div class="form-group">
+                            <label for="crearNombre">Nombre</label>
+                            <input type="text" name="title" maxlength="100" value="<%=c.getTitle()%>" id="crearNombre" class="form-control" placeholder="60" aria-label="Recipient's username" aria-describedby="basic-addon2"/><div id="dialog-msg-edit"></div>
+                            <label for="crearDescr">Descripción (opcional)</label>
+                            <textarea name="description" id="crearDescr" placeholder="250"><%=c.getDescription()%></textarea>        
+                            <label for="selprivado" class="selPrivado">
+                                <input name="status" <% if (c.getStatus()) { out.println(" checked"); }%> id="selprivado" type="checkbox" aria-label="Checkbox for following text input"/>
+                                <span class="ion-locked"> Privado</span>
+                            </label>
+                        </div>
+                        <button type="button" onclick="saveEdit('<%=saveURL.toString()%>');" class="btn-cultura btn-rojo btn-mayus">Editar colección</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

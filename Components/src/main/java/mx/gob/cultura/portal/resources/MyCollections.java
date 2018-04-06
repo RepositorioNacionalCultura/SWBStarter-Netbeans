@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import mx.gob.cultura.portal.persist.CollectionMgr;
 
 import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Collection;
@@ -48,6 +49,7 @@ public class MyCollections extends GenericResource {
     public static final String ACTION_ADD = "SAVE";
     public static final String MODE_RES_ADD = "RES_ADD";
     public static final String MODE_VIEW_USR = "VIEW_USR";
+    public static final String MODE_VIEW_ALL = "VIEW_ALL";
     public static final String ACTION_DEL_FAV = "DEL_FAV";
     
     private static final int PAGE_NUM_ROW = 8;
@@ -65,6 +67,8 @@ public class MyCollections extends GenericResource {
     
     private static final Logger LOG = Logger.getLogger(MyCollections.class.getName());
     
+    CollectionMgr mgr = CollectionMgr.getInstance();
+    
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         response.setContentType("text/html; charset=UTF-8");
@@ -79,12 +83,13 @@ public class MyCollections extends GenericResource {
             collectionById(request, response, paramRequest);
         }else if (MODE_RES_ADD.equals(mode)) {
             redirectJsonResponse(request, response);
+        }else if (MODE_VIEW_ALL.equals(mode)) {
+            doViewAll(request, response, paramRequest);
         }else
             super.processRequest(request, response, paramRequest);
     }
     
-    @Override
-    public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+    public void doViewAll(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         response.setContentType("text/html; charset=UTF-8");
         String path = "/swbadmin/jsp/rnc/collections/mycollections.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
@@ -101,37 +106,60 @@ public class MyCollections extends GenericResource {
         }
     }
     
-    public static List<Collection> collectionList(HttpServletRequest request, User user) {
-        List<Collection> collectionList = new ArrayList<>();
-        if (null != user && user.isSigned() && null != request.getSession().getAttribute("mycollections"))
-            collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");
-        return collectionList;
+    @Override
+    public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        Long total = 0L;
+        User user = paramRequest.getUser();
+        response.setContentType("text/html; charset=UTF-8");
+        String path = "/swbadmin/jsp/rnc/collections/init.jsp";
+        RequestDispatcher rd = request.getRequestDispatcher(path);
+        try {
+            request.setAttribute(PARAM_REQUEST, paramRequest);
+            request.setAttribute("mycollections", new ArrayList<>());
+            if (null != user && user.isSigned()) total = count(user.getId());
+            request.setAttribute(NUM_RECORDS_TOTAL, total);
+            rd.include(request, response);
+        } catch (ServletException se) {
+            LOG.info(se.getMessage());
+        }
+    }
+    
+    public List<Collection> collectionList(HttpServletRequest request, User user) {
+        List<Collection> collection = new ArrayList<>();
+        if (null != user && user.isSigned() /**&& null != request.getSession().getAttribute("mycollections")**/)
+            //collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");
+            collection = collectionList(user.getId());
+        return collection;
     }
     
     public void collectionById(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         User user = paramRequest.getUser();
         Collection collection = null;
-        List<String> elements = new ArrayList<>();
+        //List<String> elements = new ArrayList<>();
         List<Entry> favorites = new ArrayList<>();
-        List<Collection> collectionList = new ArrayList<>();
+        //List<Collection> collectionList = new ArrayList<>();
         String path = "/swbadmin/jsp/rnc/collections/elements.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
-        if (null != user && user.isSigned() && null != request.getSession().getAttribute("mycollections"))
-            collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");
+        /**if (null != user && user.isSigned() && null != request.getSession().getAttribute("mycollections"))
+            collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");**/
         try {
-            if (null != request.getParameter(IDENTIFIER) && !collectionList.isEmpty()) {
-                Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
+            if (null != user && user.isSigned() && null != request.getParameter(IDENTIFIER) /**&& !collectionList.isEmpty()**/) {
+                /**Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
                 for (Collection c : collectionList) {
-                    if (c.getId().compareTo(id) == 0) {
+                    if (c.getId().equals(request.getParameter(IDENTIFIER))) {
                         collection = c;
                         elements = c.getElements();
                         break;
                     }
-                }
+                }**/
+                collection = mgr.findById(request.getParameter(IDENTIFIER));
+                System.out.println("collection: " + collection);
             }
-            for (String _id : elements) {
-                Entry entry = getEntry(_id);
-                if (null != entry) favorites.add(entry);
+            if (null != collection && null != collection.getElements()) {
+                for (String _id : collection.getElements()) {
+                    Entry entry = getEntry(_id);
+                    if (null != entry) favorites.add(entry);
+                }
             }
             request.setAttribute("myelements", favorites);
             request.setAttribute(COLLECTION, collection);
@@ -146,15 +174,16 @@ public class MyCollections extends GenericResource {
     public void doEdit(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         String path = "/swbadmin/jsp/rnc/collections/collection.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
-        if (null != request.getParameter(IDENTIFIER) && null != request.getSession().getAttribute("mycollections")) {
-            Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
-            List<Collection> collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");
-            for (Collection c : collectionList) {
-                if (c.getId().compareTo(id) == 0) {
-                    request.setAttribute(COLLECTION, c);
-                    break;
-                }
-            }
+        if (null != request.getParameter(IDENTIFIER) /**&& null != request.getSession().getAttribute("mycollections")**/) {
+            //Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
+            //List<Collection> collectionList = (List<Collection>)request.getSession().getAttribute("mycollections")
+            //for (Collection c : collectionList) {
+                //if (c.getId().equals(request.getParameter(IDENTIFIER))) {
+            Collection c = find(request.getParameter(IDENTIFIER));
+            if (null != c) request.setAttribute(COLLECTION, c);
+                    //break;
+                //}
+            //}
         }
         try {
             request.setAttribute(PARAM_REQUEST, paramRequest);
@@ -173,11 +202,11 @@ public class MyCollections extends GenericResource {
             collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");
         if (SWBResourceURL.Action_REMOVE.equals(response.getAction())) {
             if (null != user && user.isSigned() && null != request.getParameter(IDENTIFIER) && null != request.getSession().getAttribute("mycollections")) {
-                Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
+                //Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
                 collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");
                 Collection tmp = null;
                 for (Collection c : collectionList) {
-                    if (c.getId().compareTo(id) == 0) {
+                    if (c.getId().equals(request.getParameter(IDENTIFIER))) {
                         tmp = c;
                         break;
                     }
@@ -186,17 +215,22 @@ public class MyCollections extends GenericResource {
             }
         }else if (SWBResourceURL.Action_EDIT.equals(response.getAction())) {
             Collection collection = setCollection(request);
-            if (null != user && user.isSigned() && !collection.isEmpty() && null != request.getSession().getAttribute("mycollections")) {
-                Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
-                collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");
-                if (!exist(collectionList, collection.getTitle(), id)) {
+            if (null != user && user.isSigned() && !collection.isEmpty() && null != request.getParameter(IDENTIFIER)) {
+                //Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
+                collectionList = collectionList(request, user);//(List<Collection>)request.getSession().getAttribute("mycollections");
+                //if (!exist(collectionList, collection.getTitle(), request.getParameter(IDENTIFIER))) {
+                System.out.println("EXIST: " + exist(collection.getTitle(), request.getParameter(IDENTIFIER)));
+                if (!exist(collection.getTitle(), request.getParameter(IDENTIFIER))) {
                     for (Collection c : collectionList) {
-                        if (c.getId().compareTo(id) == 0) {
+                        if (c.getId().equals(request.getParameter(IDENTIFIER))) {
+                            c.setUserid(user.getId());
                             c.setTitle(collection.getTitle());
                             c.setDescription(collection.getDescription());
                             c.setStatus(collection.getStatus());
                             Gson gson = new Gson();
                             response.setRenderParameter(COLLECTION_RENDER, gson.toJson(c));
+                            System.out.println("Collection: " + c);
+                            update(c);
                             break;
                         }
                     }
@@ -210,10 +244,10 @@ public class MyCollections extends GenericResource {
             }
         }else if (ACTION_STA.equals(response.getAction())) {
             if (null != request.getParameter(IDENTIFIER) && null != request.getSession().getAttribute("mycollections")) {
-                Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
+                //Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
                 collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");
                 for (Collection c : collectionList) {
-                    if (c.getId().compareTo(id) == 0) {
+                    if (c.getId().equals(request.getParameter(IDENTIFIER))) {
                         c.setStatus(!c.getStatus());
                         break;
                     }
@@ -221,10 +255,10 @@ public class MyCollections extends GenericResource {
             }
         }else if (ACTION_DEL_FAV.equals(response.getAction())) {
             if (null != request.getParameter(IDENTIFIER) && null != request.getParameter(ENTRY) && null != request.getSession().getAttribute("mycollections")) {
-                Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
+                //Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
                 collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");
                 for (Collection c : collectionList) {
-                    if (c.getId().compareTo(id) == 0 && !c.getElements().isEmpty() && !request.getParameter(ENTRY).trim().isEmpty() && c.getElements().contains(request.getParameter(ENTRY))) {
+                    if (c.getId().equals(request.getParameter(IDENTIFIER)) && !c.getElements().isEmpty() && !request.getParameter(ENTRY).trim().isEmpty() && c.getElements().contains(request.getParameter(ENTRY))) {
                         c.getElements().remove(request.getParameter(ENTRY));
                         break;
                     }
@@ -233,9 +267,11 @@ public class MyCollections extends GenericResource {
         }else if (ACTION_ADD.equals(response.getAction())) {
             Collection c = setCollection(request);
             if (null != user && user.isSigned() && !c.isEmpty()) {
-                if (!exist(collectionList, c.getTitle(), 0)) {
+                //if (!exist(collectionList, c.getTitle(), null)) {
+                if (!exist(c.getTitle(), null)) {
                     c.setUserid(user.getId());
-                    c.setId(collectionList.size()+1);
+                    String id = create(c);
+                    if (null != id) c.setId(id);
                     collectionList.add(c);
                     request.getSession().setAttribute("mycollections", collectionList);
                 }
@@ -257,22 +293,6 @@ public class MyCollections extends GenericResource {
 	pw.flush();
 	pw.close();
 	response.flushBuffer();
-    }
-    
-    private Collection setCollection(HttpServletRequest request) {
-        Collection collection = new Collection(request.getParameter("title").trim(), null != request.getParameter("status"), request.getParameter("description").trim());
-        return collection;
-    }
-    
-    private boolean exist(List<Collection> collectionList, String title, int id) {
-        if (collectionList.isEmpty()) return false;
-        for (Collection c : collectionList) {
-            if (c.getTitle().equalsIgnoreCase(title)) {
-                if (id == 0) return true;
-                else if (c.getId() != id) return true;
-            }
-        }
-        return false;
     }
     
     public void doPage(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
@@ -362,5 +382,49 @@ public class MyCollections extends GenericResource {
         ArrayList rowsPage = pagesRows.get(page);
         if (rowsPage==null) rowsPage = new ArrayList();
         return rowsPage;
+    }
+    
+    private String create(Collection c) {
+        String id = mgr.insertCollection(c);
+        return id;
+    }
+    
+    private long update(Collection c) {
+        return mgr.updateCollection(c);
+    }
+    
+    private List<Collection> collectionList(String userid) {
+        return mgr.collections(userid);
+    }
+    
+    private Long count(String userid) {
+        Long count = 0L;
+        try {
+            count = mgr.countByUser(userid);
+        }catch(Exception e) {
+            LOG.info(e.getMessage());
+        }
+        return count; 
+    }
+    
+    private Collection find(String _id) {
+        return mgr.findById(_id);
+    }
+    
+    //private boolean exist(List<Collection> collectionList, String title, String id) {
+    private boolean exist(String title, String _id) {
+        /**if (collectionList.isEmpty()) return false;
+        for (Collection c : collectionList) {
+            if (c.getTitle().equalsIgnoreCase(title)) {
+                if (null == id || id.trim().isEmpty()) return true;
+                else if (!c.getId().equals(id)) return true;
+            }
+        }**/
+        return mgr.exist(title, _id);
+    }
+    
+     private Collection setCollection(HttpServletRequest request) {
+        Collection collection = new Collection(request.getParameter("title").trim(), null != request.getParameter("status"), request.getParameter("description").trim());
+        return collection;
     }
 }

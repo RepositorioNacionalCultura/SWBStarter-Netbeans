@@ -17,9 +17,9 @@ public class Favorite implements Serializable {
     
     private String _id;
     
-    private Integer idCollection;
+    private String idCollection;
     
-    public Favorite(String idEntry, Integer idCollection) {
+    public Favorite(String idEntry, String idCollection) {
         this._id = idEntry;
         this.idCollection = idCollection;
     }
@@ -32,11 +32,11 @@ public class Favorite implements Serializable {
         this._id = _id;
     }
 
-    public Integer getIdCollection() {
+    public String getIdCollection() {
         return idCollection;
     }
 
-    public void setIdCollection(Integer idCollection) {
+    public void setIdCollection(String idCollection) {
         this.idCollection = idCollection;
     }
 }

@@ -35,12 +35,17 @@
             <groupId>com.github.SWBForms</groupId>
             <artifactId>SWBDataManager</artifactId>
             <version>master-SNAPSHOT</version>
-            <exclusions>
+            <!--exclusions>
                 <exclusion>
                     <artifactId>mongo-java-driver</artifactId>
                     <groupId>org.mongodb</groupId>
                 </exclusion>
-            </exclusions>
+            </exclusions-->
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.5.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>

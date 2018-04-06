@@ -17,7 +17,7 @@ public class Collection implements Serializable {
 
     private static final long serialVersionUID = 3088878990949611260L;
     
-    private Integer id;
+    private String id;
     
     private String title;
     
@@ -29,6 +29,8 @@ public class Collection implements Serializable {
     
     private List<String> elements;
     
+    private List<String> cover;
+    
     public Collection(String title, Boolean status, String description) {
         this.title = title;
         this.status = status;
@@ -36,11 +38,11 @@ public class Collection implements Serializable {
         this.elements = new ArrayList<>();
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -87,9 +89,17 @@ public class Collection implements Serializable {
     public boolean isEmpty() {
         return null == this.title;
     }
+    
+    public List<String> getCover() {
+        return cover;
+    }
+
+    public void setCover(List<String> cover) {
+        this.cover = cover;
+    }
 
     @Override
     public String toString() {
-        return "Collection{" + "id=" + id + ", title=" + title + ", elements=" + elements + '}';
+        return "Collection{" + "id=" + id + ", title=" + title + ", userid=" + userid + ", description=" + description + ", elements=" + elements + '}';
     }
 }
