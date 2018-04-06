@@ -19,8 +19,13 @@
     List<Title> titles = new ArrayList<>();
     List<String> creators = new ArrayList<>();
     DateDocument datestart = new DateDocument();
+    StringBuilder divVisor = new StringBuilder();
+    StringBuilder scriptHeader = new StringBuilder();
+    StringBuilder scriptCallVisor = new StringBuilder();
     List<DigitalObject> digitalobjects = new ArrayList<>();
     Entry entry = (Entry) request.getAttribute("entry");
+    SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
+    WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
         iEntry = entry.getPosition();
         if (null != entry.getDigitalobject()) {
@@ -29,6 +34,23 @@
             digitalobjects = entry.getDigitalobject();
             images = null != digitalobjects ? digitalobjects.size() : 0;
             digital = images >= iDigit ? digitalobjects.get(iDigit - 1) : new DigitalObject();
+            if (null != digital.getUrl() && digital.getUrl().endsWith(".dzi")) {
+                scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
+                scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
+                divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
+                scriptCallVisor.append("<script type=\"text/javascript\">")
+                        .append("OpenSeadragon({")
+                        .append("	id:\"pyramid\",")
+                        .append("	showHomeControl: false,")
+                        .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
+                        .append("	tileSources:   [")
+                        .append("		\"https://openseadragon.github.io/example-images/highsmith/highsmith.dzi\"")
+                        .append("	]")
+                        .append("});")
+                        .append("</script>");
+            } else {
+                divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");
+            }
             type = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
             datestart = entry.getPeriodcreated().getDatestart();
             creator = creators.size() > 0 ? creators.get(0) : "";
@@ -39,11 +61,10 @@
         }
     }
     Integer records = (Integer) session.getAttribute("NUM_RECORDS_TOTAL");
-    SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
-    WebSite site = paramRequest.getWebPage().getWebSite();
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
 %>
+<%=scriptHeader%>
 <script>
     function add(id) {
         //var leftPosition = (screen.width) ? (screen.width-990)/3 : 0;
@@ -134,9 +155,10 @@
                 </div>
             </div>
         </div>
-        <img src="<%=digital.getUrl()%>">
+        <%=divVisor%>
     </div>
 </section>
+<%=scriptCallVisor%>
 <section id="detalleinfo">
     <div class="container">
         <div class="row">              
