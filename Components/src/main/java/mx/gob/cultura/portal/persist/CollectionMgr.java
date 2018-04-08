@@ -24,6 +24,7 @@ import com.mongodb.client.result.UpdateResult;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.Iterator;
+import mx.gob.cultura.commons.Util;
 import org.semanticwb.SWBPlatform;
 import mx.gob.cultura.portal.response.Utils;
 
@@ -138,7 +139,7 @@ public class CollectionMgr {
     }
     
     private MongoCollection<Document> getCollection() {
-        MongoClient client = new MongoClient(mHost, mPort);
+        MongoClient client = Util.MONGODB.getMongoClient(mHost, mPort);
         MongoDatabase db = client.getDatabase(mSource);
         return db.getCollection(mCollection);
     }
