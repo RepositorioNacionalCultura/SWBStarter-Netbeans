@@ -11,7 +11,14 @@
     String mainLabel;
     String faceAppId;
     String faceVersion;
+    String twitConsumerKey;
+    String twitConsumerSecret;
+    
     boolean isSocialNetUser = false;
+    boolean showFB = false;
+    boolean showTwitter = false;
+    boolean showGPlus = false;
+    String source = "";
 
     try {
         mainLabel = paramsRequest.getLocaleString("lbl_main");
@@ -19,13 +26,19 @@
         mainLabel = "Iniciar sesión";
     }
     faceAppId = paramsRequest.getWebPage().getWebSite().getModelProperty("facebook_appid");
-    if (null == faceAppId || faceAppId.isEmpty()) {
-        throw new SWBResourceException("There is no app id configured for Facebook");
+    if (null != faceAppId && !faceAppId.isEmpty()) {
+        showFB = true;
     }
     try {
         faceVersion = paramsRequest.getLocaleString("vl_facebook_version");
     } catch (SWBResourceException swbe) {
         faceVersion = "v2.11";
+    }
+    
+    twitConsumerKey = paramsRequest.getWebPage().getWebSite().getModelProperty("twitter_consumerKey");
+    twitConsumerSecret = paramsRequest.getWebPage().getWebSite().getModelProperty("twitter_consumerSecret");
+    if (null != twitConsumerKey && !twitConsumerKey.isEmpty() && null != twitConsumerSecret && !twitConsumerSecret.isEmpty()) {
+        showTwitter = true;
     }
     
     if (paramsRequest.getUser().isSigned()) {
@@ -34,6 +47,7 @@
             isSocialNetUser = Boolean.parseBoolean(
                     (String) request.getSession(false)
                             .getAttribute("isSocialNetUser"));
+            source = isSocialNetUser ? (String) request.getSession(false).getAttribute("source") : "";
         }
     }
 %>
@@ -181,8 +195,9 @@
                      data-show-faces="false" data-auto-logout-link="false" 
                      data-scope="public_profile,email" 
                      data-use-continue-as="false" onlogin="openSWBSession();"></div>  --%>
-                        <%=SessionInitializer.getFacebookLink(paramsRequest.getWebPage().getWebSiteId())%>
-<%--                        <a href="#" onclick="javascript:faceLogin();"><img src="/work/models/<%=paramsRequest.getWebPage().getWebSiteId()%>/img/icono-fb.png" ></a> --%>
+                        <%=showFB ? SessionInitializer.getFacebookLink(paramsRequest.getWebPage().getWebSiteId()) : ""%>
+                        <%=showTwitter ? SessionInitializer.getTwitterLink(paramsRequest) : ""%>
+                        
                             </p>
                         </div>
 <%--
@@ -208,7 +223,8 @@
                     sessionAlert = "La sesión de Facebook ha terminado. Favor de iniciar sesión de nuevo.";
                 }
 %>
-            if (response.status && response.status !== 'connected') {
+            var source = "<%=source%>";
+            if (source === "<%=SessionInitializer.FACEBOOK%>" && response.status && response.status !== 'connected') {
               //reenviar a seccion con id de usuario de facebook y crear sesion con SWB
               alert('<%=sessionAlert%>');
               closeSWBSession();
@@ -216,10 +232,13 @@
           }
 
           function closeSWBSession() {
-            try {
-                FB.logout();
-            } catch(err) {
-                console.log('Sesion terminada primero en Facebook');
+            var source = "<%=source%>";
+            if (source === "<%=SessionInitializer.FACEBOOK%>") {
+                try {
+                    FB.logout();
+                } catch(err) {
+                    console.log('Sesion terminada primero en Facebook');
+                }
             }
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
@@ -237,23 +256,27 @@
             } catch (SWBResourceException swbe) {
                 mainLabel = "Terminar sesión";
             }
+            StringBuilder initials = new StringBuilder(2);
+            if (!paramsRequest.getUser().getFirstName().isEmpty()) {
+                initials.append(paramsRequest.getUser().getFirstName().charAt(0));
+            }
+            if (!paramsRequest.getUser().getLastName().isEmpty()) {
+                initials.append(paramsRequest.getUser().getLastName().charAt(0));
+            }
 %>
           }
             </script>
             <div class="sesion btn-group" role="group">
-                <button id="sesionDrop" type="button" class="btn-sesion" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="ion-person"></span>
-                    <i><%=paramsRequest.getUser().getFirstName()%></i>
+                <button id="sesionDrop" type="button" class="btn-sesion btn-rojo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span><%=initials.toString()%></span>
                 </button>
                 <div class="dropdown-menu sesiondisplay gris21-bg" aria-labelledby="sesionDrop">
 <%
-    if (wpCollections != null) {
+            if (wpCollections != null) {
 %>
                     <a class="dropdown-item" href="<%=wpCollections.getWebPageURL(paramsRequest.getUser().getLanguage())%>"><%=wpCollections.getTitle(paramsRequest.getUser().getLanguage())%></a>
 <%
-    }
-%>
-<%
+            }
             if (isSocialNetUser) {
 %>
                     <a class="dropdown-item" href="#" onclick="closeSWBSession();"><%=mainLabel%></a>

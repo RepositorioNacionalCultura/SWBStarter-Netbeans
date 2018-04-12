@@ -40,6 +40,15 @@ public class SessionInitializer extends GenericResource {
     private static final String FACEBOOKID_URI =
             "http://www.semanticwebbuilder.org/swb4/ontology#facebookId";
     
+    private static final String TWITTERID_URI =
+            "http://www.semanticwebbuilder.org/swb4/ontology#twitterId";
+    
+    private static final String TWITTERTKN_URI =
+            "http://www.semanticwebbuilder.org/swb4/ontology#twitterToken";
+    
+    private static final String TWITTERTKNSCRT_URI =
+            "http://www.semanticwebbuilder.org/swb4/ontology#twitterTokenSecret";
+    
     private static final String REDIRECT_MODE = "redirect";
     
     
@@ -114,6 +123,24 @@ public class SessionInitializer extends GenericResource {
         return text.toString();
     }
     
+    public static String getTwitterLink(SWBParamRequest paramRequest) {
+        
+        StringBuilder text = new StringBuilder(128);
+        String resourceUrl = paramRequest.getRenderUrl()
+                .setMode(SWBParamRequest.Mode_VIEW)
+                .setCallMethod(SWBParamRequest.Call_DIRECT).toString();
+        String twitterUrl = Utilities.getResourceURL(paramRequest.getWebPage().getWebSite(), OAuthTwitter.class, resourceUrl);
+        
+//        System.out.println("Url para twitter: " + resourceUrl);
+//        System.out.println("Url final twitter: " + twitterUrl);
+        text.append("<a href=\"");
+        text.append(twitterUrl);
+        text.append("\" ><img src=\"/work/models/");
+        text.append(paramRequest.getWebPage().getWebSite().getId());
+        text.append("/img/icono-tw.png\"></a>\n");
+        return text.toString();
+    }
+    
     //Atiende la accion de una peticion para registrar al usuario como firmado en la aplicacion,
     //o para desasociarlo de la sesion activa y darla por terminada
     @Override
@@ -150,6 +177,7 @@ public class SessionInitializer extends GenericResource {
             user = getSWBUser(request, response, userRepo);
             isSocialNetUser = true;
             request.getSession(true).setAttribute("isSocialNetUser", "true");
+            request.getSession().setAttribute("source", request.getParameter("source"));
         }
         if (SWBPlatform.getSecValues().isMultiple()) {
             String login = !isSocialNetUser ? request.getParameter("wb_username")
@@ -237,8 +265,9 @@ public class SessionInitializer extends GenericResource {
         String source = request.getParameter("source");
         String id = request.getParameter("id");
         String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        String login = !"".equals(email) ? email : source + "_" + id;
+        String email = (null != request.getParameter("email")) ? request.getParameter("email") : "";
+        String login = (null != email && !"".equals(email)) ? email : source + "_" + id;
+        String nameParts[] = name.split(" ");
         
         OntModel ont = SWBPlatform.getSemanticMgr().getSchema().getRDFOntModel();
         User user = userRepo.getUserByLogin(login);
@@ -253,9 +282,9 @@ public class SessionInitializer extends GenericResource {
             newUser.setLogin(!"".equals(email) ? email : source + "_" + id);
             newUser.setPassword(encryptdPwd);
             newUser.setLanguage("es");
-            newUser.setFirstName(name);
-            newUser.setLastName("");
-            newUser.setSecondLastName("");
+            newUser.setFirstName(nameParts.length > 1 ? nameParts[0] : name);
+            newUser.setLastName(nameParts.length > 1 ? nameParts[1] : "");
+            newUser.setSecondLastName(nameParts.length > 2 ? nameParts[2] : "");
             newUser.setEmail(email);
             newUser.setActive(true);
             
@@ -263,6 +292,19 @@ public class SessionInitializer extends GenericResource {
                 SemanticObject obj = newUser.getSemanticObject();
                 obj.getRDFResource().addLiteral(ont.createDatatypeProperty(
                         SessionInitializer.FACEBOOKID_URI), id);
+            } else if (source.equals(SessionInitializer.TWITTER)) {
+                SemanticObject obj = newUser.getSemanticObject();
+                String token = (String) request.getSession().getAttribute("tw_tkn");
+                String tokenSecret = (String) request.getSession().getAttribute("tw_tknScrt");
+                //System.out.println("    token: " + token + "\n    tokenSecret: " + tokenSecret);
+                obj.getRDFResource().addLiteral(ont.createDatatypeProperty(
+                        SessionInitializer.TWITTERID_URI), id);
+                obj.getRDFResource().addLiteral(ont.createDatatypeProperty(
+                        SessionInitializer.TWITTERTKN_URI), token);
+                obj.getRDFResource().addLiteral(ont.createDatatypeProperty(
+                        SessionInitializer.TWITTERTKNSCRT_URI), tokenSecret);
+                request.getSession().removeAttribute("tw_tkn");
+                request.getSession().removeAttribute("tw_tknScrt");
             }
             user = newUser;
             
@@ -275,6 +317,14 @@ public class SessionInitializer extends GenericResource {
                     SemanticObject obj = user.getSemanticObject();
                     obj.getRDFResource().addLiteral(ont.createDatatypeProperty(
                             SessionInitializer.FACEBOOKID_URI), id);
+                }
+            } else if (SessionInitializer.TWITTER.equals(source)) {
+                if (user.getSemanticObject().getRDFResource()
+                        .getProperty(ont.createDatatypeProperty(
+                                SessionInitializer.TWITTERID_URI)) == null) {
+                    SemanticObject obj = user.getSemanticObject();
+                    obj.getRDFResource().addLiteral(ont.createDatatypeProperty(
+                            SessionInitializer.TWITTERID_URI), id);
                 }
             }
         }
