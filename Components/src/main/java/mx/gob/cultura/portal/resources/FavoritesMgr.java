@@ -20,6 +20,7 @@ import mx.gob.cultura.portal.response.Favorite;
 import mx.gob.cultura.portal.response.Collection;
 
 import org.semanticwb.model.User;
+import org.semanticwb.SWBPlatform;
 import org.semanticwb.portal.api.GenericResource;
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBActionResponse;
@@ -36,6 +37,7 @@ public class FavoritesMgr extends GenericResource {
     
     public static final String MODE_RES_ADD = "RES_ADD";
     public static final String MODE_TREE_FAV = "TREE_FAV";
+    public static final String MODE_NEW_COLN = "NEW_COLN";
 
     public static final String ACTION_ADD_FAV = "ADD_FAV";
     private static final Logger LOG = Logger.getLogger(FavoritesMgr.class.getName());
@@ -48,6 +50,8 @@ public class FavoritesMgr extends GenericResource {
         String mode = paramRequest.getMode();
         if (MODE_RES_ADD.equals(mode)) {
             redirectJsonResponse(request, response, paramRequest);
+        }else if (MODE_NEW_COLN.equals(mode)) {
+            doDialog(request, response, paramRequest);
         }else
             super.processRequest(request, response, paramRequest);
     }
@@ -59,8 +63,6 @@ public class FavoritesMgr extends GenericResource {
         request.setCharacterEncoding("UTF-8");
         Favorite fav = new Favorite(null, null);
         List<Collection> collectionList = new ArrayList<>();
-        /**if (null != request.getSession().getAttribute("mycollections"))
-            collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");**/
         if (null != user && user.isSigned() && ACTION_ADD_FAV.equals(response.getAction())) {
             if ((null == request.getParameter(IDENTIFIER) || request.getParameter(IDENTIFIER).isEmpty()) && null != request.getParameter("title")) {
                 String title = request.getParameter("title").trim();
@@ -85,7 +87,7 @@ public class FavoritesMgr extends GenericResource {
                 }**/
                 c = mgr.findById(request.getParameter(IDENTIFIER));
             }
-            if (null != request.getParameter(ENTRY) && null != c) {
+            if (null != request.getParameter(ENTRY) && !request.getParameter(ENTRY).trim().isEmpty() && null != c) {
                 fav = new Favorite(request.getParameter(ENTRY), c.getId());
                 if (!c.getElements().contains(fav.getId())) {
                     c.getElements().add(fav.getId());
@@ -120,14 +122,37 @@ public class FavoritesMgr extends GenericResource {
         List<Collection> collectionList = new ArrayList<>();
         try {
             User user = paramRequest.getUser();
-            if (null != user && user.isSigned())
+            if (null != user && user.isSigned()) {
                 collectionList = mgr.collections(user.getId());
+                setCovers(paramRequest, collectionList, 1);
+            }
             request.setAttribute("paramRequest", paramRequest);
             request.setAttribute("mycollections", collectionList);
             request.setAttribute("entry", request.getParameter(IDENTIFIER));
             rd.include(request, response);
         } catch (ServletException se) {
             LOG.info(se.getMessage());
+        }
+    }
+    
+    public void doDialog(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        String path = "/swbadmin/jsp/rnc/collections/newcollection.jsp";
+        RequestDispatcher rd = request.getRequestDispatcher(path);
+        try {
+            request.setAttribute("paramRequest", paramRequest);
+            request.setAttribute("entry", request.getParameter(ENTRY));
+            rd.include(request, response);
+        } catch (ServletException se) {
+            LOG.info(se.getMessage());
+        }
+    }
+    
+    private void setCovers(SWBParamRequest paramRequest, List<Collection> list,  int size) {
+        String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
+        if (null == baseUri || baseUri.isEmpty())
+            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
+        for (Collection c : list) {
+            c.setCovers(MyCollections.getCovers(paramRequest, c.getElements(), baseUri, size));
         }
     }
     

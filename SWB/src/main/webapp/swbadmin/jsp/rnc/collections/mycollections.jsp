@@ -169,7 +169,7 @@
 </script>
 <div class="container usrTit">
     <div class="row">
-        <img src="/work/models/repositorio/img/agregado-07.jpg" class="circle">
+        <img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">
         <div>
             <h2 class="oswM nombre">Leonor Rivas Mercado</h2>
             <p class="subnombre">Lorem ipsum dolor sit amet, consecetur adipscing elit.</p>
@@ -207,78 +207,103 @@
                 if (!boards.isEmpty()) {
                     for (Collection c : boards) {
             %>
-            <div class="col-6 col-md-4">
-                <div class="mosaico mosaico1 radius-overflow">
-                    <a href="<%=uels%>?id=<%=c.getId()%>">
-                        <img src="/work/models/<%=site.getId()%>/img/agregado-03.jpg">
-                    </a>
-                </div>
-                <div class="mosaico-txt ">
-                    <p>
-                        <% if (!c.getStatus()) { %><span class="ion-locked rojo"><% } else { %><span class="ion-unlocked rojo"><% }%>
-                            </span><%=c.getTitle()%></p>
-                    <p>Curada por: <%=paramRequest.getUser().getFullName()%></p>
-                    <a href="#"><span class="ion-social-facebook"></span></a>
-                    <a href="#"><span class="ion-social-twitter"></span></a>
-                    <a href="#" onclick="editByForm('<%=c.getId()%>');"><span class="ion-edit"></span></a>
-                </div>
-            </div>
-            <%
-                }
-            %>
-            <jsp:include page="pager.jsp" flush="true"/>
+                        <div class="col-6 col-md-4">
+                            <%	if (c.getCovers().isEmpty()) {	%>
+                                    <div class="mosaico mosaico1 radius-overflow">
+					<a href="<%=uels%>?id=<%=c.getId()%>">
+                                            <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
+					</a>
+                                    </div>
+                            <%  }else if (c.getCovers().size() < 3) { %>
+                                    <div class="mosaico mosaico1 radius-overflow">
+					<a href="<%=uels%>?id=<%=c.getId()%>">
+                                            <img src="<%=c.getCovers().get(0)%>">
+					</a>
+                                    </div>
+                            <%  }else { %>
+                                    <div class="mosaico mosaico3 radius-overflow">
+					<a href="<%=uels%>?id=<%=c.getId()%>">
+                                            <div class="mosaico3a">
+						<img src="<%=c.getCovers().get(0)%>">
+                                            </div>
+                                            <div class="mosaico3b">
+                                                <div>
+                                                    <img src="<%=c.getCovers().get(1)%>">
+						</div>
+                                                <div>
+                                                    <img src="<%=c.getCovers().get(2)%>">
+						</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                            <% } %>
+                            <div class="mosaico-txt ">
+                                <p>
+                                    <% if (!c.getStatus()) { %><span class="ion-locked rojo"><% } else { %><span class="ion-unlocked rojo"><% }%>
+                                        </span><%=c.getTitle()%></p>
+                                <p>Curada por: <%=paramRequest.getUser().getFullName()%></p>
+                                <a href="#"><span class="ion-social-facebook"></span></a>
+                                <a href="#"><span class="ion-social-twitter"></span></a>
+                                <a href="#" onclick="editByForm('<%=c.getId()%>');"><span class="ion-edit"></span></a>
+                            </div>
+                        </div>
+                <%
+                    }
+                %>
+                    <jsp:include page="pager.jsp" flush="true"/>
             <%
                 }
             %>
         </div>
     </div>
-    <!-- MODAL -->
-    <div class="modal fade" id="modalExh" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-exh modal-2col" role="document">
-            <div class="modal-content">
-                <div class="row">
-                    <div class="col-4 col-sm-5 modal-col1">
-                        <div class="modal-izq">
-                            <img src="/work/models/repositorio/img/cabecera-colaborar.jpg">    
-                        </div>
+</div>
+<!-- MODAL -->
+<div class="modal fade" id="modalExh" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-exh modal-2col" role="document">
+        <div class="modal-content">
+            <div class="row">
+                <div class="col-4 col-sm-5 modal-col1">
+                    <div class="modal-izq">
+                        <img src="/work/models/repositorio/img/cabecera-colaborar.jpg">    
                     </div>
-                    <div class="col-8 col-sm-7 modal-col2">
-                        <div class="modal-header">
-                            <h4 class="modal-title oswM rojo">CREAR NUEVA COLECCIÓN</h4>
-                            <button type="button" class="close" data-dismiss="modal">
-                                <span class="ion-ios-close-outline"></span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="addCollForm" action="<%=saveURL.toString()%>" method="post">
-                                <div class="form-group">
-                                    <label for="crearNombre">Nombre</label>
-                                    <input type="text" name="title" maxlength="100" value="" id="crearNombre" class="form-control" placeholder="60" aria-label="Recipient's username" aria-describedby="basic-addon2"/>
-                                    <label for="crearDescr">Descripción (opcional)</label>
-                                    <textarea name="description" id="crearDescr" placeholder="250"></textarea>        
-                                    <label for="selprivado" class="selPrivado">
-                                        <input name="status" value="" id="selprivado" type="checkbox" aria-label="Checkbox for following text input"/>
-                                        <span class="ion-locked"> Privado</span>
-                                    </label>
-                                </div>
-                                <button type="button" onclick="save();" class="btn-cultura btn-rojo btn-mayus">Crear colección</button>
-                            </form>
-                        </div>
+                </div>
+                <div class="col-8 col-sm-7 modal-col2">
+                    <div class="modal-header">
+                        <h4 class="modal-title oswM rojo">CREAR NUEVA COLECCIÓN</h4>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span class="ion-ios-close-outline"></span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addCollForm" action="<%=saveURL.toString()%>" method="post">
+                            <div class="form-group">
+                                <label for="crearNombre">Nombre</label>
+                                <input type="text" name="title" maxlength="100" value="" id="crearNombre" class="form-control" placeholder="60" aria-label="Recipient's username" aria-describedby="basic-addon2"/>
+                                <label for="crearDescr">Descripción (opcional)</label>
+                                <textarea name="description" id="crearDescr" placeholder="250"></textarea>        
+                                <label for="selprivado" class="selPrivado">
+                                    <input name="status" value="" id="selprivado" type="checkbox" aria-label="Checkbox for following text input"/>
+                                    <span class="ion-locked"> Privado</span>
+                                </label>
+                            </div>
+                            <button type="button" onclick="save();" class="btn-cultura btn-rojo btn-mayus">Crear colección</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="addCollection" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Agregar colección</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p>
+<div class="modal fade" id="addCollection" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Agregar colección</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>
                     <form id="addCollForm" action="<%=saveURL.toString()%>" method="post">
                         <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 car-img2">
                             <div class="card-body">
@@ -292,31 +317,31 @@
                             </div>
                         </div>
                     </form>
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-sm rojo" data-dismiss="modal">Cerrar</button>
-                    <button type="button" onclick="save();" class="btn btn-sm rojo">Guardar</button>
-                </div>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm rojo" data-dismiss="modal">Cerrar</button>
+                <button type="button" onclick="save();" class="btn btn-sm rojo">Guardar</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="alertSuccess" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Éxito</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div id="dialog-text"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="closeAlert" class="btn btn-sm rojo" data-dismiss="modal">Cerrar</button>
-                </div>
+<div class="modal fade" id="alertSuccess" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Éxito</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="dialog-text"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="closeAlert" class="btn btn-sm rojo" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="editCollection" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true"></div>
+<div class="modal fade" id="editCollection" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true"></div>

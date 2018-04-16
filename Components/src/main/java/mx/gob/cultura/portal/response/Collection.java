@@ -29,13 +29,14 @@ public class Collection implements Serializable {
     
     private List<String> elements;
     
-    private List<String> cover;
+    private List<String> covers;
     
     public Collection(String title, Boolean status, String description) {
         this.title = title;
         this.status = status;
         this.description = description;
         this.elements = new ArrayList<>();
+        this.covers = new ArrayList<>();
     }
 
     public String getId() {
@@ -89,13 +90,13 @@ public class Collection implements Serializable {
     public boolean isEmpty() {
         return null == this.title;
     }
-    
-    public List<String> getCover() {
-        return cover;
+
+    public List<String> getCovers() {
+        return covers;
     }
 
-    public void setCover(List<String> cover) {
-        this.cover = cover;
+    public void setCovers(List<String> covers) {
+        this.covers = covers;
     }
 
     @Override

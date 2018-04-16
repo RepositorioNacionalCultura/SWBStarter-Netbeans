@@ -110,6 +110,19 @@
             }
         });
     }
+    function dismiss() {
+	$("#addCollection" ).dialog( "close" );
+    }
+    function addnew(uri) {
+        dismiss();
+	dojo.xhrPost({
+            url: uri,
+            load: function(data) {
+                dojo.byId('newCollection').innerHTML=data;
+		$('#newCollection').modal('show');
+            }
+        });
+    }
 </script>
 <section id="detalle">
     <div id="idetail" class="detalleimg">
@@ -249,3 +262,5 @@
         <div id="addCollection-tree"></div>
     </p>
 </div>
+                    
+<div class="modal fade" id="newCollection" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true"></div>

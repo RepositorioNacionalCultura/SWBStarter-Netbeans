@@ -5,23 +5,25 @@
  */
 package mx.gob.cultura.portal.resources;
 
-import mx.gob.cultura.portal.request.GetBICRequest;
-import mx.gob.cultura.portal.response.Entry;
-import mx.gob.cultura.portal.response.Utils;
 import org.semanticwb.Logger;
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.SWBUtils;
+
+import mx.gob.cultura.portal.response.Entry;
+import mx.gob.cultura.portal.response.Utils;
+import mx.gob.cultura.portal.request.GetBICRequest;
 import org.semanticwb.portal.api.GenericAdmResource;
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceException;
 
-import javax.servlet.RequestDispatcher;
+import java.io.IOException;
 import javax.servlet.ServletException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.HttpURLConnection;
+
 import java.net.URL;
+import java.net.HttpURLConnection;
 
 /**
  *

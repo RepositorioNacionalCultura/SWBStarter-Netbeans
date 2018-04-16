@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import com.google.gson.Gson;
-
+import java.util.Iterator;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
@@ -24,9 +24,9 @@ import mx.gob.cultura.portal.persist.CollectionMgr;
 import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Collection;
 import mx.gob.cultura.portal.request.GetBICRequest;
-import org.semanticwb.SWBPlatform;
 
 import org.semanticwb.model.User;
+import org.semanticwb.SWBPlatform;
 import org.semanticwb.portal.api.SWBResourceURL;
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.GenericResource;
@@ -95,6 +95,7 @@ public class MyCollections extends GenericResource {
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
             List<Collection> collectionList = collectionList(request, paramRequest.getUser());
+            setCovers(paramRequest, collectionList, 3);
             request.setAttribute(FULL_LIST, collectionList);
             request.setAttribute(PARAM_REQUEST, paramRequest);
             request.setAttribute("mycollections", collectionList);
@@ -153,7 +154,6 @@ public class MyCollections extends GenericResource {
                     }
                 }**/
                 collection = mgr.findById(request.getParameter(IDENTIFIER));
-                System.out.println("collection: " + collection);
             }
             if (null != collection && null != collection.getElements()) {
                 for (String _id : collection.getElements()) {
@@ -219,7 +219,6 @@ public class MyCollections extends GenericResource {
                 //Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
                 collectionList = collectionList(request, user);//(List<Collection>)request.getSession().getAttribute("mycollections");
                 //if (!exist(collectionList, collection.getTitle(), request.getParameter(IDENTIFIER))) {
-                System.out.println("EXIST: " + exist(collection.getTitle(), request.getParameter(IDENTIFIER)));
                 if (!exist(collection.getTitle(), request.getParameter(IDENTIFIER))) {
                     for (Collection c : collectionList) {
                         if (c.getId().equals(request.getParameter(IDENTIFIER))) {
@@ -326,6 +325,24 @@ public class MyCollections extends GenericResource {
         }
     }
     
+    public static List<String> getCovers(SWBParamRequest paramRequest, List<String> elements, String baseUri, int size) {
+        List<String> covers = new ArrayList<>();
+        if (elements.isEmpty()) return covers;
+        Iterator it = elements.iterator();
+        while (it.hasNext()) {
+            String uri = baseUri + "/api/v1/search?identifier=" + it.next();
+            GetBICRequest req = new GetBICRequest(uri);
+            Entry entry = req.makeRequest();
+            if (null != entry && null != entry.getDigitalobject() && !entry.getDigitalobject().isEmpty()
+                    && null != entry.getDigitalobject().get(0).getUrl() && !entry.getDigitalobject().get(0).getUrl().isEmpty() && null != entry.getDigitalobject().get(0).getMediatype()
+                    && null != entry.getDigitalobject().get(0).getMediatype().getMime() && entry.getDigitalobject().get(0).getMediatype().getMime().startsWith("image")) {
+                covers.add(entry.getDigitalobject().get(0).getUrl());
+            }
+            if (covers.size() >= size) break;
+        }
+        return covers;
+    }
+    
     private Entry getEntry(String _id) {
         String uri = SWBPlatform.getEnv("rnc/endpointURL",getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim() + "/api/v1/search?identifier=";
         uri += _id;
@@ -411,20 +428,21 @@ public class MyCollections extends GenericResource {
         return mgr.findById(_id);
     }
     
-    //private boolean exist(List<Collection> collectionList, String title, String id) {
     private boolean exist(String title, String _id) {
-        /**if (collectionList.isEmpty()) return false;
-        for (Collection c : collectionList) {
-            if (c.getTitle().equalsIgnoreCase(title)) {
-                if (null == id || id.trim().isEmpty()) return true;
-                else if (!c.getId().equals(id)) return true;
-            }
-        }**/
         return mgr.exist(title, _id);
     }
     
      private Collection setCollection(HttpServletRequest request) {
         Collection collection = new Collection(request.getParameter("title").trim(), null != request.getParameter("status"), request.getParameter("description").trim());
         return collection;
+    }
+     
+    private void setCovers(SWBParamRequest paramRequest, List<Collection> list,  int size) {
+        String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
+        if (null == baseUri || baseUri.isEmpty())
+            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
+        for (Collection c : list) {
+            c.setCovers(MyCollections.getCovers(paramRequest, c.getElements(), baseUri, size));
+        }
     }
 }
