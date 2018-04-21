@@ -37,6 +37,8 @@ public class SessionInitializer extends GenericResource {
     
     private static final String TWITTER = "twitter";
     
+    public static final String GOOGLEP = "googleP";
+    
     private static final String FACEBOOKID_URI =
             "http://www.semanticwebbuilder.org/swb4/ontology#facebookId";
     
@@ -48,6 +50,9 @@ public class SessionInitializer extends GenericResource {
     
     private static final String TWITTERTKNSCRT_URI =
             "http://www.semanticwebbuilder.org/swb4/ontology#twitterTokenSecret";
+    
+    private static final String GOOGLEID_URI =
+            "http://www.semanticwebbuilder.org/swb4/ontology#googleId";
     
     private static final String REDIRECT_MODE = "redirect";
     
@@ -110,7 +115,7 @@ public class SessionInitializer extends GenericResource {
     }
     
     /**
-     * Genera la liga hacia el inicio de sesion con Facebook
+     * Genera el vinculo de HTML para ejecutar el inicio de sesion con Facebook
      * @param modelId el identificador del sitio a partir del cual se obtiene la imagen a mostrar
      * @return un {@code String} representando un enlace para iniciar sesion con Facebook
      */
@@ -123,6 +128,12 @@ public class SessionInitializer extends GenericResource {
         return text.toString();
     }
     
+    /**
+     * Genera el vinculo de HTML para ejecutar el inicio de sesion con un usuario de Twitter
+     * @param paramRequest
+     * @return un {@code String} que representa el elemento de HTML que contiene 
+     * la ejecucion para iniciar sesion con un usuario de Twitter
+     */
     public static String getTwitterLink(SWBParamRequest paramRequest) {
         
         StringBuilder text = new StringBuilder(128);
@@ -131,13 +142,25 @@ public class SessionInitializer extends GenericResource {
                 .setCallMethod(SWBParamRequest.Call_DIRECT).toString();
         String twitterUrl = Utilities.getResourceURL(paramRequest.getWebPage().getWebSite(), OAuthTwitter.class, resourceUrl);
         
-//        System.out.println("Url para twitter: " + resourceUrl);
-//        System.out.println("Url final twitter: " + twitterUrl);
         text.append("<a href=\"");
         text.append(twitterUrl);
         text.append("\" ><img src=\"/work/models/");
         text.append(paramRequest.getWebPage().getWebSite().getId());
         text.append("/img/icono-tw.png\"></a>\n");
+        return text.toString();
+    }
+    
+    /**
+     * Genera el vinculo de HTML para ejecutar el inicio de sesion con Google+
+     * @param modelId el identificador del sitio a partir del cual se obtiene el icono a mostrar
+     * @return un {@code String} representando un enlace para iniciar sesion con Google+
+     */
+    public static String getGoogleLink(String modelId) {
+        
+        StringBuilder text = new StringBuilder(128);
+        text.append("<div id=\"googlePButton\"><img src=\"/work/models/");
+        text.append(modelId);
+        text.append("/img/icono-goo.png\"></div>\n");
         return text.toString();
     }
     
@@ -148,7 +171,7 @@ public class SessionInitializer extends GenericResource {
             throws SWBResourceException, IOException {
         
         String action = response.getAction();
-        //System.out.println("--- En processAction --->>>");
+        System.out.println("--- En processAction --->>>");
         if (action.equals("openSession")) {
             createSignedSession(request, response);
         } else if (action.equals("closeSession")) {
@@ -171,6 +194,7 @@ public class SessionInitializer extends GenericResource {
         UserRepository userRepo = response.getWebPage().getWebSite().getUserRepository();
         User user = null;
         boolean isSocialNetUser = false;
+        System.out.println("source en createSignedSession: " + request.getParameter("source"));
         
         //solo crear usuarios si usan una red social
         if (request.getParameter("source") != null && !request.getParameter("source").isEmpty()) {
@@ -201,7 +225,7 @@ public class SessionInitializer extends GenericResource {
             } catch (Exception e) {
                 e.printStackTrace(System.err);
             }
-            
+            System.out.println("Se reconoce al usuario como firmado: " + user.isSigned());
             
             Subject subject = SWBPortal.getUserMgr().getSubject(request,
                                 response.getWebPage().getWebSiteId());
@@ -211,6 +235,8 @@ public class SessionInitializer extends GenericResource {
             if (null == user.getLanguage()) {
                 user.setLanguage("es");   //forzar lenguaje si no se dio de alta.
             }
+        } else {
+            System.out.println("El usuario es nulo en createSignedSession!!!");
         }
     }
 
@@ -287,13 +313,12 @@ public class SessionInitializer extends GenericResource {
             newUser.setSecondLastName(nameParts.length > 2 ? nameParts[2] : "");
             newUser.setEmail(email);
             newUser.setActive(true);
+            SemanticObject obj = newUser.getSemanticObject();
             
             if (source.equals(SessionInitializer.FACEBOOK)) {
-                SemanticObject obj = newUser.getSemanticObject();
                 obj.getRDFResource().addLiteral(ont.createDatatypeProperty(
                         SessionInitializer.FACEBOOKID_URI), id);
             } else if (source.equals(SessionInitializer.TWITTER)) {
-                SemanticObject obj = newUser.getSemanticObject();
                 String token = (String) request.getSession().getAttribute("tw_tkn");
                 String tokenSecret = (String) request.getSession().getAttribute("tw_tknScrt");
                 //System.out.println("    token: " + token + "\n    tokenSecret: " + tokenSecret);
@@ -305,6 +330,9 @@ public class SessionInitializer extends GenericResource {
                         SessionInitializer.TWITTERTKNSCRT_URI), tokenSecret);
                 request.getSession().removeAttribute("tw_tkn");
                 request.getSession().removeAttribute("tw_tknScrt");
+            } else if (source.equals(SessionInitializer.GOOGLEP)) {
+                obj.getRDFResource().addLiteral(ont.createDatatypeProperty(
+                        SessionInitializer.GOOGLEID_URI), id);
             }
             user = newUser;
             
@@ -328,7 +356,7 @@ public class SessionInitializer extends GenericResource {
                 }
             }
         }
-        
+        System.out.println("Usuario en sesion<action>= name: " + user.getFirstName() + " apellido: " + user.getLastName() + " email: " + user.getEmail());
         return user;
     }
     
@@ -341,6 +369,7 @@ public class SessionInitializer extends GenericResource {
     public void doRedirect(HttpServletRequest request, HttpServletResponse response,
             org.semanticwb.portal.api.SWBParamRequest paramRequest) {
         
+        System.out.println("Redirigiendo peticion para mostrar usuario firmado o no!");
         try {
             String url = paramRequest.getWebPage().getRealUrl();
             if (paramRequest.getAction().equals("closeSession")) {

@@ -47,18 +47,18 @@ public class OAuthTwitter extends GenericResource {
     
     private static final Logger LOG = SWBUtils.getLogger(OAuthTwitter.class);
     
-    private final String ALPHABET = "abcdefghijklmnopqrstuvwxyz1234567890";
+    private final static String ALPHABET = "abcdefghijklmnopqrstuvwxyz1234567890";
     
     private final String POST_METHOD = "POST";
     
-    private final String GET_METHOD = "GET";
+    private final static String GET_METHOD = "GET";
     
-    private final String SIGN_METHOD = "HMAC-SHA1";
+    private final static String SIGN_METHOD = "HMAC-SHA1";
     
-    private final String OAUTH_VERSION = "1.0";
+    private final static String OAUTH_VERSION = "1.0";
     
     
-    private JSONObject verifyUserCredentials(String consumerKey, String consumerSecret,
+    public static JSONObject verifyUserCredentials(String consumerKey, String consumerSecret,
             String token, String tokenSecret) {
         
         String reqValidateCredResponse = null;
@@ -70,39 +70,39 @@ public class OAuthTwitter extends GenericResource {
             //Se recaban los datos para la firma de la peticion, junto con los parametros de la misma
             String timestamp = Long.toString(GregorianCalendar.getInstance(
                     TimeZone.getTimeZone("GMT")).getTimeInMillis() / 1000); //en segundos, por ser NTC no UTC
-            String nonce = this.getNonce();
+            String nonce = getNonce();
             String reqCredentialsUrl = "https://api.twitter.com/1.1/account/verify_credentials.json";
             String trueString = "true";
             String falseString = "false";
             TreeMap<String, String> params2Sign = new TreeMap();
             
-            params2Sign.put("include_email", trueString);
-            params2Sign.put("include_entities", falseString);
+//            params2Sign.put("include_email", trueString);
+//            params2Sign.put("include_entities", falseString);
             params2Sign.put("oauth_consumer_key", consumerKey);
             params2Sign.put("oauth_nonce", nonce);
-            params2Sign.put("oauth_signature_method", this.SIGN_METHOD);
+            params2Sign.put("oauth_signature_method", OAuthTwitter.SIGN_METHOD);
             params2Sign.put("oauth_timestamp", timestamp);
             params2Sign.put("oauth_token", token);
-            params2Sign.put("oauth_version", this.OAUTH_VERSION);
-            params2Sign.put("skip_status", trueString);
+            params2Sign.put("oauth_version", OAuthTwitter.OAUTH_VERSION);
+//            params2Sign.put("skip_status", trueString);
             
             //Se obtiene la firma de la peticion
-            signature = generateSignature(params2Sign, this.GET_METHOD,
+            signature = generateSignature(params2Sign, OAuthTwitter.GET_METHOD,
                     reqCredentialsUrl, consumerSecret, tokenSecret);
-            params2Sign.put("oauth_signature", this.percentageEncode(signature));
+            params2Sign.put("oauth_signature", percentageEncode(signature));
             
             //se agregan parametros del query string
             HashMap<String, String> urlParams = new HashMap(8);
-            urlParams.put("include_email", trueString);
-            urlParams.put("include_entities", falseString);
-            urlParams.put("skip_status", trueString);
+//            urlParams.put("include_email", trueString);
+//            urlParams.put("include_entities", falseString);
+//            urlParams.put("skip_status", trueString);
             //y se eliminan de los que forman el encabezado
-            params2Sign.remove("include_email");
-            params2Sign.remove("include_entities");
-            params2Sign.remove("skip_status");
+//            params2Sign.remove("include_email");
+//            params2Sign.remove("include_entities");
+//            params2Sign.remove("skip_status");
             
             //Se preparan los datos para la peticion
-            String oauthHeader = this.getAuthorizationReqHeader(params2Sign);
+            String oauthHeader = getAuthorizationReqHeader(params2Sign);
             HashMap<String, String> reqHeaders = new HashMap(8);
             reqHeaders.put("Authorization", oauthHeader);
             System.out.println("URL: " + reqCredentialsUrl);
@@ -110,7 +110,7 @@ public class OAuthTwitter extends GenericResource {
 
             //Se ejecuta la peticion
             try {
-                reqValidateCredResponse = this.getRequest(urlParams, reqHeaders,
+                reqValidateCredResponse = getRequest(urlParams, reqHeaders,
                         reqCredentialsUrl);
             } catch (IOException ioe) {}
             
@@ -383,7 +383,7 @@ public class OAuthTwitter extends GenericResource {
      * @param consumerSecret
      * @return 
      */
-    private String generateSignature(TreeMap<String, String> params, String method,
+    public static String generateSignature(TreeMap<String, String> params, String method,
             String baseUrl, String consumerSecret, String tokenSecret) {
         
         //System.out.println("SIGNING request ----------");
@@ -397,22 +397,22 @@ public class OAuthTwitter extends GenericResource {
             if (count > 0) {
                 paramsString.append('&');
             }
-            paramsString.append(this.percentageEncode(key));
+            paramsString.append(percentageEncode(key));
             paramsString.append('=');
-            paramsString.append(this.percentageEncode(params.get(key)));
+            paramsString.append(percentageEncode(params.get(key)));
             count++;
         }
         
         StringBuilder baseSignature = new StringBuilder(128);
         baseSignature.append(method.toUpperCase());
         baseSignature.append('&');
-        baseSignature.append(this.percentageEncode(baseUrl));
+        baseSignature.append(percentageEncode(baseUrl));
         baseSignature.append('&');
-        baseSignature.append(this.percentageEncode(paramsString.toString()));
+        baseSignature.append(percentageEncode(paramsString.toString()));
         System.out.println(" -- baseSignature: " + baseSignature);
         
-        String signingKey = this.percentageEncode(consumerSecret) + '&' +
-                (null != tokenSecret ? this.percentageEncode(tokenSecret) : "");
+        String signingKey = percentageEncode(consumerSecret) + '&' +
+                (null != tokenSecret ? percentageEncode(tokenSecret) : "");
         System.out.println(" -- signingKey: " +  signingKey);
         
         SecretKeySpec secretKey = new SecretKeySpec(signingKey.getBytes(), "HmacSHA1");
@@ -629,7 +629,7 @@ public class OAuthTwitter extends GenericResource {
      * @param value
      * @return 
      */
-    private String percentageEncode(String value) {
+    public static String percentageEncode(String value) {
         String encoded = "";
         try {
             encoded = URLEncoder.encode(value, "UTF-8");
@@ -660,9 +660,9 @@ public class OAuthTwitter extends GenericResource {
      * @return una cadena de 32 bytes codificada en base 64 para utilizarse como 
      *      indicador de unicidad en cada petición firmada
      */
-    private String getNonce() {
+    public static String getNonce() {
         
-        String base2nonce = SWBPortal.UTIL.getRandString(32, this.ALPHABET);
+        String base2nonce = SWBPortal.UTIL.getRandString(32, OAuthTwitter.ALPHABET);
         base2nonce = SWBUtils.TEXT.encodeBase64(base2nonce);
         StringBuilder ret = new StringBuilder(64);
         char oneChar;
@@ -682,7 +682,7 @@ public class OAuthTwitter extends GenericResource {
      * @param oauthParams
      * @return 
      */
-    private String getAuthorizationReqHeader(TreeMap<String, String> oauthParams) {
+    public static String getAuthorizationReqHeader(TreeMap<String, String> oauthParams) {
         
         StringBuilder oauthHeader = new StringBuilder(128);
         int count = 0;
@@ -693,7 +693,7 @@ public class OAuthTwitter extends GenericResource {
             }
             oauthHeader.append(signKey);
             oauthHeader.append("=\"");
-            oauthHeader.append(this.percentageEncode(oauthParams.get(signKey)));
+            oauthHeader.append(percentageEncode(oauthParams.get(signKey)));
             oauthHeader.append('\"');
             count++;
         }
@@ -710,7 +710,7 @@ public class OAuthTwitter extends GenericResource {
      * @throws IOException en caso de que se produzca un error al generar la
      * petici&oacute;n o recibir la respuesta
      */
-    public String getRequest(HashMap<String, String> params,
+    public static String getRequest(HashMap<String, String> params,
             HashMap<String, String> headers, String url)
             throws IOException {
 
@@ -725,7 +725,7 @@ public class OAuthTwitter extends GenericResource {
             conex = (HttpURLConnection) serverUrl.openConnection();
             conex.setConnectTimeout(5000);
             conex.setReadTimeout(10000);
-            conex.setRequestMethod(this.GET_METHOD);
+            conex.setRequestMethod(OAuthTwitter.GET_METHOD);
             for (String key : headers.keySet()) {
                 conex.setRequestProperty(key, headers.get(key));
             }
