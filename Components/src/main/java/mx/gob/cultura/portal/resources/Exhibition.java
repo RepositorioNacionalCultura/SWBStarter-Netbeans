@@ -252,7 +252,7 @@ public class Exhibition extends GenericResource {
         return elements;
     }
     
-    private void init(HttpServletRequest request) throws SWBResourceException, java.io.IOException {
+    private void init(HttpServletRequest request) {
         int pagenum = 0;
         String p = request.getParameter("p");
         if (null != p) pagenum = Integer.parseInt(p);

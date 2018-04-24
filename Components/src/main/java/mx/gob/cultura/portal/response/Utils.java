@@ -10,11 +10,14 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.ParseException;
 
+import java.util.Map;
 import java.util.Date;
 import java.util.HashMap;
 import java.text.SimpleDateFormat;
-import static java.lang.Integer.parseInt;
+
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,7 +25,9 @@ import static java.lang.Integer.parseInt;
  */
 public class Utils {
     
-    public static final HashMap m = new HashMap();
+    protected static final Map m = new HashMap();
+    
+    private static final Logger LOG = Logger.getLogger(Utils.class.getName());
 	
     static {
 	m.put(34, "");   // ""
@@ -42,7 +47,7 @@ public class Utils {
             dispersion(writer, str);
             return writer.toString();
 	}catch (IOException ioe) {
-            ioe.printStackTrace();
+            LOG.info(ioe.getMessage());
             return null;  
 	}
     }
@@ -72,8 +77,8 @@ public class Utils {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         try {
             return sdf.parse(sDate);
-        }catch (Exception e) {
-            e.printStackTrace();
+        }catch (ParseException e) {
+            LOG.info(e.getMessage());
             return new Date();
         }
     }
@@ -92,7 +97,7 @@ public class Utils {
         } else if (obj instanceof Double){
             result = ((Double)obj).intValue();
         } else if (obj instanceof String){
-            result = parseInt((String)obj);
+            result = Integer.parseInt((String)obj);
         } else if (obj instanceof Number){		
             result = ((Number)obj).intValue();
         }	
