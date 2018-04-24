@@ -189,7 +189,6 @@ public class CollectionMgr {
                 if (record.getString("title").equalsIgnoreCase(title)) {
                     ObjectId id = (ObjectId)record.get("_id");
                     if (null == _id || _id.isEmpty() || !id.toString().equals(_id)) {
-                        System.out.println(record);
                         list.add(record);
                     }
                 }
