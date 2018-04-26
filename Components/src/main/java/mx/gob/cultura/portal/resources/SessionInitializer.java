@@ -171,7 +171,7 @@ public class SessionInitializer extends GenericResource {
             throws SWBResourceException, IOException {
         
         String action = response.getAction();
-        System.out.println("--- En processAction --->>>");
+        
         if (action.equals("openSession")) {
             createSignedSession(request, response);
         } else if (action.equals("closeSession")) {
@@ -194,7 +194,6 @@ public class SessionInitializer extends GenericResource {
         UserRepository userRepo = response.getWebPage().getWebSite().getUserRepository();
         User user = null;
         boolean isSocialNetUser = false;
-        System.out.println("source en createSignedSession: " + request.getParameter("source"));
         
         //solo crear usuarios si usan una red social
         if (request.getParameter("source") != null && !request.getParameter("source").isEmpty()) {
@@ -225,7 +224,6 @@ public class SessionInitializer extends GenericResource {
             } catch (Exception e) {
                 e.printStackTrace(System.err);
             }
-            System.out.println("Se reconoce al usuario como firmado: " + user.isSigned());
             
             Subject subject = SWBPortal.getUserMgr().getSubject(request,
                                 response.getWebPage().getWebSiteId());
@@ -236,7 +234,7 @@ public class SessionInitializer extends GenericResource {
                 user.setLanguage("es");   //forzar lenguaje si no se dio de alta.
             }
         } else {
-            System.out.println("El usuario es nulo en createSignedSession!!!");
+            SessionInitializer.LOG.debug("El usuario es nulo en createSignedSession!!!");
         }
     }
 
@@ -321,7 +319,7 @@ public class SessionInitializer extends GenericResource {
             } else if (source.equals(SessionInitializer.TWITTER)) {
                 String token = (String) request.getSession().getAttribute("tw_tkn");
                 String tokenSecret = (String) request.getSession().getAttribute("tw_tknScrt");
-                //System.out.println("    token: " + token + "\n    tokenSecret: " + tokenSecret);
+                
                 obj.getRDFResource().addLiteral(ont.createDatatypeProperty(
                         SessionInitializer.TWITTERID_URI), id);
                 obj.getRDFResource().addLiteral(ont.createDatatypeProperty(
@@ -356,7 +354,6 @@ public class SessionInitializer extends GenericResource {
                 }
             }
         }
-        System.out.println("Usuario en sesion<action>= name: " + user.getFirstName() + " apellido: " + user.getLastName() + " email: " + user.getEmail());
         return user;
     }
     
@@ -369,7 +366,6 @@ public class SessionInitializer extends GenericResource {
     public void doRedirect(HttpServletRequest request, HttpServletResponse response,
             org.semanticwb.portal.api.SWBParamRequest paramRequest) {
         
-        System.out.println("Redirigiendo peticion para mostrar usuario firmado o no!");
         try {
             String url = paramRequest.getWebPage().getRealUrl();
             if (paramRequest.getAction().equals("closeSession")) {

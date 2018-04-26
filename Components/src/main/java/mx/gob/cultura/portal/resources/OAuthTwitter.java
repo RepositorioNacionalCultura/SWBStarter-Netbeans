@@ -105,8 +105,8 @@ public class OAuthTwitter extends GenericResource {
             String oauthHeader = getAuthorizationReqHeader(params2Sign);
             HashMap<String, String> reqHeaders = new HashMap(8);
             reqHeaders.put("Authorization", oauthHeader);
-            System.out.println("URL: " + reqCredentialsUrl);
-            System.out.println("Authorization header: " + oauthHeader);
+//            System.out.println("URL: " + reqCredentialsUrl);
+//            System.out.println("Authorization header: " + oauthHeader);
 
             //Se ejecuta la peticion
             try {
@@ -114,7 +114,7 @@ public class OAuthTwitter extends GenericResource {
                         reqCredentialsUrl);
             } catch (IOException ioe) {}
             
-            System.out.println("validating credentials:\n" + reqValidateCredResponse);
+//            System.out.println("validating credentials:\n" + reqValidateCredResponse);
         }
         if (reqValidateCredResponse != null && !reqValidateCredResponse.isEmpty()) {
             try {
@@ -219,7 +219,7 @@ public class OAuthTwitter extends GenericResource {
         if (null != token && null != tokenSecret) {
             JSONObject credentials = verifyUserCredentials(consumerKey, consumerSecret, token, tokenSecret);
             if (null != credentials && !credentials.has("errors")) {
-                System.out.println("UserCredentials: " + credentials.toString(4));
+//                System.out.println("UserCredentials: " + credentials.toString(4));
                 actionUrl = Utilities.getResourceURL(
                         paramRequest.getWebPage().getWebSite(),
                         SessionInitializer.class,
@@ -409,11 +409,11 @@ public class OAuthTwitter extends GenericResource {
         baseSignature.append(percentageEncode(baseUrl));
         baseSignature.append('&');
         baseSignature.append(percentageEncode(paramsString.toString()));
-        System.out.println(" -- baseSignature: " + baseSignature);
+//        System.out.println(" -- baseSignature: " + baseSignature);
         
         String signingKey = percentageEncode(consumerSecret) + '&' +
                 (null != tokenSecret ? percentageEncode(tokenSecret) : "");
-        System.out.println(" -- signingKey: " +  signingKey);
+//        System.out.println(" -- signingKey: " +  signingKey);
         
         SecretKeySpec secretKey = new SecretKeySpec(signingKey.getBytes(), "HmacSHA1");
         try {
@@ -485,8 +485,8 @@ public class OAuthTwitter extends GenericResource {
                 statusMsg = conex.getResponseMessage();
                 OAuthTwitter.LOG.debug("Twitter request: " + url + "\nstatus: " +
                         status + " - " + statusMsg);
-                System.out.println("Twitter request: " + url + "\nstatus: " +
-                        status + " - " + statusMsg);
+//                System.out.println("Twitter request: " + url + "\nstatus: " +
+//                        status + " - " + statusMsg);
             }
         } catch (java.io.IOException ioe) {
             //response = getResponse(conex.getErrorStream());
@@ -513,7 +513,7 @@ public class OAuthTwitter extends GenericResource {
                 conex.disconnect();
             }
         }
-        System.out.println("RESPONSE unformatted: " + response);
+//        System.out.println("RESPONSE unformatted: " + response);
         if (response == null) {
             response = "";
         }
@@ -717,7 +717,7 @@ public class OAuthTwitter extends GenericResource {
         CharSequence paramString = (null == params) ? "" : delimit(params.entrySet(), "&", "=", true);
         URL serverUrl = new URL(paramString.length() > 0
                                 ? (url + "?" + paramString) : url);
-        System.out.println("URL: \n" + serverUrl);
+//        System.out.println("URL: \n" + serverUrl);
         HttpURLConnection conex = null;
         String response = null;
 
@@ -732,7 +732,7 @@ public class OAuthTwitter extends GenericResource {
             conex.setDoOutput(true);
             conex.connect();
             response = getResponse(conex.getInputStream());
-            System.out.println("  +++++ GET response: \n" + response);
+//            System.out.println("  +++++ GET response: \n" + response);
         } catch (java.io.IOException ioe) {
             if (null != conex) {
                 response = getResponse(conex.getErrorStream());

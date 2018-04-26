@@ -47,7 +47,6 @@
     if (null != gpCliendId && !gpCliendId.isEmpty()) {
         showGPlus = true;
     }
-    System.out.println("showGPlus=" + showGPlus + "\nUsuario firmado: " + paramsRequest.getUser().isSigned());
     
     if (paramsRequest.getUser().isSigned()) {
         if (null != request.getSession(false) &&
