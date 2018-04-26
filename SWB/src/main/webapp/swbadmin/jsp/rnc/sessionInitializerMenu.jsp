@@ -1,5 +1,6 @@
 <%-- 
     Document   : sessionInitializerMenu
+                Presenta la interface para que el usuario escoja el medio de autenticacion de su preferencia.
     Created on : 13/02/2018, 05:43:59 PM
     Author     : jose.jimenez
 --%><%@ page contentType="text/html; charset=ISO-8859-1" pageEncoding="UTF-8"%>
@@ -11,7 +12,15 @@
     String mainLabel;
     String faceAppId;
     String faceVersion;
+    String twitConsumerKey;
+    String twitConsumerSecret;
+    String gpCliendId;
+    
     boolean isSocialNetUser = false;
+    boolean showFB = false;
+    boolean showTwitter = false;
+    boolean showGPlus = false;
+    String source = "";
 
     try {
         mainLabel = paramsRequest.getLocaleString("lbl_main");
@@ -19,13 +28,24 @@
         mainLabel = "Iniciar sesión";
     }
     faceAppId = paramsRequest.getWebPage().getWebSite().getModelProperty("facebook_appid");
-    if (null == faceAppId || faceAppId.isEmpty()) {
-        throw new SWBResourceException("There is no app id configured for Facebook");
+    if (null != faceAppId && !faceAppId.isEmpty()) {
+        showFB = true;
     }
     try {
         faceVersion = paramsRequest.getLocaleString("vl_facebook_version");
     } catch (SWBResourceException swbe) {
         faceVersion = "v2.11";
+    }
+    
+    twitConsumerKey = paramsRequest.getWebPage().getWebSite().getModelProperty("twitter_consumerKey");
+    twitConsumerSecret = paramsRequest.getWebPage().getWebSite().getModelProperty("twitter_consumerSecret");
+    if (null != twitConsumerKey && !twitConsumerKey.isEmpty() && null != twitConsumerSecret && !twitConsumerSecret.isEmpty()) {
+        showTwitter = true;
+    }
+    
+    gpCliendId = paramsRequest.getWebPage().getWebSite().getModelProperty("google_clientid");
+    if (null != gpCliendId && !gpCliendId.isEmpty()) {
+        showGPlus = true;
     }
     
     if (paramsRequest.getUser().isSigned()) {
@@ -34,10 +54,103 @@
             isSocialNetUser = Boolean.parseBoolean(
                     (String) request.getSession(false)
                             .getAttribute("isSocialNetUser"));
+            source = isSocialNetUser ? (String) request.getSession(false).getAttribute("source") : "";
         }
     }
+    
+    if (showGPlus) {
+%>
+        <script src="https://apis.google.com/js/platform.js?onload=initGP" async defer></script>
+        <script>
+          var googleUser = {};
+          function initGP() {
+              console.log("Iniciando api de G+");
+              gapi.load('auth2', function() {
+                  auth2 = gapi.auth2.init({
+                      client_id : '<%=gpCliendId%>'
+                  });
+              });
+<%      if (!paramsRequest.getUser().isSigned()) {%>
+//              gapi.signin2.render('googlePButton', {
+//                  scope: 'profile email openid',
+//                  onsuccess: function(googleUser) {
+//                                console.log('Usuario firmado!\n' + JSON.stringify(googleUser));
+//                                alert('Usuario firmado!\n' + JSON.stringify(googleUser));
+//                                var user = {
+//                                    id : googleUser.getAuthResponse().id_token,
+//                                    name : googleUser.getBasicProfile().getName(),
+//                                    email : googleUser.getBasicProfile().getEmail()
+//                                };
+//                                console.log('Usuario firmado!\n' + JSON.stringify(googleUser));
+//                                openSWBSession(user, '<%=SessionInitializer.GOOGLEP%>');
+//                            },
+//                  onfailure: function() {
+//                                alert("No se podrá iniciar sesión con Google+!");
+//                            }
+//              });
+//              loginGoogleUser(document.getElementById("loginWithGoogle"));
+          }
+          
+          function loginGPByClick() {
+              var auth2 = gapi.auth2.getAuthInstance();
+              if (!auth2) {
+                  console.log("No hay instancia de gapi.Authentication!");
+              }
+              auth2.signIn({
+                  prompt: 'select_account'
+              }).then(function(googleUser) {
+                  var user = {
+                      id : googleUser.getBasicProfile().getId(),
+                      name : googleUser.getBasicProfile().getName(),
+                      email : googleUser.getBasicProfile().getEmail()
+                  };
+                  console.log('Usuario firmado!\n' + JSON.stringify(googleUser));
+                  alert('antes de enviar peticion a SWB - user token: ' + googleUser.getAuthResponse().id_token);
+                  openSWBSession(user, '<%=SessionInitializer.GOOGLEP%>');
+              });
+          }
+          function loginGoogleUser(element) {
+              console.log("sobre el elemento: " + element.id);
+              var auth2 = gapi.auth2.getAuthInstance();
+              if (auth2) {
+              auth2.attachClickHandler(element,
+                    {},
+                    function(googleUser) {
+                        alert('Usuario firmado!\n' + JSON.stringify(googleUser));
+                        var user = {
+                            id : googleUser.getBasicProfile().getId(),
+                            name : googleUser.getBasicProfile().getName(),
+                            email : googleUser.getBasicProfile().getEmail()
+                        };
+                        console.log('Usuario firmado!\n' + JSON.stringify(googleUser));
+                        openSWBSession(user, '<%=SessionInitializer.GOOGLEP%>');
+                    },
+                    function(error) {
+                        alert(JSON.stringify(error, undefined, 2));
+              });
+              } else {
+                console.log('*** auth2 = null');
+              }
+              alert("Listo!!!");
+          }
+          
+<%      } else { %>
+          }
+          function signOutGP() {
+              var auth2 = gapi.auth2.getAuthInstance();
+              auth2.signOut().then(function () {
+                  closeSWBSession('<%=source%>');
+                  console.log('User signed out');
+              });
+          }
+<%
+        }
+    } else {
 %>
         <script>
+<%
+    }
+%>
           (function(d, s, id){
              var js, fjs = d.getElementsByTagName(s)[0];
              if (d.getElementById(id)) {return;}
@@ -66,11 +179,11 @@
               FB.logout();
             }
           }
-          function openSWBSession() {
-            FB.api('/me', function(response) {
-              var name = response.name ? response.name : '';
-              var faceId = response.id ? response.id : '';
-              var email = response.email ? response.email : '';
+          function openSWBSession(user, source) {
+//            FB.api('/me', function(response) {
+//              var name = response.name ? response.name : '';
+//              var faceId = response.id ? response.id : '';
+//              var email = response.email ? response.email : '';
               var xhttp = new XMLHttpRequest();
               xhttp.onreadystatechange = function() {
                 if (this.readyState === 4 && this.status === 200) {
@@ -81,13 +194,31 @@
               };
               xhttp.open("POST", "<%=sessionUrl%>", false); //false = sincrona
               xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
-              xhttp.send("id=" + faceId + "&email=" + email + "&name=" + name + "&source=<%=SessionInitializer.FACEBOOK%>");
-            });
+              xhttp.send("id=" + user.id + "&email=" + user.email + "&name=" + user.name + "&source=" + source);
+//            });
           }
           function faceLogin() {
             FB.login(function(response) {
               if (response.authResponse) {
-                openSWBSession();
+                FB.api('/me', function(response) {
+                  var user = {
+                      id : response.id ? response.id : '',
+                      name : response.name ? response.name : '',
+                      email : response.email ? response.email : ''
+                  };
+                  openSWBSession(user, '<%=SessionInitializer.FACEBOOK%>');
+//                  var xhttp = new XMLHttpRequest();
+//                  xhttp.onreadystatechange = function() {
+//                    if (this.readyState === 4 && this.status === 200) {
+//                      location.reload();
+//                    } else {
+//                        console.log("status del envio: " + this.status);
+//                    }
+//                  };
+//                  xhttp.open("POST", "<%=sessionUrl%>", false); //false = sincrona
+//                  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
+//                  xhttp.send("id=" + faceId + "&email=" + email + "&name=" + name + "&source=<%=SessionInitializer.FACEBOOK%>");
+                });
               }
             });
           }
@@ -181,8 +312,10 @@
                      data-show-faces="false" data-auto-logout-link="false" 
                      data-scope="public_profile,email" 
                      data-use-continue-as="false" onlogin="openSWBSession();"></div>  --%>
-                        <%=SessionInitializer.getFacebookLink(paramsRequest.getWebPage().getWebSiteId())%>
-<%--                        <a href="#" onclick="javascript:faceLogin();"><img src="/work/models/<%=paramsRequest.getWebPage().getWebSiteId()%>/img/icono-fb.png" ></a> --%>
+                        <%=showFB ? SessionInitializer.getFacebookLink(paramsRequest.getWebPage().getWebSiteId()) : ""%>
+                        <%=showTwitter ? SessionInitializer.getTwitterLink(paramsRequest) : ""%>
+                        <%-- =showGPlus ? SessionInitializer.getGoogleLink(paramsRequest.getWebPage().getWebSiteId()) : "" --%>
+                        <a href="#" id="loginWithGoogle" onclick="javascript:loginGPByClick();"><img src="/work/models/cultura/img/icono-goo.png" /></a>
                             </p>
                         </div>
 <%--
@@ -208,18 +341,22 @@
                     sessionAlert = "La sesión de Facebook ha terminado. Favor de iniciar sesión de nuevo.";
                 }
 %>
-            if (response.status && response.status !== 'connected') {
+            var source = "<%=source%>";
+            if (source === "<%=SessionInitializer.FACEBOOK%>" && response.status && response.status !== 'connected') {
               //reenviar a seccion con id de usuario de facebook y crear sesion con SWB
               alert('<%=sessionAlert%>');
-              closeSWBSession();
+              closeSWBSession(source);
             }
           }
 
-          function closeSWBSession() {
-            try {
-                FB.logout();
-            } catch(err) {
-                console.log('Sesion terminada primero en Facebook');
+          function closeSWBSession(source) {
+            //var source = "<%=source%>";
+            if (source === "<%=SessionInitializer.FACEBOOK%>") {
+                try {
+                    FB.logout();
+                } catch(err) {
+                    console.log('Sesion terminada primero en Facebook');
+                }
             }
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
@@ -237,23 +374,27 @@
             } catch (SWBResourceException swbe) {
                 mainLabel = "Terminar sesión";
             }
+            StringBuilder initials = new StringBuilder(2);
+            if (!paramsRequest.getUser().getFirstName().isEmpty()) {
+                initials.append(paramsRequest.getUser().getFirstName().charAt(0));
+            }
+            if (!paramsRequest.getUser().getLastName().isEmpty()) {
+                initials.append(paramsRequest.getUser().getLastName().charAt(0));
+            }
 %>
           }
             </script>
             <div class="sesion btn-group" role="group">
-                <button id="sesionDrop" type="button" class="btn-sesion" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="ion-person"></span>
-                    <i><%=paramsRequest.getUser().getFirstName()%></i>
+                <button id="sesionDrop" type="button" class="btn-sesion btn-rojo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span><%=initials.toString()%></span>
                 </button>
                 <div class="dropdown-menu sesiondisplay gris21-bg" aria-labelledby="sesionDrop">
 <%
-    if (wpCollections != null) {
+            if (wpCollections != null) {
 %>
                     <a class="dropdown-item" href="<%=wpCollections.getWebPageURL(paramsRequest.getUser().getLanguage())%>"><%=wpCollections.getTitle(paramsRequest.getUser().getLanguage())%></a>
 <%
-    }
-%>
-<%
+            }
             if (isSocialNetUser) {
 %>
                     <a class="dropdown-item" href="#" onclick="closeSWBSession();"><%=mainLabel%></a>
