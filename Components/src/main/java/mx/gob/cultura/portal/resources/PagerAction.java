@@ -35,11 +35,13 @@ public class PagerAction extends GenericResource {
     protected static final String NUM_PAGE_LIST = "NUM_PAGE_LIST";
     protected static final String NUM_RECORDS_TOTAL = "NUM_RECORDS_TOTAL";
     protected static final String NUM_RECORDS_VISIBLE = "NUM_RECORDS_VISIBLE";
-    private static final Logger LOG = Logger.getLogger(PagerAction.class.getName());
+    
     protected int PAGE_NUM_ROW = 8;
     protected int PAGE_JUMP_SIZE = 5;
     protected String PAGE_LIST = "PAGE_LIST";
     protected String FULL_LIST = "FULL_LIST";
+    
+    private static final Logger LOG = Logger.getLogger(PagerAction.class.getName());
 
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
@@ -66,15 +68,7 @@ public class PagerAction extends GenericResource {
     }
     
     public void init(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
-        int pagenum = 0;
-        HttpSession session = request.getSession();
-        String p = request.getParameter("p");
-        if (null != p)
-            pagenum = Integer.parseInt(p);
-        if (pagenum<=0) pagenum = 1;
-        session.setAttribute(NUM_PAGE_LIST, pagenum);
-        session.setAttribute("PAGE_NUM_ROW", PAGE_NUM_ROW);
-        page(pagenum, session);
+        page(getPage(request, response, paramRequest), request.getSession());
     }
 
     public void doPages(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
@@ -86,17 +80,9 @@ public class PagerAction extends GenericResource {
             LOG.info(se.getMessage());
         }
     }
-
+    
     public void doPage(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
-        int pagenum = 0;
-        HttpSession session = request.getSession();
-        String p = request.getParameter("p");
-        if (null != p)
-            pagenum = Integer.parseInt(p);
-        if (pagenum<=0) pagenum = 1;
-        session.setAttribute(NUM_PAGE_LIST, pagenum);
-        session.setAttribute("PAGE_NUM_ROW", PAGE_NUM_ROW);
-        page(pagenum, session);
+        page(getPage(request, response, paramRequest), request.getSession());
         String url = "/swbadmin/jsp/rnc/rows.jsp";
         if (null != request.getParameter("m") && "l".equalsIgnoreCase(request.getParameter("m")))
             request.setAttribute("mode", "row lista");
@@ -146,10 +132,21 @@ public class PagerAction extends GenericResource {
         session.setAttribute(NUM_PAGE_LIST, pagenum);
         page(pagenum, session);
     }
+    
+    private int getPage(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
+        int pagenum = 0;
+        String p = request.getParameter("p");
+        if (null != p)
+            pagenum = Integer.parseInt(p);
+        if (pagenum<=0) pagenum = 1;
+        request.getSession().setAttribute(NUM_PAGE_LIST, pagenum);
+        request.getSession().setAttribute("PAGE_NUM_ROW", PAGE_NUM_ROW);
+        return pagenum;
+    }
 
     protected void page(int pagenum, HttpSession session) {
-        List<?> rows = (List<?>)session.getAttribute(FULL_LIST);
-        Integer total = (Integer)session.getAttribute("NUM_RECORDS_TOTAL");
+        ArrayList<?> rows = (ArrayList<?>)session.getAttribute(FULL_LIST);
+        Integer total = (Integer)session.getAttribute(NUM_RECORDS_TOTAL);
         if (null==total) total = 0;
         if (null==rows) rows = new ArrayList();
         try {
@@ -160,9 +157,8 @@ public class PagerAction extends GenericResource {
             Integer currentLeap = (pagenum-1)/PAGE_JUMP_SIZE;
             session.setAttribute(NUM_PAGE_JUMP, currentLeap);
             session.setAttribute("PAGE_JUMP_SIZE", PAGE_JUMP_SIZE);
-            //ArrayList rowsPage = getRows(pagenum, rows);
             session.setAttribute(PAGE_LIST, rows);
-            session.setAttribute("NUM_RECORDS_VISIBLE", rows.size());
+            session.setAttribute(NUM_RECORDS_VISIBLE, rows.size());
             int first = 0;
             int last = 0;
             first = (pagenum-1)*PAGE_NUM_ROW+1;
