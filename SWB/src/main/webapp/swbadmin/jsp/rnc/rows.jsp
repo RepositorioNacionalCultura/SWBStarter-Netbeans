@@ -4,18 +4,16 @@
 <%
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
-    String mode = "row";
+    String mode = "card-columns";
     List<Entry> references = (List<Entry>)session.getAttribute("PAGE_LIST");
     if (null != request.getAttribute("mode"))
         mode = (String)request.getAttribute("mode");
-
     Integer first = (Integer)session.getAttribute("FIRST_RECORD");
     Integer last = (Integer)session.getAttribute("LAST_RECORD");
     Integer total = (Integer)session.getAttribute("NUM_RECORDS_TOTAL");
     if (null == first) first = 1;
-
     if (!references.isEmpty()) {
-        %>
+%>
         <div class="ruta row">
             <div class="col-12 col-sm-8 col-md-8">
                 <p class="oswLc"><%=first%>-<%=last%> de <%=total%> resultados</p>
@@ -25,8 +23,8 @@
                 <a href="#" onclick="setList();"><i class="fa fa-th-list" aria-hidden="true"></i></a>
             </div>
         </div>
-        <div id="resultados" class="card-columns">
-            <%
+        <div id="resultados" class="<%=mode%>">
+        <%
             int position = first;
             for (Object o : references) {
                 Entry reference = (Entry)o;
@@ -41,7 +39,7 @@
                 String creator = creators.size() > 0 ? creators.get(0) : "";
                 String type = resourcetype.size() > 0 ? resourcetype.get(0) : "";
                 if (!digitalobject.isEmpty()) digital = digitalobject.get(0);
-                %>
+        %>
                 <div class="pieza-res card">
                     <a href="/swb/<%=site.getId()%>/detalle?id=<%=reference.getId()%>">
                         <img src="<%=digital.getUrl()%>" />
@@ -55,9 +53,9 @@
                 <%
                 position++;
             }
-            %>
+        %>
         </div>
         <jsp:include page="pager.jsp" flush="true"/>
-        <%
+<%
     }
 %>
