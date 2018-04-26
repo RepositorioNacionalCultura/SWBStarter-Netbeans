@@ -7,108 +7,101 @@
     List<CountName> dates = new ArrayList<>();
     List<CountName> holders = new ArrayList<>();
     List<CountName> resourcetypes = new ArrayList<>();
-    String word = (String)request.getAttribute("criteria");
-    List<Aggregation> aggs = (List<Aggregation>)request.getAttribute("aggs");
-    SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
-    SWBResourceURL pageURL = paramRequest.getRenderUrl().setMode("SORT");
-    pageURL.setCallMethod(SWBParamRequest.Call_DIRECT);
-    if (null != aggs && null != word) {
+    String word = (String) request.getAttribute("criteria");
+    Aggregation aggs = (Aggregation) request.getAttribute("aggs");
+    List<String> creators = (List<String>) request.getAttribute("creators");
+    SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
+
+    if (null != aggs && null != creators && !creators.isEmpty()) {
         showFilters = true;
-        for (Aggregation a : aggs) {
-            if (null !=  a.getHolders()) holders.addAll(a.getHolders());
-            if (null !=  a.getDates()) dates.addAll(a.getDates());
-            if (null !=  a.getResourcetypes()) resourcetypes.addAll(a.getResourcetypes());
+        if (null != aggs.getDates()) {
+            dates = aggs.getDates();
+        }
+        if (null != aggs.getHolders()) {
+            holders = aggs.getHolders();
+        }
+        if (null != aggs.getResourcetypes()) {
+            resourcetypes = aggs.getResourcetypes();
         }
     }
 %>
-<script type="text/javascript">
-    function doSort(w, f) {
-        dojo.xhrPost({
-            url: '<%=pageURL%>?criteria='+w+'&sort='+f,
-            load: function(data) {
-                dojo.byId('references').innerHTML=data;
-            }
-        });
-    }
-</script>
-<div class="" id="sidebar">
+<div id="sidebar">
     <div id="accordion" role="tablist">
-        <% if (!resourcetypes.isEmpty()) { %>
+        <%	if (null != creators && !creators.isEmpty()) { %>
         <div class="card">
             <div class="" role="tab" id="headingOne">
-                <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapseOne">Tipos de objeto <span>+</span></a>
+                <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapseOne" class="btnUpDown collapsed">Autor <span class="mas">+</span><span class="menos">-</span></a>
             </div>
-            <div id="collapse1" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+            <div id="collapse1" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
                 <ul>
                     <li>
                         <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">Todos</label>
                         <ul>
                             <%
-                                for (CountName r : resourcetypes) {
-                                    %>
-										<li><label class="form-check-label"><input class="form-check-input" type="checkbox" value=""><%=r.getCapitalizeName()%></label></li>
-                                    <%
-                                }
+                                for (String r : creators) {
                             %>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" value=""><%=r%></label></li>
+                                    <%
+                                        }
+                                    %>
                         </ul>
                     </li>
                 </ul>
             </div>
         </div>
+        <% } %>
+        <%	if (!dates.isEmpty()) {%>
+        <div class="card">
+            <div class="" role="tab" id="headingOne">
+                <a data-toggle="collapse" href="#collapse2" aria-expanded="true" aria-controls="collapseOne" class="btnUpDown collapsed">Fecha <span class="mas">+</span><span class="menos">-</span></a>
+            </div>
+            <div id="collapse2" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="slider">  
+                    <p class="oswM">[<%=aggs.getInterval().getLowerLimit()%> - <%=aggs.getInterval().getUpperLimit()%>]</p>               
+                    <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="<%=aggs.getInterval().getLowerLimit()%>" data-slider-max="<%=aggs.getInterval().getUpperLimit()%>" data-slider-step="1" data-slider-value="[<%=aggs.getInterval().getLowerLimit()%>,<%=aggs.getInterval().getUpperLimit()%>]"/>
+                    <div class="d-flex">
+                        <div class="p-2" id="ex1SliderVal"><%=aggs.getInterval().getLowerLimit()%></div>
+                        <div class="ml-auto p-2" id="ex2SliderVal"><%=aggs.getInterval().getUpperLimit()%></div>
+                    </div>
+                </div>
+            </div>
+        </div>		
         <% } %>
         <% if (!holders.isEmpty()) { %>
         <div class="card">
-            <div class="" role="tab" id="headingThree">
-                <a data-toggle="collapse" href="#collapse3" aria-expanded="true" aria-controls="collapseOne">Institución <span>+</span></a>
+            <div class="" role="tab" id="headingOne">
+                <a data-toggle="collapse" href="#collapse3" aria-expanded="true" aria-controls="collapseOne" class="btnUpDown collapsed">Derechos <span class="mas">+</span><span class="menos">-</span></a>
             </div>
-            <div id="collapse3" class="collapse show" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
+            <div id="collapse3" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
                 <ul>
                     <li>
-                        <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">Todas</label>
+                        <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">Todos</label>
                         <ul>
-                            <%
-                                for (CountName h : holders) {
-                                    %>
-                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" value=""><%=h.getName()%></label></li>
-                                    <%
-                                }
-                            %>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" value="">Sin derechos</label></li>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" value="">Derechos reservados</label></li>
                         </ul>
                     </li>
                 </ul>
             </div>
         </div>
         <% } %>
-        <% if (!dates.isEmpty()) { %>
-        <div class="card">
-            <div class="" role="tab" id="headingFour">
-                <a data-toggle="collapse" href="#collapse4" aria-expanded="true" aria-controls="collapseOne">Fecha <span>+</span></a>
-            </div>
-            <div id="collapse4" class="collapse show" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion">
-                <ul>
-                    <li>
-                        <% if (dates.size() > 1) { %>
-                            <label class="form-check-label"><input class="form-check-input" type="checkbox" value="">Todas</label>
-                        <% } %>
-                        <ul>
-                            <%
-                                for (CountName d : dates) {
-                                    %>
-										<li><label class="form-check-label"><input class="form-check-input" type="checkbox" value=""><%=d.getName().substring(0,4)%></label></li>
-                                    <%
-                                }
-                            %>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
         <%
-        }
-			if (showFilters) {
+            if (showFilters) {
         %>
-				<button type="button" class="">Aplicar filtros</button>
-        <% } %>
-		<input type="submit" value="Guardar cambios" class=""></input>
+        <div class="card cardfecha">
+            <div class="form-group">
+                <label for="selfecha">Ordenar por:</label>
+                <select class="form-control" id="selfecha" onchange="sort('<%=word%>', this)">
+                    <option value="datedes">Fecha</option>
+                    <option value="relvdes">Relevancia</option>
+                    <option value="statdes">Popularidad</option>
+                </select>
+            </div>
+        </div>
+        <button type="button" class="btn btn-negro">Aplicar filtros</button>
+        <button type="button" class="btn btn-negro" onclick="doSave('<%=word%>');">Guardar cambios</button>
+        <% } else { %>
+        <input type="submit" value="Guardar cambios" class="btn btn-negro"></input>
+        <% }%>
     </div>
 </div>

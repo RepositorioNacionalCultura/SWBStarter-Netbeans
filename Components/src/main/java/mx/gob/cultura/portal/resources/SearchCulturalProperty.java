@@ -5,16 +5,18 @@
  */
 package mx.gob.cultura.portal.resources;
 
-import mx.gob.cultura.portal.request.ListBICRequest;
-import mx.gob.cultura.portal.response.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Calendar;
+import java.util.ArrayList;
 import org.semanticwb.Logger;
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.SWBUtils;
 import org.semanticwb.model.WebSite;
 import org.semanticwb.portal.api.SWBParamRequest;
-import org.semanticwb.portal.api.SWBResourceException;
 import org.semanticwb.portal.api.SWBResourceModes;
 import org.semanticwb.portal.api.SWBResourceURL;
+import org.semanticwb.portal.api.SWBResourceException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -25,10 +27,16 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+
+
+import mx.gob.cultura.portal.utils.Utils;
+import mx.gob.cultura.portal.request.ListBICRequest;
+import mx.gob.cultura.portal.response.Aggregation;
+import mx.gob.cultura.portal.response.CountName;
+import mx.gob.cultura.portal.response.DateRange;
+import mx.gob.cultura.portal.response.Document;
+import mx.gob.cultura.portal.response.Entry;
+import org.semanticwb.SWBException;
 
 /**
  *
@@ -104,7 +112,7 @@ public class SearchCulturalProperty extends PagerAction {
                 ret.append("	</div> \n");
                 ret.append("</form> \n");
             }
-        }catch (Exception e) { LOG.info(e.getMessage());}
+        }catch (SWBException e) { LOG.info(e.getMessage());}
         response.getWriter().print(ret.toString());
     }
 

@@ -6,7 +6,9 @@
 package mx.gob.cultura.portal.response;
 
 import java.io.Serializable;
+import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +32,8 @@ public class Collection implements Serializable {
     private List<String> elements;
     
     private List<String> covers;
+    
+    private Date date;
     
     public Collection(String title, Boolean status, String description) {
         this.title = title;
@@ -97,6 +101,14 @@ public class Collection implements Serializable {
 
     public void setCovers(List<String> covers) {
         this.covers = covers;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     @Override
