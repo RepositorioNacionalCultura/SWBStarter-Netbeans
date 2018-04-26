@@ -6,11 +6,11 @@
 package mx.gob.cultura.portal.resources;
 
 import org.semanticwb.Logger;
-import org.semanticwb.SWBPlatform;
 import org.semanticwb.SWBUtils;
+import org.semanticwb.SWBPlatform;
 
 import mx.gob.cultura.portal.response.Entry;
-import mx.gob.cultura.portal.response.Utils;
+import mx.gob.cultura.portal.utils.Utils;
 import mx.gob.cultura.portal.request.GetBICRequest;
 import org.semanticwb.portal.api.GenericAdmResource;
 import org.semanticwb.portal.api.SWBParamRequest;

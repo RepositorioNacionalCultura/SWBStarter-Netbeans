@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mx.gob.cultura.portal.response;
+package mx.gob.cultura.portal.utils;
 
 import java.io.Writer;
 import java.io.IOException;

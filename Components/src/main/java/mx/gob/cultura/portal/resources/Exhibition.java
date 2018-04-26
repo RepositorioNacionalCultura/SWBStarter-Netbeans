@@ -5,9 +5,12 @@
  */
 package mx.gob.cultura.portal.resources;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Calendar;
 import java.util.ArrayList;
 import java.io.IOException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -16,15 +19,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import mx.gob.cultura.portal.response.Entry;
-import mx.gob.cultura.portal.response.ArtWork;
+import mx.gob.cultura.portal.utils.ArtWork;
 import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.request.ListBICRequest;
 
+import mx.gob.cultura.portal.utils.Utils;
+import mx.gob.cultura.portal.response.CountName;
+import mx.gob.cultura.portal.response.DateRange;
+import mx.gob.cultura.portal.response.Aggregation;
+
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.SWBException;
+import org.semanticwb.model.WebSite;
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.GenericResource;
 import org.semanticwb.portal.api.SWBResourceException;
+import static mx.gob.cultura.portal.resources.SearchCulturalProperty.getCapitalizeName;
 /**
  *
  * @author sergio.tellez
@@ -34,30 +44,53 @@ public class Exhibition extends GenericResource {
     private static final int SEGMENT = 8;
     private static final int PAGE_NUM_ROW = 8;
     private static final int PAGE_JUMP_SIZE = 5;
+    public static final String ACTION = "act";
+    private static final String PAGE = "PAGE";
+    private static final String SAVE = "SAVE";
+    private static final String SORT = "SORT";
+    private static final String SEARCH = "SEARCH";
+    public static final String MODE_VIEW_EDIT = "vEdit";
     private static final String PAGE_LIST = "PAGE_LIST";
     private static final String FULL_LIST = "FULL_LIST";
     private static final String NUM_PAGE_LIST = "NUM_PAGE_LIST";
     private static final Logger LOG = Logger.getLogger(ArtDetail.class.getName());
     
-    @Override
-    public void doAdmin(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
+    public void doViewFix(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
         String path = "/swbadmin/jsp/rnc/exhibitions/admExhibition.jsp";
         try {
             request.setAttribute("base", getResourceBase());
 	    request.setAttribute("paramRequest", paramRequest);
-            if ("SEARCH".equals(paramRequest.getAction())) {
+            /**if ("SEARCH".equals(paramRequest.getAction())) {
                 doAdminFilter(request, response, paramRequest);
             }else if ("PAGE".equals(paramRequest.getAction())) {
                 doAdminPage(request, response, paramRequest);
-            }else if ("SAVE".equals(paramRequest.getAction())) {
+            }/**else if ("SAVE".equals(paramRequest.getAction())) {
                 doAdminSave(request, response, paramRequest);
-            }else {
-                RequestDispatcher rd = request.getRequestDispatcher(path);
-                rd.include(request, response);
-            }
+            }else {**/
+            RequestDispatcher rd = request.getRequestDispatcher(path);
+            rd.include(request, response);
+            //}
         } catch (ServletException ex) {
             Logger.getLogger(Exhibition.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    @Override
+    public void processRequest(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        response.setContentType("text/html; charset=UTF-8");
+        String mode = paramRequest.getMode();
+        if (null != request.getParameter(ACTION) && MODE_VIEW_EDIT.equals(request.getParameter(ACTION))) {
+            doViewFix(request, response, paramRequest);
+        }else if (SEARCH.equals(mode)) {
+            doAdminFilter(request, response, paramRequest);
+        }else if (SAVE.equals(mode)) {
+            doAdminSave(request, response, paramRequest);
+        }else if (PAGE.equals(mode)) {
+            doAdminPage(request, response, paramRequest);
+        }else if (SORT.equals(mode)) {
+            doAdminSort(request, response, paramRequest);
+        }else
+            super.processRequest(request, response, paramRequest);
     }
     
     @Override
@@ -69,7 +102,7 @@ public class Exhibition extends GenericResource {
     	RequestDispatcher rd = request.getRequestDispatcher(url);
     	try {
             if (null != getResourceBase().getAttribute("criteria")) {
-    		document = getReference();
+    		document = getReference(request);
                 List<String> favs = getElements("favorites");
                 List<String> hds = getElements("hiddenarts");
                 if (null != document) {
@@ -79,8 +112,12 @@ public class Exhibition extends GenericResource {
                             else publicationList.add(e);
                         }
                     }
+                    request.setAttribute(FULL_LIST, publicationList);
+                    request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
+                    request.setAttribute("criteria", getResourceBase().getAttribute("criteria"));
                 }
     	    }
+            init(request);
             request.setAttribute("base", getResourceBase());
             request.setAttribute("references", publicationList);
 	    request.setAttribute("paramRequest", paramRequest);
@@ -99,12 +136,14 @@ public class Exhibition extends GenericResource {
                 getResourceBase().setAttribute("title", request.getParameter("title"));
                 getResourceBase().setAttribute("order", request.getParameter("order"));
                 getResourceBase().setAttribute("criteria", request.getParameter("criteria"));
-                getResourceBase().setAttribute("endpointURL", request.getParameter("endpointURL"));
+                //getResourceBase().setAttribute("endpointURL", request.getParameter("endpointURL"));
                 getResourceBase().updateAttributesToDB();
-                Document document = getReference(request);
+                Document document = getReference(request);//getReference(request, paramRequest.getWebPage().getWebSite());
                 if (null != document) {
                     List<ArtWork> arts = getArts(request, document);
-                    request.setAttribute("aggs", document.getAggs());
+                    //request.setAttribute("aggs", document.getAggs());
+                    request.setAttribute("aggs", getAggregation(document.getAggs()));
+                    request.setAttribute("creators", getCreators(document.getRecords()));
                     request.setAttribute(FULL_LIST, arts);
                     request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
                     request.setAttribute("criteria", request.getParameter("criteria"));
@@ -122,6 +161,46 @@ public class Exhibition extends GenericResource {
         }
     }
     
+     private List<String> getCreators(List<Entry> records) {
+        List<String> creators = new ArrayList<>();
+        if (null != records) {
+            for (Entry entry : records) {
+                for (String author : entry.getCreator()) {
+                    author = getCapitalizeName(author);
+                    if (!creators.contains(author))
+                        creators.add(author);
+                }
+            }
+        }
+        return creators;
+    }
+    
+    private Aggregation getAggregation(List<Aggregation> aggs) {
+        DateRange interval = new DateRange();
+        Calendar cal = Calendar.getInstance();
+        Aggregation aggregation = new Aggregation();
+        interval.setUpperLimit(0);
+        cal.setTime(new Date());
+        interval.setLowerLimit(cal.get(Calendar.YEAR));
+        aggregation.setInterval(interval);
+        if (null != aggs && !aggs.isEmpty()) {
+            aggregation.setDates(new ArrayList<>());
+            aggregation.setHolders(new ArrayList<>());
+            aggregation.setResourcetypes(new ArrayList<>());
+            for (Aggregation a : aggs) {
+                if (null !=  a.getDates()) aggregation.getDates().addAll(a.getDates());
+                if (null !=  a.getHolders()) aggregation.getHolders().addAll(a.getHolders());
+                if (null !=  a.getResourcetypes()) aggregation.getResourcetypes().addAll(a.getResourcetypes());
+            }
+            for (CountName date : aggregation.getDates()) {
+                cal.setTime(Utils.convert(date.getName()));
+                if (interval.getUpperLimit() < cal.get(Calendar.YEAR)) interval.setUpperLimit(cal.get(Calendar.YEAR));
+                if (interval.getLowerLimit() > cal.get(Calendar.YEAR)) interval.setLowerLimit(cal.get(Calendar.YEAR));
+            }
+        }
+        return aggregation;
+    }
+    
     public void doAdminSave(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
     	try {
             configPage(request);
@@ -131,9 +210,9 @@ public class Exhibition extends GenericResource {
                 for (ArtWork art : arts) {
                     if (art.isFavorite())
                         favorites.append(",").append(art.getEntry().getId());
-                    System.out.println("favorites: " + favorites);
                 }
-                getResourceBase().setAttribute("favorites", favorites.substring(1, favorites.length()));
+                if (favorites.length() > 1)
+                    getResourceBase().setAttribute("favorites", favorites.substring(1, favorites.length()));
             }
             if (null != request.getParameterValues("hiddenarts")) {
                 getResourceBase().setAttribute("hiddenarts", getChekedEl(request, "hiddenarts"));
@@ -168,7 +247,7 @@ public class Exhibition extends GenericResource {
         configPage(request);
         request.setAttribute(NUM_PAGE_LIST, pagenum);
         request.setAttribute("PAGE_NUM_ROW", PAGE_NUM_ROW);
-        document = getReference(request);
+        document = getReference(request, paramRequest.getWebPage().getWebSite());
         if (null != document) {
             List<ArtWork> arts = getArts(request, document);
             request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
@@ -177,7 +256,7 @@ public class Exhibition extends GenericResource {
         }
         request.setAttribute("criteria", request.getParameter("criteria"));
         String url = "/swbadmin/jsp/rnc/exhibitions/admExRows.jsp";
-        request.setAttribute("mode", "row lista");
+        request.setAttribute("mode", "card-columns");
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
             request.setAttribute("paramRequest", paramRequest);
@@ -187,12 +266,37 @@ public class Exhibition extends GenericResource {
         }
     }
     
+    public void doAdminSort(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
+        List<Entry> publicationList = new ArrayList<>();
+        try {
+            if (null != request.getParameter("criteria") && !request.getParameter("criteria").isEmpty()) {
+                Document document = getReference(request, paramRequest.getWebPage().getWebSite());
+                if (null != document) {
+                    List<ArtWork> arts = getArts(request, document);
+                    publicationList = document.getRecords();
+                    request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
+                    request.setAttribute(FULL_LIST, arts);
+                }
+                request.setAttribute("f", request.getParameter("sort"));
+                request.setAttribute("criteria", request.getParameter("criteria"));
+                init(request);
+            }
+            request.setAttribute("references", publicationList);
+            request.setAttribute("paramRequest", paramRequest);
+            String url = "/swbadmin/jsp/rnc/exhibitions/admExRows.jsp";
+            request.setAttribute("mode", "card-columns");
+            RequestDispatcher rd = request.getRequestDispatcher(url);
+            rd.include(request, response);
+        }catch (ServletException se) {
+            LOG.info(se.getMessage());
+        }
+    }
+    
     private void configPage(HttpServletRequest request) {
-        List<ArtWork> prev = null;
         List<String> elements = new ArrayList<>();
         if (null != request.getParameterValues("favarts") && null != request.getSession().getAttribute("arts")) {
             String [] elms = request.getParameterValues("favarts");
-            prev = (List<ArtWork>)request.getSession().getAttribute("arts");
+            List<ArtWork> prev = (List<ArtWork>)request.getSession().getAttribute("arts");
             for (int i=0; i<elms.length; i++) {
                 elements.add(elms[i]);
             }
@@ -211,7 +315,8 @@ public class Exhibition extends GenericResource {
         for (int i=0; i<elms.length; i++) {
             elements.append(",").append(elms[i]);
         }
-        elements.substring(1, elements.length());
+        if (elements.length() > 1)
+            return elements.substring(1, elements.length());
         return elements.toString();
     }
     
@@ -233,7 +338,6 @@ public class Exhibition extends GenericResource {
             }
         }
         request.getSession().setAttribute("arts", prev);
-        System.out.println("getArtsPost: " + prev);
         return arts;
     }
     
@@ -241,11 +345,13 @@ public class Exhibition extends GenericResource {
         List<String> elements = new ArrayList<>();
         if (null != getResourceBase().getAttribute(attr) && !getResourceBase().getAttribute(attr).isEmpty()) {
             if (getResourceBase().getAttribute(attr).lastIndexOf(",") == -1) {
-                elements.add(getResourceBase().getAttribute(attr)); 
-            }else {
+                elements.add(getResourceBase().getAttribute(attr));                
+            } else {
                 String[] el = getResourceBase().getAttribute(attr).split(",");
-                for (int i=0; i<el.length; i++) {
-                    elements.add(el[i]); 
+                for (int i = 0; i < el.length; i++) {
+                    if (!elements.contains(el[i])) {
+                        elements.add(el[i]);
+                    }                    
                 }
             }
         }
@@ -277,19 +383,31 @@ public class Exhibition extends GenericResource {
             request.setAttribute("PAGE_JUMP_SIZE", PAGE_JUMP_SIZE);
             request.setAttribute(PAGE_LIST, rows);
             request.setAttribute("NUM_RECORDS_VISIBLE", rows.size());
+            
+            int last = 0;
+            int first = 0;
+            first = (pagenum-1)*PAGE_NUM_ROW+1;
+            last = first+PAGE_NUM_ROW-1;
+            if (last>total) last = total;
+            request.setAttribute("FIRST_RECORD", first);
+            request.setAttribute("LAST_RECORD", last);
+            
         }catch(Exception e) {
             LOG.info(e.getMessage());
         }
     }
     
-    private Document getReference(HttpServletRequest request) {
+    private Document getReference(HttpServletRequest request, WebSite site) {
         Document document = null;
         String words = request.getParameter("criteria");
-    	String uri = SWBPlatform.getEnv("rnc/endpointURL",getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim() + "/api/v1/search?q=";
-    	uri += getParamSearch(words);
+        String base = site.getModelProperty("search_endPoint");
+        if (null == base || base.isEmpty()) {
+            base = SWBPlatform.getEnv("rnc/endpointURL",getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim() + "/api/v1/search?q=";
+        }
+        String uri = base + getParamSearch(words);
         uri += getRange(request);
-        if (null != getResourceBase().getAttribute("sort") && null != getResourceBase().getAttribute("order")) {
-            String sorted = getResourceBase().getAttribute("sort") + getResourceBase().getAttribute("order");
+        if (null != request.getParameter("sort")) {
+            String sorted = request.getParameter("sort") + getResourceBase().getAttribute("order");
             if (sorted.equalsIgnoreCase("datedes")) uri += "&sort=-datecreated.value";
             if (sorted.equalsIgnoreCase("dateasc")) uri += "&sort=datecreated.value";
             if (sorted.equalsIgnoreCase("statdes")) uri += "&sort=-resourcestats.views";
@@ -304,18 +422,20 @@ public class Exhibition extends GenericResource {
         return document;
     }
     
-    private Document getReference() {
+    private Document getReference(HttpServletRequest request) {
         Document document = null;
         String words = getResourceBase().getAttribute("criteria");
     	String uri = SWBPlatform.getEnv("rnc/endpointURL",getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim() + "/api/v1/search?q=";
     	uri += getParamSearch(words);
         if (null != getResourceBase().getAttribute("sort") && null != getResourceBase().getAttribute("order")) {
             String sorted = getResourceBase().getAttribute("sort") + getResourceBase().getAttribute("order");
+            System.out.println("sorted: " + sorted);
             if (sorted.equalsIgnoreCase("datedes")) uri += "&sort=-datecreated.value";
             if (sorted.equalsIgnoreCase("dateasc")) uri += "&sort=datecreated.value";
             if (sorted.equalsIgnoreCase("statdes")) uri += "&sort=-resourcestats.views";
             if (sorted.equalsIgnoreCase("statasc")) uri += "&sort=resourcestats.views";
         }
+        uri += getRange(request);
 	ListBICRequest req = new ListBICRequest(uri);
         try {
             document = req.makeRequest();

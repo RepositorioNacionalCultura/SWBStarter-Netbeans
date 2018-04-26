@@ -26,7 +26,7 @@ import static com.mongodb.client.model.Filters.eq;
 import java.util.Iterator;
 import mx.gob.cultura.commons.Util;
 import org.semanticwb.SWBPlatform;
-import mx.gob.cultura.portal.response.Utils;
+import mx.gob.cultura.portal.utils.Utils;
 
 
 
@@ -155,6 +155,7 @@ public class CollectionMgr {
         Collection collection = new Collection(bson.getString("title"), bson.getBoolean("status"), bson.getString("description"));
         ObjectId id = (ObjectId)bson.get("_id");
         collection.setId(id.toString());
+        collection.setDate(id.getDate());
         collection.setUserid(bson.getString("userid"));
         List<String> elements = new ArrayList<>();
         if (bson.get("elements") instanceof String)
