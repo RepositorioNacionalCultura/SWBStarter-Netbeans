@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@page import="mx.gob.cultura.portal.response.DigitalObject"%>
 <%@page import="mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title"%>
-<%@page import="mx.gob.cultura.portal.response.Utils,org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.net.URLEncoder, java.nio.charset.StandardCharsets"%>
+<%@page import="mx.gob.cultura.portal.utils.Utils,org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.net.URLEncoder, java.nio.charset.StandardCharsets"%>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js"
