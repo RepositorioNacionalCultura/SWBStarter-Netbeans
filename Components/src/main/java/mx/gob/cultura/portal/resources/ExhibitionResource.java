@@ -44,9 +44,7 @@ public class ExhibitionResource extends GenericResource {
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
         String path = "/swbadmin/jsp/rnc/exhibitions/resource.jsp";
         try {
-           List<EditorTemplate> tmpls = new ArrayList<>();
-           tmpls.add(new EditorTemplate("1", "/work/models/repositorio/exhibition/clasic.html", "Clasic", "/work/models/repositorio/exhibition/clasic.jpg"));
-           request.setAttribute("tmpls", tmpls);
+           request.setAttribute("tmpls", editorTemplateList());
 	   request.setAttribute("paramRequest", paramRequest);
            RequestDispatcher rd = request.getRequestDispatcher(path);
            rd.include(request, response);
@@ -81,7 +79,7 @@ public class ExhibitionResource extends GenericResource {
         WebPage wp = null;
         String title = request.getParameter("title");
         String descn = null != request.getParameter("description") ? request.getParameter("description") : "";
-        String idTmpl = "21";
+        String idTmpl = null != request.getParameter("tpled") ? request.getParameter("tpled") : "21";
         String idnewwp = SWBPlatform.getIDGenerator().getID();
         try {
             wp = response.getWebPage().getWebSite().getWebPage(idnewwp);
@@ -119,5 +117,13 @@ public class ExhibitionResource extends GenericResource {
             LOGGER.error(e);
         }
         return res;
+    }
+    
+    private List<EditorTemplate> editorTemplateList() {
+        List<EditorTemplate> tmpls = new ArrayList<>();
+        tmpls.add(new EditorTemplate("1", "/work/models/repositorio/exhibition/plantilla1.html", "Plantilla 1", "/work/models/repositorio/exhibition/mini-plantilla-01.jpg"));
+        tmpls.add(new EditorTemplate("2", "/work/models/repositorio/exhibition/plantilla2.html", "Plantilla 2", "/work/models/repositorio/exhibition/mini-plantilla-02.jpg"));
+        tmpls.add(new EditorTemplate("3", "/work/models/repositorio/exhibition/plantilla3.html", "Plantilla 3", "/work/models/repositorio/exhibition/mini-plantilla-03.jpg"));
+        return tmpls;
     }
 }
