@@ -22,6 +22,8 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import mx.gob.cultura.portal.utils.EditorTemplate;
+import mx.gob.cultura.portal.utils.Utils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -113,8 +115,11 @@ public class HTMLCulture extends GenericResource {
         try {
             String numversion = getResourceBase().getAttribute("numversion","");
             if (!numversion.isEmpty()) content = getContent(request, paramRequest);
-            else content = getContentTempl(request, paramRequest, "/models/repositorio/exhibition/", "clasic.html");
-            System.out.println("template: " + getResourceBase().getAttribute("template"));
+            else {
+                EditorTemplate template = getEditorTemplate(getResourceBase().getAttribute("template"));
+                if (null != template)
+                    content = getContentTempl(request, paramRequest, template.getUrl(), template.getFileName());
+            }
             request.setAttribute("numversion", 1);
             request.setAttribute("fileContent", content);
             request.setAttribute("paramRequest", paramRequest);
@@ -503,7 +508,7 @@ public class HTMLCulture extends GenericResource {
         }
     }
     
-    public Map<String, Long> getFileList(HttpServletRequest hsr, String version, ArrayList<String> allowedTypes) {
+    private Map<String, Long> getFileList(HttpServletRequest hsr, String version, ArrayList<String> allowedTypes) {
         Resource base = getResourceBase();
         Map<String, Long> files = new TreeMap<>();
         String resPath = SWBPlatform.getContextPath()+SWBPortal.getWorkPath()+base.getWorkPath()+"/"+version+"/images/";
@@ -531,7 +536,7 @@ public class HTMLCulture extends GenericResource {
         /**if (action.equalsIgnoreCase(SWBParamRequest.Action_EDIT) && versionNumber == 0 && tmpPath == null)
             action = SWBParamRequest.Action_ADD;**/
         //pathToRead.append(versionNumber).append("/");
-        path2Read.append(pathToRead);
+        path2Read.append("/").append(pathToRead);
         path2Read.append(fileName);
         pathToWrite.append(String.valueOf(versionNumber)).append("/");
         request.setAttribute("directory", pathToWrite.toString());
@@ -544,6 +549,13 @@ public class HTMLCulture extends GenericResource {
             log.error("Error to try read: " + resource.getId(), e);
         }
         return content;
+    }
+    
+    private EditorTemplate getEditorTemplate(String id) {
+        int index = Utils.toInt(id);
+        List<EditorTemplate> editorTemplateList = ExhibitionResource.editorTemplateList();
+        if (index < 1 || index > editorTemplateList.size()) return null;
+        return editorTemplateList.get(index-1);
     }
     
     /**

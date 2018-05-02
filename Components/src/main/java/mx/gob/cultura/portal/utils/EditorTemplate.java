@@ -22,14 +22,17 @@ public class EditorTemplate implements Serializable {
     private String preview;
     
     private Boolean active;
+    
+    private String fileName;
 
     private static final long serialVersionUID = 6295505990289706155L;
     
-    public EditorTemplate(String _id, String url, String title, String preview) {
+    public EditorTemplate(String _id, String url, String fileName, String title, String preview) {
         this._id = _id;
         this.url = url;
         this.title = title;
         this.preview = preview;
+        this.fileName = fileName;
         this.active = Boolean.TRUE;
     }
 
@@ -71,5 +74,13 @@ public class EditorTemplate implements Serializable {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+    
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }
