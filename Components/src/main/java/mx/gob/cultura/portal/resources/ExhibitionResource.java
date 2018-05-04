@@ -13,7 +13,6 @@ import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import mx.gob.cultura.portal.utils.EditorTemplate;
 
 import org.semanticwb.SWBUtils;
 import org.semanticwb.SWBPlatform;
@@ -24,11 +23,12 @@ import org.semanticwb.model.Resource;
 import org.semanticwb.model.Template;
 import org.semanticwb.model.TemplateRef;
 import org.semanticwb.model.ResourceType;
+import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.GenericResource;
 import org.semanticwb.portal.api.SWBActionResponse;
-import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceException;
 
+import mx.gob.cultura.portal.utils.EditorTemplate;
 /**
  *
  * @author sergio.tellez
@@ -36,6 +36,7 @@ import org.semanticwb.portal.api.SWBResourceException;
 public class ExhibitionResource extends GenericResource {
     
     public static final String ACTION_ADD_EXH = "ADD_EXH";
+    public static final String ACTION_DEL_EXH = "DEL_EXH";
     
     /** Objeto utilizado para generacion de mensajes en el log. */
     private static final Logger LOGGER = SWBUtils.getLogger(ExhibitionResource.class);
@@ -55,18 +56,31 @@ public class ExhibitionResource extends GenericResource {
     
     @Override
     public void processAction(HttpServletRequest request, SWBActionResponse response) throws SWBResourceException, IOException {
+        WebPage wp = null;
         String url = "/es/repositorio/home";
         try {
-            WebPage wp = createWebPage(request, response);
-            if (null != wp) {
-                Resource html = createResource(response.getWebPage().getWebSite(), "HTMLCulture", "Editor HTML");
-                Resource exhn = createResource(response.getWebPage().getWebSite(), "Exhibition", "Galería");
-                if (null != html) {
-                    html.setAttribute("template", request.getParameter("id"));
-                    wp.addResource(html);
+            if (ACTION_DEL_EXH.equals(response.getAction())) {
+                String idnewwp = request.getParameter("exh_del");
+                if (null != idnewwp) {
+                    String [] pages = idnewwp.split("/");
+                    wp = response.getWebPage().getWebSite().getWebPage(pages[pages.length - 1]);
+                    if (null != wp) {
+                        wp.setActive(false);
+                        url = response.getWebPage().getUrl();
+                    }
                 }
-                if (null != exhn) wp.addResource(exhn);
-                url = wp.getUrl()+"?act=vEdit";
+            }else {
+                wp = createWebPage(request, response);
+                if (null != wp) {
+                    Resource html = createResource(response.getWebPage().getWebSite(), "HTMLCulture", "Editor HTML");
+                    Resource exhn = createResource(response.getWebPage().getWebSite(), "Exhibition", "Galería");
+                    if (null != html) {
+                        html.setAttribute("template", request.getParameter("id"));
+                        wp.addResource(html);
+                    }
+                    if (null != exhn) wp.addResource(exhn);
+                    url = wp.getUrl()+"?act=vEdit";
+                }
             }
         } catch (SWBException ex) {
             LOGGER.error(ex);
@@ -119,11 +133,11 @@ public class ExhibitionResource extends GenericResource {
         return res;
     }
     
-    private List<EditorTemplate> editorTemplateList() {
+    public static List<EditorTemplate> editorTemplateList() {
         List<EditorTemplate> tmpls = new ArrayList<>();
-        tmpls.add(new EditorTemplate("1", "/work/models/repositorio/exhibition/plantilla1.html", "Plantilla 1", "/work/models/repositorio/exhibition/mini-plantilla-01.jpg"));
-        tmpls.add(new EditorTemplate("2", "/work/models/repositorio/exhibition/plantilla2.html", "Plantilla 2", "/work/models/repositorio/exhibition/mini-plantilla-02.jpg"));
-        tmpls.add(new EditorTemplate("3", "/work/models/repositorio/exhibition/plantilla3.html", "Plantilla 3", "/work/models/repositorio/exhibition/mini-plantilla-03.jpg"));
+        tmpls.add(new EditorTemplate("1", "models/repositorio/exhibition/", "plantilla1.html", "Plantilla 1", "/work/models/repositorio/exhibition/mini-plantilla-01.jpg"));
+        tmpls.add(new EditorTemplate("2", "models/repositorio/exhibition/", "plantilla2.html", "Plantilla 2", "/work/models/repositorio/exhibition/mini-plantilla-02.jpg"));
+        tmpls.add(new EditorTemplate("3", "models/repositorio/exhibition/", "plantilla3.html", "Plantilla 3", "/work/models/repositorio/exhibition/mini-plantilla-03.jpg"));
         return tmpls;
     }
 }

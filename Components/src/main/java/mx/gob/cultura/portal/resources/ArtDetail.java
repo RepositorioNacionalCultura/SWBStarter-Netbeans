@@ -33,6 +33,7 @@ public class ArtDetail extends GenericAdmResource {
     
     private static final String POSITION = "n";
     private static final String IDENTIFIER = "id";
+    private static final String MODE_VISOR = "VISOR";
     private static final String MODE_DIGITAL = "DIGITAL";
     private static final Logger LOG = SWBUtils.getLogger(ArtDetail.class);
     
@@ -42,6 +43,8 @@ public class ArtDetail extends GenericAdmResource {
         String mode = paramRequest.getMode();
         if (MODE_DIGITAL.equals(mode)) {
             doDigital(request, response, paramRequest);
+        }else if (MODE_VISOR.equals(mode)) {
+            //MODE_VISOR
         }else
             super.processRequest(request, response, paramRequest);
     }
