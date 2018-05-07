@@ -60,11 +60,19 @@
             }
         }
     }
-    Integer records = (Integer) session.getAttribute("NUM_RECORDS_TOTAL");
+    //Integer records = (Integer) session.getAttribute("NUM_RECORDS_TOTAL");
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
+
+    Integer records = null != session.getAttribute("NUM_RECORDS_TOTAL") ? (Integer)session.getAttribute("NUM_RECORDS_TOTAL") : 0;
+    
+    //llamada a la generacion del script para compartir con Facebook: funcion fbShare()
+    String scriptFB = mx.gob.cultura.portal.resources.Utilities.getScriptFBShare(request);
 %>
+<%=scriptFB%>
+
 <%=scriptHeader%>
+
 <script>
     function add(id) {
         //var leftPosition = (screen.width) ? (screen.width-990)/3 : 0;
@@ -137,7 +145,8 @@
                 </div>
                 <div class="explo2 row">
                     <div class="col-3">
-                        <span class="ion-social-facebook"></span>
+                        <!-- llamada a funcion para compartir -->
+                        <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
                     </div>
                     <div class="col-3">
                         <span class="ion-social-twitter"></span>
@@ -231,8 +240,10 @@
                 <p class="vermas"><a href="#">Ves más <span class="ion-plus-circled"></span></a></p>
             </div>
             <div class="col-12 col-sm-6  col-md-3 col-lg-3 order-md-3 order-sm-3 order-3 clave">
-                <div class="redes">
-                    <span class="ion-social-facebook"></span>
+		            <div class="redes">
+                    <!-- llamada a funcion para compartir -->
+                    <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
+
                     <span class="ion-social-twitter"></span>
                 </div>
                 <div>

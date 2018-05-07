@@ -21,45 +21,48 @@ public class SocialTags extends GenericAdmResource {
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-        if (paramRequest.getCallMethod() == SWBParamRequest.Call_STRATEGY) {
-            String oId = request.getParameter("id");
+        String oId = request.getParameter("id");
+        if (paramRequest.getCallMethod() == SWBParamRequest.Call_STRATEGY && null != oId) {
 
-            String uri = getResourceBase().getAttribute("url","http://localhost:8080") +
+            String uri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint") + //getResourceBase().getAttribute("url","http://localhost:8080") +
                 "/api/v1/search?identifier=" + oId;
+            String fbAppId = paramRequest.getWebPage().getWebSite().getModelProperty("facebook_appid");
 
             GetBICRequest req = new GetBICRequest(uri);
             Entry entry = req.makeRequest();
 
             if (null != entry) {
                 StringBuilder metas = new StringBuilder();
+                metas.append("<meta charset=\"utf-8\" />\n");
+                metas.append("");
+                if (null != fbAppId) {
+                    metas.append("<meta property=\"fb:app_id\" content=\"");
+                    metas.append(fbAppId);
+                    metas.append("\" />\n");
+                }
+                metas.append("<meta property=\"og:type\" content=\"website\" />\n");
+//                metas.append("<meta property=\"og:description\" content=\"Visita el Repositorio Digital del Patrimonio Cultural de México. Este es un ejemplo de lo que puedes encontrar.\" />\n");
                 metas.append("<meta property=\"og:url\" content=\"")
-                    .append(paramRequest.getResourceBase().getAttribute("fburl", ""))
-                    .append("\"/>");
+                        .append(request.getRequestURL())
+                        .append("?")
+                        .append(request.getQueryString())
+                        .append("\" />\n");
 
                 metas.append("<meta property=\"og:title\" content=\"")
                     .append(entry.getRecordtitle().get(0).getValue())
-                    .append("\"/>");
+                    .append("\" />\n");
 
                 metas.append("<meta property=\"og:image\" content=\"")
                     .append(entry.getDigitalobject().get(0).getUrl())
-                    .append("\"/>");
-
-                String appId = paramRequest.getResourceBase().getAttribute("appId", null);
-                if (null != appId) {
-                    metas.append("<meta property=\"fb:app_id\" content=\"")
-                        .append(appId)
-                        .append("\"/>");
-                }
+                    .append("\" />\n");
 
                 try {
                     Writer out = response.getWriter();
                     out.write(metas.toString());
                 } catch (IOException ioex) {
-                    ioex.printStackTrace();
+                    ioex.printStackTrace(System.err);
                 }
             }
-        } else {
-            return;
         }
     }
 }
