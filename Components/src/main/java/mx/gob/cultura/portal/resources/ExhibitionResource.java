@@ -5,9 +5,11 @@
  */
 package mx.gob.cultura.portal.resources;
 
+import java.util.List;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Objects;
 import org.semanticwb.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
@@ -28,7 +30,11 @@ import org.semanticwb.portal.api.GenericResource;
 import org.semanticwb.portal.api.SWBActionResponse;
 import org.semanticwb.portal.api.SWBResourceException;
 
+import org.semanticwb.model.TemplateGroup;
+import org.semanticwb.portal.api.SWBResourceURL;
+import org.semanticwb.portal.api.SWBResourceModes;
 import mx.gob.cultura.portal.utils.EditorTemplate;
+
 /**
  *
  * @author sergio.tellez
@@ -45,7 +51,7 @@ public class ExhibitionResource extends GenericResource {
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
         String path = "/swbadmin/jsp/rnc/exhibitions/resource.jsp";
         try {
-           request.setAttribute("tmpls", editorTemplateList());
+           request.setAttribute("tmpls", editorTemplateList(paramRequest.getWebPage().getWebSite()));
 	   request.setAttribute("paramRequest", paramRequest);
            RequestDispatcher rd = request.getRequestDispatcher(path);
            rd.include(request, response);
@@ -86,6 +92,69 @@ public class ExhibitionResource extends GenericResource {
             LOGGER.error(ex);
         }
         response.sendRedirect(url);
+    }
+    
+    @Override
+    public void doAdmin(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
+        StringBuilder ret = new StringBuilder();
+        try {
+            if ("add".equals(paramRequest.getAction()) || "edit".equals(paramRequest.getAction())) {
+                SWBResourceURL url=paramRequest.getRenderUrl();
+                url.setMode(SWBResourceModes.Mode_ADMIN);
+                url.setAction("save");
+                ret.append("<form method=\"POST\" action=\"").append(url.toString()).append("\"> \n");
+                ret.append("	<div class=swbform> \n");
+                ret.append("		<table width=\"100%\"  border=\"0\" cellpadding=\"5\" cellspacing=\"0\"> \n");
+                
+                ret.append("			<tr> \n");
+                ret.append("				<td class=\"datos\">Identificador del grupo de plantillas base: </td> \n");
+                ret.append("				<td class=\"valores\"> \n");
+                ret.append("					<input type=\"text\" name=\"idGroupTemplate\" value=\"").append(getResourceBase().getAttribute("idGroupTemplate","").trim()).append("\" size=\"40\">");
+                ret.append("				</td>");
+                ret.append("			</tr> \n");
+                
+                ret.append("			<tr> \n");
+                ret.append("				<td colspan=2 align=right> \n");
+                ret.append("					<br><hr size=1 noshade> \n");
+                ret.append("					<input type=submit name=btnSave value=\"Enviar\" class=boton> \n");
+                ret.append("				</td> \n");
+                ret.append("			</tr> \n");
+                ret.append("		</table> \n");
+                ret.append("	</div> \n");
+                ret.append("</form> \n");
+            }else if ("save".equals(paramRequest.getAction())) {
+                getResourceBase().setAttribute("idGroupTemplate", request.getParameter("idGroupTemplate"));
+                getResourceBase().updateAttributesToDB();
+                SWBResourceURL url=paramRequest.getRenderUrl();
+                url.setMode(SWBResourceModes.Mode_ADMIN);
+                url.setAction("resume");
+                response.sendRedirect(url.toString());
+            }else if ("resume".equals(paramRequest.getAction())) {
+                SWBResourceURL url=paramRequest.getRenderUrl();
+                url.setMode(SWBResourceModes.Mode_ADMIN);
+                url.setAction("edit");
+                ret.append("<form method=\"POST\" action=\"").append(url.toString()).append("\"> \n");
+                ret.append("	<div class=swbform> \n");
+                ret.append("		<table width=\"100%\"  border=\"0\" cellpadding=\"5\" cellspacing=\"0\"> \n");
+                ret.append("			<tr> \n");
+                ret.append("				<td class=\"datos\">Identificador del grupo de plantillas base: </td> \n");
+                ret.append("				<td class=\"valores\"> \n");
+                ret.append(                                 getResourceBase().getAttribute("idGroupTemplate","").trim());
+                ret.append("				</td>");
+                ret.append("			</tr> \n");
+                
+                ret.append("			<tr> \n");
+                ret.append("				<td colspan=2 align=right> \n");
+                ret.append("					<br><hr size=1 noshade> \n");
+                ret.append("					<input type=submit name=btnSave value=\"Regresar\" class=boton> \n");
+                ret.append("				</td> \n");
+                ret.append("			</tr> \n");
+                ret.append("		</table> \n");
+                ret.append("	</div> \n");
+                ret.append("</form> \n");
+            }
+        }catch (SWBException e) { LOGGER.info(e.getMessage());}
+        response.getWriter().print(ret.toString());
     }
     
     private WebPage createWebPage(HttpServletRequest request, SWBActionResponse response) throws SWBException {
@@ -133,11 +202,23 @@ public class ExhibitionResource extends GenericResource {
         return res;
     }
     
-    public static List<EditorTemplate> editorTemplateList() {
+    public List<EditorTemplate> editorTemplateList(WebSite site) {
         List<EditorTemplate> tmpls = new ArrayList<>();
-        tmpls.add(new EditorTemplate("1", "models/repositorio/exhibition/", "plantilla1.html", "Plantilla 1", "/work/models/repositorio/exhibition/mini-plantilla-01.jpg"));
-        tmpls.add(new EditorTemplate("2", "models/repositorio/exhibition/", "plantilla2.html", "Plantilla 2", "/work/models/repositorio/exhibition/mini-plantilla-02.jpg"));
-        tmpls.add(new EditorTemplate("3", "models/repositorio/exhibition/", "plantilla3.html", "Plantilla 3", "/work/models/repositorio/exhibition/mini-plantilla-03.jpg"));
+        TemplateGroup exhibitions = TemplateGroup.ClassMgr.getTemplateGroup(getResourceBase().getAttribute("idGroupTemplate",""), site);
+        Iterator it = exhibitions.listTemplates();
+        while (it.hasNext()) {
+            Template templateIndex = (Template)it.next();
+            if (Objects.equals(templateIndex.isActive(), Boolean.TRUE)) {
+                String url = templateIndex.getWorkPath().replaceFirst("/", "")+"/"+templateIndex.getActualVersion().getVersionNumber()+"/";
+                EditorTemplate template = new EditorTemplate(templateIndex.getId(), null, null, templateIndex.getTitle(), "/work/models/repositorio/exhibition/mini-plantilla-01.jpg");
+                template.setUrl(url);
+                if (null != templateIndex.getDescription() && !templateIndex.getDescription().trim().isEmpty() &&
+                    (templateIndex.getDescription().contains(".jpg") || templateIndex.getDescription().contains(".gif") || templateIndex.getDescription().contains(".png")))
+                    template.setPreview("/work/"+url+"images/"+templateIndex.getDescription());
+                template.setFileName(templateIndex.getFileName(templateIndex.getActualVersion().getVersionNumber()));
+                tmpls.add(template);
+            }
+        }
         return tmpls;
     }
 }
