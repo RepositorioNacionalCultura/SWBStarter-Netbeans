@@ -464,6 +464,21 @@ public class HTMLCulture extends GenericResource {
                     }
                     SWBUtils.IO.removeDirectory(directoryToRemove);
                 }
+                if (textSaved) {
+                    int index = 0;
+                    WebPage wp = paramRequest.getWebPage();
+                    String resourcePath = resource.getWorkPath() + "/" + (versionNumber) + "/" + FOLDER;
+                    File imagesDirectory = new File(directoryToCreate);
+                    if (imagesDirectory.exists() && SWBUtils.IO.createDirectory(directoryToCreate)) {
+                        for (String strFile : imagesDirectory.list()) {
+                            if (strFile.endsWith(".jpg") || strFile.endsWith(".png") || strFile.endsWith(".gif")) {
+                                ++index;
+                                wp.setProperty("poster"+index, "/work" + resourcePath+"/"+strFile);  
+                            }
+                        }
+                    }
+                    wp.setProperty("posters",String.valueOf(index));
+                }
             } catch (IOException e) {
                 textSaved = false;
                 log.error("Error to try save content", e);
