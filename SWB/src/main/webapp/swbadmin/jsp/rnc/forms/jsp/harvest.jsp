@@ -40,12 +40,12 @@
                 action = "";
             }
             String dspath = "/swbadmin/jsp/rnc/forms/jsp/datasources.js";
-            System.out.println("ID:"+id);
+            //System.out.println("ID:"+id);
             SWBScriptEngine engine = DataMgr.initPlatform(dspath, session);
             SWBDataSource datasource = engine.getDataSource("Extractor");
             DataObject dobj = datasource.fetchObjById(id);
             
-            System.out.println("DO:\n"+dobj);
+            //System.out.println("DO:\n"+dobj);
 
         %>
         <h1>JSON Extractor (<%=dobj.getString("name")%>)</h1>
@@ -109,7 +109,7 @@
                 if (null != pid) {
                     ExtractorManager extMgr = ExtractorManager.getInstance(dspath);
                     extMgr.loadExtractor(dobj);
-System.out.println("dobj: \n"+dobj.toString());
+//System.out.println("dobj: \n"+dobj.toString());
                     extMgr.processExtractor(id);
                     endTime = System.currentTimeMillis();
 //                    status = extMgr.getStatus(id);
