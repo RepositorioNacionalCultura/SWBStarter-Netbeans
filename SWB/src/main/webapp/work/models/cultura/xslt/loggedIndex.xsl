@@ -19,15 +19,46 @@
                     <xsl:for-each select="father">
                         <xsl:for-each select="son">
                             <div class="col-6 col-md-4">
-                                <div class="mosaico mosaico1 radius-overflow">
-                                    <a href="{@sonref}" target="{@target}" title="{@sontitle}">
-                                        <img src="/work/models/repositorio/img/empty.jpg"/>
-                                    </a>
-                                </div>
+
+				<xsl:choose>
+				    <xsl:when test="@posters = '1'">
+					<div class="mosaico mosaico1 radius-overflow">
+					    <a href="{@sonref}" target="_self" title="{@sontitle}">
+					        <img src="{@poster1}"/>
+					    </a>
+					</div>
+				    </xsl:when>
+				    <xsl:when test="@posters = '3'">
+					<div class="mosaico mosaico3 radius-overflow">
+					    <a href="{@sonref}" target="_self" title="{@sontitle}">
+						<div class="mosaico3a">
+						    <img src="{@poster1}"/>
+						</div>
+					        <div class="mosaico3b">
+						    <div>
+         					        <img src="{@poster2}"/>
+						    </div>
+						    <div>
+						        <img src="{@poster3}"/>
+						    </div>
+						</div>
+					    </a>
+					</div>
+				    </xsl:when>
+				    <xsl:otherwise>
+					<div class="mosaico mosaico1 radius-overflow">
+					    <a href="{@sonref}" target="_self" title="{@sontitle}">
+					        <img src="/work/models/repositorio/img/empty.jpg"/>
+					    </a>
+					</div>
+				    </xsl:otherwise>
+				</xsl:choose>
+
                                 <div class="mosaico-txt">
                                     <p><xsl:value-of select="sontitle" /></p>
                                     <a href="#"><span class="ion-social-facebook"></span></a>
                                     <a href="#"><span class="ion-social-twitter"></span></a>
+				    <a href="#" onclick="del('{@sonref}')">Eliminar</a>
                                     <a href="{@sonref}?act=vEdit"><span class="ion-edit"></span></a>
                                 </div>
                             </div>

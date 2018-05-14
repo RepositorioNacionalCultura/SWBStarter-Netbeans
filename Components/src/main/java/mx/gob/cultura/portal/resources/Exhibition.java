@@ -18,8 +18,8 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.utils.ArtWork;
+import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.request.ListBICRequest;
 
