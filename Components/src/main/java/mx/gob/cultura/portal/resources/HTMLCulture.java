@@ -116,7 +116,7 @@ public class HTMLCulture extends GenericResource {
             String numversion = getResourceBase().getAttribute("numversion","");
             if (!numversion.isEmpty()) content = getContent(request, paramRequest);
             else {
-                EditorTemplate template = getEditorTemplate(getResourceBase().getAttribute("template"), paramRequest);
+                EditorTemplate template = getEditorTemplate(getResourceBase().getAttribute("template"), getResourceBase().getAttribute("idGroupTemplate"), paramRequest);
                 if (null != template) {
                     content = getContentTempl(request, paramRequest, template.getUrl(), template.getFileName());
                     content = parseTemplate(content, template.getUrl());
@@ -465,19 +465,18 @@ public class HTMLCulture extends GenericResource {
                     SWBUtils.IO.removeDirectory(directoryToRemove);
                 }
                 if (textSaved) {
-                    int index = 0;
                     WebPage wp = paramRequest.getWebPage();
+                    StringBuilder poster = new StringBuilder();
                     String resourcePath = resource.getWorkPath() + "/" + (versionNumber) + "/" + FOLDER;
                     File imagesDirectory = new File(directoryToCreate);
                     if (imagesDirectory.exists() && SWBUtils.IO.createDirectory(directoryToCreate)) {
                         for (String strFile : imagesDirectory.list()) {
-                            if (strFile.endsWith(".jpg") || strFile.endsWith(".png") || strFile.endsWith(".gif")) {
-                                ++index;
-                                wp.setProperty("poster"+index, "/work" + resourcePath+"/"+strFile);  
-                            }
+                            if (strFile.endsWith(".jpg") || strFile.endsWith(".png") || strFile.endsWith(".gif"))
+                                poster.append("#").append("/work").append(resourcePath).append("/").append(strFile);  
                         }
+                        if (poster.length() > 1)
+                            wp.setProperty("posters", poster.substring(1));
                     }
-                    wp.setProperty("posters",String.valueOf(index));
                 }
             } catch (IOException e) {
                 textSaved = false;
@@ -571,9 +570,10 @@ public class HTMLCulture extends GenericResource {
         return content;
     }
     
-    private EditorTemplate getEditorTemplate(String id, SWBParamRequest paramRequest) {
+    private EditorTemplate getEditorTemplate(String id, String idGroupTemplate, SWBParamRequest paramRequest) {
+        System.out.println("idGroupTemplate ID: " + idGroupTemplate);
         if (null == id || id.isEmpty()) return null;
-        List<EditorTemplate> editorTemplateList = (new ExhibitionResource()).editorTemplateList(paramRequest.getWebPage().getWebSite());
+        List<EditorTemplate> editorTemplateList = ExhibitionResource.editorTemplateList(paramRequest.getWebPage().getWebSite(), idGroupTemplate);
         for (EditorTemplate tpl : editorTemplateList) {
             if (tpl.getId().equals(id)) return tpl;
         }

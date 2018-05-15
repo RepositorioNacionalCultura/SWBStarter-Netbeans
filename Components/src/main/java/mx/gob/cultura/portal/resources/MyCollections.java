@@ -32,6 +32,18 @@ import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.GenericResource;
 import org.semanticwb.portal.api.SWBActionResponse;
 import org.semanticwb.portal.api.SWBResourceException;
+import static mx.gob.cultura.portal.utils.Constants.FULL_LIST;
+import static mx.gob.cultura.portal.utils.Constants.NUM_PAGE_JUMP;
+import static mx.gob.cultura.portal.utils.Constants.NUM_PAGE_LIST;
+import static mx.gob.cultura.portal.utils.Constants.PARAM_REQUEST;
+import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_TOTAL;
+import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_VISIBLE;
+import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
+import static mx.gob.cultura.portal.utils.Constants.PAGE_JUMP_SIZE;
+import static mx.gob.cultura.portal.utils.Constants.PAGE_LIST;
+import static mx.gob.cultura.portal.utils.Constants.PAGE_NUM_ROW;
+import static mx.gob.cultura.portal.utils.Constants.STR_JUMP_SIZE;
+import static mx.gob.cultura.portal.utils.Constants.TOTAL_PAGES;
 
 /**
  *
@@ -52,18 +64,8 @@ public class MyCollections extends GenericResource {
     public static final String MODE_VIEW_ALL = "VIEW_ALL";
     public static final String ACTION_DEL_FAV = "DEL_FAV";
     
-    private static final int PAGE_NUM_ROW = 8;
-    private static final int PAGE_JUMP_SIZE = 5;
-    private static final String PAGE_LIST = "PAGE_LIST";
-    private static final String FULL_LIST = "FULL_LIST";
-    private static final String TOTAL_PAGES = "TOTAL_PAGES";
-    private static final String NUM_PAGE_JUMP = "NUM_PAGE_JUMP";
-    private static final String NUM_PAGE_LIST = "NUM_PAGE_LIST";
-    private static final String NUM_RECORDS_TOTAL = "NUM_RECORDS_TOTAL";
-    
     private static final String COLLECTION = "collection";
     private static final String COLLECTION_RENDER = "_collection";
-    private static final String PARAM_REQUEST = "paramRequest";
     
     private static final Logger LOG = Logger.getLogger(MyCollections.class.getName());
     
@@ -289,7 +291,7 @@ public class MyCollections extends GenericResource {
             pagenum = Integer.parseInt(p);
         if (pagenum<=0) pagenum = 1;
         request.setAttribute(NUM_PAGE_LIST, pagenum);
-        request.setAttribute("PAGE_NUM_ROW", PAGE_NUM_ROW);
+        request.setAttribute(PAGE_NUM_ROW, NUM_ROW);
         page(pagenum, request);
         String url = "/swbadmin/jsp/rnc/collections/rows.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(url);
@@ -354,17 +356,17 @@ public class MyCollections extends GenericResource {
         if (null==total) total = 0;
         if (null==rows) rows = new ArrayList();
         try {
-            Integer totalPages = total/PAGE_NUM_ROW;
-            if (total%PAGE_NUM_ROW != 0)
+            Integer totalPages = total/NUM_ROW;
+            if (total%NUM_ROW != 0)
                 totalPages ++;
             request.setAttribute(TOTAL_PAGES, totalPages);
             Integer currentLeap = (pagenum-1)/PAGE_JUMP_SIZE;
             request.setAttribute(NUM_PAGE_JUMP, currentLeap);
-            request.setAttribute("PAGE_JUMP_SIZE", PAGE_JUMP_SIZE);
+            request.setAttribute(STR_JUMP_SIZE, PAGE_JUMP_SIZE);
             ArrayList rowsPage = getRows(pagenum, rows);
             request.setAttribute(PAGE_LIST, rowsPage);
             request.setAttribute(NUM_RECORDS_TOTAL, rows.size());
-            request.setAttribute("NUM_RECORDS_VISIBLE", rowsPage.size());
+            request.setAttribute(NUM_RECORDS_VISIBLE, rowsPage.size());
         }catch(Exception e) {
             LOG.info(e.getMessage());
         }
@@ -378,7 +380,7 @@ public class MyCollections extends GenericResource {
         pagesRows.put(pageCount, pageRows);
         for (int i=0; i<rows.size(); i++) {
             pageRows.add(rows.get(i));
-            if (i+1 < rows.size() && ((i+1) % PAGE_NUM_ROW) == 0) {
+            if (i+1 < rows.size() && ((i+1) % NUM_ROW) == 0) {
                 pageCount++;
                 pageRows = new ArrayList();
                 pagesRows.put(pageCount, pageRows);

@@ -5,8 +5,14 @@
  */
 package mx.gob.cultura.portal.resources;
 
+import java.util.Map;
+import java.util.List;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
@@ -15,25 +21,93 @@ import org.semanticwb.Logger;
 import org.semanticwb.SWBUtils;
 import org.semanticwb.model.WebPage;
 
+import javax.servlet.ServletException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import mx.gob.cultura.portal.utils.Utils;
+
 import org.semanticwb.SWBPlatform;
+import mx.gob.cultura.portal.utils.Utils;
 import org.semanticwb.portal.api.SWBParamRequest;
+import org.semanticwb.portal.api.GenericAdmResource;
 import org.semanticwb.portal.api.SWBResourceException;
-import org.semanticwb.portal.resources.TematicIndexXSL;
+
+import static mx.gob.cultura.portal.utils.Constants.FULL_LIST;
+import static mx.gob.cultura.portal.utils.Constants.NUM_PAGE_JUMP;
+import static mx.gob.cultura.portal.utils.Constants.PAGE_NUM_ROW;
+import static mx.gob.cultura.portal.utils.Constants.PARAM_REQUEST;
+
+import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
+import static mx.gob.cultura.portal.utils.Constants.NUM_PAGE_LIST;
+import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_TOTAL;
+import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_VISIBLE;
+
+import static mx.gob.cultura.portal.utils.Constants.PAGE_LIST;
+import static mx.gob.cultura.portal.utils.Constants.PAGE_JUMP_SIZE;
+import static mx.gob.cultura.portal.utils.Constants.STR_JUMP_SIZE;
+import static mx.gob.cultura.portal.utils.Constants.TOTAL_PAGES;
 
 /**
  *
  * @author sergio.tellez
  */
-public class ExhibitionIndex extends TematicIndexXSL {
+public class ExhibitionHome extends GenericAdmResource {
 
     private final String webpath = SWBPlatform.getContextPath();
     private final String path = this.webpath + "/swbadmin/xsl/TematicIndexXSL/";
-    private static final Logger LOGGER = SWBUtils.getLogger(ExhibitionIndex.class);
-
+    private static final Logger LOGGER = SWBUtils.getLogger(ExhibitionHome.class);
+    
     @Override
+    public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        response.setContentType("text/html; charset=UTF-8");
+        String jsppath = "/swbadmin/jsp/rnc/exhibitions/tematic/index.jsp";
+        RequestDispatcher rd = request.getRequestDispatcher(jsppath);
+        try {
+            request.setAttribute(PARAM_REQUEST, paramRequest);
+            List<org.bson.Document> exhibitionList = getExhibitions(request, response, paramRequest);
+            request.setAttribute("exhibitions", exhibitionList);
+            request.setAttribute(NUM_RECORDS_TOTAL, exhibitionList.size());
+            init(request);
+            rd.include(request, response);
+        } catch (ServletException se) {
+            LOGGER.info(se.getMessage());
+        }
+    }
+    
+    private List<org.bson.Document> getExhibitions(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        WebPage pageBase = paramRequest.getWebPage();
+        List<String> elements = new ArrayList<>();
+        List<org.bson.Document> exhibitionList = new ArrayList<>();
+        if (null != getResourceBase().getAttribute("pageBase"))
+            pageBase = paramRequest.getWebPage().getWebSite().getWebPage(getResourceBase().getAttribute("pageBase"));
+        String usrlanguage = paramRequest.getUser().getLanguage() == null ? "es" : paramRequest.getUser().getLanguage();
+        Iterator<WebPage> exhibitions = pageBase.listChilds(usrlanguage, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, null);
+        while (exhibitions.hasNext()) {
+            boolean add = false;
+            WebPage exhibition = (WebPage) exhibitions.next();
+            org.bson.Document bson = new org.bson.Document("url", exhibition.getUrl(usrlanguage, false)).append("path", this.path).append("id", exhibition.getId())
+                .append("target", null != exhibition.getTarget() && !"".equalsIgnoreCase(exhibition.getTarget()) ? exhibition.getTarget() : "_self")
+                .append("desc", exhibition.getDisplayDescription(usrlanguage) == null ? "" : exhibition.getDisplayDescription(usrlanguage))
+                .append("title", exhibition.getDisplayName(usrlanguage));
+            if (null != exhibition.getProperty("posters") && !exhibition.getProperty("posters").isEmpty()) {
+                if (exhibition.getProperty("posters").indexOf("#") >0) {
+                    String [] posters = exhibition.getProperty("posters").split("#");
+                    for (int i=0; i<posters.length; i++) {
+                        System.out.println("poster: " + i + " " + posters[i]);
+                        elements.add(posters[i]);
+                    }
+                }else elements.add(exhibition.getProperty("posters"));
+                bson.append("posters", elements);
+            }
+            if (null != paramRequest.getUser() && paramRequest.getUser().isSigned()) {
+                add = paramRequest.getUser().getId().equalsIgnoreCase(exhibition.getCreator().getId());
+            }else add = exhibition.isValid() && paramRequest.getUser().haveAccess(exhibition);
+            if (add)
+                exhibitionList.add(bson);
+        }
+        return exhibitionList;
+    }
+
     public Document getDom(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         int ison = 0;
         int igrandson = 0;
@@ -151,5 +225,56 @@ public class ExhibitionIndex extends TematicIndexXSL {
                     + " with identifier " + getResourceBase().getId() + " - " + getResourceBase().getTitle(), e);
         }
         return null;
+    }
+    
+    private void init(HttpServletRequest request) throws SWBResourceException, java.io.IOException {
+        int pagenum = 0;
+        String p = request.getParameter("p");
+        if (null != p) pagenum = Integer.parseInt(p);
+        if (pagenum<=0) pagenum = 1;
+        request.setAttribute(NUM_PAGE_LIST, pagenum);
+        request.setAttribute(PAGE_NUM_ROW, NUM_ROW);
+        page(pagenum, request);
+    }
+    
+    private void page(int pagenum, HttpServletRequest request) {
+        List<?> rows = (List<?>)request.getAttribute(FULL_LIST);
+        Integer total = (Integer)request.getAttribute(NUM_RECORDS_TOTAL);
+        if (null==total) total = 0;
+        if (null==rows) rows = new ArrayList();
+        try {
+            Integer totalPages = total/NUM_ROW;
+            if (total%NUM_ROW != 0)
+                totalPages ++;
+            request.setAttribute(TOTAL_PAGES, totalPages);
+            Integer currentLeap = (pagenum-1)/PAGE_JUMP_SIZE;
+            request.setAttribute(NUM_PAGE_JUMP, currentLeap);
+            request.setAttribute(STR_JUMP_SIZE, PAGE_JUMP_SIZE);
+            ArrayList rowsPage = getRows(pagenum, rows);
+            request.setAttribute(PAGE_LIST, rowsPage);
+            request.setAttribute(NUM_RECORDS_TOTAL, rows.size());
+            request.setAttribute(NUM_RECORDS_VISIBLE, rowsPage.size());
+        }catch(Exception e) {
+            LOGGER.info(e.getMessage());
+        }
+    }
+    
+    private ArrayList getRows(int page, List<?> rows) {
+        int pageCount = 1;
+        if (rows==null || rows.isEmpty()) return new ArrayList();
+        Map<Integer, ArrayList<?>> pagesRows = new HashMap<>();
+        ArrayList pageRows = new ArrayList();
+        pagesRows.put(pageCount, pageRows);
+        for (int i=0; i<rows.size(); i++) {
+            pageRows.add(rows.get(i));
+            if (i+1 < rows.size() && ((i+1) % NUM_ROW) == 0) {
+                pageCount++;
+                pageRows = new ArrayList();
+                pagesRows.put(pageCount, pageRows);
+            }
+        }
+        ArrayList rowsPage = pagesRows.get(page);
+        if (rowsPage==null) rowsPage = new ArrayList();
+        return rowsPage;
     }
 }
