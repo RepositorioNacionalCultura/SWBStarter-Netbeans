@@ -51,7 +51,7 @@ public class ExhibitionResource extends GenericResource {
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
         String path = "/swbadmin/jsp/rnc/exhibitions/resource.jsp";
         try {
-           request.setAttribute("tmpls", editorTemplateList(paramRequest.getWebPage().getWebSite()));
+           request.setAttribute("tmpls", editorTemplateList(paramRequest.getWebPage().getWebSite(), getResourceBase().getAttribute("idGroupTemplate","")));
 	   request.setAttribute("paramRequest", paramRequest);
            RequestDispatcher rd = request.getRequestDispatcher(path);
            rd.include(request, response);
@@ -64,6 +64,7 @@ public class ExhibitionResource extends GenericResource {
     public void processAction(HttpServletRequest request, SWBActionResponse response) throws SWBResourceException, IOException {
         WebPage wp = null;
         String url = "/es/repositorio/home";
+        System.out.println("processAction: " + request.getParameter("id"));
         try {
             if (ACTION_DEL_EXH.equals(response.getAction())) {
                 String idnewwp = request.getParameter("exh_del");
@@ -82,6 +83,8 @@ public class ExhibitionResource extends GenericResource {
                     Resource exhn = createResource(response.getWebPage().getWebSite(), "Exhibition", "Galería");
                     if (null != html) {
                         html.setAttribute("template", request.getParameter("id"));
+                        html.setAttribute("idGroupTemplate", getResourceBase().getAttribute("idGroupTemplate",""));
+                        html.updateAttributesToDB();
                         wp.addResource(html);
                     }
                     if (null != exhn) wp.addResource(exhn);
@@ -202,9 +205,9 @@ public class ExhibitionResource extends GenericResource {
         return res;
     }
     
-    public List<EditorTemplate> editorTemplateList(WebSite site) {
+    public static List<EditorTemplate> editorTemplateList(WebSite site, String idGroupTemplate) {
         List<EditorTemplate> tmpls = new ArrayList<>();
-        TemplateGroup exhibitions = TemplateGroup.ClassMgr.getTemplateGroup(getResourceBase().getAttribute("idGroupTemplate",""), site);
+        TemplateGroup exhibitions = TemplateGroup.ClassMgr.getTemplateGroup(idGroupTemplate, site);
         Iterator it = exhibitions.listTemplates();
         while (it.hasNext()) {
             Template templateIndex = (Template)it.next();
