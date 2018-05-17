@@ -75,7 +75,9 @@
                             title: "Extractor",
                             //canEdit:false,
                             fields: [
-                                {name: "name", title: "Nombre/Modelo", type: "string", required:true, colSpan: 3, width: "100%", canEdit:true},
+                                {name: "fullHolderName", title: "Nombre completo del proveedor de datos", type: "string", required:true, colSpan: 3, width: "100%", canEdit:true, endRow:true},
+                                {name: "name", title: "Nombre del Modelo", type: "string", required:true, colSpan: 3, width: "100%", canEdit:true},
+                                
                                 {name: "class", title: "Extractor a utilizar", endRow: true, canEdit:true,
                                     changed: function (form, field, value) {
                                         var mostrar = false;

@@ -158,9 +158,9 @@ public class SessionInitializer extends GenericResource {
     public static String getGoogleLink(String modelId) {
         
         StringBuilder text = new StringBuilder(128);
-        text.append("<div id=\"googlePButton\"><img src=\"/work/models/");
+        text.append("<a href=\"#\" id=\"loginWithGoogle\" onclick=\"javascript:loginGPByClick();\"><img src=\"/work/models/");
         text.append(modelId);
-        text.append("/img/icono-goo.png\"></div>\n");
+        text.append("/img/icono-goo.png\" /></a>\n");
         return text.toString();
     }
     
@@ -219,6 +219,7 @@ public class SessionInitializer extends GenericResource {
             //se agrega el usuario a la sesion
             User oldUser = response.getUser();
             String id = request.getParameter("id");
+            System.out.println("checkCredential: " + id);
             try {
                 user.checkCredential(id.toCharArray());
             } catch (Exception e) {
