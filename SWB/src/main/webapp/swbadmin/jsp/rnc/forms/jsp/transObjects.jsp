@@ -135,7 +135,7 @@
                             </thead>
                             <tbody>
                                 <%    
-                                    System.out.println("0");
+//                                    System.out.println("0");
                                     int numItem = numpage * 50;
                                     while (res.hasNext()) {
                                         DataObject dotmp = res.next();
@@ -147,7 +147,7 @@
                                         } catch (Exception e) {
                                             tmpId = dotmp.get("identifier").toString();
                                         }
-                                        System.out.println("1");
+//                                        System.out.println("1");
                                         //revisar si tiene título
                                         String tmpTitle = "No disponible";
                                         try {
@@ -192,11 +192,11 @@
                                             tmpTitle = dotmp.get("resourcetitle").toString();
                                             //System.out.println("No title");
                                         }
-                                        System.out.println("2");
+//                                        System.out.println("2");
                                         //revisar si tiene descripción
                                         String tmpDescrip = dotmp.getString("resourcedescription", "NO DESCRIPTION AVAILABLE");
 
-                                        System.out.println("3");
+//                                        System.out.println("3");
                                         String tmpDigital = "NO DIGITAL OBJECT FOUND";
                                         String rights = "NO RIGHTS FOUND";
                                         String format = "NO DIGITAL OBJECT FORMAT FOUND";
@@ -215,7 +215,7 @@
                                             tmpDigital = dotmp.get("digitalObject").toString();
                                             //System.out.println("No Digital Object");
                                         }
-                                        System.out.println("4");
+//                                        System.out.println("4");
                                         String tipos = "NO TYPE AVAILABLE"; //dotmp.get("resourcetype").toString();
                                         try {
                                             if (null!=dotmp.get("resourcetype")&&!dotmp.getDataList("resourcetype").isEmpty()) {
@@ -229,7 +229,7 @@
                                             tipos = dotmp.get("resourcetype").toString();
                                             //System.out.println("No Type");
                                         }
-                                        System.out.println("5");
+//                                        System.out.println("5");
 //                                        String rights = "NO RIGHTS FOUND";
 //                                        try {
 //                                            if (dotmp.get("rights")!=null&&!dotmp.getDataList("rights").isEmpty()) {
@@ -242,7 +242,7 @@
 //                                            rights = dotmp.get("rights").toString();
 //                                            //System.out.println("No Rights");
 //                                        }
-                                        System.out.println("6");
+//                                        System.out.println("6");
                                         String autor = "NO AUTHOR FOUND"; //dotmp.get("creator").toString();
                                         try {
                                             if (dotmp.get("creator")!=null&&!dotmp.getDataList("creator").isEmpty()) {
@@ -254,7 +254,7 @@
                                         } catch (Exception e) {
                                             autor = dotmp.get("creator").toString();
                                         }
-                                        System.out.println("7");
+//                                        System.out.println("7");
                                         String datecreated = "NO CREATION DATE FOUND"; //dotmp.get("datecreated").toString(); //, "NO CREATION DATE FOUND");
                                         try {
                                             if (dotmp.get("datecreated")!=null&&!dotmp.getDataList("datecreated").isEmpty()) {
@@ -267,7 +267,7 @@
                                         } catch (Exception e) {
                                             datecreated = dotmp.get("datecreated").toString();
                                         }
-                                        System.out.println("8");
+//                                        System.out.println("8");
                                         String periodcreated = "NO CREATION PERIOD FOUND"; //dotmp.get("periodcreated").toString(); 
                                         try {
                                             if (null!=dotmp.get("periodcreated")&&!dotmp.getDataList("periodcreated").isEmpty()) {
@@ -279,9 +279,9 @@
                                         } catch (Exception e) {
                                             periodcreated = dotmp.get("periodcreated").toString();
                                         }
-                                        System.out.println("9");
+//                                        System.out.println("9");
                                         String holder = dotmp.getString("holder", "NO HOLDER FOUND");
-                                        System.out.println("10");
+//                                        System.out.println("10");
                                         numItem++;
                                 %>
                                 <tr>
