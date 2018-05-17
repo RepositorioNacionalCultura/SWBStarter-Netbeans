@@ -13,8 +13,11 @@ import java.math.BigInteger;
 import java.text.ParseException;
 
 import java.util.Map;
+import java.util.List;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 
 import java.util.logging.Logger;
@@ -102,5 +105,20 @@ public class Utils {
             result = ((Number)obj).intValue();
         }	
         return result;
+    }
+    
+    public static List<String> getElements(org.bson.Document bson, String key) {
+        List<String> elements = new ArrayList<>();
+        if (null == bson || !bson.containsKey(key)) return elements;
+        if (bson.get(key) instanceof String)
+            elements.add((String)bson.get(key));
+        else if (bson.get(key) instanceof java.util.ArrayList) {
+            List list = (ArrayList)bson.get(key);
+            Iterator it = list.iterator();
+            while (it.hasNext()) {
+                elements.add((String)it.next());
+            }
+        }
+        return elements;
     }
 }

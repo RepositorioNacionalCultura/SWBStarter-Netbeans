@@ -12,7 +12,6 @@
     String word = (String) request.getAttribute("criteria");
     List<ArtWork> references = (List<ArtWork>) request.getAttribute("PAGE_LIST");
     WebSite site = paramRequest.getWebPage().getWebSite();
-    Resource base = (Resource) request.getAttribute("base");
     Integer last = (Integer) request.getAttribute("LAST_RECORD");
     Integer first = (Integer) request.getAttribute("FIRST_RECORD");
     Integer total = (Integer) request.getAttribute("NUM_RECORDS_TOTAL");
