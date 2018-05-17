@@ -33,14 +33,17 @@ import org.semanticwb.portal.api.GenericResource;
 import org.semanticwb.portal.api.SWBActionResponse;
 import org.semanticwb.portal.api.SWBResourceException;
 import static mx.gob.cultura.portal.utils.Constants.FULL_LIST;
+import static mx.gob.cultura.portal.utils.Constants.MODE_PAGE;
 import static mx.gob.cultura.portal.utils.Constants.NUM_PAGE_JUMP;
 import static mx.gob.cultura.portal.utils.Constants.NUM_PAGE_LIST;
 import static mx.gob.cultura.portal.utils.Constants.PARAM_REQUEST;
+
+import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_TOTAL;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_VISIBLE;
-import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
-import static mx.gob.cultura.portal.utils.Constants.PAGE_JUMP_SIZE;
+
 import static mx.gob.cultura.portal.utils.Constants.PAGE_LIST;
+import static mx.gob.cultura.portal.utils.Constants.PAGE_JUMP_SIZE;
 import static mx.gob.cultura.portal.utils.Constants.PAGE_NUM_ROW;
 import static mx.gob.cultura.portal.utils.Constants.STR_JUMP_SIZE;
 import static mx.gob.cultura.portal.utils.Constants.TOTAL_PAGES;
@@ -57,7 +60,6 @@ public class MyCollections extends GenericResource {
     public static final String MODE_ADD = "ADD";
     public static final String MODE_EDIT = "EDIT";
     public static final String ACTION_STA = "STA";
-    public static final String MODE_PAGE = "PAGE";
     public static final String ACTION_ADD = "SAVE";
     public static final String MODE_RES_ADD = "RES_ADD";
     public static final String MODE_VIEW_USR = "VIEW_USR";

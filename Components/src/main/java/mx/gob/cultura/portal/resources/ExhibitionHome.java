@@ -7,7 +7,6 @@ package mx.gob.cultura.portal.resources;
 
 import java.util.Map;
 import java.util.List;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.io.IOException;
@@ -33,6 +32,7 @@ import org.semanticwb.portal.api.GenericAdmResource;
 import org.semanticwb.portal.api.SWBResourceException;
 
 import static mx.gob.cultura.portal.utils.Constants.FULL_LIST;
+import static mx.gob.cultura.portal.utils.Constants.MODE_PAGE;
 import static mx.gob.cultura.portal.utils.Constants.NUM_PAGE_JUMP;
 import static mx.gob.cultura.portal.utils.Constants.PAGE_NUM_ROW;
 import static mx.gob.cultura.portal.utils.Constants.PARAM_REQUEST;
@@ -58,14 +58,25 @@ public class ExhibitionHome extends GenericAdmResource {
     private static final Logger LOGGER = SWBUtils.getLogger(ExhibitionHome.class);
     
     @Override
+    public void processRequest(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        response.setContentType("text/html; charset=UTF-8");
+        String mode = paramRequest.getMode();
+        if (MODE_PAGE.equals(mode)) {
+            doPage(request, response, paramRequest);
+        }else
+            super.processRequest(request, response, paramRequest);
+    }
+    
+    @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         response.setContentType("text/html; charset=UTF-8");
         String jsppath = "/swbadmin/jsp/rnc/exhibitions/tematic/index.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(jsppath);
         try {
             request.setAttribute(PARAM_REQUEST, paramRequest);
-            List<org.bson.Document> exhibitionList = getExhibitions(request, response, paramRequest);
+            List<org.bson.Document> exhibitionList = getExhibitions(paramRequest);
             request.setAttribute("exhibitions", exhibitionList);
+            request.setAttribute(FULL_LIST, exhibitionList);
             request.setAttribute(NUM_RECORDS_TOTAL, exhibitionList.size());
             init(request);
             rd.include(request, response);
@@ -74,7 +85,26 @@ public class ExhibitionHome extends GenericAdmResource {
         }
     }
     
-    private List<org.bson.Document> getExhibitions(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+    public void doPage(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
+        int pagenum = 0;
+        String p = request.getParameter("p");
+        if (null != p)
+            pagenum = Integer.parseInt(p);
+        if (pagenum<=0) pagenum = 1;
+        request.setAttribute(NUM_PAGE_LIST, pagenum);
+        request.setAttribute(PAGE_NUM_ROW, NUM_ROW);
+        page(pagenum, request);
+        String url = "/swbadmin/jsp/rnc/exhibitions/tematic/rows.jsp";
+        RequestDispatcher rd = request.getRequestDispatcher(url);
+        try {
+            request.setAttribute(PARAM_REQUEST, paramRequest);
+            rd.include(request, response);
+        }catch (ServletException se) {
+            LOGGER.info(se.getMessage());
+        }
+    }
+    
+    private List<org.bson.Document> getExhibitions(SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         WebPage pageBase = paramRequest.getWebPage();
         List<String> elements = new ArrayList<>();
         List<org.bson.Document> exhibitionList = new ArrayList<>();
