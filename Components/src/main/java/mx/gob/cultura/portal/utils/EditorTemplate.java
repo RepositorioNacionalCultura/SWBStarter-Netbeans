@@ -5,13 +5,16 @@
  */
 package mx.gob.cultura.portal.utils;
 
+import org.bson.Document;
 import java.io.Serializable;
+import org.bson.types.ObjectId;
+import mx.gob.cultura.portal.persist.MongoData;
 
 /**
  *
  * @author sergio.tellez
  */
-public class EditorTemplate implements Serializable {
+public class EditorTemplate implements Serializable, MongoData {
     
     private String url;
     
@@ -22,15 +25,21 @@ public class EditorTemplate implements Serializable {
     private String preview;
     
     private Boolean active;
+    
+    private String fileName;
+    
+    private Boolean hasExhibition;
 
     private static final long serialVersionUID = 6295505990289706155L;
     
-    public EditorTemplate(String _id, String url, String title, String preview) {
+    public EditorTemplate(String _id, String url, String fileName, String title, String preview) {
         this._id = _id;
         this.url = url;
         this.title = title;
         this.preview = preview;
+        this.fileName = fileName;
         this.active = Boolean.TRUE;
+        this.hasExhibition = Boolean.FALSE;
     }
 
     public String getUrl() {
@@ -71,5 +80,43 @@ public class EditorTemplate implements Serializable {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+    
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public Boolean hasExhibition() {
+        return hasExhibition;
+    }
+
+    public void setHasExhibition(Boolean hasExhibition) {
+        this.hasExhibition = hasExhibition;
+    }
+    
+     @Override
+    public Document getBson() {
+        Document bson = new Document("title", getTitle())
+                .append("active", getActive()).append("url", getUrl()).append("preview", getPreview())
+                .append("fileName", getFileName());
+        return bson;
+    }
+    
+    @Override
+    public Object getCollection(Document bson) {
+        EditorTemplate collection = new EditorTemplate(null, bson.getString("url"), bson.getString("fileName"), bson.getString("title"), bson.getString("preview"));
+        ObjectId id = (ObjectId)bson.get("_id");
+        collection.setId(id.toString());
+        collection.setActive(bson.getBoolean("active"));
+        return collection;
+    }
+
+    @Override
+    public String toString() {
+        return "EditorTemplate{" + "url=" + url + ", _id=" + _id + ", title=" + title + ", preview=" + preview + ", active=" + active + ", fileName=" + fileName + ", hasExhibition=" + hasExhibition + '}';
     }
 }

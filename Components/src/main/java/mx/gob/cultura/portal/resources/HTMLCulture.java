@@ -22,6 +22,8 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import mx.gob.cultura.portal.utils.EditorTemplate;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -113,8 +115,13 @@ public class HTMLCulture extends GenericResource {
         try {
             String numversion = getResourceBase().getAttribute("numversion","");
             if (!numversion.isEmpty()) content = getContent(request, paramRequest);
-            else content = getContentTempl(request, paramRequest, "/models/repositorio/exhibition/", "clasic.html");
-            System.out.println("template: " + getResourceBase().getAttribute("template"));
+            else {
+                EditorTemplate template = getEditorTemplate(getResourceBase().getAttribute("template"), paramRequest);
+                if (null != template) {
+                    content = getContentTempl(request, paramRequest, template.getUrl(), template.getFileName());
+                    content = parseTemplate(content, template.getUrl());
+                }
+            }
             request.setAttribute("numversion", 1);
             request.setAttribute("fileContent", content);
             request.setAttribute("paramRequest", paramRequest);
@@ -124,6 +131,10 @@ public class HTMLCulture extends GenericResource {
         } catch (ServletException se) {
             log.error(se);
         }
+    }
+    
+    private String parseTemplate(String content, String path) {
+        return content.replaceAll("images/", "/work/" + path+"images/");
     }
     
     @Override
@@ -330,7 +341,6 @@ public class HTMLCulture extends GenericResource {
         
         File wp = new File(workPath);
         if (!wp.exists()) wp.mkdirs();
-        System.out.println("ServletFileUpload: " + ServletFileUpload.isMultipartContent(request));
         System.out.println("isEnabledForFileUpload: " + HTMLCultureUtils.isEnabledForFileUpload(paramRequest));
         if (HTMLCultureUtils.isEnabledForFileUpload(paramRequest) && ACT_UPLOADFILE.equals(action) && ServletFileUpload.isMultipartContent(request)) {
             DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -454,6 +464,21 @@ public class HTMLCulture extends GenericResource {
                     }
                     SWBUtils.IO.removeDirectory(directoryToRemove);
                 }
+                if (textSaved) {
+                    int index = 0;
+                    WebPage wp = paramRequest.getWebPage();
+                    String resourcePath = resource.getWorkPath() + "/" + (versionNumber) + "/" + FOLDER;
+                    File imagesDirectory = new File(directoryToCreate);
+                    if (imagesDirectory.exists() && SWBUtils.IO.createDirectory(directoryToCreate)) {
+                        for (String strFile : imagesDirectory.list()) {
+                            if (strFile.endsWith(".jpg") || strFile.endsWith(".png") || strFile.endsWith(".gif")) {
+                                ++index;
+                                wp.setProperty("poster"+index, "/work" + resourcePath+"/"+strFile);  
+                            }
+                        }
+                    }
+                    wp.setProperty("posters",String.valueOf(index));
+                }
             } catch (IOException e) {
                 textSaved = false;
                 log.error("Error to try save content", e);
@@ -503,7 +528,7 @@ public class HTMLCulture extends GenericResource {
         }
     }
     
-    public Map<String, Long> getFileList(HttpServletRequest hsr, String version, ArrayList<String> allowedTypes) {
+    private Map<String, Long> getFileList(HttpServletRequest hsr, String version, ArrayList<String> allowedTypes) {
         Resource base = getResourceBase();
         Map<String, Long> files = new TreeMap<>();
         String resPath = SWBPlatform.getContextPath()+SWBPortal.getWorkPath()+base.getWorkPath()+"/"+version+"/images/";
@@ -531,7 +556,7 @@ public class HTMLCulture extends GenericResource {
         /**if (action.equalsIgnoreCase(SWBParamRequest.Action_EDIT) && versionNumber == 0 && tmpPath == null)
             action = SWBParamRequest.Action_ADD;**/
         //pathToRead.append(versionNumber).append("/");
-        path2Read.append(pathToRead);
+        path2Read.append("/").append(pathToRead);
         path2Read.append(fileName);
         pathToWrite.append(String.valueOf(versionNumber)).append("/");
         request.setAttribute("directory", pathToWrite.toString());
@@ -539,11 +564,20 @@ public class HTMLCulture extends GenericResource {
             content = SWBUtils.IO.readInputStream(SWBPortal.getFileFromWorkPath(path2Read.toString()));
             //Se sustituye el tag insertado por el metodo saveContent en lugar de la ruta logica del archivo
             content = SWBUtils.TEXT.replaceAll(content, "<workpath/>", SWBPortal.getWebWorkPath() + "/" + pathToRead);
-        } catch (Exception e) {
+        } catch (IOException | SWBException e) {
             content = paramRequest.getLocaleString("msgFileReadError");
             log.error("Error to try read: " + resource.getId(), e);
         }
         return content;
+    }
+    
+    private EditorTemplate getEditorTemplate(String id, SWBParamRequest paramRequest) {
+        if (null == id || id.isEmpty()) return null;
+        List<EditorTemplate> editorTemplateList = (new ExhibitionResource()).editorTemplateList(paramRequest.getWebPage().getWebSite());
+        for (EditorTemplate tpl : editorTemplateList) {
+            if (tpl.getId().equals(id)) return tpl;
+        }
+        return null;
     }
     
     /**

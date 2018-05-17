@@ -317,20 +317,6 @@ public class SearchCulturalProperty extends PagerAction {
         return range.toString();
     }
 
-    /**private List<Entry> getRange(int range, List<Entry> records) {
-     List<Entry> publicationListTmp = new ArrayList<>();
-     if (null != records && records.size() > SEGMENT) {
-     int count = 0;
-     for (int i = range; i < records.size(); i++) {
-     publicationListTmp.add(records.get(i));
-     count++;
-     if (count == SEGMENT) break;
-     }
-     records = publicationListTmp;
-     }
-     return records;
-     }**/
-
     private String getParamSearch(String words) {
         StringBuilder parameters = new StringBuilder();
         String fix = words.replaceAll(",", " ").replaceAll(" ,", " ").replaceAll(", ", " ");
@@ -347,15 +333,4 @@ public class SearchCulturalProperty extends PagerAction {
         }else
             return words;
     }
-
-    /**private int getStart(HttpServletRequest request) {
-     int s = 1;
-     String start = request.getParameter("s");
-     try {
-     if (null != start)
-     s = Integer.parseInt(start);
-     }catch (NumberFormatException e) { }
-     if (s > 0) s = s*SEGMENT-1;
-     return s;
-     }**/
 }

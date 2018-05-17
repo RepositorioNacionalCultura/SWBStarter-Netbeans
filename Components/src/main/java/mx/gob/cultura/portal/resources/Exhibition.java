@@ -18,8 +18,8 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.utils.ArtWork;
+import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.request.ListBICRequest;
 
@@ -44,15 +44,18 @@ public class Exhibition extends GenericResource {
     private static final int SEGMENT = 8;
     private static final int PAGE_NUM_ROW = 8;
     private static final int PAGE_JUMP_SIZE = 5;
-    public static final String ACTION = "act";
+    
     private static final String PAGE = "PAGE";
     private static final String SAVE = "SAVE";
     private static final String SORT = "SORT";
     private static final String SEARCH = "SEARCH";
-    public static final String MODE_VIEW_EDIT = "vEdit";
     private static final String PAGE_LIST = "PAGE_LIST";
     private static final String FULL_LIST = "FULL_LIST";
     private static final String NUM_PAGE_LIST = "NUM_PAGE_LIST";
+    
+    public static final String ACTION = "act";
+    public static final String MODE_VIEW_EDIT = "vEdit";
+    
     private static final Logger LOG = Logger.getLogger(ArtDetail.class.getName());
     
     public void doViewFix(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {

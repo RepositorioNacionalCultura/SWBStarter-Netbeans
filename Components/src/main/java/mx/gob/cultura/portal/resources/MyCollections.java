@@ -136,23 +136,11 @@ public class MyCollections extends GenericResource {
     public void collectionById(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         User user = paramRequest.getUser();
         Collection collection = null;
-        //List<String> elements = new ArrayList<>();
         List<Entry> favorites = new ArrayList<>();
-        //List<Collection> collectionList = new ArrayList<>();
         String path = "/swbadmin/jsp/rnc/collections/elements.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
-        /**if (null != user && user.isSigned() && null != request.getSession().getAttribute("mycollections"))
-            collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");**/
         try {
             if (null != user && user.isSigned() && null != request.getParameter(IDENTIFIER) /**&& !collectionList.isEmpty()**/) {
-                /**Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
-                for (Collection c : collectionList) {
-                    if (c.getId().equals(request.getParameter(IDENTIFIER))) {
-                        collection = c;
-                        elements = c.getElements();
-                        break;
-                    }
-                }**/
                 collection = mgr.findById(request.getParameter(IDENTIFIER));
             }
             if (null != collection && null != collection.getElements()) {

@@ -12,7 +12,6 @@ import com.mongodb.Block;
 import org.bson.Document;
 import org.semanticwb.Logger;
 import org.semanticwb.SWBUtils;
-import mx.gob.cultura.portal.response.Collection;
 
 import org.bson.types.ObjectId;
 import com.mongodb.MongoClient;
@@ -21,11 +20,12 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import mx.gob.cultura.portal.response.Collection;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.Iterator;
-import mx.gob.cultura.commons.Util;
 import org.semanticwb.SWBPlatform;
+import mx.gob.cultura.commons.Util;
 import mx.gob.cultura.portal.utils.Utils;
 
 
