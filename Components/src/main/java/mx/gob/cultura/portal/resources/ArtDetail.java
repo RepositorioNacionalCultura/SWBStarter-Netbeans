@@ -9,10 +9,11 @@ import org.semanticwb.Logger;
 import org.semanticwb.SWBUtils;
 import org.semanticwb.SWBPlatform;
 
-import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.utils.Utils;
+import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.request.GetBICRequest;
 import org.semanticwb.portal.api.GenericAdmResource;
+
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceException;
 
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.net.URL;
 import java.net.HttpURLConnection;
+import java.util.List;
 
 /**
  *
@@ -54,14 +56,10 @@ public class ArtDetail extends GenericAdmResource {
         //Get baseURI from site properties first
         String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
         if (null == baseUri || baseUri.isEmpty()) {
-            baseUri = SWBPlatform.getEnv("rnc/endpointURL",
-                    getResourceBase().getAttribute("url",
-                            "http://localhost:8080")).trim();
+            baseUri = SWBPlatform.getEnv("rnc/endpointURL",getResourceBase().getAttribute("url","http://localhost:8080")).trim();
         }
-
         String uri = baseUri + "/api/v1/search?identifier=";
         String path = "/swbadmin/jsp/rnc/artdetail.jsp";
-        RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
             if (null != request.getParameter(IDENTIFIER)) {
                 uri += request.getParameter(IDENTIFIER);
@@ -69,6 +67,10 @@ public class ArtDetail extends GenericAdmResource {
                 Entry entry = req.makeRequest();
                 if (null != entry) {
                     entry.setPosition(Utils.toInt(request.getParameter(POSITION)));
+                    List<String> resourcetype = entry.getResourcetype();
+                    String type = resourcetype.size() > 0 ? resourcetype.get(0) : "";
+                    if (type.equalsIgnoreCase("otro") || type.equalsIgnoreCase("thesis") || type.equalsIgnoreCase("book"))
+                        path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
                     uri = baseUri
                             + "/api/v1/search/hits/"
                             + entry.getId();
@@ -82,6 +84,7 @@ public class ArtDetail extends GenericAdmResource {
                 request.setAttribute("entry", entry);
             }
             request.setAttribute("paramRequest", paramRequest);
+            RequestDispatcher rd = request.getRequestDispatcher(path);
             rd.include(request, response);
         } catch (ServletException se) {
             LOG.error(se);
@@ -118,7 +121,7 @@ public class ArtDetail extends GenericAdmResource {
                 request.setAttribute("entry", entry);
                 if (null != request.getParameter(POSITION)) {
                     int iDigit = Utils.toInt(request.getParameter(POSITION));
-                    int images = null != entry && null != entry.getDigitalobject() ? entry.getDigitalobject().size() : 0;
+                    int images = null != entry && null != entry.getDigitalObject() ? entry.getDigitalObject().size() : 0;
                     if (iDigit < images)
                         request.setAttribute("iDigit", iDigit + 1);
                 }

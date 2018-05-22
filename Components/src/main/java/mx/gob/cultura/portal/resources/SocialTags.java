@@ -53,7 +53,7 @@ public class SocialTags extends GenericAdmResource {
                     .append("\" />\n");
 
                 metas.append("<meta property=\"og:image\" content=\"")
-                    .append(entry.getDigitalobject().get(0).getUrl())
+                    .append(entry.getDigitalObject().get(0).getUrl())
                     .append("\" />\n");
 
                 try {

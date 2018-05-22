@@ -5,8 +5,9 @@
  */
 package mx.gob.cultura.portal.response;
 
-import java.io.Serializable;
 import java.util.List;
+import java.util.ArrayList;
+import java.io.Serializable;
 /**
  *
  * @author sergio.tellez
@@ -17,19 +18,23 @@ public class Entry implements Serializable {
 
     private String _id;
     private String holder;
-    private String description;
+    private List<String> description;
     
     private Stats resourcestats;
-    private List<Rights> rights;
+    //private List<Rights> rights;
     private List<String> creator;
     private Period periodcreated;
     private List<Title> recordtitle;
     private DateDocument datecreated;
     private List<String> resourcetype;
     private List<Identifier> identifier;
-    private List<DigitalObject> digitalobject;
+    private List<DigitalObject> digitalObject;
     
     private Integer position;
+    
+    private List<String> lang;
+    private List<String> keywords;
+    private List<String> collection;
 
     public Stats getResourcestats() {
         return resourcestats;
@@ -65,14 +70,6 @@ public class Entry implements Serializable {
 
     public void setId(String _id) {
         this._id = _id;
-    }
-
-    public List<Rights> getRights() {
-        return rights;
-    }
-
-    public void setRights(List<Rights> rights) {
-        this.rights = rights;
     }
 
     public List<String> getCreator() {
@@ -115,22 +112,46 @@ public class Entry implements Serializable {
         this.identifier = identifier;
     }
 
-    public String getDescription() {
+    public List<String> getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(List<String> description) {
         this.description = description;
     }
 
-    public List<DigitalObject> getDigitalobject() {
-        return digitalobject;
+    public List<DigitalObject> getDigitalObject() {
+        return digitalObject;
     }
 
-    public void setDigitalobject(List<DigitalObject> digitalobject) {
-        this.digitalobject = digitalobject;
+    public void setDigitalObject(List<DigitalObject> digitalObject) {
+        this.digitalObject = digitalObject;
     }
-    
+
+    public List<String> getLang() {
+        return lang;
+    }
+
+    public void setLang(List<String> lang) {
+        this.lang = lang;
+    }
+
+    public List<String> getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(List<String> keywords) {
+        this.keywords = keywords;
+    }
+
+    public List<String> getCollection() {
+        return collection;
+    }
+
+    public void setCollection(List<String> collection) {
+        this.collection = collection;
+    }
+
     public Integer getPosition() {
         return position;
     }
@@ -142,11 +163,11 @@ public class Entry implements Serializable {
     private void init() {
         DateDocument date = new DateDocument();
         date.setValue("");
-        this.description = "";
         this.datecreated = date;
         periodcreated = new Period();
         periodcreated.setDateend(date);
         periodcreated.setDatestart(date);
+        this.description = new ArrayList<>();
     }
     
     public String getIdentifiers() {
@@ -163,6 +184,6 @@ public class Entry implements Serializable {
 
     @Override
     public String toString() {
-        return "Entry{" + "recordtitle=" + recordtitle + ", identifier=" + identifier + ", digitalobject=" + digitalobject + '}';
+        return "Entry{" + "digitalObject=" + digitalObject + '}';
     }
 }

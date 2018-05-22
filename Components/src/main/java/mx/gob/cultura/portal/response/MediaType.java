@@ -34,4 +34,9 @@ public class MediaType implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "MediaType{" + "mime=" + mime + ", name=" + name + '}';
+    }
 }

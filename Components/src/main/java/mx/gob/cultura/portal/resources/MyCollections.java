@@ -325,10 +325,10 @@ public class MyCollections extends GenericResource {
             String uri = baseUri + "/api/v1/search?identifier=" + it.next();
             GetBICRequest req = new GetBICRequest(uri);
             Entry entry = req.makeRequest();
-            if (null != entry && null != entry.getDigitalobject() && !entry.getDigitalobject().isEmpty()
-                    && null != entry.getDigitalobject().get(0).getUrl() && !entry.getDigitalobject().get(0).getUrl().isEmpty() && null != entry.getDigitalobject().get(0).getMediatype()
-                    && null != entry.getDigitalobject().get(0).getMediatype().getMime() && entry.getDigitalobject().get(0).getMediatype().getMime().startsWith("image")) {
-                covers.add(entry.getDigitalobject().get(0).getUrl());
+            if (null != entry && null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty()
+                    && null != entry.getDigitalObject().get(0).getUrl() && !entry.getDigitalObject().get(0).getUrl().isEmpty() && null != entry.getDigitalObject().get(0).getMediatype()
+                    && null != entry.getDigitalObject().get(0).getMediatype().getMime() && entry.getDigitalObject().get(0).getMediatype().getMime().startsWith("image")) {
+                covers.add(entry.getDigitalObject().get(0).getUrl());
             }
             if (covers.size() >= size) break;
         }

@@ -5,7 +5,6 @@
  */
 package mx.gob.cultura.portal.response;
 
-import java.util.List;
 import java.io.Serializable;
 
 /**
@@ -18,8 +17,9 @@ public class DigitalObject implements Serializable {
     
     private String url;
     private MediaType mediatype;
-    private List<Rights> rights;
-
+    //private List<Rights> rights;
+    private String rights;
+    
     public String getUrl() {
         return url;
     }
@@ -27,20 +27,25 @@ public class DigitalObject implements Serializable {
     public void setUrl(String url) {
         this.url = url;
     }
-    
-    public List<Rights> getRights() {
+
+    public String getRights() {
         return rights;
     }
 
-    public void setRights(List<Rights> rights) {
+    public void setRights(String rights) {
         this.rights = rights;
     }
-    
+
     public MediaType getMediatype() {
         return mediatype;
     }
 
     public void setMediatype(MediaType mediatype) {
         this.mediatype = mediatype;
+    }
+
+    @Override
+    public String toString() {
+        return "DigitalObject{" + "url=" + url + ", mediatype=" + mediatype + '}';
     }
 }

@@ -42,7 +42,7 @@ public class ListBICRequest {
         }
 
         if (null != url) {
-            System.out.println("making request to:"+url);
+            System.out.println("making request to: "+url);
             try {
                 HttpURLConnection connection = (HttpURLConnection)url.openConnection();
                 connection.setRequestMethod("GET");

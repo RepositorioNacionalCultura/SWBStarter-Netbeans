@@ -5,6 +5,7 @@
  */
 package mx.gob.cultura.portal.response;
 
+import java.util.List;
 import java.io.Serializable;
 
 /**
@@ -17,6 +18,7 @@ public class Title implements Serializable {
     
     private String type;
     private String value;
+    //private List<String> value;
 
     public String getType() {
         return type;
