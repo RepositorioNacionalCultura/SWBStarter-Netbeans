@@ -38,17 +38,17 @@
                                     <img src="/work/models/repositorio/img/empty.jpg"/>
                                 </a>
                             </div>
-                <%
+            <%
                         }else if (posters.size() == 1 || posters.size() == 2) {
-                %>
+            %>
                             <div class="mosaico mosaico1 radius-overflow">
                                 <a href="<%=exhibition.getString("url")%>" target="<%=exhibition.getString("target")%>" title="<%=exhibition.getString("title")%>">
                                     <img src="<%=posters.get(0)%>"/>
                                 </a>
                             </div>
-                <%
+            <%
                         }else if (posters.size() == 3) {
-                %>
+            %>
                             <div class="mosaico mosaico3 radius-overflow">
                                 <a href="<%=exhibition.getString("url")%>" target="<%=exhibition.getString("target")%>" title="<%=exhibition.getString("title")%>">
                                     <div class="mosaico3a">
@@ -64,19 +64,19 @@
                                     </div>
                                 </a>
                             </div>
-                <%
+            <%
                         }
-                %>
+            %>
                         <div class="mosaico-txt">
                             <p><%=exhibition.getString("title")%></p>
                             <a href="#"><span class="ion-social-facebook"/></a>
                             <a href="#"><span class="ion-social-twitter"/></a>
-							<% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned()) { %>
-							       <a href="#" onclick="del('<%=exhibition.getString("url")%>')">Eliminar</a>
-								   <a href="<%=exhibition.getString("url")%>?act=vEdit"><span class="ion-edit"></span></a>
-							<% } %>
+                            <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned()) { %>
+                                    <a href="#" onclick="del('<%=exhibition.getString("url")%>')">Eliminar</a>
+                                    <a href="<%=exhibition.getString("url")%>?act=vEdit"><span class="ion-edit"></span></a>
+                            <% } %>
                         </div>
-            </div>
+                    </div>
             <%
                 }
             %>
