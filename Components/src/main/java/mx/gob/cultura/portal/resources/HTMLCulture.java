@@ -571,7 +571,6 @@ public class HTMLCulture extends GenericResource {
     }
     
     private EditorTemplate getEditorTemplate(String id, String idGroupTemplate, SWBParamRequest paramRequest) {
-        System.out.println("idGroupTemplate ID: " + idGroupTemplate);
         if (null == id || id.isEmpty()) return null;
         List<EditorTemplate> editorTemplateList = ExhibitionResource.editorTemplateList(paramRequest.getWebPage().getWebSite(), idGroupTemplate);
         for (EditorTemplate tpl : editorTemplateList) {

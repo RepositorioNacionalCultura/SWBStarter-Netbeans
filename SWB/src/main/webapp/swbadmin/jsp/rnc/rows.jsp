@@ -16,7 +16,7 @@
 %>
         <div class="ruta row">
             <div class="col-12 col-sm-8 col-md-8">
-                <p class="oswLc"><%=first%>-<%=last%> de <%=total%> resultados</p>
+                <p class="oswLc"><%=first%>-<%=last%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=total%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%></p>
             </div>
             <div class="col-12 col-sm-4 col-md-4 ordenar">
                 <a href="#" onclick="setGrid();"><i class="fa fa-th select" aria-hidden="true"></i></a>

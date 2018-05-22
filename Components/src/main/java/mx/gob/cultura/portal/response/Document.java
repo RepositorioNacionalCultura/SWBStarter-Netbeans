@@ -52,9 +52,9 @@ public class Document implements Serializable {
     public void setAggs(List<Aggregation> aggs) {
         this.aggs = aggs;
     }
-    
+
     @Override
     public String toString() {
-        return "Document{" + "total=" + total + ", records=" + records + '}';
+        return "Document{" + "took=" + took + ", total=" + total + ", records=" + records + ", aggs=" + aggs + '}';
     }
 }

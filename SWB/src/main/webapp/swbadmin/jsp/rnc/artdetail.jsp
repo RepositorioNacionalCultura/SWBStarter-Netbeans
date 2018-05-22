@@ -60,7 +60,6 @@
             }
         }
     }
-    //Integer records = (Integer) session.getAttribute("NUM_RECORDS_TOTAL");
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
 
@@ -141,7 +140,7 @@
         <div class="explora">
             <div class="explora2">
                 <div class="explo1">
-                    © Derechos Reservados
+                    © <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
                 </div>
                 <div class="explo2 row">
                     <div class="col-3">
@@ -160,7 +159,7 @@
                         <%
                             if (iEntry > 1) {
                         %>
-                        <span class="ion-chevron-left"></span> Objeto anterior
+                        <span class="ion-chevron-left"></span> <%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%>
                         <%
                             }
                         %>
@@ -169,7 +168,7 @@
                         <%
                             if (iEntry < records) {
                         %>
-                        Siguiente objeto <span class="ion-chevron-right"></span>
+                                <%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span>
                         <%
                             }
                         %>
@@ -186,58 +185,58 @@
         <div class="row">              
             <div class="col-12 col-sm-6  col-md-3 col-lg-3 order-md-1 order-sm-2 order-2 mascoleccion">
                 <div>
-                    <p class="tit2">Más de la colección</p>
+                    <p class="tit2"><%=paramRequest.getLocaleString("usrmsg_view_detail_more_collection")%></p>
                     <div>
                         <img src="/work/models/repositorio/img/agregado-01.jpg" class="img-responsive">
-                        <p>Nombre de la obra</p>
+                        <p><%=paramRequest.getLocaleString("usrmsg_view_detail_name_work")%></p>
                         <p>Autor Lorem Ipsum</p>
                     </div>
                     <div>
                         <img src="/work/models/repositorio/img/agregado-02.jpg" class="img-responsive">
-                        <p>Nombre de la obra</p>
+                        <p><%=paramRequest.getLocaleString("usrmsg_view_detail_name_work")%></p>
                         <p>Autor Lorem Ipsum</p>
                     </div>
                     <hr>
-                    <p class="vermas"><a href="#">Ver más <span class="ion-plus-circled"></span></a></p>
+                    <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
                 </div>
             </div>
             <div class="col-12 col-sm-12 col-md-6 col-lg-6 order-md-2 order-sm-1 order-1 ficha ">
                 <h3 class="oswM"><%=title%></h3>
                 <% if (null != entry && null != entry.getDescription() && !entry.getDescription().isEmpty()) {%>
-                <p><%=entry.getDescription()%></p>
+                        <p><%=entry.getDescription()%></p>
                 <% }%>
                 <hr>
-                <p class="vermas"><a href="#">Ver más <span class="ion-plus-circled"></span></a></p>
+                <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
                 <table>
                     <tr>
-                        <th colspan="2">Ficha Técnica</th>
+                        <th colspan="2"><%=paramRequest.getLocaleString("usrmsg_view_detail_data_sheet")%></th>
                     </tr>
                     <tr>
-                        <td>Artista</td>
+                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_artist")%></td>
                         <td><%=creator%></td>
                     </tr>
                     <tr>
-                        <td>Fecha</td>
+                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_date")%></td>
                         <td><%=period%></td>
                     </tr>
                     <tr>
-                        <td>Tipo de objeto</td>
+                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_type_object")%></td>
                         <td><%=type%></td>
                     </tr>
                     <tr>
-                        <td>Identificador</td>
+                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_identifier")%></td>
                         <td><%=entry.getIdentifiers()%></td>
                     </tr>
                     <tr>
-                        <td>Institución</td>
+                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_institution")%></td>
                         <td>Lorem ipsum</td>
                     </tr>
                     <tr>
-                        <td>Técnica</td>
+                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_technique")%></td>
                         <td>Lorem ipsum</td>
                     </tr>
                 </table>
-                <p class="vermas"><a href="#">Ves más <span class="ion-plus-circled"></span></a></p>
+                <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
             </div>
             <div class="col-12 col-sm-6  col-md-3 col-lg-3 order-md-3 order-sm-3 order-3 clave">
 		            <div class="redes">
@@ -247,7 +246,7 @@
                     <span class="ion-social-twitter"></span>
                 </div>
                 <div>
-                    <p class="tit2">Palabras clave</p>
+                    <p class="tit2"><%=paramRequest.getLocaleString("usrmsg_view_detail_key_words")%></p>
                     <p><a href="#">lorem</a> / <a href="#">ipsum</a> / <a href="#">dolor</a> / <a href="#">sit</a> / <a href="#">amet</a> / <a href="#">consectetuer</a> / <a href="#">adioiscing</a> / <a href="#">elit</a></p>
                 </div>
             </div>
