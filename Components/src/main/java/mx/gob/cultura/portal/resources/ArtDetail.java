@@ -71,6 +71,8 @@ public class ArtDetail extends GenericAdmResource {
                     String type = resourcetype.size() > 0 ? resourcetype.get(0) : "";
                     if (type.equalsIgnoreCase("otro") || type.equalsIgnoreCase("thesis") || type.equalsIgnoreCase("book"))
                         path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
+                    else if (type.equalsIgnoreCase("gramatica") || type.equalsIgnoreCase("receta") || type.equalsIgnoreCase("video"))
+                        path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
                     uri = baseUri
                             + "/api/v1/search/hits/"
                             + entry.getId();
