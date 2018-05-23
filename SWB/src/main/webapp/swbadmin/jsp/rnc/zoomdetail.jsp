@@ -8,12 +8,7 @@
 <%@page import="mx.gob.cultura.portal.response.Entry"%>
 <%@page import="org.semanticwb.portal.api.SWBParamRequest, java.util.List"%>
 <%
-	int index = 0;
-	List<DigitalObject> digitalobjects = null;
-    SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     Entry entry = null != request.getAttribute("entry") ? (Entry)request.getAttribute("entry") : new Entry();
-	entry.setDescription("El London Eye ('Ojo de Londres'), también conocido como Millennium Wheel ('Noria del milenio'), es una noria-mirador de 135 m situada sobre el extremo occidental de los Jubilee Gardens, en el South Bank del Támesis, distrito londinense de Lambeth, entre los puentes de Westminster y Hungerford. La noria está junto al County Hall y frente a las oficinas del Ministerio de Defensa.");
-	
 %>
 <link rel='stylesheet' type='text/css' media='screen' href='/work/models/cultura/css/style.css'/>
 <script src="/work/models/cultura/js/openseadragon.min.js"></script>
@@ -40,31 +35,30 @@
     <div class="cointainer-fluid">
 		<div class="row detalleinfo azul-bg">
 			<p class="col-md-10 offset-md-1">
-				<%=entry.getDescription()%>
 			</p>
 		</div>
 	</div>
 </section>
 <script type="text/javascript">
 	OpenSeadragon({
-		id:            "pyramid",
-        prefixUrl:     "/work/models/cultura/open/",
-        showNavigator: false,
+            id:            "pyramid",
+            prefixUrl:     "/work/models/cultura/open/",
+            showNavigator: false,
 		tileSources: {
-			type: 'legacy-image-pyramid',
-			levels:[{
-				url: '/work/models/cultura/open/london-landscape-small.jpg',
-				height: 511,
-				width:  1024
-			},{
-				url: '/work/models/cultura/open/london-landscape-mid.jpg',
-				height: 1023,
-				width:  2048
-			},{
-				url: '/work/models/cultura/open/london-landscape-large.jpg',
-				height: 2976,
-				width:  3968
-			}]
+                    type: 'legacy-image-pyramid',
+                    levels:[{
+			url: '/work/models/cultura/open/london-landscape-small.jpg',
+			height: 511,
+			width:  1024
+                    },{
+                        url: '/work/models/cultura/open/london-landscape-mid.jpg',
+			height: 1023,
+			width:  2048
+                    },{
+			url: '/work/models/cultura/open/london-landscape-large.jpg',
+			height: 2976,
+			width:  3968
+                    }]
 		}
 	});
 </script>
