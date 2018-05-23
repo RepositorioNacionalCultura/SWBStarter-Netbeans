@@ -167,6 +167,7 @@ public class Entry implements Serializable {
         periodcreated = new Period();
         periodcreated.setDateend(date);
         periodcreated.setDatestart(date);
+        this.keywords = new ArrayList<>();
         this.description = new ArrayList<>();
     }
     

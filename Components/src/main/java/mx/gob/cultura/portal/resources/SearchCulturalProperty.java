@@ -128,7 +128,6 @@ public class SearchCulturalProperty extends PagerAction {
             Document document = getReference(request, paramRequest.getWebPage().getWebSite());
             if (null != document) {
                 publicationList = document.getRecords();
-                System.out.println("records: " + publicationList);
                 request.setAttribute("aggs", getAggregation(document.getAggs()));
                 request.setAttribute("creators", getCreators(document.getRecords()));
                 request.getSession().setAttribute(FULL_LIST, document.getRecords());
