@@ -4,7 +4,7 @@
     Created on : 13/02/2018, 05:43:59 PM
     Author     : jose.jimenez
 --%><%@ page contentType="text/html; charset=ISO-8859-1" pageEncoding="UTF-8"%>
-<%@page import="org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.SWBPlatform, org.semanticwb.model.WebPage"%>
+<%@page import="org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.SWBPlatform, org.semanticwb.SWBPortal, org.semanticwb.model.WebPage"%>
 <%@page import="mx.gob.cultura.portal.resources.SessionInitializer, org.semanticwb.portal.api.SWBResourceException"%>
 <%
     SWBParamRequest paramsRequest = (SWBParamRequest) request.getAttribute("paramRequest");
@@ -15,6 +15,7 @@
     String twitConsumerKey;
     String twitConsumerSecret;
     String gpCliendId;
+    java.security.KeyPair key = SWBPortal.getUserMgr().getSessionKey(request);
     
     boolean isSocialNetUser = false;
     boolean showFB = false;
@@ -56,8 +57,16 @@
                             .getAttribute("isSocialNetUser"));
             source = isSocialNetUser ? (String) request.getSession(false).getAttribute("source") : "";
         }
+    } else {
+        if (SWBPlatform.getSecValues().isEncrypt()) {
+%>
+        <script language="JavaScript" type="text/javascript" src="/swbadmin/js/crypto/jsbn.js"></script>
+        <script language="JavaScript" type="text/javascript" src="/swbadmin/js/crypto/prng4.js"></script>
+        <script language="JavaScript" type="text/javascript" src="/swbadmin/js/crypto/rng.js"></script>
+        <script language="JavaScript" type="text/javascript" src="/swbadmin/js/crypto/rsa.js"></script>
+<%
+        }
     }
-    
     if (showGPlus) {
 %>
         <script src="https://apis.google.com/js/platform.js?onload=initGP" async defer></script>
@@ -174,6 +183,7 @@
             //si hay sesion con FB, terminarla, no iniciarla automagicamente
             String sessionUrl = paramsRequest.getActionUrl().setAction("openSession")
                     .setCallMethod(SWBParamRequest.Call_DIRECT).toString();
+            WebPage wpRegistry = paramsRequest.getWebPage().getWebSite().getWebPage("Registro");
 %>
             if (response.status && response.status === 'connected') {
               FB.logout();
@@ -277,6 +287,18 @@
             } catch (SWBResourceException swbe) {
                 socialLogin = "Inicia con: ";
             }
+            String userAccountTxt;
+            try {
+                userAccountTxt = paramsRequest.getLocaleString("lbl_userAccount");
+            } catch (SWBResourceException swbe) {
+                userAccountTxt =  "¿No tienes una cuenta?";
+            }
+            String createAccountTxt;
+            try {
+                createAccountTxt = paramsRequest.getLocaleString("lbl_createAccount");
+            } catch (SWBResourceException swbe) {
+                createAccountTxt = "Crea aquí tu cuenta";
+            }
 %>
             <div class="modal fade" id="modal-sesion">
                 <div class="modal-dialog">
@@ -288,7 +310,7 @@
                             </button>
                         </div>
                         <div class="modal-body modal-sesion">
-                            <form action="<%=loginUrl%>" method="post">
+                            <form name="loginForm" action="<%=loginUrl%>" method="post">
                                 <div class="form-group">
                                     <label for="wb_username" class="rojo"><%=userField%></label>
                                     <input type="text" id="wb_username" class="form-control" name="wb_username" aria-describedby="usernameHelp" placeholder="<%=userplaceHldr%>"/>
@@ -306,29 +328,38 @@
 <%--                            <p><a href="#" class="link">Olvidé mi usuario o contraseña</a></p>
                                 <hr> --%>
                             <p class="oswM rojo inicia"><%=socialLogin%>
-<%--
-                      <div class="fb-login-button" data-max-rows="1" 
-                     data-size="small" data-button-type="login_with"
-                     data-show-faces="false" data-auto-logout-link="false" 
-                     data-scope="public_profile,email" 
-                     data-use-continue-as="false" onlogin="openSWBSession();"></div>  --%>
                         <%=showFB ? SessionInitializer.getFacebookLink(paramsRequest.getWebPage().getWebSiteId()) : ""%>
                         <%=showTwitter ? SessionInitializer.getTwitterLink(paramsRequest) : ""%>
-                        <%-- =showGPlus ? SessionInitializer.getGoogleLink(paramsRequest.getWebPage().getWebSiteId()) : "" --%>
-                        <a href="#" id="loginWithGoogle" onclick="javascript:loginGPByClick();"><img src="/work/models/cultura/img/icono-goo.png" /></a>
+                        <%=showGPlus ? SessionInitializer.getGoogleLink(paramsRequest.getWebPage().getWebSiteId()) : ""%>
                             </p>
                         </div>
-<%--
-//                    <div class="nocuenta rojo-bg">
-//                      <h5>¿No tienes una cuenta?</h5>
-//                      <p><a href="#" class="btn-cultura btn-negro">Crea aquí tu cuenta</a></p>
-//                    </div>  --%>
+                        <div class="nocuenta rojo-bg">
+                          <h5><%=userAccountTxt%></h5>
+                          <p><a href="<%=wpRegistry.getRealUrl(paramsRequest.getUser().getLanguage())%>" class="btn-cultura btn-negro"><%=createAccountTxt%></a></p>
+                        </div>
+<%
+            if (SWBPlatform.getSecValues().isEncrypt()) {
+%>
+        <script>
+            var rsa = new RSAKey();
+            rsa.setPublic("<%=((java.security.interfaces.RSAPublicKey)key.getPublic()).getModulus().toString(16)%>", "<%=((java.security.interfaces.RSAPublicKey)key.getPublic()).getPublicExponent().toString(16)%>");
+            function encrypt() {
+                var value = false;
+                var res = rsa.encrypt(document.loginForm.wb_password.value);
+                if (res) { document.loginForm.wb_password.value = res; value = true; }
+                return value;
+            }
+            document.loginForm.onsubmit = encrypt;
+        </script>
+<%
+            }
+%>
                     </div>
                 </div>
             </div>
 <%
         } else {  //si si existe el usuario en sesion de SWB
-            WebPage wpCollections = paramsRequest.getWebPage().getWebSite().getWebPage("mis_colecciones");
+            WebPage wpCollections = paramsRequest.getWebPage().getWebSite().getWebPage("miscolecciones");
             if (isSocialNetUser) {
                 //revisar que la sesion de la red social este activa tambien
                 //esto es parte de la funcion mystatusChangeCallback
@@ -392,7 +423,7 @@
 <%
             if (wpCollections != null) {
 %>
-                    <a class="dropdown-item" href="<%=wpCollections.getWebPageURL(paramsRequest.getUser().getLanguage())%>"><%=wpCollections.getTitle(paramsRequest.getUser().getLanguage())%></a>
+                    <a class="dropdown-item" href="<%=wpCollections.getRealUrl(paramsRequest.getUser().getLanguage())%>"><%=wpCollections.getTitle(paramsRequest.getUser().getLanguage())%></a>
 <%
             }
             if (isSocialNetUser) {
