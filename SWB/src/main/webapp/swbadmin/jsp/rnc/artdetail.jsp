@@ -28,10 +28,10 @@
     WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
         iEntry = entry.getPosition();
-        if (null != entry.getDigitalobject()) {
+        if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
             titles = entry.getRecordtitle();
-            digitalobjects = entry.getDigitalobject();
+            digitalobjects = entry.getDigitalObject();
             images = null != digitalobjects ? digitalobjects.size() : 0;
             digital = images >= iDigit ? digitalobjects.get(iDigit - 1) : new DigitalObject();
             if (null != digital.getUrl() && digital.getUrl().endsWith(".dzi")) {

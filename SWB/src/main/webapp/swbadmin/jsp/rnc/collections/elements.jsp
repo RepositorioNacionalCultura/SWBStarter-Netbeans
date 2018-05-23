@@ -94,7 +94,7 @@
                             List<String> creators = item.getCreator();
                             List<Title> titles = item.getRecordtitle();
                             List<String> resourcetype = item.getResourcetype();
-                            List<DigitalObject> digitalobject = item.getDigitalobject();
+                            List<DigitalObject> digitalobject = item.getDigitalObject();
                             if (!titles.isEmpty()) {
                                 title = titles.get(0);
                             }

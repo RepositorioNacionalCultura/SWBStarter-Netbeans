@@ -34,7 +34,7 @@
                 List<String> creators = reference.getCreator();
                 List<Title> titles = reference.getRecordtitle();
                 List<String> resourcetype = reference.getResourcetype();
-                List<DigitalObject> digitalobject = reference.getDigitalobject();
+                List<DigitalObject> digitalobject = reference.getDigitalObject();
                 if (!titles.isEmpty()) title = titles.get(0);
                 String creator = creators.size() > 0 ? creators.get(0) : "";
                 String type = resourcetype.size() > 0 ? resourcetype.get(0) : "";

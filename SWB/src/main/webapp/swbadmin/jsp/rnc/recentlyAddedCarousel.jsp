@@ -30,7 +30,7 @@
                             <div class="pieza">
                                 <div>
                                     <%
-                                        for (DigitalObject digObj : item.getDigitalobject()) {
+                                        for (DigitalObject digObj : item.getDigitalObject()) {
                                             if (digObj.getMediatype().getMime().startsWith("image") && !digObj.getUrl().isEmpty()) {
                                     %>
                                     <a href="<%=detailPath%>?id=<%=item.getId()%>">

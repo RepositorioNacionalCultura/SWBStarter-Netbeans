@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.util.List;
+import mx.gob.cultura.portal.response.DigitalObject;
 
 /**
  *
@@ -73,9 +74,14 @@ public class ArtDetail extends GenericAdmResource {
                         path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
                     else if (type.equalsIgnoreCase("gramatica") || type.equalsIgnoreCase("receta") || type.equalsIgnoreCase("video"))
                         path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
-                    uri = baseUri
-                            + "/api/v1/search/hits/"
-                            + entry.getId();
+                    else if (type.equalsIgnoreCase("cantos")) {
+                        List<DigitalObject> digitalobjects = entry.getDigitalObject();
+                        DigitalObject digital = null != digitalobjects ? digitalobjects.get(0): new DigitalObject();
+                        String mime = null != digital.getMediatype() ? digital.getMediatype().getMime() : "";
+                        if (!mime.isEmpty() && mime.startsWith("audio"))
+                            path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
+                    }
+                    uri = baseUri + "/api/v1/search/hits/" + entry.getId();
                     URL url = new URL(uri);
                     HttpURLConnection connection = (HttpURLConnection)url.openConnection();
                     connection.setDoOutput(true);

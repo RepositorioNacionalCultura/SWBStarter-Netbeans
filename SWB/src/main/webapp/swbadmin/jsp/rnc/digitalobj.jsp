@@ -20,10 +20,10 @@
     List<DigitalObject> digitalobjects = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
     if (null != entry) {
-	if (null != entry.getDigitalobject()) {
+	if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
             titles = entry.getRecordtitle();
-            digitalobjects = entry.getDigitalobject();
+            digitalobjects = entry.getDigitalObject();
             images = null != digitalobjects ? digitalobjects.size() : 0;
             digital = images >= iDigit ? digitalobjects.get(iDigit-1) : new DigitalObject();
             url = digital.getUrl().replace("localhost", "129.144.24.140");
