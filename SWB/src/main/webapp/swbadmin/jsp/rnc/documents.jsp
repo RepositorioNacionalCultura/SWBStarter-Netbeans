@@ -65,22 +65,32 @@
 			</div>
                     </div>
                     <div id="resultados" class="card-columns">
-                    <%
-                        int position = first;
-                        for (Entry reference : references) {
-                            Title title = new Title();
-                            reference.setPosition(position);
-                            DigitalObject digital = new DigitalObject();
-                            List<String> creators = reference.getCreator();
-                            List<Title> titles = reference.getRecordtitle();
-                            List<String> resourcetype = reference.getResourcetype();
-                            List<DigitalObject> digitalobject = reference.getDigitalObject();
-                            if (!titles.isEmpty()) title = titles.get(0);
-                            String creator = creators.size() > 0 ? creators.get(0) : "";
-                            String type = resourcetype.size() > 0 ? resourcetype.get(0) : "";
-                            if (!digitalobject.isEmpty()) digital = digitalobject.get(0);
-                            //String titleValue =  (null != title.getValue() && title.getValue().size() > 0) ? title.getValue().get(0) : "";
-                    %>
+                        <%
+                            int position = first;
+                            for (Entry reference : references) {
+                                Title title = new Title();
+                                reference.setPosition(position);
+                                DigitalObject digital = new DigitalObject();
+                                List<String> creators = reference.getCreator();
+                                List<Title> titles = reference.getRecordtitle();
+                                List<String> resourcetype = reference.getResourcetype();
+                                List<DigitalObject> digitalobject = reference.getDigitalObject();
+                                if (!titles.isEmpty()) {
+                                    title = titles.get(0);
+                                }
+                                String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
+                                String type = resourcetype.size() > 0 ? resourcetype.get(0) : "";
+                                if (!digitalobject.isEmpty()) {
+                                    digital = digitalobject.get(0);
+                                }
+                                if (type.equalsIgnoreCase("gramatica") || type.equalsIgnoreCase("receta") || type.equalsIgnoreCase("video")) {
+                                    digital.setUrl("/work/models/" + site.getId() + "/img/icono-video.jpg");
+                                } else if (type.equalsIgnoreCase("otro") || type.equalsIgnoreCase("thesis") || type.equalsIgnoreCase("book")) {
+                                    digital.setUrl("/work/models/" + site.getId() + "/img/icono-pdf.png");
+                                } else if (type.equalsIgnoreCase("cantos")) {
+                                    digital.setUrl("/work/models/" + site.getId() + "/img/icono-audio.jpg");
+                                }
+                        %>
                             <div class="pieza-res card">
                                 <a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&n=<%=reference.getPosition()%>">
                                     <img src="<%=digital.getUrl()%>" />
