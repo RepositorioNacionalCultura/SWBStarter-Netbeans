@@ -47,9 +47,11 @@
                         <ul>
                             <%
                                 for (String r : creators) {
+                                    if (null != r && !r.isEmpty()) {
                             %>
-                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" value=""><%=r%></label></li>
+                                        <li><label class="form-check-label"><input class="form-check-input" type="checkbox" value=""><%=r%></label></li>
                             <%
+                                    }
                                 }
                             %>
                         </ul>
