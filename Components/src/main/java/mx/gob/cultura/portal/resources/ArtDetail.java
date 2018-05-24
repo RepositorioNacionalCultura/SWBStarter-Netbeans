@@ -70,7 +70,6 @@ public class ArtDetail extends GenericAdmResource {
                     int position = Utils.toInt(request.getParameter(POSITION));
                     entry.setPosition(position);
                     path = getViewerPath(getMimeType(getDigitalObject(entry.getDigitalObject(), position)));
-                    System.out.println("PATH: " + path);
                     uri = baseUri + "/api/v1/search/hits/" + entry.getId();
                     URL url = new URL(uri);
                     HttpURLConnection connection = (HttpURLConnection)url.openConnection();
