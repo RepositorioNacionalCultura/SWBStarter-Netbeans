@@ -15,7 +15,13 @@
     String txt_noAccount;
     String txt_createAccount;
     String txt_continueWith;
-    String faceLink = SessionInitializer.getFacebookLink(paramsRequest.getWebPage().getWebSite().getId());
+    String siteId = paramsRequest.getWebPage().getWebSite().getId();
+    String faceLink = SessionInitializer.getFacebookLink(siteId);
+    String twitterLink = SessionInitializer.getTwitterLink(paramsRequest);
+    String googleLink = SessionInitializer.getGoogleLink(siteId);
+    WebPage wpRegistry = paramsRequest.getWebPage().getWebSite().getWebPage("Registro");
+    String registryLink = null != wpRegistry ? wpRegistry.getRealUrl(paramsRequest.getUser().getLanguage()) : null;
+
     try {
         lbl_sectionHeader = paramsRequest.getLocaleString("lbl_sectionHeader");
     } catch (SWBResourceException swbr) {
@@ -56,9 +62,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-5 colecciones1">
-                    <img src="/work/models/cultura/img/img-colecciones-1.png" class="" >
-                    <img src="/work/models/cultura/img/img-colecciones-2.png" class="" >
-                    <img src="/work/models/cultura/img/img-colecciones-3.png" class="" >
+                    <img src="/work/models/<%=siteId%>/img/img-colecciones-1.png" class="" >
+                    <img src="/work/models/<%=siteId%>/img/img-colecciones-2.png" class="" >
+                    <img src="/work/models/<%=siteId%>/img/img-colecciones-3.png" class="" >
                 </div>
                 <div class="col-12 col-md-7 colecciones2">
                     <h3 class="oswM rojo"><%=lbl_sectionHeader%></h3>
@@ -67,13 +73,19 @@
                     <p><%=txt_alreadyReg%>
                         <a href="#" data-toggle="modal" data-target="#modal-sesion"><%=txt_logIn%></a>
                     </p>
-                    <p><%=txt_noAccount%><a href="#" class=""><%=txt_createAccount%></a></p>
+<%
+    if (null != registryLink) {
+%>
+                    <p><%=txt_noAccount%><a href="<%=registryLink%>" class=""><%=txt_createAccount%></a></p>
+<%
+    }
+%>
                     <hr>
                     <p>
                         <%=txt_continueWith%>
                         <%=faceLink%>
-                        <img src="/work/models/cultura/img/icono-tw.png" >
-                        <img src="/work/models/cultura/img/icono-goo.png" >
+                        <%=twitterLink%>
+                        <%=googleLink%>
                     </p>
                 </div>
             </div>
