@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.net.URL;
 import java.net.HttpURLConnection;
+
 import java.util.List;
 import mx.gob.cultura.portal.response.DigitalObject;
 
@@ -56,9 +57,8 @@ public class ArtDetail extends GenericAdmResource {
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
         //Get baseURI from site properties first
         String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
-        if (null == baseUri || baseUri.isEmpty()) {
-            baseUri = SWBPlatform.getEnv("rnc/endpointURL",getResourceBase().getAttribute("url","http://localhost:8080")).trim();
-        }
+        if (null == baseUri || baseUri.isEmpty())
+            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url","http://localhost:8080")).trim();
         String uri = baseUri + "/api/v1/search?identifier=";
         String path = "/swbadmin/jsp/rnc/artdetail.jsp";
         try {
@@ -67,20 +67,10 @@ public class ArtDetail extends GenericAdmResource {
                 GetBICRequest req = new GetBICRequest(uri);
                 Entry entry = req.makeRequest();
                 if (null != entry) {
-                    entry.setPosition(Utils.toInt(request.getParameter(POSITION)));
-                    List<String> resourcetype = entry.getResourcetype();
-                    String type = resourcetype.size() > 0 ? resourcetype.get(0) : "";
-                    if (type.equalsIgnoreCase("otro") || type.equalsIgnoreCase("thesis") || type.equalsIgnoreCase("book"))
-                        path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
-                    else if (type.equalsIgnoreCase("gramatica") || type.equalsIgnoreCase("receta") || type.equalsIgnoreCase("video"))
-                        path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
-                    else if (type.equalsIgnoreCase("cantos")) {
-                        List<DigitalObject> digitalobjects = entry.getDigitalObject();
-                        DigitalObject digital = null != digitalobjects ? digitalobjects.get(0): new DigitalObject();
-                        String mime = null != digital.getMediatype() ? digital.getMediatype().getMime() : "";
-                        if (!mime.isEmpty() && mime.startsWith("audio"))
-                            path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
-                    }
+                    int position = Utils.toInt(request.getParameter(POSITION));
+                    entry.setPosition(position);
+                    path = getViewerPath(getMimeType(getDigitalObject(entry.getDigitalObject(), position)));
+                    System.out.println("PATH: " + path);
                     uri = baseUri + "/api/v1/search/hits/" + entry.getId();
                     URL url = new URL(uri);
                     HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -139,5 +129,30 @@ public class ArtDetail extends GenericAdmResource {
         } catch (ServletException se) {
             LOG.error(se);
         }
+    }
+    
+    private DigitalObject getDigitalObject(List<DigitalObject> list, int position) {
+        if (null == list || list.isEmpty() || position > list.size()) return null;
+        if (position <=0) return list.get(0);
+        return list.get(position);
+    }
+    
+    private String getMimeType(DigitalObject digital) {
+        if (null != digital && null != digital.getMediatype() && null != digital.getMediatype().getMime()) return digital.getMediatype().getMime();
+        else return "";
+    }
+    
+    private String getViewerPath(String mimeType) {
+        String path = "/swbadmin/jsp/rnc/artdetail.jsp";
+        if (null == mimeType || mimeType.isEmpty()) return path;
+        if (mimeType.equalsIgnoreCase("application/pdf"))
+            path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
+        else if (mimeType.equalsIgnoreCase("application/octet-stream") || mimeType.equalsIgnoreCase("video/x-msvideo"))
+            path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
+        else if (mimeType.equalsIgnoreCase("application/epub+zip"))
+            path = "/swbadmin/jsp/rnc/viewer/epubdetail.jsp";
+        else if (!mimeType.isEmpty() && mimeType.startsWith("audio"))
+            path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
+         return path;
     }
 }
