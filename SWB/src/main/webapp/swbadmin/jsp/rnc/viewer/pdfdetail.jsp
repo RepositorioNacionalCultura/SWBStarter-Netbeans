@@ -40,7 +40,7 @@
 		divVisor.append("<div id=\"pdfdetail\"></div>");
 		scriptCallVisor.append("<script type=\"text/javascript\">")
                     .append("   $(document).ready(function() {")
-                    .append("       PDFObject.embed(\"https://pdfobject.com/pdf/sample-3pp.pdf\", \"#pdfdetail\");")
+                    .append("       PDFObject.embed(\"").append(digital.getUrl()).append("\", \"#pdfdetail\");")
                     .append("   });")
                     .append("</script>");
 		type = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
