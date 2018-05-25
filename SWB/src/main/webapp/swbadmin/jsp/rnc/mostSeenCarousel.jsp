@@ -31,7 +31,7 @@
                                     <%=!item.getResourcetype().isEmpty() ? item.getResourcetype().get(0) : "&nbsp;" %>
                                 </div>
                                 <%
-                                    for (DigitalObject digObj : item.getDigitalobject()) {
+                                    for (DigitalObject digObj : item.getDigitalObject()) {
                                         if (digObj.getMediatype().getMime().startsWith("image") && !digObj.getUrl().isEmpty()) {
                                 %>
                                 <div class="card-img-cont">
