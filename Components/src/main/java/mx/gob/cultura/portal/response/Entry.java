@@ -30,6 +30,7 @@ public class Entry implements Serializable {
     private List<Identifier> identifier;
     private List<DigitalObject> digitalObject;
     
+    private String type;
     private Integer position;
     
     private List<String> lang;
@@ -160,13 +161,23 @@ public class Entry implements Serializable {
         this.position = position;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+    
     private void init() {
         DateDocument date = new DateDocument();
         date.setValue("");
+        this.type = "";
         this.datecreated = date;
         periodcreated = new Period();
         periodcreated.setDateend(date);
         periodcreated.setDatestart(date);
+        this.resourcestats = new Stats();
         this.keywords = new ArrayList<>();
         this.description = new ArrayList<>();
     }

@@ -66,7 +66,7 @@
             }else {
                 int primeraPaginaBloqueSiguiente = (numBloque+1)*paginasPorBloque+1;
     %>
-		<li><a href="#" onclick="javascript:doPage(<%=primeraPaginaBloqueSiguiente+",'"+m+"','"+f %>')"><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
+		<li><a href="#" onclick="javascript:doPage(<%= primeraPaginaBloqueSiguiente+",'"+m+"','"+f %>')"><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
     <%
             }
         }

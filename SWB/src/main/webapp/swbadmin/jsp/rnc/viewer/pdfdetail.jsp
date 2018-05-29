@@ -34,13 +34,13 @@
             digitalobjects = entry.getDigitalObject();
             pdfs = null != digitalobjects ? digitalobjects.size() : 0;
             digital = pdfs >= iDigit ? digitalobjects.get(iDigit-1) : new DigitalObject();
-            if (null != digital.getUrl() && digital.getUrl().endsWith(".pdf")) {
+            if (null != digital.getUrl() && (digital.getUrl().endsWith(".pdf") || digital.getUrl().endsWith("view"))) {
 		scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
                 scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-pdf.css'/>");
 		divVisor.append("<div id=\"pdfdetail\"></div>");
 		scriptCallVisor.append("<script type=\"text/javascript\">")
                     .append("   $(document).ready(function() {")
-                    .append("       PDFObject.embed(\"https://pdfobject.com/pdf/sample-3pp.pdf\", \"#pdfdetail\");")
+                    .append("       PDFObject.embed(\"").append(digital.getUrl()).append("\", \"#pdfdetail\");")
                     .append("   });")
                     .append("</script>");
 		type = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";

@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Calendar;
 import java.util.ArrayList;
 import org.semanticwb.Logger;
-import org.semanticwb.SWBPlatform;
 import org.semanticwb.SWBUtils;
+import org.semanticwb.SWBPlatform;
 import org.semanticwb.model.WebSite;
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceModes;
@@ -34,6 +34,7 @@ import mx.gob.cultura.portal.request.ListBICRequest;
 import mx.gob.cultura.portal.response.Aggregation;
 import mx.gob.cultura.portal.response.CountName;
 import mx.gob.cultura.portal.response.DateRange;
+import mx.gob.cultura.portal.response.DigitalObject;
 import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.response.Entry;
 import org.semanticwb.SWBException;
@@ -128,6 +129,7 @@ public class SearchCulturalProperty extends PagerAction {
             Document document = getReference(request, paramRequest.getWebPage().getWebSite());
             if (null != document) {
                 publicationList = document.getRecords();
+                setType(document.getRecords());
                 request.setAttribute("aggs", getAggregation(document.getAggs()));
                 request.setAttribute("creators", getCreators(document.getRecords()));
                 request.getSession().setAttribute(FULL_LIST, document.getRecords());
@@ -155,6 +157,7 @@ public class SearchCulturalProperty extends PagerAction {
                 document = getReference(request, paramRequest.getWebPage().getWebSite());
                 if (null != document) {
                     publicationList = document.getRecords();
+                    setType(document.getRecords());
                     request.getSession().setAttribute(FULL_LIST, document.getRecords());
                 }
                 request.setAttribute("f", request.getParameter("sort"));
@@ -184,6 +187,7 @@ public class SearchCulturalProperty extends PagerAction {
         document = getReference(request, paramRequest.getWebPage().getWebSite());
         if (null != document) {
             publicationList = document.getRecords();
+            setType(document.getRecords());
             request.getSession().setAttribute(FULL_LIST, publicationList);
             page(pagenum, session);
         }
@@ -205,15 +209,11 @@ public class SearchCulturalProperty extends PagerAction {
     private Document getReference(HttpServletRequest request, WebSite site) {
         Document document = null;
         String words = request.getParameter("word");
-
         //Get baseURI from site properties first
         String baseUri = site.getModelProperty("search_endPoint");
-        if (null == baseUri || baseUri.isEmpty()) {
-            baseUri = SWBPlatform.getEnv("rnc/endpointURL",
-                    getResourceBase().getAttribute("endpointURL",
-                            "http://localhost:8080")).trim();
-        }
-
+        System.out.println("baseUri: " + baseUri);
+        if (null == baseUri || baseUri.isEmpty())
+            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim();
         String uri = baseUri + "/api/v1/search?q=";
         try {
             uri += URLEncoder.encode(getParamSearch(words), StandardCharsets.UTF_8.name());
@@ -332,5 +332,18 @@ public class SearchCulturalProperty extends PagerAction {
             return parameters.toString();
         }else
             return words;
+    }
+    
+    private void setType(List<Entry> references) {
+        if (null != references && !references.isEmpty()) {
+            for (Entry e : references) {
+                List<DigitalObject> list = e.getDigitalObject();
+                if (null != list && !list.isEmpty()) {
+                    DigitalObject dObj = list.get(0);
+                    if (null != dObj && null != dObj.getMediatype() && null != dObj.getMediatype().getMime())
+                        e.setType(dObj.getMediatype().getMime());
+                }
+            }
+        }
     }
 }
