@@ -17,6 +17,7 @@
     List<String> creators = new ArrayList<>();
     DateDocument datestart = new DateDocument();
     StringBuilder divVisor = new StringBuilder();
+    StringBuilder scriptHeader = new StringBuilder();
     StringBuilder scriptCallVisor = new StringBuilder();
     List<DigitalObject> digitalobjects = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
@@ -31,26 +32,27 @@
             audios = null != digitalobjects ? digitalobjects.size() : 0;
             if (!titles.isEmpty()) title = titles.get(0).getValue();
             if (audios > 0) {
+                scriptHeader.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/work/models/").append(site.getId()).append("/audio/css/audio.css\"/>");
 		divVisor.append("<script>")
-                        .append("	$(document).ready(function(){")
-			.append("		$(\"#play-pause\").click(function(){")
-                        .append("			$(\".audio-bit\").toggleClass(\"playbit\");")
-			.append("		});")
-                        .append("	});")
-			.append("</script>");
+                    .append("	$(document).ready(function(){")
+                    .append("       $(\"#play-pause\").click(function(){")
+                    .append("		$(\".audio-bit\").toggleClass(\"playbit\");")
+                    .append("       });")
+                    .append("	});")
+                    .append("</script>");
                 scriptCallVisor.append("<script type=\"text/javascript\">")
                     .append("   Amplitude.init({")
                     .append("       \"songs\": [");
                     for (DigitalObject digital : digitalobjects) {
                         String type = (null != digital.getMediatype() && null != digital.getMediatype().getMime()) ?  digital.getMediatype().getMime() : "";
 			if (!type.isEmpty() && type.startsWith("audio")) {
-                            scriptCallVisor.append("            {")
-                                .append("               \"name\": \"").append(null != digital.getMediatype() ? digital.getMediatype().getName() : "").append("\",")
-				.append("				\"artist\": \"").append(creator).append("\",")
-				.append("				\"album\": \"").append(title).append("\",")
-				.append("				\"url\": \"").append(digital.getUrl()).append("\",")
-				.append("				\"cover_art_url\": \"/work/models/cultura/audio/img/waves.png\"")
-				.append("			},");
+                            scriptCallVisor.append("    {")
+                                .append("       \"name\": \"").append(null != digital.getMediatype() ? digital.getMediatype().getName() : "").append("\",")
+				.append("	\"artist\": \"").append(creator).append("\",")
+				.append("	\"album\": \"").append(title).append("\",")
+				.append("	\"url\": \"").append(digital.getUrl()).append("\",")
+				.append("	\"cover_art_url\": \"/work/models/").append(site.getId()).append("/audio/img/waves.png\"")
+				.append("   },");
 			}
                     }
                     scriptCallVisor.append("       ]")

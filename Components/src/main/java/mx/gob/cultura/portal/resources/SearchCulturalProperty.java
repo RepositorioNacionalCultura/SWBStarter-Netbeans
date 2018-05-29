@@ -209,15 +209,11 @@ public class SearchCulturalProperty extends PagerAction {
     private Document getReference(HttpServletRequest request, WebSite site) {
         Document document = null;
         String words = request.getParameter("word");
-
         //Get baseURI from site properties first
         String baseUri = site.getModelProperty("search_endPoint");
-        if (null == baseUri || baseUri.isEmpty()) {
-            baseUri = SWBPlatform.getEnv("rnc/endpointURL",
-                    getResourceBase().getAttribute("endpointURL",
-                            "http://localhost:8080")).trim();
-        }
-
+        System.out.println("baseUri: " + baseUri);
+        if (null == baseUri || baseUri.isEmpty())
+            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim();
         String uri = baseUri + "/api/v1/search?q=";
         try {
             uri += URLEncoder.encode(getParamSearch(words), StandardCharsets.UTF_8.name());
