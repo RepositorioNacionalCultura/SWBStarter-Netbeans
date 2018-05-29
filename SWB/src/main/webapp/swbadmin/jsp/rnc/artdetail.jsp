@@ -35,22 +35,38 @@
             images = null != digitalobjects ? digitalobjects.size() : 0;
             digital = images >= iDigit ? digitalobjects.get(iDigit - 1) : new DigitalObject();
             if (null != digital.getUrl() && digital.getUrl().endsWith(".dzi")) {
-                scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
-                scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
-                divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
-                scriptCallVisor.append("<script type=\"text/javascript\">")
-                        .append("OpenSeadragon({")
-                        .append("	id:\"pyramid\",")
-                        .append("	showHomeControl: false,")
-                        .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
-                        .append("	tileSources:   [")
-                        .append("		\"https://openseadragon.github.io/example-images/highsmith/highsmith.dzi\"")
-                        .append("	]")
-                        .append("});")
-                        .append("</script>");
-            } else {
-                divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");
-            }
+                    scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
+                    scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
+                    divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
+                    scriptCallVisor.append("<script type=\"text/javascript\">")
+                            .append("OpenSeadragon({")
+                            .append("	id:\"pyramid\",")
+                            .append("	showHomeControl: false,")
+                            .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
+                            .append("	tileSources:   [")
+                            .append("		\"https://openseadragon.github.io/example-images/highsmith/highsmith.dzi\"")
+                            .append("	]")
+                            .append("});")
+                            .append("</script>");
+                } else if (digital.getUrl().endsWith(".jpg")) {
+                    scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
+                    scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
+                    divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
+                    scriptCallVisor.append("<script type=\"text/javascript\">")
+                            .append("OpenSeadragon({")
+                            .append("	id:\"pyramid\",")
+                            .append("	showHomeControl: false,")
+                            .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
+                            .append("	showNavigator: false,")
+                            .append("	tileSources:   {")
+                            .append("		type: 'image',")
+                            .append("		url: '").append(digital.getUrl()).append("'")
+                            .append("	}")
+                            .append("});")
+                            .append("</script>");
+                } else {
+                    divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");
+                }
             type = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
             datestart = entry.getPeriodcreated().getDatestart();
             creator = creators.size() > 0 ? creators.get(0) : "";
