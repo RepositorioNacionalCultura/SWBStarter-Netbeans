@@ -64,7 +64,6 @@ public class ExhibitionResource extends GenericResource {
     public void processAction(HttpServletRequest request, SWBActionResponse response) throws SWBResourceException, IOException {
         WebPage wp = null;
         String url = "/es/repositorio/home";
-        System.out.println("processAction: " + request.getParameter("id"));
         try {
             if (ACTION_DEL_EXH.equals(response.getAction())) {
                 String idnewwp = request.getParameter("exh_del");
