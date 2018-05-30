@@ -127,7 +127,7 @@ public class ArtDetail extends GenericAdmResource {
         if (mode.equalsIgnoreCase(MODE_DIGITAL)) {
             if (mimeType.equalsIgnoreCase("application/pdf"))
                 path = "/swbadmin/jsp/rnc/viewer/pdfdigital.jsp";
-            else if (mimeType.equalsIgnoreCase("application/octet-stream") || mimeType.equalsIgnoreCase("video/x-msvideo") || mimeType.equalsIgnoreCase("video/mpeg"))
+            else if (mimeType.equalsIgnoreCase("application/octet-stream") || mimeType.equalsIgnoreCase("video/x-msvideo") || mimeType.equalsIgnoreCase("video/mpeg") || mimeType.equalsIgnoreCase("video/quicktime"))
                 path = "/swbadmin/jsp/rnc/viewer/videodigital.jsp";
             else if (mimeType.equalsIgnoreCase("application/epub+zip"))
                 path = "/swbadmin/jsp/rnc/viewer/epubdigital.jsp";
