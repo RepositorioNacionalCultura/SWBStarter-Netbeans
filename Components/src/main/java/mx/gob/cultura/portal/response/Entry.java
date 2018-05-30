@@ -36,6 +36,8 @@ public class Entry implements Serializable {
     private List<String> lang;
     private List<String> keywords;
     private List<String> collection;
+    
+    private String resourcethumbnail;
 
     public Stats getResourcestats() {
         return resourcestats;
@@ -167,6 +169,14 @@ public class Entry implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getResourcethumbnail() {
+        return resourcethumbnail;
+    }
+
+    public void setResourcethumbnail(String resourcethumbnail) {
+        this.resourcethumbnail = resourcethumbnail;
     }
     
     private void init() {

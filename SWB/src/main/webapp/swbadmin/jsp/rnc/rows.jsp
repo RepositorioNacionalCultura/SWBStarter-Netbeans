@@ -28,25 +28,16 @@
         <%  
             for (Entry reference : references) {
                 Title title = new Title();
-		String type = reference.getType();
-                DigitalObject digital = new DigitalObject();
 		List<Title> titles = reference.getRecordtitle();
                 if (!titles.isEmpty()) title = titles.get(0);
                 List<String> creators = reference.getCreator();
 		List<String> resourcetype = reference.getResourcetype();
-                List<DigitalObject> digitalobject = reference.getDigitalObject();
-		if (!digitalobject.isEmpty()) digital = digitalobject.get(0);
                 String resource = resourcetype.size() > 0 ? resourcetype.get(0) : "";
 		String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
-                if (type.equalsIgnoreCase("application/octet-stream") || (!type.isEmpty() && type.startsWith("video"))) digital.setUrl("/work/models/"+site.getId()+"/img/icono-video.jpg");
-		else if (type.equalsIgnoreCase("application/pdf")) digital.setUrl("/work/models/"+site.getId()+"/img/icono-pdf.png");
-                else if (type.equalsIgnoreCase("application/zip")) digital.setUrl("/work/models/"+site.getId()+"/img/icono-zip.jpg");
-		else if (!type.isEmpty() && type.startsWith("audio")) digital.setUrl("/work/models/"+site.getId()+"/img/icono-audio.jpg");
-                else if (type.equalsIgnoreCase("text/richtext") || (!type.isEmpty() && type.startsWith("application/vnd")) ) digital.setUrl("/work/models/"+site.getId()+"/img/empty.jpg");
         %>
                 <div class="pieza-res card">
                     <a href="/swb/<%=site.getId()%>/detalle?id=<%=reference.getId()%>">
-                        <img src="<%=digital.getUrl()%>" />
+                        <img src="<%=reference.getResourcethumbnail()%>" />
                     </a>
                     <div>
                         <p class="oswB azul tit"><a href="#"><%=title.getValue()%></a></p>

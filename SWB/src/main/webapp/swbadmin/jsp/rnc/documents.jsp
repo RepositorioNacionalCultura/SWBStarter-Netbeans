@@ -66,7 +66,6 @@
                 </div>
 		<div id="resultados" class="card-columns">
                 <%
-                    int position = first;
                     for (Entry reference : references) {
 			Title title = new Title();
                         reference.setPosition(0);
@@ -77,17 +76,13 @@
                         List<String> resourcetype = reference.getResourcetype();
                         List<DigitalObject> digitalobject = reference.getDigitalObject();
 			if (!titles.isEmpty()) title = titles.get(0);
-					    String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
+                        String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
                         String resource = resourcetype.size() > 0 ? resourcetype.get(0) : "";
                         if (!digitalobject.isEmpty()) digital = digitalobject.get(0);
-		        if (type.equalsIgnoreCase("application/octet-stream") || (!type.isEmpty() && type.startsWith("video"))) digital.setUrl("/work/models/"+site.getId()+"/img/icono-video.jpg");
-			else if (type.equalsIgnoreCase("application/pdf")) digital.setUrl("/work/models/"+site.getId()+"/img/icono-pdf.png");
-			else if (type.equalsIgnoreCase("application/zip")) digital.setUrl("/work/models/"+site.getId()+"/img/icono-zip.jpg");
-			else if (!type.isEmpty() && type.startsWith("audio")) digital.setUrl("/work/models/"+site.getId()+"/img/icono-audio.jpg");
 		%>
                         <div class="pieza-res card">
                             <a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&n=<%=reference.getPosition()%>">
-                                <img src="<%=digital.getUrl()%>" />
+                                <img src="<%=reference.getResourcethumbnail()%>" />
                             </a>
                             <div>
                                 <p class="oswB azul tit"><a href="#"><%=title.getValue()%></a></p>
@@ -96,12 +91,11 @@
                             </div>
                         </div>
                 <%
-                        position++;
                     }
                 %>
-				</div>
-				<jsp:include page="pager.jsp" flush="true"/>
-			</div>
+                    </div>
+                    <jsp:include page="pager.jsp" flush="true"/>
+		</div>
 		<%
             }else if (null != word) { out.println(paramRequest.getLocaleString("usrmsg_view_search_no_results") + " " + word); }
         %>
