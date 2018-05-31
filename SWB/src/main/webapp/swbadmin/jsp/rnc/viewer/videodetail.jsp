@@ -39,7 +39,7 @@
 		scriptHeader.append("<script>plyr.setup();</script>");
                 scriptHeader.append("<script type=\"text/javascript\" src=\"/work/models/").append(site.getId()).append("/js/viewer-video.js\"></script>");
                 scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-video-2.css'/>");
-		divVisor.append("<video id=\"video\" width=\"97%\" poster=\"/work/models/repositorio/img/video.jpg\" controls controlsList=\"nodownload\">");
+		divVisor.append("<video id=\"video\" width=\"97%\" poster=\"").append(entry.getResourcethumbnail()).append("\" controls controlsList=\"nodownload\">");
                 divVisor.append("	<source src=\"").append(digital.getUrl()).append("\" type=\"").append(entry.getType()).append("\">");
 		divVisor.append("	<p>Tu navegador no soporta video en HTML5</p>");
                 divVisor.append("</video>");

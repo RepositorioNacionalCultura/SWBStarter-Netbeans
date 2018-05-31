@@ -336,34 +336,47 @@ public class SearchCulturalProperty extends PagerAction {
             return words;
     }
     
-    private void setType(List<Entry> references, WebSite site) {
-        if (null != references && !references.isEmpty()) {
-            for (Entry e : references) {
-                List<DigitalObject> list = e.getDigitalObject();
-                if (null != list && !list.isEmpty()) {
-                    DigitalObject dObj = list.get(0);
-                    if (null != dObj && null != dObj.getMediatype() && null != dObj.getMediatype().getMime()) {
-                        String type = dObj.getMediatype().getMime();
-                        e.setType(type);
-                        if (!existImg(e.getResourcethumbnail())) {
-                            if (type.equalsIgnoreCase("application/octet-stream")) {
-                                if (dObj.getUrl().endsWith(".zip")) e.setResourcethumbnail("/work/models/"+site.getId()+"/img/icono-zip.jpg");
-                                else if (dObj.getUrl().endsWith(".avi")) e.setResourcethumbnail("/work/models/"+site.getId()+"/img/icono-video.jpg");
-                            }else if (!type.isEmpty() && type.startsWith("video")) e.setResourcethumbnail("/work/models/"+site.getId()+"/img/icono-video.jpg");
-                            else if (type.equalsIgnoreCase("application/pdf")) e.setResourcethumbnail("/work/models/"+site.getId()+"/img/icono-pdf.png");
-                            else if (type.equalsIgnoreCase("application/zip")) e.setResourcethumbnail("/work/models/"+site.getId()+"/img/icono-zip.jpg");
-                            else if (!type.isEmpty() && type.startsWith("audio")) e.setResourcethumbnail("/work/models/"+site.getId()+"/img/icono-audio.jpg");
-                            else if (type.equalsIgnoreCase("text/richtext") || (!type.isEmpty() && type.startsWith("application/vnd"))) e.setResourcethumbnail("/work/models/"+site.getId()+"/img/empty.jpg");
-                            else if (type.equalsIgnoreCase("image/jpeg"))
-                               e.setResourcethumbnail(dObj.getUrl());
-                        }
+    public static void setThumbnail(Entry e, WebSite site) {
+        if (null != e) {
+            List<DigitalObject> list = e.getDigitalObject();
+            if (null != list && !list.isEmpty()) {
+                DigitalObject dObj = list.get(0);
+                if (null != dObj && null != dObj.getMediatype() && null != dObj.getMediatype().getMime()) {
+                    String type = dObj.getMediatype().getMime();
+                    e.setType(type);
+                    if (!existImg(e.getResourcethumbnail())) {
+                        if (type.equalsIgnoreCase("application/octet-stream")) {
+                            if (dObj.getUrl().endsWith(".zip"))
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-zip.jpg");
+                            else if (dObj.getUrl().endsWith(".avi"))
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-video.jpg");
+                        }else if (!type.isEmpty() && type.startsWith("video")) 
+                            e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-video.jpg");
+                        else if (type.equalsIgnoreCase("application/pdf"))
+                            e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-pdf.png");
+                        else if (type.equalsIgnoreCase("application/zip"))
+                            e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-zip.jpg");
+                        else if (!type.isEmpty() && type.startsWith("audio"))
+                            e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-audio.jpg");
+                        else if (type.equalsIgnoreCase("text/richtext") || (!type.isEmpty() && type.startsWith("application/vnd")))
+                            e.setResourcethumbnail("/work/models/" + site.getId() + "/img/empty.jpg");
+                        else if (type.equalsIgnoreCase("image/jpeg"))
+                            e.setResourcethumbnail(dObj.getUrl());
                     }
                 }
             }
         }
     }
     
-    private boolean existImg(String urlImg) {
+    private void setType(List<Entry> references, WebSite site) {
+        if (null != references && !references.isEmpty()) {
+            for (Entry e : references) {
+                setThumbnail(e, site);
+            }
+        }
+    }
+    
+    private static boolean existImg(String urlImg) {
         if (null == urlImg || urlImg.isEmpty() || !urlImg.startsWith("http")) return false;
         try {
             HttpURLConnection.setFollowRedirects(false);

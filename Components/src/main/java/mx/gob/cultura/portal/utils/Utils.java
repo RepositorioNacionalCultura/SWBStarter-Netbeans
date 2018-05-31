@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 
 import java.util.logging.Logger;
+import mx.gob.cultura.portal.response.DigitalObject;
+import mx.gob.cultura.portal.response.Entry;
+import org.semanticwb.model.WebSite;
 
 /**
  *

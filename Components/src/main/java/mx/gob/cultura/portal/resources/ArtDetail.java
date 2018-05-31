@@ -66,6 +66,7 @@ public class ArtDetail extends GenericAdmResource {
                 if (null != entry) {
                     int position = Utils.toInt(request.getParameter(POSITION));
                     entry.setPosition(position);
+                    SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite());
                     path = getViewerPath(getMimeType(getDigitalObject(entry.getDigitalObject(), position)), SWBParamRequest.Mode_VIEW);
                 }
                 request.setAttribute("entry", entry);
@@ -93,6 +94,7 @@ public class ArtDetail extends GenericAdmResource {
                 Entry entry = req.makeRequest();
                 if (null != entry) {
                     entry.setPosition(iDigit);
+                    SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite());
                     int images = null != entry.getDigitalObject() ? entry.getDigitalObject().size() : 0;
                     path = getViewerPath(getMimeType(getDigitalObject(entry.getDigitalObject(), iDigit)), MODE_DIGITAL);
                     if (iDigit >= 0 && iDigit <= images) {
