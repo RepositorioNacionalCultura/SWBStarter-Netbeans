@@ -14,7 +14,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mx.gob.cultura.portal.persist.AnnotationMgr;
+import mx.gob.cultura.portal.request.GetBICRequest;
 import mx.gob.cultura.portal.response.Annotation;
+import mx.gob.cultura.portal.response.Entry;
+import org.semanticwb.SWBPlatform;
 import org.semanticwb.model.User;
 import org.semanticwb.model.UserRepository;
 import org.semanticwb.portal.api.GenericResource;
@@ -44,11 +47,15 @@ public class MyAnnotations extends GenericResource{
 
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
-System.out.println("********************doView");        
-        String id=request.getParameter("id");
-System.out.println("id:"+id);
+        String oid=request.getParameter("id");  
+        String id="";
+        if (oid!=null&&!oid.isEmpty()){
+            Entry entry = getEntry(oid);
+            if (entry!=null&&entry.getIdentifier()!=null&&entry.getIdentifier().get(0)!=null){                
+                id= entry.getIdentifier().get(0).getValue(); 
+            }
+        }
         User user = paramRequest.getUser();
-System.out.println("user:"+user);  
         response.setContentType("text/html; charset=UTF-8");
        // String basePath = "/work/models/" + paramRequest.getWebPage().getWebSite().getId() + "/jsp/" + this.getClass().getSimpleName() + "/";
         String path = "/swbadmin/jsp/rnc/"+this.getClass().getSimpleName()+"/view.jsp";
@@ -65,19 +72,16 @@ System.out.println("user:"+user);
         try {
             request.setAttribute("paramRequest", paramRequest);
             request.setAttribute("annotations", annotationList);
+            request.setAttribute("id", id);
             dis.include(request, response);
         } catch (ServletException se) {
             LOG.severe(se.getMessage());
         }        
     }
     public void doAdd(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
-System.out.println("********************doAdd");       
         String target = request.getParameter("id");
-System.out.println("target:"+target);
         String bodyValue = request.getParameter("bodyValue");
-System.out.println("bodyValue:"+bodyValue);
         User user = paramRequest.getUser(); 
-System.out.println("user:"+user);  
 
         UserRepository ur=paramRequest.getWebPage().getWebSite().getUserRepository();
         String userId = null;
@@ -87,7 +91,6 @@ System.out.println("user:"+user);
                 bodyValue!=null&& !bodyValue.isEmpty()){           
                 Annotation annotation =new Annotation(bodyValue,target,user.getId());
                 String annotationId=AnnotationMgr.getInstance().addAnnotation(annotation);
-System.out.println(annotationId);
             }            
         }
         PrintWriter out = response.getWriter();
@@ -113,8 +116,16 @@ System.out.println(annotationId);
             sb.deleteCharAt(sb.length()-1);
         }
         sb.append("]");
-System.out.println(sb);        
         out.print(sb.toString());
     }
-    
+    private Entry getEntry(String id) throws IOException {
+        String baseUri = getResourceBase().getWebSite().getModelProperty("search_endPoint");
+        if (null == baseUri || baseUri.isEmpty()) {
+            baseUri = SWBPlatform.getEnv("rnc/endpointURL").trim();
+        }
+        String uri = baseUri + "/api/v1/search?identifier="+id;
+        GetBICRequest req = new GetBICRequest(uri);
+        Entry entry = req.makeRequest();         
+        return entry;
+    }    
 }
