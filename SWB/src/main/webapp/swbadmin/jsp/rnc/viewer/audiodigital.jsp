@@ -14,10 +14,12 @@
     List<Title> titles = new ArrayList<>();
     List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
+    StringBuilder scriptHeader = new StringBuilder();
     StringBuilder scriptCallVisor = new StringBuilder();
     List<DigitalObject> digitalobjects = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
+    WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
 	if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
@@ -27,6 +29,7 @@
             audios = null != digitalobjects ? digitalobjects.size() : 0;
             if (!titles.isEmpty()) title = titles.get(0).getValue();
             if (audios > 0) {
+                scriptHeader.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/work/models/").append(site.getId()).append("/audio/css/audio.css\" />");
                 divVisor.append("<script>")
                     .append("	$(document).ready(function(){")
                     .append("		$(\"#play-pause\").click(function(){")
@@ -56,6 +59,7 @@
         }
     }
 %>
+<%=scriptHeader%>
 <%=divVisor%>
     <div id="idetail" class="detallelist">
 	<div class="explora">

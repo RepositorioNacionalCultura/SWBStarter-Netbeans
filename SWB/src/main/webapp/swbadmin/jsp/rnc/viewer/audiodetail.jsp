@@ -103,6 +103,7 @@
 	});
     }
 </script>
+<%=scriptHeader%>
 <%=divVisor%>
 <section id="detalle">
     <div id="idetail" class="detallelist">
