@@ -137,6 +137,7 @@
             </div>
 	</div>
 	<%=divVisor%>
+        <%=scriptCallVisor%>
     </div>
 </section>
 <section id="detalleinfo">
@@ -219,7 +220,6 @@
         </div>
     </div>
 </section>
-<%=scriptCallVisor%>
 <div id="dialog-message-tree" title="error">
     <p>
         <div id="dialog-text-tree"></div>
