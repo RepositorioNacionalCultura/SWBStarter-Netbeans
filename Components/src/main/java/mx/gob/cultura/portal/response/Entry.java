@@ -190,6 +190,7 @@ public class Entry implements Serializable {
         this.resourcestats = new Stats();
         this.keywords = new ArrayList<>();
         this.description = new ArrayList<>();
+        this.recordtitle = new ArrayList<>();
     }
     
     public String getIdentifiers() {
@@ -206,6 +207,6 @@ public class Entry implements Serializable {
 
     @Override
     public String toString() {
-        return "Entry{" + "digitalObject=" + digitalObject + '}';
+        return "Entry{" + "_id=" + _id + ", description=" + description + ", creator=" + creator + ", recordtitle=" + recordtitle + ", identifier=" + identifier + ", digitalObject=" + digitalObject + '}';
     }
 }

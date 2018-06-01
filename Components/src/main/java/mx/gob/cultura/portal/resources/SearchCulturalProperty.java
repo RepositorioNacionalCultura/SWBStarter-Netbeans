@@ -213,7 +213,6 @@ public class SearchCulturalProperty extends PagerAction {
         String words = request.getParameter("word");
         //Get baseURI from site properties first
         String baseUri = site.getModelProperty("search_endPoint");
-        System.out.println("baseUri: " + baseUri);
         if (null == baseUri || baseUri.isEmpty())
             baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim();
         String uri = baseUri + "/api/v1/search?q=";
@@ -336,32 +335,36 @@ public class SearchCulturalProperty extends PagerAction {
             return words;
     }
     
-    public static void setThumbnail(Entry e, WebSite site) {
+    public static void setThumbnail(Entry e, WebSite site, int position) {
         if (null != e) {
             List<DigitalObject> list = e.getDigitalObject();
             if (null != list && !list.isEmpty()) {
-                DigitalObject dObj = list.get(0);
-                if (null != dObj && null != dObj.getMediatype() && null != dObj.getMediatype().getMime()) {
-                    String type = dObj.getMediatype().getMime();
-                    e.setType(type);
-                    if (!existImg(e.getResourcethumbnail())) {
-                        if (type.equalsIgnoreCase("application/octet-stream")) {
-                            if (dObj.getUrl().endsWith(".zip"))
-                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-zip.jpg");
-                            else if (dObj.getUrl().endsWith(".avi"))
+                System.out.println(position);
+                System.out.println(list.size());
+                if (position < list.size()) {
+                    DigitalObject dObj = list.get(position);
+                    if (null != dObj && null != dObj.getMediatype() && null != dObj.getMediatype().getMime()) {
+                        String type = dObj.getMediatype().getMime();
+                        e.setType(type);
+                        if (!existImg(e.getResourcethumbnail())) {
+                            if (type.equalsIgnoreCase("application/octet-stream")) {
+                                if (dObj.getUrl().endsWith(".zip"))
+                                    e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-zip.jpg");
+                                else if (dObj.getUrl().endsWith(".avi"))
+                                    e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-video.jpg");
+                            }else if (!type.isEmpty() && type.startsWith("video")) 
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-video.jpg");
-                        }else if (!type.isEmpty() && type.startsWith("video")) 
-                            e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-video.jpg");
-                        else if (type.equalsIgnoreCase("application/pdf"))
-                            e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-pdf.png");
-                        else if (type.equalsIgnoreCase("application/zip"))
-                            e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-zip.jpg");
-                        else if (!type.isEmpty() && type.startsWith("audio"))
-                            e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-audio.jpg");
-                        else if (type.equalsIgnoreCase("text/richtext") || (!type.isEmpty() && type.startsWith("application/vnd")))
-                            e.setResourcethumbnail("/work/models/" + site.getId() + "/img/empty.jpg");
-                        else if (type.equalsIgnoreCase("image/jpeg"))
-                            e.setResourcethumbnail(dObj.getUrl());
+                            else if (type.equalsIgnoreCase("application/pdf"))
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-pdf.png");
+                            else if (type.equalsIgnoreCase("application/zip"))
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-zip.jpg");
+                            else if (!type.isEmpty() && type.startsWith("audio"))
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-audio.jpg");
+                            else if (type.equalsIgnoreCase("text/richtext") || (!type.isEmpty() && type.startsWith("application/vnd")))
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/empty.jpg");
+                            else if (type.equalsIgnoreCase("image/jpeg"))
+                                e.setResourcethumbnail(dObj.getUrl());
+                        }
                     }
                 }
             }
@@ -371,7 +374,7 @@ public class SearchCulturalProperty extends PagerAction {
     private void setType(List<Entry> references, WebSite site) {
         if (null != references && !references.isEmpty()) {
             for (Entry e : references) {
-                setThumbnail(e, site);
+                setThumbnail(e, site, 0);
             }
         }
     }

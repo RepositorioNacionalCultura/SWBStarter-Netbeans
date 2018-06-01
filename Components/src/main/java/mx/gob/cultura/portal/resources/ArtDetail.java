@@ -64,10 +64,10 @@ public class ArtDetail extends GenericAdmResource {
                 GetBICRequest req = new GetBICRequest(uri);
                 Entry entry = req.makeRequest();
                 if (null != entry) {
-                    int position = Utils.toInt(request.getParameter(POSITION));
+                    int position = null != request.getParameter(POSITION) ? Utils.toInt(request.getParameter(POSITION)) : 0;
                     entry.setPosition(position);
-                    SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite());
-                    path = getViewerPath(getMimeType(getDigitalObject(entry.getDigitalObject(), position)), SWBParamRequest.Mode_VIEW);
+                    SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), position);
+                    path = getViewerPath(getDigitalObject(entry.getDigitalObject(), position), SWBParamRequest.Mode_VIEW);
                 }
                 request.setAttribute("entry", entry);
             }
@@ -94,9 +94,10 @@ public class ArtDetail extends GenericAdmResource {
                 Entry entry = req.makeRequest();
                 if (null != entry) {
                     entry.setPosition(iDigit);
-                    SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite());
+                    System.out.println("entry: " + entry.getDigitalObject());
+                    SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), iDigit);
                     int images = null != entry.getDigitalObject() ? entry.getDigitalObject().size() : 0;
-                    path = getViewerPath(getMimeType(getDigitalObject(entry.getDigitalObject(), iDigit)), MODE_DIGITAL);
+                     path = getViewerPath(getDigitalObject(entry.getDigitalObject(), iDigit), MODE_DIGITAL);
                     if (iDigit >= 0 && iDigit <= images) {
                         request.setAttribute("iDigit", iDigit);
                         request.setAttribute("digital", entry.getDigitalObject().get(iDigit));
@@ -123,13 +124,19 @@ public class ArtDetail extends GenericAdmResource {
         else return "";
     }
     
-    private String getViewerPath(String mimeType, String mode) {
+    private String getViewerPath(DigitalObject digital, String mode) {
         String path = "/swbadmin/jsp/rnc/artdetail.jsp";
+        if (null == digital) return path;
+        String mimeType = getMimeType(digital);
+        String url = null != digital.getUrl() ? digital.getUrl() : "";
         if (null == mimeType || mimeType.isEmpty()) return path;
         if (mode.equalsIgnoreCase(MODE_DIGITAL)) {
             if (mimeType.equalsIgnoreCase("application/pdf"))
                 path = "/swbadmin/jsp/rnc/viewer/pdfdigital.jsp";
-            else if (mimeType.equalsIgnoreCase("application/octet-stream") || mimeType.equalsIgnoreCase("video/x-msvideo") || mimeType.equalsIgnoreCase("video/mpeg") || mimeType.equalsIgnoreCase("video/quicktime"))
+            else if (mimeType.equalsIgnoreCase("application/octet-stream")) {
+                if (url.endsWith(".zip")) path = "/swbadmin/jsp/rnc/digitalobj.jsp";
+                else if (url.endsWith(".avi")) path = "/swbadmin/jsp/rnc/viewer/videodigital.jsp";
+            }else if (mimeType.equalsIgnoreCase("video/quicktime") || mimeType.equalsIgnoreCase("video/x-msvideo") || mimeType.equalsIgnoreCase("video/mpeg"))
                 path = "/swbadmin/jsp/rnc/viewer/videodigital.jsp";
             else if (mimeType.equalsIgnoreCase("application/epub+zip"))
                 path = "/swbadmin/jsp/rnc/viewer/epubdigital.jsp";
@@ -139,15 +146,22 @@ public class ArtDetail extends GenericAdmResource {
         }else {
             if (mimeType.equalsIgnoreCase("application/pdf"))
                 path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
-            else if (mimeType.equalsIgnoreCase("application/octet-stream") || mimeType.equalsIgnoreCase("video/x-msvideo") || mimeType.equalsIgnoreCase("video/mpeg") || mimeType.equalsIgnoreCase("video/quicktime"))
+            else if (mimeType.equalsIgnoreCase("application/octet-stream")) {
+                if (url.endsWith(".zip")) path = "/swbadmin/jsp/rnc/artdetail.jsp";
+                else if (url.endsWith(".avi")) path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
+            }else if (mimeType.equalsIgnoreCase("video/quicktime") || mimeType.equalsIgnoreCase("video/x-msvideo") || mimeType.equalsIgnoreCase("video/mpeg"))
                 path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
             else if (mimeType.equalsIgnoreCase("application/epub+zip"))
                 path = "/swbadmin/jsp/rnc/viewer/epubdetail.jsp";
             else if (!mimeType.isEmpty() && mimeType.startsWith("audio"))
                 path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
         }
-         return path;
+        System.out.println("mimeType: " + mimeType);
+        System.out.println("path: " + path);
+        return path;
     }
+    
+    
     
     /**private int hits(String baseUri, Entry entry) throws IOException {
         String uri = baseUri + "/api/v1/search/hits/" + entry.getId();

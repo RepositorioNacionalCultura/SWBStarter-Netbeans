@@ -19,6 +19,11 @@ public class Title implements Serializable {
     private String type;
     private String value;
     //private List<String> value;
+    
+    public Title() {
+        this.type = "";
+        this.value = "";
+    }
 
     public String getType() {
         return type;
