@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="mx.gob.cultura.portal.response.DigitalObject,mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Identifier, mx.gob.cultura.portal.response.Title, org.semanticwb.portal.api.SWBParamRequest"%>
+<%@page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DigitalObject,mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Identifier, mx.gob.cultura.portal.response.Title, org.semanticwb.portal.api.SWBParamRequest"%>
 <%@ page import="java.util.List" %>
 <%@ page import="org.semanticwb.model.WebSite" %>
 <%
@@ -7,11 +7,12 @@
     WebSite site = paramRequest.getWebPage().getWebSite();
     String mode = "card-columns";
     List<Entry> references = (List<Entry>)session.getAttribute("PAGE_LIST");
-    if (null != request.getAttribute("mode"))
-        mode = (String)request.getAttribute("mode");
-    Integer last = (Integer)session.getAttribute("LAST_RECORD");
-    Integer first = (Integer)session.getAttribute("FIRST_RECORD");  
+    if (null != request.getAttribute("mode")) mode = (String)request.getAttribute("mode");
+    Integer last = (Integer)request.getAttribute("LAST_RECORD");
+    Integer first = (Integer)request.getAttribute("FIRST_RECORD");  
     Integer total = (Integer)session.getAttribute("NUM_RECORDS_TOTAL");
+    String word = null != request.getAttribute("word") ? Utils.suprXSS((String)request.getAttribute("word")) : "";
+    String uri = !word.isEmpty() ? "&word="+word+"&leap="+first : "";
 %>
 <% if (!references.isEmpty()) {  %>
     <div id="references">
@@ -36,7 +37,7 @@
 		String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
         %>
                 <div class="pieza-res card">
-                    <a href="/swb/<%=site.getId()%>/detalle?id=<%=reference.getId()%>">
+                    <a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%><%=uri%>">
                         <img src="<%=reference.getResourcethumbnail()%>" />
                     </a>
                     <div>

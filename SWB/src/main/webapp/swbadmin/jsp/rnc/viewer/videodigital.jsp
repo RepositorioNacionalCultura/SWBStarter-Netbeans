@@ -14,15 +14,15 @@
     DigitalObject digital = null;
     List<Title> titles = new ArrayList<>();
     List<String> creators = new ArrayList<>();
-	StringBuilder divVisor = new StringBuilder();
-	StringBuilder scriptHeader = new StringBuilder();
+    StringBuilder divVisor = new StringBuilder();
+    StringBuilder scriptHeader = new StringBuilder();
     int iDigit = (Integer)request.getAttribute("iDigit");
-	int iPrev = iDigit-1;
-	int iNext = iDigit+1;
+    int iPrev = iDigit-1;
+    int iNext = iDigit+1;
     List<DigitalObject> digitalobjects = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
-	SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
-	WebSite site = paramRequest.getWebPage().getWebSite();
+    SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
+    WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
 		if (null != entry.getDigitalObject()) {
 			creators = entry.getCreator();
@@ -81,34 +81,34 @@
     }
 %>
 <%=scriptHeader%>
-	<div id="idetail" class="detalleimg">
-		<div class="obranombre">
-             <h3 class="oswB"><%=title%></h3>
-             <p class="oswL"><%=creator%></p>
-         </div>
-		 <div class="explora">
-			<div class="explora2">
-				<div class="explo1">
-					© <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
+<div id="idetail" class="detalleimg">
+    <div class="obranombre">
+        <h3 class="oswB"><%=title%></h3>
+        <p class="oswL"><%=creator%></p>
+    </div>
+    <div class="explora">
+        <div class="explora2">
+            <div class="explo1">
+                © <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
+            </div>
+            <div class="explo2 row">
+                <div class="col-3">
+                    <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
                 </div>
-				<div class="explo2 row">
-					<div class="col-3">
-						<span class="ion-social-facebook"></span>
-                    </div>
-                    <div class="col-3">
-                        <span class="ion-social-twitter"></span>
-                    </div>
-                    <div class="col-6">
-                        <a href="#" onclick="loadDoc('<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
-                    </div>
+                <div class="col-3">
+                    <span class="ion-social-twitter"></span>
                 </div>
-				<div class="explo3 row">
-                    <div class="col-6">
-                    </div>
-                    <div class="col-6">
-                    </div>
+                <div class="col-6">
+                    <a href="#" onclick="loadDoc('<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
                 </div>
-			</div>
-		 </div>
-		 <%=divVisor%>
-	</div>
+            </div>
+            <div class="explo3 row">
+                <div class="col-6">
+                </div>
+                <div class="col-6">
+                </div>
+            </div>
+        </div>
+    </div>
+    <%=divVisor%>
+</div>

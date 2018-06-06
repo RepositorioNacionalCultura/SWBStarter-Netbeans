@@ -4,12 +4,11 @@
     Author     : sergio.tellez
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="mx.gob.cultura.portal.response.DateDocument, mx.gob.cultura.portal.response.DigitalObject"%>
+<%@ page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DateDocument, mx.gob.cultura.portal.response.DigitalObject"%>
 <%@ page import="mx.gob.cultura.portal.resources.ArtDetail, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.ArrayList, java.util.List"%>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
     int pdfs = 0;
-    int iEntry = 0;
     int iDigit = 1;
     String type = "";
     String title = "";
@@ -18,7 +17,6 @@
     DigitalObject digital = null;
     List<Title> titles = new ArrayList<>();
     List<String> creators = new ArrayList<>();
-    DateDocument datestart = new DateDocument();
     StringBuilder divVisor = new StringBuilder();
     StringBuilder scriptHeader = new StringBuilder();
     StringBuilder scriptCallVisor = new StringBuilder();
@@ -27,7 +25,6 @@
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
-	iEntry = entry.getPosition();
 	if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
             titles = entry.getRecordtitle();
@@ -44,15 +41,19 @@
                     .append("   });")
                     .append("</script>");
 		type = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
-		datestart = entry.getPeriodcreated().getDatestart();
 		creator = creators.size() > 0 ? creators.get(0) : "";
-		period = null != datestart ? datestart.getValue() : "";
 		if (!titles.isEmpty()) title = titles.get(0).getValue();
+                period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
             }
         }
     }
-    Integer records = (Integer)session.getAttribute("NUM_RECORDS_TOTAL");
+    SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
+    digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
+    
+    String scriptFB = Utils.getScriptFBShare(request);
+    String back = (String)request.getAttribute("back");
 %>
+<%=scriptFB%>
 <%=scriptHeader%>
 <script>
     function add(id) {
@@ -91,6 +92,18 @@
             }
         });
     }
+    function nextObj(iEntry, iDigit) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+		jQuery("#idetail").html(this.responseText);
+            }else if (this.readyState == 4 && this.status == 403) {
+		console.log(this.responseText);
+            }
+	};
+        xhttp.open("POST", '<%=digitURL%>?id='+iEntry+'&n='+iDigit, true);
+        xhttp.send();
+    }
 </script>
 <section id="detalle">
     <div id="idetail" class="detalleimg">
@@ -105,7 +118,7 @@
                 </div>
 		<div class="explo2 row">
                     <div class="col-3">
-                        <span class="ion-social-facebook"></span>
+                        <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
                     </div>
                     <div class="col-3">
                         <span class="ion-social-twitter"></span>
@@ -117,7 +130,7 @@
 		<div class="explo3 row">
                     <div class="col-6">
                         <%
-                            if (iEntry > 1) {
+                            if (iDigit > 1) {
 			%>
                                 <span class="ion-chevron-left"></span> <%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%>
 			<%
@@ -126,9 +139,9 @@
                     </div>
                     <div class="col-6">
                         <%
-                            if (iEntry < records) {
+                            if (iDigit < pdfs) {
 			%>
-                                <%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span>
+                                <a href="#" onclick="nextObj('<%=entry.getId()%>', <%=iDigit%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
 			<%
                             }
 			%>
@@ -143,23 +156,7 @@
 <section id="detalleinfo">
     <div class="container">
 	<div class="row">              
-            <div class="col-12 col-sm-6  col-md-3 col-lg-3 order-md-1 order-sm-2 order-2 mascoleccion">
-                <div>
-                    <p class="tit2"><%=paramRequest.getLocaleString("usrmsg_view_detail_more_collection")%></p>
-			<div>
-                            <img src="/work/models/repositorio/img/agregado-01.jpg" class="img-responsive">
-                            <p><%=paramRequest.getLocaleString("usrmsg_view_detail_name_work")%></p>
-                            <p>Autor Lorem Ipsum</p>
-			</div>
-			<div>
-                            <img src="/work/models/repositorio/img/agregado-02.jpg" class="img-responsive">
-                            <p><%=paramRequest.getLocaleString("usrmsg_view_detail_name_work")%></p>
-                            <p>Autor Lorem Ipsum</p>
-			</div>
-                        <hr>
-			<p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
-                </div>
-            </div>
+            <jsp:include page="../rack.jsp" flush="true"/>
             <div class="col-12 col-sm-12 col-md-6 col-lg-6 order-md-2 order-sm-1 order-1 ficha ">
 		<h3 class="oswM"><%=title%></h3>
                 <% if (null != entry && null != entry.getDescription() && !entry.getDescription().isEmpty()) { %>
@@ -189,7 +186,7 @@
                     </tr>
                     <tr>
                         <td><%=paramRequest.getLocaleString("usrmsg_view_detail_institution")%></td>
-                        <td>Lorem ipsum</td>
+                        <td><%=entry.getHolder()%></td>
                     </tr>
                     <tr>
 			<td><%=paramRequest.getLocaleString("usrmsg_view_detail_technique")%></td>
@@ -200,7 +197,7 @@
             </div>
             <div class="col-12 col-sm-6  col-md-3 col-lg-3 order-md-3 order-sm-3 order-3 clave">
 		<div class="redes">
-                    <span class="ion-social-facebook"></span>
+                    <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
                     <span class="ion-social-twitter"></span>
                 </div>
                 <div>
@@ -215,6 +212,11 @@
                             }
                         %>
                     </p>
+                </div>
+                <div class="">
+                    <a href="<%=back%>">
+                        <i aria-hidden="true" class="fa fa-long-arrow-left"></i> <%=paramRequest.getLocaleString("usrmsg_view_detail_back")%>
+                    </a>
                 </div>
             </div>
         </div>

@@ -1,5 +1,5 @@
 <%--
-    Document   : artdetail.jsp
+    Document   : digitalobject.jsp
     Created on : 5/12/2017, 11:48:36 AM
     Author     : sergio.tellez
 --%>
@@ -9,50 +9,78 @@
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
     int images = 0;
+    String url = "";
     String title = "";
     String creator = "";
-    String url = "";
     DigitalObject digital = null;
     List<Title> titles = new ArrayList<>();
     List<String> creators = new ArrayList<>();
-    int iDigit = (Integer)request.getAttribute("iDigit");
-    int iPrev = iDigit-2;
+    StringBuilder divVisor = new StringBuilder();
+    int iDigit = (Integer) request.getAttribute("iDigit");
+    int iPrev = iDigit - 1;
+    int iNext = iDigit + 1;
     List<DigitalObject> digitalobjects = new ArrayList<>();
-    Entry entry = (Entry)request.getAttribute("entry");
+    Entry entry = (Entry) request.getAttribute("entry");
+    SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     if (null != entry) {
-	if (null != entry.getDigitalObject()) {
+        if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
             titles = entry.getRecordtitle();
             digitalobjects = entry.getDigitalObject();
             images = null != digitalobjects ? digitalobjects.size() : 0;
-            digital = images >= iDigit ? digitalobjects.get(iDigit-1) : new DigitalObject();
-            url = digital.getUrl().replace("localhost", "129.144.24.140");
+            digital = images > iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
+            url = null != digital.getUrl() ? digital.getUrl() : "";
             creator = creators.size() > 0 ? creators.get(0) : "";
             if (!titles.isEmpty()) title = titles.get(0).getValue();
-	}
+            if (!url.isEmpty() && url.endsWith(".dzi"))
+		divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
+            else
+                divVisor.append("<img src=\"").append(url).append("\">");
+        }
     }
 %>
 <div id="idetail" class="detalleimg">
     <div class="obranombre">
-	<h3 class="oswB"><%=title%></h3>
+        <h3 class="oswB"><%=title%></h3>
         <p class="oswL"><%=creator%></p>
     </div>
     <div class="explora">
-	<div class="explora1">
-            <img src="<%=url%>">
-            <span class="ion-plus"></span>
-            <span class="ion-minus"></span>
-        </div>
         <div class="explora2">
-            <p><a href="#">© Declaración de Derechos</a></p>
-            <div>
-                <% if (iPrev > -1) { %><a href="#" onclick="loadImg('<%=entry.getId()%>', '<%=iPrev%>');"><span class="ion-ios-arrow-left"></span></a><% } %> <%=iDigit%>/<%=images%> <% if (iDigit < images) { %><a href="#" onclick="loadImg('<%=entry.getId()%>', '<%=iDigit%>');"><span class="ion-ios-arrow-right"></span></a><% } %>
+            <div class="explo1">
+                © <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
             </div>
-            <span class="ion-grid"></span>
-            <span class="ion-heart"><a href="#" onclick="loadDoc('<%=entry.getId()%>');"><i class="fa fa-heart" aria-hidden="true"></i></a></span>
-            <span class="ion-android-share-alt"></span>
-            <span class="ion-archive"></span>
+            <div class="explo2 row">
+                <div class="col-3">
+                    <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
+                </div>
+                <div class="col-3">
+                    <span class="ion-social-twitter"></span>
+                </div>
+                <div class="col-6">
+                    <a href="#" onclick="loadDoc('<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
+                </div>
+            </div>
+            <div class="explo3 row">
+                <div class="col-6">
+                    <%
+                        if (iPrev >= 0) {
+                    %>
+                            <a href="#" onclick="nextObj('<%=entry.getId()%>', <%=iPrev%>);"><span class="ion-chevron-left"></span> <%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%></a>
+                    <%
+                        }
+                    %>
+                </div>
+                <div class="col-6">
+                    <%
+                        if (iNext < images) {
+                    %>
+                            <a href="#" onclick="nextObj('<%=entry.getId()%>', <%=iNext%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
+                    <%
+                        }
+                    %>
+                </div>
+            </div>
         </div>
     </div>
-    <img src="<%=url%>">
+    <%=divVisor%>
 </div>

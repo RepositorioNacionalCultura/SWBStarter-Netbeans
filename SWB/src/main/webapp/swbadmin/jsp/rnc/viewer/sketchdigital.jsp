@@ -1,5 +1,5 @@
 <%--
-    Document   : pdfdigital.jsp
+    Document   : sketchdigital.jsp
     Created on : 29/05/2018, 11:48:36 AM
     Author     : sergio.tellez
 --%>
@@ -8,36 +8,31 @@
 <%@ page import="mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, java.util.ArrayList, java.util.List"%>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
-    int pdfs = 0;
+    int books = 0;
     String title = "";
     String creator = "";
     DigitalObject digital = null;
     List<Title> titles = new ArrayList<>();
     List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
-    int iDigit = (Integer) request.getAttribute("iDigit");
-    int iPrev = iDigit - 1;
-    int iNext = iDigit + 1;
-    StringBuilder scriptCallVisor = new StringBuilder();
+    int iDigit = (Integer)request.getAttribute("iDigit");
+    int iPrev = iDigit-1;
+    int iNext = iDigit+1;
     List<DigitalObject> digitalobjects = new ArrayList<>();
-    Entry entry = (Entry) request.getAttribute("entry");
-    SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
+    Entry entry = (Entry)request.getAttribute("entry");
+    SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     if (null != entry) {
-        if (null != entry.getDigitalObject()) {
+	if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
             titles = entry.getRecordtitle();
             digitalobjects = entry.getDigitalObject();
-            pdfs = null != digitalobjects ? digitalobjects.size() : 0;
-            digital = pdfs > iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
-            creator = creators.size() > 0 ? creators.get(0) : "";
-            if (!titles.isEmpty()) title = titles.get(0).getValue();
-            divVisor.append("<div id=\"pdfdetail\"></div>");
-            scriptCallVisor.append("<script type=\"text/javascript\">")
-                .append("   $(document).ready(function() {")
-                .append("       PDFObject.embed(\"").append(digital.getUrl()).append("\", \"#pdfdetail\");")
-                .append("   });")
-                .append("</script>");
+            books = null != digitalobjects ? digitalobjects.size() : 0;
+            digital = books > iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
+            if (null != digital.getUrl())
+                divVisor.append("<iframe width=\"1280\" height=\"860\" src=\"\" id=\"api-frame\" allowfullscreen mozallowfullscreen=\"true\" webkitallowfullscreen=\"true\"></iframe>");
         }
+        creator = creators.size() > 0 ? creators.get(0) : "";
+        if (!titles.isEmpty()) title = titles.get(0).getValue();
     }
 %>
 <div id="idetail" class="detalleimg">
@@ -67,13 +62,13 @@
                         if (iPrev >= 0) {
                     %>
                             <a href="#" onclick="nextObj('<%=entry.getId()%>', <%=iPrev%>);"><span class="ion-chevron-left"></span> <%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%></a>
-                    <%
+                    <%					
                         }
                     %>
                 </div>
                 <div class="col-6">
                     <%
-                        if (iNext < pdfs) {
+                        if (iNext < books) {
                     %>
                             <a href="#" onclick="nextObj('<%=entry.getId()%>', <%=iNext%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
                     <%
@@ -84,5 +79,4 @@
         </div>
     </div>
     <%=divVisor%>
-    <%=scriptCallVisor%>
 </div>

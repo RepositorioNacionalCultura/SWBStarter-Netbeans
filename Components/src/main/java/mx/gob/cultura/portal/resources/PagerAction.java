@@ -68,7 +68,7 @@ public class PagerAction extends GenericResource {
     }
     
     public void init(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
-        page(getPage(request, response, paramRequest), request.getSession());
+        page(getPage(request), request.getSession());
     }
 
     public void doPages(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
@@ -82,7 +82,7 @@ public class PagerAction extends GenericResource {
     }
     
     public void doPage(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
-        page(getPage(request, response, paramRequest), request.getSession());
+        page(getPage(request), request.getSession());
         String url = "/swbadmin/jsp/rnc/rows.jsp";
         if (null != request.getParameter("m") && "l".equalsIgnoreCase(request.getParameter("m")))
             request.setAttribute("mode", "row lista");
@@ -133,7 +133,7 @@ public class PagerAction extends GenericResource {
         page(pagenum, session);
     }
     
-    private int getPage(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
+    public int getPage(HttpServletRequest request) throws SWBResourceException, java.io.IOException {
         int pagenum = 0;
         String p = request.getParameter("p");
         if (null != p)
@@ -159,14 +159,6 @@ public class PagerAction extends GenericResource {
             session.setAttribute("PAGE_JUMP_SIZE", PAGE_JUMP_SIZE);
             session.setAttribute(PAGE_LIST, rows);
             session.setAttribute(NUM_RECORDS_VISIBLE, rows.size());
-            int first = 0;
-            int last = 0;
-            first = (pagenum-1)*PAGE_NUM_ROW+1;
-            last = first+PAGE_NUM_ROW-1;
-            if (last>total)
-		last = total;
-            session.setAttribute("FIRST_RECORD", first);
-            session.setAttribute("LAST_RECORD", last);
         }catch(Exception e) {
             LOG.info(e.getMessage());
         }

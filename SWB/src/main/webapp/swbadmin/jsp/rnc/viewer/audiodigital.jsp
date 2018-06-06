@@ -69,7 +69,7 @@
                 </div>
                 <div class="explo2 row">
                     <div class="col-3">
-                        <span class="ion-social-facebook"></span>
+                        <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
                     </div>
                     <div class="col-3">
                         <span class="ion-social-twitter"></span>

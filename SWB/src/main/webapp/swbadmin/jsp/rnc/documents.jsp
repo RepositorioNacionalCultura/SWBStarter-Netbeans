@@ -67,18 +67,14 @@
 		<div id="resultados" class="card-columns">
                 <%
                     for (Entry reference : references) {
+			reference.setPosition(0);
 			Title title = new Title();
-                        reference.setPosition(0);
-                        String type = reference.getType();
-                        DigitalObject digital = new DigitalObject();
+			List<Title> titles = reference.getRecordtitle();
+                        if (!titles.isEmpty()) title = titles.get(0);
 			List<String> creators = reference.getCreator();
-                        List<Title> titles = reference.getRecordtitle();
                         List<String> resourcetype = reference.getResourcetype();
-                        List<DigitalObject> digitalobject = reference.getDigitalObject();
-			if (!titles.isEmpty()) title = titles.get(0);
+			String resource = resourcetype.size() > 0 ? resourcetype.get(0) : "";
                         String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
-                        String resource = resourcetype.size() > 0 ? resourcetype.get(0) : "";
-                        if (!digitalobject.isEmpty()) digital = digitalobject.get(0);
 		%>
                         <div class="pieza-res card">
                             <a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&n=<%=reference.getPosition()%>">

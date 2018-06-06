@@ -136,6 +136,7 @@ public class SearchCulturalProperty extends PagerAction {
                 request.setAttribute("creators", getCreators(document.getRecords()));
                 request.getSession().setAttribute(FULL_LIST, document.getRecords());
                 request.getSession().setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
+                cassette(request, document.getTotal(), getPage(request));
             }
             request.setAttribute("word", q);
             init(request, response, paramRequest);
@@ -159,6 +160,7 @@ public class SearchCulturalProperty extends PagerAction {
                 document = getReference(request, paramRequest.getWebPage().getWebSite());
                 if (null != document) {
                     publicationList = document.getRecords();
+                    cassette(request, document.getTotal(), 1);
                     setType(document.getRecords(),  paramRequest.getWebPage().getWebSite());
                     request.getSession().setAttribute(FULL_LIST, document.getRecords());
                 }
@@ -192,6 +194,7 @@ public class SearchCulturalProperty extends PagerAction {
             setType(document.getRecords(),  paramRequest.getWebPage().getWebSite());
             request.getSession().setAttribute(FULL_LIST, publicationList);
             page(pagenum, session);
+            cassette(request, document.getTotal(), pagenum);
         }
         request.setAttribute("word", request.getParameter("word"));
         String url = "/swbadmin/jsp/rnc/rows.jsp";
@@ -208,6 +211,17 @@ public class SearchCulturalProperty extends PagerAction {
         }
     }
 
+    private void cassette(HttpServletRequest request, int total, int pagenum) {
+        int last = 0;
+        int first = 0;
+        first = (pagenum - 1) * PAGE_NUM_ROW + 1;
+        last = first + PAGE_NUM_ROW - 1;
+        if (last > total) last = total;
+        request.setAttribute("LAST_RECORD", last);
+        request.setAttribute("FIRST_RECORD", first);
+        request.setAttribute("word", request.getParameter("word"));
+    }
+    
     private Document getReference(HttpServletRequest request, WebSite site) {
         Document document = null;
         String words = request.getParameter("word");
@@ -295,7 +309,7 @@ public class SearchCulturalProperty extends PagerAction {
                 if (null !=  a.getResourcetypes()) aggregation.getResourcetypes().addAll(a.getResourcetypes());
             }
             for (CountName date : aggregation.getDates()) {
-                cal.setTime(Utils.convert(date.getName()));
+                cal.setTime(Utils.convert(date.getName(), "yyyy-MM-dd'T'HH:mm:ss"));
                 if (interval.getUpperLimit() < cal.get(Calendar.YEAR)) interval.setUpperLimit(cal.get(Calendar.YEAR));
                 if (interval.getLowerLimit() > cal.get(Calendar.YEAR)) interval.setLowerLimit(cal.get(Calendar.YEAR));
             }
@@ -339,8 +353,6 @@ public class SearchCulturalProperty extends PagerAction {
         if (null != e) {
             List<DigitalObject> list = e.getDigitalObject();
             if (null != list && !list.isEmpty()) {
-                System.out.println(position);
-                System.out.println(list.size());
                 if (position < list.size()) {
                     DigitalObject dObj = list.get(position);
                     if (null != dObj && null != dObj.getMediatype() && null != dObj.getMediatype().getMime()) {

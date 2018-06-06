@@ -25,6 +25,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import mx.gob.cultura.portal.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.semanticwb.Logger;
@@ -220,7 +221,7 @@ public class OAuthTwitter extends GenericResource {
             JSONObject credentials = verifyUserCredentials(consumerKey, consumerSecret, token, tokenSecret);
             if (null != credentials && !credentials.has("errors")) {
 //                System.out.println("UserCredentials: " + credentials.toString(4));
-                actionUrl = Utilities.getResourceURL(
+                actionUrl = Utils.getResourceURL(
                         paramRequest.getWebPage().getWebSite(),
                         SessionInitializer.class,
                         paramRequest.getActionUrl().setCallMethod(
@@ -231,7 +232,7 @@ public class OAuthTwitter extends GenericResource {
                                 .setParameter("name", credentials.getString("name"))
                                 .setParameter("email", credentials.getString("email")).toString());
             } else if (null == credentials || credentials.has("errors")) {
-                actionUrl = Utilities.getResourceURL(
+                actionUrl = Utils.getResourceURL(
                         paramRequest.getWebPage().getWebSite(),
                         SessionInitializer.class,
                         paramRequest.getActionUrl().setCallMethod(

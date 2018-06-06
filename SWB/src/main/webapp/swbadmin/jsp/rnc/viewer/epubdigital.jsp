@@ -1,6 +1,6 @@
 <%--
-    Document   : pdfdigital.jsp
-    Created on : 29/05/2018, 11:48:36 AM
+    Document   : epubdigital.jsp
+    Created on : 06/06/2018, 13:04:48 AM
     Author     : sergio.tellez
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -8,35 +8,38 @@
 <%@ page import="mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, java.util.ArrayList, java.util.List"%>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
-    int pdfs = 0;
+    int books = 0;
+    String url = "";
     String title = "";
     String creator = "";
     DigitalObject digital = null;
     List<Title> titles = new ArrayList<>();
     List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
-    int iDigit = (Integer) request.getAttribute("iDigit");
-    int iPrev = iDigit - 1;
-    int iNext = iDigit + 1;
-    StringBuilder scriptCallVisor = new StringBuilder();
+    int iDigit = (Integer)request.getAttribute("iDigit");
+    int iPrev = iDigit-1;
+    int iNext = iDigit+1;
     List<DigitalObject> digitalobjects = new ArrayList<>();
-    Entry entry = (Entry) request.getAttribute("entry");
-    SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
+    Entry entry = (Entry)request.getAttribute("entry");
+    SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     if (null != entry) {
         if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
             titles = entry.getRecordtitle();
             digitalobjects = entry.getDigitalObject();
-            pdfs = null != digitalobjects ? digitalobjects.size() : 0;
-            digital = pdfs > iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
+            books = null != digitalobjects ? digitalobjects.size() : 0;
+            digital = books >= iDigit ? digitalobjects.get(iDigit - 1) : new DigitalObject();
+            url = null != digital.getUrl() ? digital.getUrl() : "";
             creator = creators.size() > 0 ? creators.get(0) : "";
             if (!titles.isEmpty()) title = titles.get(0).getValue();
-            divVisor.append("<div id=\"pdfdetail\"></div>");
-            scriptCallVisor.append("<script type=\"text/javascript\">")
-                .append("   $(document).ready(function() {")
-                .append("       PDFObject.embed(\"").append(digital.getUrl()).append("\", \"#pdfdetail\");")
-                .append("   });")
-                .append("</script>");
+            if (null != url && url.endsWith(".epub")) {
+                divVisor.append("<div id=\"main\">")
+                    .append("   <div id=\"prev\" onclick=\"Book.prevPage();\" class=\"arrow\"><span class=\"ion-chevron-left\"></span></div>")
+                    .append("   <div id=\"area\"></div>")
+                    .append("   <div id=\"next\" onclick=\"Book.nextPage();\" class=\"arrow\"><span class=\"ion-chevron-right\"></span></div>")
+                    .append("</div>");
+                creator = creators.size() > 0 ? creators.get(0) : "";
+            }
         }
     }
 %>
@@ -73,7 +76,7 @@
                 </div>
                 <div class="col-6">
                     <%
-                        if (iNext < pdfs) {
+                        if (iNext < books) {
                     %>
                             <a href="#" onclick="nextObj('<%=entry.getId()%>', <%=iNext%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
                     <%
@@ -84,5 +87,4 @@
         </div>
     </div>
     <%=divVisor%>
-    <%=scriptCallVisor%>
 </div>

@@ -18,13 +18,20 @@ import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
+import mx.gob.cultura.portal.request.ListBICRequest;
 import mx.gob.cultura.portal.response.DigitalObject;
+import mx.gob.cultura.portal.response.Document;
+import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
 
 /**
  *
@@ -70,8 +77,10 @@ public class ArtDetail extends GenericAdmResource {
                     path = getViewerPath(getDigitalObject(entry.getDigitalObject(), position), SWBParamRequest.Mode_VIEW);
                 }
                 request.setAttribute("entry", entry);
+                request.setAttribute("collection", explore(entry, baseUri));
             }
             request.setAttribute("paramRequest", paramRequest);
+            request.setAttribute("back", back(request, paramRequest));
             RequestDispatcher rd = request.getRequestDispatcher(path);
             rd.include(request, response);
         } catch (ServletException se) {
@@ -94,10 +103,9 @@ public class ArtDetail extends GenericAdmResource {
                 Entry entry = req.makeRequest();
                 if (null != entry) {
                     entry.setPosition(iDigit);
-                    System.out.println("entry: " + entry.getDigitalObject());
                     SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), iDigit);
                     int images = null != entry.getDigitalObject() ? entry.getDigitalObject().size() : 0;
-                     path = getViewerPath(getDigitalObject(entry.getDigitalObject(), iDigit), MODE_DIGITAL);
+                    path = getViewerPath(getDigitalObject(entry.getDigitalObject(), iDigit), MODE_DIGITAL);
                     if (iDigit >= 0 && iDigit <= images) {
                         request.setAttribute("iDigit", iDigit);
                         request.setAttribute("digital", entry.getDigitalObject().get(iDigit));
@@ -111,6 +119,43 @@ public class ArtDetail extends GenericAdmResource {
         } catch (ServletException se) {
             LOG.error(se);
         }
+    }
+    
+    private List<Entry> explore(Entry entry, String endPoint) {
+        List<Entry> bookCase = new ArrayList<>();
+        if (null == entry) return bookCase;
+        List<String> collection =  entry.getCollection();
+        if (null != collection && !collection.isEmpty()) {
+            for (String rack : collection) {
+                bookCase.addAll(bookCase(endPoint, rack));
+                if (!bookCase.isEmpty() && bookCase.size() > NUM_ROW) break;
+            }
+        }
+        if (bookCase.size() >= NUM_ROW) return bookCase.subList(0, NUM_ROW);
+        else return bookCase;
+    }
+    
+    private List<Entry> bookCase(String endPoint, String rack) {
+        Document document = null;
+        String uri = endPoint + "/api/v1/search?q=";
+        try {
+            uri += URLEncoder.encode(rack, StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException uex) {
+            LOG.error(uex);
+        }
+        ListBICRequest req = new ListBICRequest(uri);
+        try {
+            document = req.makeRequest();
+        }catch (Exception se) {
+            LOG.error(se);
+        }
+        return null != document ? document.getRecords() : new ArrayList<>();
+    }
+    
+    private String back(HttpServletRequest request, SWBParamRequest paramRequest) throws java.io.IOException {
+        int p = ((null != request.getParameter("leap") ? Utils.toInt(request.getParameter("leap")) : 0) / 8) + 1;
+	String back = (p > 1) ? "javascript:location.replace('/"+paramRequest.getUser().getLanguage()+"/"+paramRequest.getWebPage().getWebSiteId()+"/resultados?word="+request.getParameter("word")+"&p="+p+"');" : "javascript:history.go(-1)"; 
+        return back;
     }
     
     private DigitalObject getDigitalObject(List<DigitalObject> list, int position) {
@@ -156,20 +201,6 @@ public class ArtDetail extends GenericAdmResource {
             else if (!mimeType.isEmpty() && mimeType.startsWith("audio"))
                 path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
         }
-        System.out.println("mimeType: " + mimeType);
-        System.out.println("path: " + path);
         return path;
     }
-    
-    
-    
-    /**private int hits(String baseUri, Entry entry) throws IOException {
-        String uri = baseUri + "/api/v1/search/hits/" + entry.getId();
-        URL url = new URL(uri);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
-        connection.getOutputStream().close();
-        return connection.getResponseCode();
-    }**/
 }
