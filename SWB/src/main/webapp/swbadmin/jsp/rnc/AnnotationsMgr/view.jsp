@@ -92,7 +92,7 @@ console.log(element);
 %>        
         if(elem.isOwn && elem.isMod){
             liContent = '<li id="li'+elem.id+'">'
-                +'<a href="/swb/repositorio/detalle?id='+elem.target+'">'+elem.bicTitle+'('+elem.bicCreator+')</a>'
+                +'<a href="/swb/repositorio/detalle?id='+elem.oid+'">'+elem.bicTitle+'('+elem.bicCreator+')</a>'
                 +'<form><i>'+elem.creator+'</i>'+'<em>'+elem.created+'</em>'+'<textarea id="bv'+elem.id+'">'+elem.bodyValue+'</textarea>'
                 +'<button type="button" onclick="callAction(\'<%=modURL.toString()%>\',\''+elem.id+'\',$(\'#bv'+elem.id+'\').val());return false;">Cambiar</button>'
                 +'<a href="#" onclick="callAction(\'<%=delURL.toString()%>\',\''+elem.id+'\');return false;">Borrar</a>'
@@ -100,13 +100,13 @@ console.log(element);
                 +'</form>'+ext+'</li>';
         }else if(elem.isMod){
             liContent = '<li id="li'+elem.id+'">'
-                +'<a href="/swb/repositorio/detalle?id='+elem.target+'">'+elem.bicTitle+'('+elem.bicCreator+')</a>'
+                +'<a href="/swb/repositorio/detalle?id='+elem.oid+'">'+elem.bicTitle+'('+elem.bicCreator+')</a>'
                 +'<i>'+elem.creator+'</i>'+'<em>'+elem.created+'</em>'+elem.bodyValue                        
                 +'<a href="#" onclick="callAction(\'<%=accURL.toString()%>\',\''+elem.id+'\');return false;">Autorizar</a>'
                 +''+ext+'</li>';
         }else{            
             liContent = '<li id="li'+elem.id+'">'
-                +'<a href="/swb/repositorio/detalle?id='+elem.target+'">'+elem.bicTitle+'('+elem.bicCreator+')</a>'
+                +'<a href="/swb/repositorio/detalle?id='+elem.oid+'">'+elem.bicTitle+'('+elem.bicCreator+')</a>'
                 +'<i>'+elem.creator+'</i>'+'<em>'+elem.created+'</em>'+elem.bodyValue                                        
                 +'<a href="#" onclick="callAction(\'<%=rjcURL.toString()%>\',\''+elem.id+'\');return false;">Desautorizar</a>'
                 +''+ext+'</li>';
@@ -117,13 +117,15 @@ console.log(element);
 %>        
         if(elem.isMod){
             liContent = '<li id="li'+elem.id+'">'
-                +'<a href="/swb/repositorio/detalle?id='+elem.target+'">'+elem.bicTitle+'('+elem.bicCreator+')</a>'
+                +'<a href="/swb/repositorio/detalle?id='+elem.oid+'">'+elem.bicTitle+'('+elem.bicCreator+')</a>'
                 +'<form><!--'+elem.creator+'-->'+'<em>'+elem.created+'</em>'+'<textarea id="bv'+elem.id+'">'+elem.bodyValue+'</textarea>'
                 +'<button type="button" onclick="callAction(\'<%=modURL.toString()%>\',\''+elem.id+'\',$(\'#bv'+elem.id+'\').val());return false;">Cambiar</button>'
                 +'<a href="#" onclick="callAction(\'<%=delURL.toString()%>\',\''+elem.id+'\');return false;">Borrar</a>'
                 +'</form>'+ext+'</li>';
         }else{            
-            liContent = '<li id="li'+elem.id+'"><i>'+elem.creator+'</i>'+'<em>'+elem.created+'</em>'+elem.bodyValue                        
+            liContent = '<li id="li'+elem.id+'">'
+                +'<a href="/swb/repositorio/detalle?id='+elem.oid+'">'+elem.bicTitle+'('+elem.bicCreator+')</a>'
+                +'<i>'+elem.creator+'</i>'+'<em>'+elem.created+'</em>'+elem.bodyValue                        
                 +''+ext+'</li>';
         }
 <%  
@@ -147,7 +149,7 @@ console.log(element);
     for(Map<String,String> annotation:annotations){
      %>
      <li id="li<%=annotation.get("id")%>">
-        <a href="/swb/repositorio/detalle?id=<%=annotation.get("target")%>"><%=annotation.get("bicTitle")%>(<%=annotation.get("bicCreator")%>)</a>
+        <a href="/swb/repositorio/detalle?id=<%=annotation.get("oid")%>"><%=annotation.get("bicTitle")%>(<%=annotation.get("bicCreator")%>)</a>
 <%      
         if(annotation.containsKey("isOwn")&&annotation.containsKey("isMod")){   
 

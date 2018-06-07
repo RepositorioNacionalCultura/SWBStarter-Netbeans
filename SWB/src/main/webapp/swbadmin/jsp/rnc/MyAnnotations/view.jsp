@@ -14,7 +14,7 @@
 <%
     List<Annotation> annotations = (List<Annotation>) request.getAttribute("annotations");
     User user = paramRequest.getUser();
-    String id=request.getParameter("id");
+    String id = (String)request.getAttribute("id");
     UserRepository ur=paramRequest.getWebPage().getWebSite().getUserRepository();
 
     if(user!=null && user.isSigned()){
