@@ -19,7 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mx.gob.cultura.portal.persist.AnnotationMgr;
 import mx.gob.cultura.portal.request.GetBICRequest;
+import mx.gob.cultura.portal.request.ListBICRequest;
 import mx.gob.cultura.portal.response.Annotation;
+import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.response.Entry;
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.model.User;
@@ -286,13 +288,19 @@ System.out.println(sb);
 
     private Entry getEntry(String id) throws IOException {
         String baseUri = getResourceBase().getWebSite().getModelProperty("search_endPoint");
+        Entry entry =new Entry();
         if (null == baseUri || baseUri.isEmpty()) {
             baseUri = SWBPlatform.getEnv("rnc/endpointURL").trim();
         }
-
-        String uri = baseUri + "/api/v1/search?identifier="+id;
-        GetBICRequest req = new GetBICRequest(uri);
-        Entry entry = req.makeRequest();            
+        String uri = baseUri + "/api/v1/search?q="+id+"&attr=oaiid";
+        //String uri = baseUri + "/api/v1/search?identifier="+id;
+        //GetBICRequest req = new GetBICRequest(uri);
+        //Entry entry = req.makeRequest();       
+        ListBICRequest req = new ListBICRequest(uri);        
+        Document document = req.makeRequest();
+        if(document!=null&&document.getRecords()!=null&&document.getRecords().get(0)!=null){
+            entry=document.getRecords().get(0);
+        }         
         return entry;
     }
     
@@ -339,11 +347,15 @@ System.out.println(sb);
         try {
             Entry entry = getEntry(annotation.getTarget());
             if (entry!=null){                
+                if(entry.getId()!=null){
+                    map.put("oid",entry.getId());
+                }    
                 if(entry.getRecordtitle()!=null){
                     map.put("bicTitle",entry.getRecordtitle().get(0).getValue());            
                 }    
-                if(entry.getCreator()!=null)
-                map.put("bicCreator",entry.getCreator().get(0));
+                if(entry.getCreator()!=null){
+                    map.put("bicCreator",entry.getCreator().get(0));
+                }    
             }
         } catch (IOException ex) {
             LOG.severe(ex.getMessage());
