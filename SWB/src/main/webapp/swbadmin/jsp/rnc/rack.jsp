@@ -6,27 +6,36 @@
     List<Entry> c = (List<Entry>) request.getAttribute("collection");
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
+    String userLang = paramRequest.getUser().getLanguage();
+    Entry entry = (Entry)request.getAttribute("entry");
+    String rackuri = "javascript:location.replace('/"+paramRequest.getUser().getLanguage()+"/"+paramRequest.getWebPage().getWebSiteId()+"/resultados?word=";
+    if (!entry.getCollection().isEmpty()) {
+        rackuri += entry.getCollection().get(0);
+    }
+    rackuri += "')";
 %>
 <div class="col-12 col-sm-6  col-md-3 col-lg-3 order-md-1 order-sm-2 order-2 mascoleccion">
     <div>
         <p class="tit2"><%=paramRequest.getLocaleString("usrmsg_view_detail_more_collection")%></p>
-        <% if (!c.isEmpty()) {
-                for (Entry entry : c) {
+        <%  if (!c.isEmpty()) {
+                for (Entry book : c)  {
                     String title = "";
-                    titles = entry.getRecordtitle();
+                    titles = book.getRecordtitle();
                     if (!titles.isEmpty()) title = titles.get(0).getValue();
-                    SearchCulturalProperty.setThumbnail(entry, site, 0);
+                    SearchCulturalProperty.setThumbnail(book, site, 0);
         %>
                     <div>
-                        <img src=<%=entry.getResourcethumbnail()%> class="img-responsive">
+                        <a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=book.getId()%>&n=0">
+                            <img src=<%=book.getResourcethumbnail()%> class="img-responsive">
+                        </a>
                         <p><%=paramRequest.getLocaleString("usrmsg_view_detail_name_work")%></p>
                         <p><%=title%></p>
-                    </div>
+                    </div><hr>
         <%
                 }
             }
         %>
         <hr>
-        <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
+        <p class="vermas"><a href="#" onclick="<%=rackuri%>"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
     </div>
 </div>
