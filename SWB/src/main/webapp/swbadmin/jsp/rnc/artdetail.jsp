@@ -45,7 +45,7 @@
                             .append("	]")
                             .append("});")
                             .append("</script>");
-                } else if (digital.getUrl().endsWith(".jpg")) {
+                }else if (digital.getUrl().endsWith("view") || digital.getUrl().endsWith(".jpg")) {
                     scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
                     scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
                     divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
