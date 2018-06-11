@@ -5,11 +5,10 @@
  */
 package mx.gob.cultura.portal.response;
 
-import java.io.Serializable;
-import static java.lang.Integer.parseInt;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  *

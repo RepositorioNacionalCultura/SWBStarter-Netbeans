@@ -81,7 +81,7 @@
                                 <img src="<%=reference.getResourcethumbnail()%>" />
                             </a>
                             <div>
-                                <p class="oswB azul tit"><a href="#"><%=title.getValue()%></a></p>
+                                <p class="oswB azul tit"><a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&n=<%=reference.getPosition()%>"><%=title.getValue()%></a></p>
                                 <p class="azul autor"><a href="#"><%=creator%></a></p>
                                 <p class="tipo"><%=resource%></p>
                             </div>

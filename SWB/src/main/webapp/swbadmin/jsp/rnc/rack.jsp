@@ -28,7 +28,7 @@
                         <a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=book.getId()%>&n=0">
                             <img src=<%=book.getResourcethumbnail()%> class="img-responsive">
                         </a>
-                        <p><%=paramRequest.getLocaleString("usrmsg_view_detail_name_work")%></p>
+                        <p></p>
                         <p><%=title%></p>
                     </div><hr>
         <%

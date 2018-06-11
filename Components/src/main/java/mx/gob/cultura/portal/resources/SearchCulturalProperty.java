@@ -13,33 +13,34 @@ import org.semanticwb.Logger;
 import org.semanticwb.SWBUtils;
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.model.WebSite;
+import org.semanticwb.portal.api.SWBResourceURL;
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceModes;
-import org.semanticwb.portal.api.SWBResourceURL;
 import org.semanticwb.portal.api.SWBResourceException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
+
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 
-
+import org.semanticwb.SWBException;
 import mx.gob.cultura.portal.utils.Utils;
-import mx.gob.cultura.portal.request.ListBICRequest;
 import mx.gob.cultura.portal.response.Aggregation;
 import mx.gob.cultura.portal.response.CountName;
 import mx.gob.cultura.portal.response.DateRange;
 import mx.gob.cultura.portal.response.DigitalObject;
 import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.response.Entry;
-import org.semanticwb.SWBException;
+import mx.gob.cultura.portal.request.ListBICRequest;
 
 /**
  *
