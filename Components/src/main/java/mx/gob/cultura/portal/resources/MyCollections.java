@@ -150,7 +150,10 @@ public class MyCollections extends GenericResource {
             if (null != collection && null != collection.getElements()) {
                 for (String _id : collection.getElements()) {
                     Entry entry = getEntry(_id);
-                    if (null != entry) favorites.add(entry);
+                    if (null != entry) {
+                        favorites.add(entry);
+                        SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), 0);
+                    }
                 }
             }
             request.setAttribute("myelements", favorites);

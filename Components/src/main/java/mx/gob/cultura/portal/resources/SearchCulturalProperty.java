@@ -281,9 +281,9 @@ public class SearchCulturalProperty extends PagerAction {
                 if (!word.contains(","))
                     capitalize.append(word).append(" ");
                 else {
-                    word = word.replace(",","");
+                    word = word.replace(","," ");
                     capitalize.append(word);
-                    break;
+                    //break;
                 }
             }
             name = capitalize.toString().trim();

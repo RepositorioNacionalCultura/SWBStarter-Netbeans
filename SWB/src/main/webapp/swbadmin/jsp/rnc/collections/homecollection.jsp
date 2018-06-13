@@ -30,7 +30,7 @@
                                             <a href="<%=uri%>?id=<%=item.getId()%>"><%=item.getRecordtitle().get(0).getValue()%></a>
                                         </p>
                                         <p class="azul autor">
-                                            <a href="<%=uri%>?id=<%=item.getId()%>"><%=creator%></a>
+                                            <a href="#"><%=creator%></a>
                                         </p>
                                     </div>
                                 </div>
