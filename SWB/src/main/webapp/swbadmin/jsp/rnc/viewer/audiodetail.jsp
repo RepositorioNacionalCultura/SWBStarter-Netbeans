@@ -6,6 +6,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="mx.gob.cultura.portal.utils.Utils, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBResourceURL, org.semanticwb.portal.api.SWBParamRequest"%>
 <%@ page import="java.util.List, java.util.ArrayList, mx.gob.cultura.portal.response.Title, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.DateDocument, mx.gob.cultura.portal.response.DigitalObject"%>
+<script type="text/javascript" src="/swbadmin/js/rnc/detail.js"></script>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
     int audios = 0;
@@ -65,44 +66,6 @@
     String back = (String)request.getAttribute("back");
     String scriptFB = Utils.getScriptFBShare(request);
 %>
-<script>
-    function add(id) {
-        dojo.xhrPost({
-            url: '/swb/<%=site.getId()%>/favorito?id='+id,
-            load: function(data) {
-                dojo.byId('addCollection').innerHTML=data;
-		$('#addCollection').modal('show');
-            }
-        });
-    }
-    function loadDoc(id) {
-        var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-		jQuery("#addCollection-tree").html(this.responseText);
-                $("#addCollection" ).dialog( "open" );
-            }else if (this.readyState == 4 && this.status == 403) {
-		jQuery("#dialog-message-tree").text("Regístrate o inicia sesión para crear tus colecciones.");
-                $("#dialog-message-tree" ).dialog( "open" );
-            }
-	};
-        xhttp.open("GET", "/swb/<%=site.getId()%>/favorito?id="+id, true);
-        xhttp.send();
-    }
-    function dismiss() {
-        $("#addCollection" ).dialog( "close" );
-    }
-    function addnew(uri) {
-        dismiss();
-	dojo.xhrPost({
-            url: uri,
-		load: function(data) {
-                    dojo.byId('newCollection').innerHTML=data;
-                    $('#newCollection').modal('show');
-		}
-	});
-    }
-</script>
 <%=scriptFB%>
 <%=scriptHeader%>
 <%=divVisor%>
@@ -121,7 +84,7 @@
                         <span class="ion-social-twitter"></span>
                     </div>
                     <div class="col-6">
-                        <a href="#" onclick="loadDoc('<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
+                        <a href="#" onclick="loadDoc('/swb/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
                     </div>
                 </div>
                 <div class="explo3 row">

@@ -6,6 +6,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DateDocument, mx.gob.cultura.portal.response.DigitalObject"%>
 <%@ page import="mx.gob.cultura.portal.resources.ArtDetail, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.ArrayList, java.util.List"%>
+<script type="text/javascript" src="/swbadmin/js/rnc/detail.js"></script>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
     int iDigit = 1;
@@ -80,63 +81,6 @@
 
 <%=scriptHeader%>
 
-<script>
-    function add(id) {
-        dojo.xhrPost({
-            url: '/swb/<%=site.getId()%>/favorito?id=' + id,
-            load: function (data) {
-                dojo.byId('addCollection').innerHTML = data;
-                $('#addCollection').modal('show');
-            }
-        });
-    }
-    function addPop(id) {
-        var leftPosition = (screen.width) ? (screen.width - 990) / 3 : 0;
-        var topPosition = (screen.height) ? (screen.height - 150) / 3 : 0;
-        var url = '/swb/<%=site.getId()%>/favorito?id=' + id;
-        popCln = window.open(
-            url, 'popCln', 'height=220,width=990,left=' + leftPosition + ',top=' + topPosition + ',resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no')
-    }
-    function loadDoc(id) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                jQuery("#addCollection-tree").html(this.responseText);
-                $("#addCollection").dialog("open");
-            } else if (this.readyState == 4 && this.status == 403) {
-                jQuery("#dialog-message-tree").text("Regístrate o inicia sesión para crear tus colecciones.");
-                $("#dialog-message-tree").dialog("open");
-            }
-        };
-        xhttp.open("GET", "/swb/<%=site.getId()%>/favorito?id=" + id, true);
-        xhttp.send();
-    }
-    function nextObj(iEntry, iDigit) {
-	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-		jQuery("#idetail").html(this.responseText);
-            }else if (this.readyState == 4 && this.status == 403) {
-                console.log(this.responseText);
-            }
-        };
-        xhttp.open("POST", '<%=digitURL%>?id='+iEntry+'&n='+iDigit, true);
-        xhttp.send();
-    }
-    function dismiss() {
-	$("#addCollection" ).dialog( "close" );
-    }
-    function addnew(uri) {
-        dismiss();
-	dojo.xhrPost({
-            url: uri,
-            load: function(data) {
-                dojo.byId('newCollection').innerHTML=data;
-		$('#newCollection').modal('show');
-            }
-        });
-    }
-</script>
 <section id="detalle">
     <div id="idetail" class="detalleimg">
         <div class="obranombre">
@@ -157,7 +101,7 @@
                         <span class="ion-social-twitter"></span>
                     </div>
                     <div class="col-6">
-                        <a href="#" onclick="loadDoc('<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
+                        <a href="#" onclick="loadDoc('/swb/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
                     </div>
                 </div>
                 <div class="explo3 row">
@@ -174,7 +118,7 @@
                         <%
                             if (iDigit < images) {
                         %>
-                                <a href="#" onclick="nextObj('<%=entry.getId()%>', <%=iDigit%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
+                                <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iDigit%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
                         <%
                             }
                         %>
@@ -193,7 +137,7 @@
             <div class="col-12 col-sm-12 col-md-6 col-lg-6 order-md-2 order-sm-1 order-1 ficha ">
                 <h3 class="oswM"><%=title%></h3>
                 <% if (null != entry && null != entry.getDescription() && !entry.getDescription().isEmpty()) {%>
-                        <p><%=entry.getDescription()%></p>
+                        <p><%=entry.getDescription().get(0)%></p>
                 <% }%>
                 <hr>
                 <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>

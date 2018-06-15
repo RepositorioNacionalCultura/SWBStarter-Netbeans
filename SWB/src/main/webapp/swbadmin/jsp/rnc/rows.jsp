@@ -6,11 +6,11 @@
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
     String mode = "card-columns";
-    List<Entry> references = (List<Entry>)session.getAttribute("PAGE_LIST");
+    List<Entry> references = (List<Entry>)request.getAttribute("PAGE_LIST");
     if (null != request.getAttribute("mode")) mode = (String)request.getAttribute("mode");
     Integer last = (Integer)request.getAttribute("LAST_RECORD");
     Integer first = (Integer)request.getAttribute("FIRST_RECORD");  
-    Integer total = (Integer)session.getAttribute("NUM_RECORDS_TOTAL");
+    Integer total = (Integer)request.getAttribute("NUM_RECORDS_TOTAL");
     String word = null != request.getAttribute("word") ? Utils.suprXSS((String)request.getAttribute("word")) : "";
     String uri = !word.isEmpty() ? "&word="+word+"&leap="+first : "";
 %>

@@ -135,8 +135,8 @@ public class SearchCulturalProperty extends PagerAction {
                 setType(document.getRecords(),  paramRequest.getWebPage().getWebSite());
                 request.setAttribute("aggs", getAggregation(document.getAggs()));
                 request.setAttribute("creators", getCreators(document.getRecords()));
-                request.getSession().setAttribute(FULL_LIST, document.getRecords());
-                request.getSession().setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
+                request.setAttribute(FULL_LIST, document.getRecords());
+                request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
                 cassette(request, document.getTotal(), getPage(request));
             }
             request.setAttribute("word", q);
@@ -163,7 +163,8 @@ public class SearchCulturalProperty extends PagerAction {
                     publicationList = document.getRecords();
                     cassette(request, document.getTotal(), 1);
                     setType(document.getRecords(),  paramRequest.getWebPage().getWebSite());
-                    request.getSession().setAttribute(FULL_LIST, document.getRecords());
+                    request.setAttribute(FULL_LIST, document.getRecords());
+                    request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
                 }
                 request.setAttribute("f", request.getParameter("sort"));
                 request.setAttribute("word", request.getParameter("word"));
@@ -171,7 +172,7 @@ public class SearchCulturalProperty extends PagerAction {
             }
             request.setAttribute("references", publicationList);
             request.setAttribute("paramRequest", paramRequest);
-        }catch (Exception se) {
+        }catch (IOException | SWBResourceException se) {
             LOG.error(se);
         }
         super.doSort(request, response, paramRequest);
@@ -182,19 +183,19 @@ public class SearchCulturalProperty extends PagerAction {
         int pagenum = 0;
         Document document = null;
         String p = request.getParameter("p");
-        HttpSession session = request.getSession();
         List<Entry> publicationList = null;
         if (null != p)
             pagenum = Integer.parseInt(p);
         if (pagenum<=0) pagenum = 1;
-        session.setAttribute(NUM_PAGE_LIST, pagenum);
-        session.setAttribute("PAGE_NUM_ROW", PAGE_NUM_ROW);
+        request.setAttribute(NUM_PAGE_LIST, pagenum);
+        request.setAttribute("PAGE_NUM_ROW", PAGE_NUM_ROW);
         document = getReference(request, paramRequest.getWebPage().getWebSite());
         if (null != document) {
             publicationList = document.getRecords();
             setType(document.getRecords(),  paramRequest.getWebPage().getWebSite());
-            request.getSession().setAttribute(FULL_LIST, publicationList);
-            page(pagenum, session);
+            request.setAttribute(FULL_LIST, publicationList);
+            request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
+            page(pagenum, request);
             cassette(request, document.getTotal(), pagenum);
         }
         request.setAttribute("word", request.getParameter("word"));

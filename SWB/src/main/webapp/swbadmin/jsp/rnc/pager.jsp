@@ -7,12 +7,12 @@
     int paginaInicialBloque = 0;
     int primerRegistroMostrado = 0;
     int ultimoRegistroMostrado = 0;
-    Integer totalPages = (Integer)session.getAttribute("TOTAL_PAGES");
-    Integer totalPaginas = (Integer)session.getAttribute("TOTAL_PAGES");
-    Integer paginaActual = (Integer)session.getAttribute("NUM_PAGE_LIST");
-    Integer paginasPorBloque = (Integer)session.getAttribute("PAGE_JUMP_SIZE");
-    Integer registrosPorPagina = (Integer)session.getAttribute("NUM_RECORDS_VISIBLE");
-    Integer totalRegistros = (Integer)session.getAttribute("NUM_RECORDS_TOTAL");
+    Integer totalPages = (Integer)request.getAttribute("TOTAL_PAGES");
+    Integer totalPaginas = (Integer)request.getAttribute("TOTAL_PAGES");
+    Integer paginaActual = (Integer)request.getAttribute("NUM_PAGE_LIST");
+    Integer paginasPorBloque = (Integer)request.getAttribute("PAGE_JUMP_SIZE");
+    Integer registrosPorPagina = (Integer)request.getAttribute("NUM_RECORDS_VISIBLE");
+    Integer totalRegistros = (Integer)request.getAttribute("NUM_RECORDS_TOTAL");
     if (null == paginaActual) paginaActual = 1;
     if (paginaActual != 0 && totalPaginas !=0 && totalRegistros != 0 && registrosPorPagina != 0) {
 	numBloque = (paginaActual-1)/paginasPorBloque - (paginaActual-1)%paginasPorBloque/paginasPorBloque;
