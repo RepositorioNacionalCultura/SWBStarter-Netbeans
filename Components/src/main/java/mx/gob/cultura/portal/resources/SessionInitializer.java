@@ -11,7 +11,7 @@ import javax.servlet.RequestDispatcher;
 import org.semanticwb.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import mx.gob.cultura.portal.utils.Utils;
+//import mx.gob.cultura.portal.utils.Utils;
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.SWBPortal;
 import org.semanticwb.SWBUtils;
@@ -141,7 +141,7 @@ public class SessionInitializer extends GenericResource {
         String resourceUrl = paramRequest.getRenderUrl()
                 .setMode(SWBParamRequest.Mode_VIEW)
                 .setCallMethod(SWBParamRequest.Call_DIRECT).toString();
-        String twitterUrl = Utils.getResourceURL(paramRequest.getWebPage().getWebSite(), OAuthTwitter.class, resourceUrl);
+        String twitterUrl = Utilities.getResourceURL(paramRequest.getWebPage().getWebSite(), OAuthTwitter.class, resourceUrl);
         
         text.append("<a href=\"");
         text.append(twitterUrl);
