@@ -246,44 +246,7 @@
     <div class="container">
 	<div class="row">              
             <jsp:include page="../rack.jsp" flush="true"/>
-            <div class="col-12 col-sm-12 col-md-6 col-lg-6 order-md-2 order-sm-1 order-1 ficha ">
-		<h3 class="oswM"><%=title%></h3>
-                <% if (null != entry && null != entry.getDescription() && !entry.getDescription().isEmpty()) { %>
-                    <p><%=entry.getDescription().get(0)%></p>
-                <% } %>
-                <hr>
-                <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
-                <table>
-                    <tr>
-                        <th colspan="2"><%=paramRequest.getLocaleString("usrmsg_view_detail_data_sheet")%></th>
-                    </tr>
-                    <tr>
-                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_artist")%></td>
-                        <td><%=creator%></td>
-                    </tr>
-                    <tr>
-                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_date")%></td>
-                        <td><%=period%></td>
-                    </tr>
-                    <tr>
-                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_type_object")%></td>
-                        <td><%=resource%></td>
-                    </tr>
-                    <tr>
-                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_identifier")%></td>
-                        <td><%=entry.getIdentifiers()%></td>
-                    </tr>
-                    <tr>
-                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_institution")%></td>
-                        <td><%=entry.getHolder()%></td>
-                    </tr>
-                    <tr>
-                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_technique")%></td>
-                        <td>Lorem ipsum</td>
-                    </tr>
-                </table>
-                <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
-            </div>
+            <jsp:include page="../techdata.jsp" flush="true"/>
             <div class="col-12 col-sm-6  col-md-3 col-lg-3 order-md-3 order-sm-3 order-3 clave">
 		<div class="redes">
                     <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
