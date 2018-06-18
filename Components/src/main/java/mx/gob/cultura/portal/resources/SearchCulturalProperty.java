@@ -134,7 +134,7 @@ public class SearchCulturalProperty extends PagerAction {
                 publicationList = document.getRecords();
                 setType(document.getRecords(),  paramRequest.getWebPage().getWebSite());
                 request.setAttribute("aggs", getAggregation(document.getAggs()));
-                request.setAttribute("creators", getCreators(document.getRecords()));
+                //request.setAttribute("creators", getCreators(document.getRecords()));
                 request.setAttribute(FULL_LIST, document.getRecords());
                 request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
                 cassette(request, document.getTotal(), getPage(request));

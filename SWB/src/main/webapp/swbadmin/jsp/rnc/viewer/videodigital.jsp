@@ -24,7 +24,7 @@
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
-		if (null != entry.getDigitalObject()) {
+	if (null != entry.getDigitalObject()) {
 			creators = entry.getCreator();
 			titles = entry.getRecordtitle();
 			digitalobjects = entry.getDigitalObject();
