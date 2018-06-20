@@ -9,15 +9,18 @@
 <%
     String type = "";
     String title = "";
+    String holder = "";
     String period = "";
     String creator = "";
     List<Title> titles = new ArrayList<>();
+    List<String> holders = new ArrayList<>();
     List<String> creators = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     if (null != entry) {
 	creators = entry.getCreator();
 	type = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
+        holder = holders.size() > 0 ? holders.get(0) : "";
         creator = creators.size() > 0 ? creators.get(0) : "";
 	period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
         if (!titles.isEmpty()) title = titles.get(0).getValue();
@@ -52,7 +55,7 @@
         </tr>
         <tr>
             <td><%=paramRequest.getLocaleString("usrmsg_view_detail_institution")%></td>
-            <td><%=entry.getHolder()%></td>
+            <td><%=holder%></td>
         </tr>
 	<%
             if (null != entry.getLang() && !entry.getLang().isEmpty()) {

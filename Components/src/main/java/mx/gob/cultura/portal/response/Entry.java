@@ -17,7 +17,7 @@ public class Entry implements Serializable {
     private static final long serialVersionUID = 7680915584896844702L;
 
     private String _id;
-    private String holder;
+    private List<String> holder;
     private List<String> description;
     
     private Stats resourcestats;
@@ -99,14 +99,6 @@ public class Entry implements Serializable {
         this.datecreated = datecreated;
     }
 
-    public String getHolder() {
-        return holder;
-    }
-
-    public void setHolder(String holder) {
-        this.holder = holder;
-    }
-
     public List<Identifier> getIdentifier() {
         return identifier;
     }
@@ -177,6 +169,14 @@ public class Entry implements Serializable {
 
     public void setResourcethumbnail(String resourcethumbnail) {
         this.resourcethumbnail = resourcethumbnail;
+    }
+
+    public List<String> getHolder() {
+        return holder;
+    }
+
+    public void setHolder(List<String> holder) {
+        this.holder = holder;
     }
     
     private void init() {

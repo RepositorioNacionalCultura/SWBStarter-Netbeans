@@ -231,6 +231,7 @@ public class SearchCulturalProperty extends PagerAction {
         String uri = baseUri + "/api/v1/search?q=";
         try {
             uri += URLEncoder.encode(getParamSearch(words), StandardCharsets.UTF_8.name());
+            uri += getFilters(request);
         } catch (UnsupportedEncodingException uex) {
             LOG.error(uex);
         }
@@ -241,9 +242,6 @@ public class SearchCulturalProperty extends PagerAction {
             if (request.getParameter("sort").equalsIgnoreCase("statdes")) uri += "&sort=-resourcestats.views";
             if (request.getParameter("sort").equalsIgnoreCase("statasc")) uri += "&sort=resourcestats.views";
         }
-        if (null != request.getParameter("resourcetype")) {
-            //resourcetype=Image.Video&holders=Instituto Nacional de Bellas Artes.Instituto Nacional de Lenguas Indígenas
-        }
         ListBICRequest req = new ListBICRequest(uri);
         try {
             document = req.makeRequest();
@@ -252,19 +250,26 @@ public class SearchCulturalProperty extends PagerAction {
         }
         return document;
     }
+    
+    private String getFilters(HttpServletRequest request) throws UnsupportedEncodingException {
+        //resourcetype=Image.Video&holders=Instituto Nacional de Bellas Artes.Instituto Nacional de Lenguas Indígenas
+        StringBuilder filters = new StringBuilder();
+        filters.append(getFilter(request, "resourcetype"));
+        filters.append(getFilter(request, "mediatype"));
+        filters.append(getFilter(request, "rights"));
+        filters.append(getFilter(request, "lang"));
+        filters.append(getFilter(request, "holder"));
+        if (filters.length() > 0) filters.insert(0, "+");
+        return URLEncoder.encode(filters.toString(), StandardCharsets.UTF_8.name());
+    }
 
-    private List<String> getCreators(List<Entry> records) {
-        List<String> creators = new ArrayList<>();
-        if (null != records) {
-            for (Entry entry : records) {
-                for (String author : entry.getCreator()) {
-                    author = getCapitalizeName(author);
-                    if (!creators.contains(author))
-                        creators.add(author);
-                }
-            }
-        }
-        return creators;
+    private String getFilter(HttpServletRequest request, String att) {
+        StringBuilder filter = new StringBuilder();
+        if (null != request.getParameter(att) && !request.getParameter(att).isEmpty()) {
+            filter.append(request.getParameter(att));
+            filter.append("&attr=").append(att);
+        }else return "";
+        return filter.toString();
     }
 
     public static String getCapitalizeName(String name) {
