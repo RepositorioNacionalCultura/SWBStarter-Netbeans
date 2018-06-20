@@ -18,9 +18,8 @@ import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceModes;
 import org.semanticwb.portal.api.SWBResourceException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpSession;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -227,23 +226,23 @@ public class SearchCulturalProperty extends PagerAction {
     private Document getReference(HttpServletRequest request, WebSite site) {
         Document document = null;
         String words = request.getParameter("word");
-        //Get baseURI from site properties first
         String baseUri = site.getModelProperty("search_endPoint");
-        if (null == baseUri || baseUri.isEmpty())
-            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim();
+        if (null == baseUri || baseUri.isEmpty()) baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim();
         String uri = baseUri + "/api/v1/search?q=";
         try {
             uri += URLEncoder.encode(getParamSearch(words), StandardCharsets.UTF_8.name());
         } catch (UnsupportedEncodingException uex) {
             LOG.error(uex);
         }
-
         uri += getRange(request);
         if (null != request.getParameter("sort")) {
             if (request.getParameter("sort").equalsIgnoreCase("datedes")) uri += "&sort=-datecreated.value";
             if (request.getParameter("sort").equalsIgnoreCase("dateasc")) uri += "&sort=datecreated.value";
             if (request.getParameter("sort").equalsIgnoreCase("statdes")) uri += "&sort=-resourcestats.views";
             if (request.getParameter("sort").equalsIgnoreCase("statasc")) uri += "&sort=resourcestats.views";
+        }
+        if (null != request.getParameter("resourcetype")) {
+            //resourcetype=Image.Video&holders=Instituto Nacional de Bellas Artes.Instituto Nacional de Lenguas Indígenas
         }
         ListBICRequest req = new ListBICRequest(uri);
         try {
@@ -303,12 +302,18 @@ public class SearchCulturalProperty extends PagerAction {
         aggregation.setInterval(interval);
         if (null != aggs && !aggs.isEmpty()) {
             aggregation.setDates(new ArrayList<>());
+            aggregation.setRights(new ArrayList<>());
             aggregation.setHolders(new ArrayList<>());
+            aggregation.setLanguages(new ArrayList<>());
+            aggregation.setMediastype(new ArrayList<>());
             aggregation.setResourcetypes(new ArrayList<>());
             for (Aggregation a : aggs) {
                 if (null !=  a.getDates()) aggregation.getDates().addAll(a.getDates());
+                if (null !=  a.getRights()) aggregation.getRights().addAll(a.getRights());
                 if (null !=  a.getHolders()) aggregation.getHolders().addAll(a.getHolders());
+                if (null !=  a.getLanguages()) aggregation.getLanguages().addAll(a.getLanguages());
                 if (null !=  a.getResourcetypes()) aggregation.getResourcetypes().addAll(a.getResourcetypes());
+                if (null !=  a.getMediastype()) aggregation.getMediastype().addAll(getTypes(a.getMediastype()));
             }
             for (CountName date : aggregation.getDates()) {
                 cal.setTime(Utils.convert(date.getName(), "yyyy-MM-dd'T'HH:mm:ss"));
@@ -317,6 +322,34 @@ public class SearchCulturalProperty extends PagerAction {
             }
         }
         return aggregation;
+    }
+    
+    private List<CountName> getTypes(List<CountName> media) {
+        List<CountName> types = new ArrayList<>();
+        CountName pdf = new CountName("PDF", 0);
+        CountName zip = new CountName("ZIP", 0);
+        CountName three = new CountName("3D", 0);
+        CountName eBook = new CountName("EPUB", 0);
+        CountName image = new CountName("Imagen", 0);
+        CountName audio = new CountName("Audio", 0);
+        CountName video = new CountName("Video", 0);
+        for (CountName c : media) {
+            if (c.getName().startsWith("image")) image.setCount(image.getCount() + c.getCount());
+            if (c.getName().startsWith("audio")) audio.setCount(audio.getCount() + c.getCount());
+            if (c.getName().startsWith("video") || c.getName().equalsIgnoreCase("application/octet-stream")) video.setCount(video.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("application/pdf")) pdf.setCount(pdf.getCount() + c.getCount());
+            if (c.getName().startsWith("x-world")) three.setCount(three.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("application/zip")) zip.setCount(zip.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("application/epub+zip")) eBook.setCount(eBook.getCount() + c.getCount());
+        }
+        if (image.getCount() > 0) types.add(image);
+        if (audio.getCount() > 0) types.add(audio);
+        if (video.getCount() > 0) types.add(video);
+        if (pdf.getCount() > 0) types.add(pdf);
+        if (eBook.getCount() > 0) types.add(eBook);
+        if (three.getCount() > 0) types.add(three);
+        if (zip.getCount() > 0) types.add(zip);
+        return types;
     }
 
     private String getRange(HttpServletRequest request) {

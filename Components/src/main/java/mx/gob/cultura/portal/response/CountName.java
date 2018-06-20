@@ -18,6 +18,15 @@ public class CountName implements Serializable {
     private int count;
     
     private String name;
+    
+    public CountName() {
+        
+    }
+    
+    public CountName(String name, int count) {
+        this.name = name;
+        this.count = count;
+    }
 
     public int getCount() {
         return count;
@@ -43,9 +52,9 @@ public class CountName implements Serializable {
 	this.name = Character.toUpperCase(this.name.charAt(0)) + this.name.substring(1);
         return this.name;
     }
-    
+
     @Override
     public String toString() {
-        return "Holder{" + "count=" + count + ", name=" + name + '}';
+        return "CountName{" + "count=" + count + ", name=" + name + '}';
     }
 }

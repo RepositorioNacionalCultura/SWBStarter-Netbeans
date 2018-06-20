@@ -22,6 +22,12 @@ public class Aggregation implements Serializable {
     
     private List<CountName> resourcetypes;
     
+    private List<CountName> rights;
+    
+    private List<CountName> mediastype;
+    
+    private List<CountName> languages;
+    
     private static final long serialVersionUID = 7895964432008759515L;
 
     public List<CountName> getHolders() {
@@ -54,5 +60,34 @@ public class Aggregation implements Serializable {
 
     public void setInterval(DateRange interval) {
         this.interval = interval;
+    }
+
+    public List<CountName> getRights() {
+        return rights;
+    }
+
+    public void setRights(List<CountName> rights) {
+        this.rights = rights;
+    }
+
+    public List<CountName> getMediastype() {
+        return mediastype;
+    }
+
+    public void setMediastype(List<CountName> mediastype) {
+        this.mediastype = mediastype;
+    }
+
+    public List<CountName> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(List<CountName> languages) {
+        this.languages = languages;
+    }
+
+    @Override
+    public String toString() {
+        return "Aggregation{" + "interval=" + interval + ", dates=" + dates + ", holders=" + holders + ", resourcetypes=" + resourcetypes + '}';
     }
 }

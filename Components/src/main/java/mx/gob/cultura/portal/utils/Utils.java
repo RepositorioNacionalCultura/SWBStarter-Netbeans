@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import org.semanticwb.model.WebSite;
 import org.semanticwb.model.Resource;
 import javax.servlet.http.HttpServletRequest;
-import mx.gob.cultura.portal.response.Entry;
 
 /**
  *
