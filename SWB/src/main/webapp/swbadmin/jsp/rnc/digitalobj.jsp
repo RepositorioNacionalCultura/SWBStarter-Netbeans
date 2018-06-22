@@ -36,8 +36,8 @@
             if (!titles.isEmpty()) title = titles.get(0).getValue();
             if (!url.isEmpty() && url.endsWith(".dzi"))
 		divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
-            else
-                divVisor.append("<img src=\"").append(url).append("\">");
+            else if (url.endsWith(".zip")) divVisor.append("<a href='").append(url).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
+            else divVisor.append("<img src=\"").append(url).append("\">");
         }
     }
 %>

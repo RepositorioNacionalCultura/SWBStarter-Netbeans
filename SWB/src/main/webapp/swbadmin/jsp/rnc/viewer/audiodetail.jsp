@@ -11,9 +11,9 @@
 <%
     int audios = 0;
     String title = "";
-    String period = "";
+    //String period = "";
     String creator = "";
-    String resource = "";
+    //String resource = "";
     List<Title> titles = new ArrayList<>();
     List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
@@ -47,9 +47,9 @@
                         String type = (null != digital.getMediatype() && null != digital.getMediatype().getMime()) ?  digital.getMediatype().getMime() : "";
 			if (!type.isEmpty() && type.startsWith("audio")) {
                             scriptCallVisor.append("    {")
-                                .append("       \"name\": \"").append(null != digital.getMediatype() ? digital.getMediatype().getName() : "").append("\",")
+                                .append("	\"name\": \"").append(title).append("\",")
 				.append("	\"artist\": \"").append(creator).append("\",")
-				.append("	\"album\": \"").append(title).append("\",")
+				.append("	\"album\": \"").append(null != digital.getMediatype() ? digital.getMediatype().getName() : "").append("\",")
 				.append("	\"url\": \"").append(digital.getUrl()).append("\",")
 				.append("	\"cover_art_url\": \"/work/models/").append(site.getId()).append("/audio/img/waves.png\"")
 				.append("   },");
@@ -58,8 +58,8 @@
                     scriptCallVisor.append("       ]")
 			.append("	});")
 			.append("</script>");
-                    resource = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
-                    period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
+                    //resource = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
+                    //period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
             }
         }
     }

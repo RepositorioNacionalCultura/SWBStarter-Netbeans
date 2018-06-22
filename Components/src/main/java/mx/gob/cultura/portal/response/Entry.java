@@ -204,6 +204,15 @@ public class Entry implements Serializable {
 	}
         return identifiers.toString();
     }
+    
+    public String getResourcetypes() {
+        StringBuilder builder = new StringBuilder();
+        for (String t : this.getResourcetype()) {
+            builder.append(t).append(", ");
+        }
+	if (builder.length() > 0) builder.deleteCharAt(builder.length() - 2);
+        return builder.toString();
+    }
 
     @Override
     public String toString() {

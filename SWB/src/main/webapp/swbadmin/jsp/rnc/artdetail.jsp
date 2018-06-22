@@ -32,7 +32,8 @@
             digitalobjects = entry.getDigitalObject();
             images = null != digitalobjects ? digitalobjects.size() : 0;
             digital = images >= iDigit ? digitalobjects.get(iDigit - 1) : new DigitalObject();
-            if (null != digital.getUrl() && digital.getUrl().endsWith(".dzi")) {
+            if (null == digital.getUrl()) digital.setUrl("");
+            if (digital.getUrl().endsWith(".dzi")) {
                     scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
                     scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
                     divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
@@ -46,7 +47,7 @@
                             .append("	]")
                             .append("});")
                             .append("</script>");
-                }else if (digital.getUrl().endsWith("view") || digital.getUrl().endsWith(".jpg")) {
+            }else if (digital.getUrl().endsWith("view") || digital.getUrl().endsWith(".jpg") || digital.getUrl().endsWith(".JPG")) {
                     scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
                     scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
                     divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
@@ -62,9 +63,10 @@
                             .append("	}")
                             .append("});")
                             .append("</script>");
-                } else {
-                    divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");
-                }
+            } else {
+                if (digital.getUrl().endsWith(".zip")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
+                else divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");
+            }
             type = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
             creator = creators.size() > 0 ? creators.get(0) : "";
             if (!titles.isEmpty()) title = titles.get(0).getValue();

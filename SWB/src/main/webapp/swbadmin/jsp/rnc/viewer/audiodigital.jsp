@@ -44,12 +44,12 @@
                     String type = (null != digital.getMediatype() && null != digital.getMediatype().getMime()) ?  digital.getMediatype().getMime() : "";
                     if (!type.isEmpty() && type.startsWith("audio")) {
                         scriptCallVisor.append("			{")
-                            .append("				\"name\": \"").append(null != digital.getMediatype() ? digital.getMediatype().getName() : "").append("\",")
-                            .append("				\"artist\": \"").append(creator).append("\",")
-                            .append("				\"album\": \"").append(title).append("\",")
-                            .append("				\"url\": \"").append(digital.getUrl()).append("\",")
-                            .append("				\"cover_art_url\": \"/work/models/cultura/audio/img/waves.png\"")
-                            .append("			},");
+                            .append("       \"name\": \"").append(title).append("\",")
+                            .append("       \"artist\": \"").append(creator).append("\",")
+                            .append("       \"album\": \"").append(null != digital.getMediatype() ? digital.getMediatype().getName() : "").append("\",")
+                            .append("       \"url\": \"").append(digital.getUrl()).append("\",")
+                            .append("       \"cover_art_url\": \"/work/models/cultura/audio/img/waves.png\"")
+                            .append("	},");
                     }
 		}
 		scriptCallVisor.append("       ]")

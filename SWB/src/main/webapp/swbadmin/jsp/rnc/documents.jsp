@@ -67,8 +67,10 @@
                     <div id="resultados" class="card-columns">
                     <%
                         for (Entry reference : references) {
+                            String holder = "";
                             reference.setPosition(0);
                             Title title = new Title();
+                            List<String> holders = reference.getHolder();
                             List<Title> titles = reference.getRecordtitle();
                             if (!titles.isEmpty()) title = titles.get(0);
                             List<String> creators = reference.getCreator();
@@ -82,7 +84,7 @@
                                 </a>
                                 <div>
                                     <p class="oswB azul tit"><a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&n=<%=reference.getPosition()%>"><%=title.getValue()%></a></p>
-                                    <p class="azul autor"><a href="#"><%=creator%></a></p>
+                                    <p class="azul autor"><a href="#"><%=creator%></a><br/><i><%=holder%></i></p>
                                     <p class="tipo"><%=resource%></p>
                                 </div>
                             </div>

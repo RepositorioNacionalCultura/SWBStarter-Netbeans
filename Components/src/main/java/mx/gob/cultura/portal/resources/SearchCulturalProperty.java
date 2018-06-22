@@ -252,22 +252,25 @@ public class SearchCulturalProperty extends PagerAction {
     }
     
     private String getFilters(HttpServletRequest request) throws UnsupportedEncodingException {
-        //resourcetype=Image.Video&holders=Instituto Nacional de Bellas Artes.Instituto Nacional de Lenguas Indígenas
         StringBuilder filters = new StringBuilder();
         filters.append(getFilter(request, "resourcetype"));
         filters.append(getFilter(request, "mediatype"));
+        filters.append(getFilter(request, "dates"));
         filters.append(getFilter(request, "rights"));
         filters.append(getFilter(request, "lang"));
         filters.append(getFilter(request, "holder"));
-        if (filters.length() > 0) filters.insert(0, "+");
+        if (filters.length() > 0) {
+            filters.deleteCharAt(filters.length()-1);
+            filters.insert(0, "&filter=");
+        }
         return URLEncoder.encode(filters.toString(), StandardCharsets.UTF_8.name());
     }
 
     private String getFilter(HttpServletRequest request, String att) {
         StringBuilder filter = new StringBuilder();
         if (null != request.getParameter(att) && !request.getParameter(att).isEmpty()) {
-            filter.append(request.getParameter(att));
-            filter.append("&attr=").append(att);
+            filter.append(att).append("|");
+            filter.append(request.getParameter(att)).append("&");
         }else return "";
         return filter.toString();
     }
