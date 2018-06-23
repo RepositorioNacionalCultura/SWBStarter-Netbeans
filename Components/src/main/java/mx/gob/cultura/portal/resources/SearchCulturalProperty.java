@@ -404,19 +404,19 @@ public class SearchCulturalProperty extends PagerAction {
                         if (!existImg(e.getResourcethumbnail())) {
                             if (type.equalsIgnoreCase("application/octet-stream")) {
                                 if (dObj.getUrl().endsWith(".zip"))
-                                    e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-zip.jpg");
+                                    e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-zip.png");
                                 else if (dObj.getUrl().endsWith(".avi"))
-                                    e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-video.jpg");
+                                    e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-video.png");
                             }else if (!type.isEmpty() && type.startsWith("video")) 
-                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-video.jpg");
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-video.png");
                             else if (type.equalsIgnoreCase("application/pdf"))
-                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-pdf.png");
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-pdf.png");
                             else if (type.equalsIgnoreCase("application/zip"))
-                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-zip.jpg");
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-zip.png");
                             else if (!type.isEmpty() && type.startsWith("audio"))
-                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/icono-audio.jpg");
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-audio.png");
                             else if (type.equalsIgnoreCase("text/richtext") || (!type.isEmpty() && type.startsWith("application/vnd")))
-                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/empty.jpg");
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-imagen.png");
                             else if (type.equalsIgnoreCase("image/jpeg"))
                                 e.setResourcethumbnail(dObj.getUrl());
                         }
