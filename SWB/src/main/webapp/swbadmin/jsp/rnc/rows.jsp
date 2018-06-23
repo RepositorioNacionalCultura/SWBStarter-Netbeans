@@ -16,9 +16,11 @@
 %>
 <% if (!references.isEmpty()) {  %>
     <div id="references">
-        <div class="ruta row">
+        <div class="ruta-resultado row">
             <div class="col-12 col-sm-8 col-md-8">
-                <p class="oswLc"><%=first%>-<%=last%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=total%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%></p>
+		<% if (null != word) { %>
+                    <p class="oswL rojo"><%=first%>-<%=last%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=total%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=word%></span></p>
+		<% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
             </div>
             <div class="col-12 col-sm-4 col-md-4 ordenar">
                 <a href="#" onclick="setGrid();"><i class="fa fa-th select" aria-hidden="true"></i></a>
@@ -28,11 +30,14 @@
         <div id="resultados" class="<%=mode%>">
         <%  
             for (Entry reference : references) {
+                String holder = "";
                 Title title = new Title();
+                List<String> holders = reference.getHolder();
 		List<Title> titles = reference.getRecordtitle();
                 if (!titles.isEmpty()) title = titles.get(0);
                 List<String> creators = reference.getCreator();
 		List<String> resourcetype = reference.getResourcetype();
+                holder = null != holders && holders.size() > 0 ? holders.get(0) : "";
                 String resource = resourcetype.size() > 0 ? resourcetype.get(0) : "";
 		String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
         %>
@@ -41,8 +46,8 @@
                         <img src="<%=reference.getResourcethumbnail()%>" />
                     </a>
                     <div>
-                        <p class="oswB azul tit"><a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%><%=uri%>"><%=title.getValue()%></a></p>
-                        <p class="azul autor"><a href="#"><%=creator%></a></p>
+                        <p class="tit"><a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%><%=uri%>"><%=title.getValue()%></a></p>
+                        <p class="autor"><a href="#"><%=creator%></a><br/><i><%=holder%></i></p>
                         <p class="tipo"><%=resource%></p>
                     </div>
                 </div>
