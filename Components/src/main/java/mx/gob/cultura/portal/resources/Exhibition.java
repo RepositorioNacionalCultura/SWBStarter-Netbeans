@@ -110,6 +110,7 @@ public class Exhibition extends GenericResource {
                 List<String> hds = getElements("hiddenarts");
                 if (null != document) {
                     for (Entry e : document.getRecords()) {
+                        SearchCulturalProperty.setThumbnail(e, paramRequest.getWebPage().getWebSite(), 0);
                         if (!hds.contains(e.getId())) {
                             if (favs.contains(e.getId())) publicationList.add(0, e);
                             else publicationList.add(e);
