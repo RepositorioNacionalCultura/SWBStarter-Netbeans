@@ -16,6 +16,7 @@
     List<Title> titles = new ArrayList<>();
     List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
+    StringBuilder scriptCallVisor = new StringBuilder();
     int iDigit = (Integer) request.getAttribute("iDigit");
     int iPrev = iDigit - 1;
     int iNext = iDigit + 1;
@@ -24,6 +25,7 @@
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
+    WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
         if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
@@ -36,8 +38,24 @@
             if (!titles.isEmpty()) title = titles.get(0).getValue();
             if (!url.isEmpty() && url.endsWith(".dzi"))
 		divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
-            else if (url.endsWith(".zip")) divVisor.append("<a href='").append(url).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
-            else divVisor.append("<img src=\"").append(url).append("\">");
+            else if (digital.getUrl().endsWith("view") || digital.getUrl().endsWith(".png") || digital.getUrl().endsWith(".jpg") || digital.getUrl().endsWith(".JPG")) {
+		divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
+		scriptCallVisor.append("<script type=\"text/javascript\">")
+                    .append("OpenSeadragon({")
+                    .append("	id:\"pyramid\",")
+                    .append("	showHomeControl: false,")
+                    .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
+                    .append("	showNavigator: false,")
+                    .append("	tileSources:   {")
+                    .append("		type: 'image',")
+                    .append("		url: '").append(digital.getUrl()).append("'")
+                    .append("	}")
+                    .append("});")
+                    .append("</script>");
+            }else {
+                if (digital.getUrl().endsWith(".zip")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
+		else divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");
+            }
         }
     }
 %>
@@ -85,4 +103,5 @@
         </div>
     </div>
     <%=divVisor%>
+    <%=scriptCallVisor%>
 </div>

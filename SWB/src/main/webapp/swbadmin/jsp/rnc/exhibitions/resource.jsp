@@ -4,26 +4,52 @@
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     SWBResourceURL saveURL = paramRequest.getActionUrl();
     saveURL.setAction(ExhibitionResource.ACTION_ADD_EXH);
-    WebSite site = paramRequest.getWebPage().getWebSite();
-    List<EditorTemplate> tmpls = (List<EditorTemplate>) request.getAttribute("tmpls");
+    //WebSite site = paramRequest.getWebPage().getWebSite();
+    List<EditorTemplate> tmpls = (List<EditorTemplate>)request.getAttribute("tmpls");
+    SWBResourceURL delURL = paramRequest.getActionUrl();
+    delURL.setAction(ExhibitionResource.ACTION_DEL_EXH);
 %>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <script>
-    function addTpl(tpl) {
-        if (validate()) {
-            document.forms.addExForm.id.value = tpl;
-        }
+    function add(tpl, index) {
+	document.forms.addExForm.id.value = tpl;
+	var choose = 'choosetpl';
+        var i;
+	for (i=1; i<4; i++) {
+            var choosetpl = choose + i;
+            if (i == index) {
+                document.getElementById(choosetpl).className = "sel-temas sel-exh col-6 col-sm-4 selected";
+            }else {
+                document.getElementById(choosetpl).className = "sel-temas sel-exh col-6 col-sm-4";
+            }
+	}
+	return false;
+    }
+    function del(uri) {
+        var xhttp = new XMLHttpRequest();
+	var url = '<%=delURL%>'+'?exh_del='+uri;
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                location.href = '/es/repositorio/exhibiciones';
+            }
+	};
+        xhttp.open("POST", url, true);
+	xhttp.send();
     }
     function validate() {
         if (document.forms.addExForm.title.value.trim() == '') {
             jQuery("#dialog-msg-edit").text("Favor de proporcionar nombre de exhibición.");
             return false;
-        }
+	}
+        if (document.forms.addExForm.id.value.trim() == '') {
+            jQuery("#dialog-msg-tpl").text("Favor de seleccionar plantilla para exhibición.");
+            return false;
+	}
         return true;
     }
 </script>
 
-<button type="button" class="" data-toggle="modal" data-target="#modalExh">Crear exhibición</button>
+<!-- button type="button" class="" data-toggle="modal" data-target="#modalExh">Crear exhibición</button-->
 <!-- MODAL -->
 <div class="modal fade" id="modalExh" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-exh modal-2col" role="document">
@@ -36,42 +62,44 @@
                 </div>
                 <div class="col-8 col-sm-7 modal-col2">
                     <div class="modal-header">
-                        <h4 class="modal-title oswM rojo">CREAR NUEVA EXHIBICIÓN</h4>  
+			<h4 class="modal-title oswM rojo">CREAR NUEVA EXHIBICIÓN</h4>  
                         <button type="button" class="close" data-dismiss="modal">
                             <span class="ion-ios-close-outline"></span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="addExForm" action="<%=saveURL.toString()%>" method="post">
+                        <form id="addExForm" action="<%=saveURL.toString()%>" method="post" onsubmit="return validate()">
                             <input type="hidden" name="id" value=""/>
                             <div class="form-group">
-                                <label for="crearNombre">Nombre</label>
+                                <label for="crearNombre">Nombre</label><div id="dialog-msg-edit"></div>
                                 <input type="text" name="title" id="title" class="form-control" placeholder="60" aria-label="Recipient's username" aria-describedby="basic-addon2">
                                 <label for="crearDescr">Descripción (opcional)</label>
                                 <textarea name="description" id="description" placeholder="250"></textarea>
-                                <h5 class="modal-title ">Selecciona 1 plantilla para diseñar tu exhibición.</h5>
+                                <h5 class="modal-title "><div id="dialog-msg-tpl">Selecciona 1 plantilla para diseñar tu exhibición.</div></h5>
                                 <div class="row">
                                     <%
                                         if (!tmpls.isEmpty()) {
-                                            for (EditorTemplate t : tmpls) {
+                                            int i = 1;
+                                            for (EditorTemplate t :  tmpls) {
                                     %>
-                                    <div class="sel-temas sel-exh col-6 col-sm-4 selected">
-                                        <button onclick="add('<%=t.getId()%>');">
-                                            <span class="ion-android-checkbox-outline-blank"></span>
-                                            <span class="ion-android-checkbox-outline"></span>
-                                            <img src="<%=t.getPreview()%>">
-                                        </button>
-                                    </div>
+                                                <div id="choosetpl<%=i%>" class="sel-temas sel-exh col-6 col-sm-4">
+                                                    <button type="button" onclick="add(<%=t.getId()%>, <%=i%>);">
+                                                        <span class="ion-android-checkbox-outline-blank"></span>
+                                                        <span class="ion-android-checkbox-outline"></span>
+                                                        <img src="<%=t.getPreview()%>">
+                                                    </button>
+                                                </div>
                                     <%
+                                                i++;
                                             }
-                                        }
+					}
                                     %>
                                 </div>
                             </div>
                             <button type="submit" class="btn-cultura btn-rojo btn-mayus">Crear exhibición</button>
                             <!--
-                                                                      <button type="submit" class="btn-cultura btn-blanco btn-mayus d-none d-lg-block"><span class="ion-trash-a"></span> Eliminar colección</button>
-                                                                      <button type="submit" class="btn-cultura btn-blanco btn-mayus d-block d-lg-none"> Eliminar</button>
+                                <button type="submit" class="btn-cultura btn-blanco btn-mayus d-none d-lg-block"><span class="ion-trash-a"></span> Eliminar colección</button>
+                                <button type="submit" class="btn-cultura btn-blanco btn-mayus d-block d-lg-none"> Eliminar</button>
                             -->
                         </form>
                     </div>
