@@ -60,25 +60,29 @@
             <td><%=entry.getIdentifiers()%></td>
         </tr>
         <tr>
-			<td><%=paramRequest.getLocaleString("usrmsg_view_detail_institution")%></td>
+            <td><%=paramRequest.getLocaleString("usrmsg_view_detail_institution")%></td>
             <td><%=holder%></td>
         </tr>
-		<%
-			if (null != entry.getLang() && entry.getLang().size() > 2) {
-		%>
-				<tr>
-					<td><%=paramRequest.getLocaleString("usrmsg_view_detail_lang")%></td>
-					<% if (entry.getLang().size() == 4) { %>
-							<td><%=entry.getLang().get(2)%>, <%=entry.getLang().get(3)%></td>
-					<% }else if (entry.getLang().size() == 3) { %>
-							<td><%=entry.getLang().get(1)%>, <%=entry.getLang().get(2)%></td>
-					<% } %>
-				</tr>
-		<% } %>
-        <tr>
-			<td><%=paramRequest.getLocaleString("usrmsg_view_detail_technique")%></td>
-			<td>Lorem ipsum</td>
-        </tr>
+	<%
+            if (null != entry.getLang() && entry.getLang().size() > 2) {
+	%>
+                <tr>
+                    <td><%=paramRequest.getLocaleString("usrmsg_view_detail_lang")%></td>
+                    <% if (entry.getLang().size() == 4) { %>
+                    <td><%=entry.getLang().get(2)%>, <%=entry.getLang().get(3)%></td>
+                    <% }else if (entry.getLang().size() == 3) { %>
+                    <td><%=entry.getLang().get(1)%>, <%=entry.getLang().get(2)%></td>
+                    <% } %>
+                </tr>
+	<%
+            }
+            if (null != entry.getLugar() && !entry.getLugar().isEmpty()) {
+	%>
+                <tr>
+                    <td><%=paramRequest.getLocaleString("usrmsg_view_detail_place")%></td>
+                    <td><%=entry.getLugar()%></td>
+		</tr>
+        <% } %>
     </table>
     <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
 </div>

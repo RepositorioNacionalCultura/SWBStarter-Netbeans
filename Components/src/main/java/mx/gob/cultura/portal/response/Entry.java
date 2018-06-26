@@ -20,8 +20,8 @@ public class Entry implements Serializable {
     private List<String> holder;
     private List<String> description;
     
+    private String lugar;
     private Stats resourcestats;
-    //private List<Rights> rights;
     private List<String> creator;
     private Period periodcreated;
     private List<Title> recordtitle;
@@ -177,6 +177,14 @@ public class Entry implements Serializable {
 
     public void setHolder(List<String> holder) {
         this.holder = holder;
+    }
+
+    public String getLugar() {
+        return lugar;
+    }
+
+    public void setLugar(String lugar) {
+        this.lugar = lugar;
     }
     
     private void init() {
