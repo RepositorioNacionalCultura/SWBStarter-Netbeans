@@ -22,8 +22,8 @@
         }
     %>
 </div>
-    <div class="">
-        <a href="<%=back%>">
-            <i aria-hidden="true" class="fa fa-long-arrow-left"></i> <%=paramRequest.getLocaleString("usrmsg_view_detail_back")%>
-        </a>
-    </div>
+<div class="">
+    <a href="<%=back%>">
+        <i aria-hidden="true" class="fa fa-long-arrow-left"></i> <%=paramRequest.getLocaleString("usrmsg_view_detail_back")%>
+    </a>
+</div>
