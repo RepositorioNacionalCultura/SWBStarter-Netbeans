@@ -4,6 +4,7 @@
 <%@page import="mx.gob.cultura.portal.response.Title,org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.List, java.util.ArrayList"%>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
+    String wxss = "";
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     SWBResourceURL pageURL = paramRequest.getRenderUrl().setMode("PAGE");
     pageURL.setCallMethod(SWBParamRequest.Call_DIRECT);
@@ -14,7 +15,7 @@
     Integer last = (Integer) request.getAttribute("LAST_RECORD");
     Integer first = (Integer) request.getAttribute("FIRST_RECORD");
     Integer total = (Integer) request.getAttribute("NUM_RECORDS_TOTAL");
-    if (null != word) word = Utils.suprXSS(word);
+    if (null != word) wxss = Utils.suprXSS(word);
     String userLang = paramRequest.getUser().getLanguage();
     List<Entry> references = null != request.getAttribute("PAGE_LIST") ? (List<Entry>) request.getAttribute("PAGE_LIST") : new ArrayList();
 %>
@@ -51,8 +52,8 @@
                 <div id="references">
                     <div class="ruta-resultado row">
 			<div class="col-12 col-sm-8 col-md-8">
-                            <% if (null != word) { %>
-				<p class="oswL rojo"><%=first%>-<%=last%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=total%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=word%></span></p>
+                            <% if (null != wxss) { %>
+				<p class="oswL rojo"><%=first%>-<%=last%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=total%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
                             <% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
 			</div>
                         <div class="col-12 col-sm-4 col-md-4 ordenar">
