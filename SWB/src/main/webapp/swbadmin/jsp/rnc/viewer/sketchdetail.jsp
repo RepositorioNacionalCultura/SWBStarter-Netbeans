@@ -123,30 +123,7 @@
         <div class="row">              
             <jsp:include page="../rack.jsp" flush="true"/>
             <jsp:include page="../techdata.jsp" flush="true"/>
-            <div class="col-12 col-sm-6  col-md-3 col-lg-3 order-md-3 order-sm-3 order-3 clave">
-                <div class="redes">
-                    <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
-                    <span class="ion-social-twitter"></span>
-                </div>
-                <div>
-                    <p class="tit2"><%=paramRequest.getLocaleString("usrmsg_view_detail_key_words")%></p>
-                    <p>
-                        <%
-                            int i = 0;
-                            for (String key : entry.getKeywords()) {
-                                i++;
-                                out.println("<a href=\"#\">" + key + "</a>");
-                                if (i < entry.getKeywords().size()) out.println(" / ");
-                            }
-                        %>
-                    </p>
-                </div>
-                <div class="">
-                    <a href="<%=back%>">
-                        <i aria-hidden="true" class="fa fa-long-arrow-left"></i> <%=paramRequest.getLocaleString("usrmsg_view_detail_back")%>
-                    </a>
-                </div>
-            </div>
+            <jsp:include page="../keywords.jsp" flush="true"/>
         </div>
     </div>
 </section>

@@ -63,7 +63,15 @@
             <td><%=paramRequest.getLocaleString("usrmsg_view_detail_institution")%></td>
             <td><%=holder%></td>
         </tr>
+        <%
+            if (null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty()) {
+	%>
+                <tr>
+                    <td><%=paramRequest.getLocaleString("usrmsg_view_detail_rights")%></td>
+                    <td><a href="<%=entry.getDigitalObject().get(0).getRights().getUrl()%>"><%=entry.getDigitalObject().get(0).getRights().getRightstitle()%></a></td>
+                </tr>
 	<%
+            }
             if (null != entry.getLang() && entry.getLang().size() > 2) {
 	%>
                 <tr>
