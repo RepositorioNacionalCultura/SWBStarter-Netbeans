@@ -61,7 +61,7 @@
                     DigitalObject digital = new DigitalObject();
                     List<Title> titles = reference.getRecordtitle();
                     List<String> creators = reference.getCreator();
-                    List<DigitalObject> digitalobject = reference.getDigitalobject();
+                    List<DigitalObject> digitalobject = reference.getDigitalObject();
                     if (!digitalobject.isEmpty()) {
                         digital = digitalobject.get(0);
                     }

@@ -145,18 +145,12 @@
                     <td class="valores">
                         <select name="type" id="type">
                             <option value=""></option>
-                            <option value="audio" <% if (base.getAttribute("type", "").equals("audio")) {
-                                                                out.println("selected='selected'");
-                                                            } %>>Audio</option>
-                            <option value="image" <% if (base.getAttribute("type", "").equals("image")) {
-                                                                out.println("selected='selected'");
-                                                            } %>>Imagen</option>
-                            <option value="video" <% if (base.getAttribute("type", "").equals("video")) {
-                                                                out.println("selected='selected'");
-                                                            }%>>Video</option>
-                        </select>
+                            <!--option value="audio" <% if (base.getAttribute("type","").equals("audio")) out.println("selected='selected'"); %>>Audio</option-->
+                            <option value="image" <% if (base.getAttribute("type","").equals("image")) out.println("selected='selected'"); %>>Imagen</option>
+                            <!--option value="video" <% if (base.getAttribute("type","").equals("video")) out.println("selected='selected'"); %>>Video</option-->
+			</select>
                     </td>
-                </tr>
+		</tr>
                 <!--tr>
                         <td class="datos">Título: </td>
                         <td class="valores"><input type="text" name="title" id="title" size="40" value="<%=base.getAttribute("title", "").trim()%>"/></td>

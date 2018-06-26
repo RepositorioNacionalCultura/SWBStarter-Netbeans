@@ -32,34 +32,27 @@
         <%
             for (ArtWork art : references) {
                 Entry reference = art.getEntry();
-                Identifier identifier = new Identifier();
+                //Identifier identifier = new Identifier();
+                reference.setPosition(0);
                 DigitalObject digital = new DigitalObject();
                 List<Title> titles = reference.getRecordtitle();
                 List<String> creators = reference.getCreator();
-                List<DigitalObject> digitalobject = reference.getDigitalobject();
-                if (!digitalobject.isEmpty()) {
-                    digital = digitalobject.get(0);
-                }
+                List<DigitalObject> digitalobject = reference.getDigitalObject();
+                if (!digitalobject.isEmpty()) digital = digitalobject.get(0);
                 String creator = creators.size() > 0 ? creators.get(0) : "";
                 List<String> resourcetype = reference.getResourcetype();
                 String type = resourcetype.size() > 0 ? resourcetype.get(0) : "";
         %>
-        <div class="pieza-res card">
-            <a href="/swb/<%=site.getId()%>/detalle?id=<%=reference.getId()%>">
-                <img src="<%=digital.getUrl()%>" />
-            </a>
-            <div>
-                <p class="oswB azul tit"><a href="#"><%=titles.get(0).getValue()%></a></p>
-                <p class="azul autor"><a href="#"><%=creator%></a></p>
-                <!--p class="tipo"><input type="checkbox" name="hiddenarts" value="<%=reference.getId()%>" <% if (art.isHidden()) {
-                                                                        out.print("checked");
-                                                                    }%>>Ocultar
-                <br/><input type="checkbox" name="favarts" value="<%=reference.getId()%>" <% if (art.isFavorite()) {
-                                                                        out.print("checked");
-                                                                    }%>>Favorito</p-->
-                <p class="tipo"><%=type%></p>
-            </div>
-        </div>
+                <div class="pieza-res card">
+                    <a href="/swb/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&n=<%=reference.getPosition()%>" target="_blank">
+                        <img src="<%=digital.getUrl()%>" />
+                    </a>
+                    <div>
+                        <p class="oswB azul tit"><a href="#"><%=titles.get(0).getValue()%></a></p>
+                        <p class="azul autor"><a href="#"><%=creator%></a></p>
+                        <p class="tipo"><%=type%></p>
+                    </div>
+                </div>
         <%
             }
         %>

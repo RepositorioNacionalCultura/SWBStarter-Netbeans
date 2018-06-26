@@ -59,6 +59,7 @@
                     <%
                         for (Entry reference : references) {
                             Title title = new Title();
+                            reference.setPosition(0);
                             DigitalObject digital = new DigitalObject();
                             List<String> creators = reference.getCreator();
                             List<Title> titles = reference.getRecordtitle();
@@ -74,7 +75,7 @@
                             }
                     %>
                     <div class="pieza-res card">
-                        <a href="/swb/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&n=<%=reference.getPosition()%>">
+                        <a href="/swb/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&n=<%=reference.getPosition()%>" target="_blank">
                             <img src="<%=digital.getUrl()%>" />
                         </a>
                         <div>
