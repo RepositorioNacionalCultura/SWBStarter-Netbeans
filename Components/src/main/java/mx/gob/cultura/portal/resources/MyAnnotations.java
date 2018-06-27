@@ -84,39 +84,39 @@ public class MyAnnotations extends GenericResource{
         User user = paramRequest.getUser(); 
 
         UserRepository ur=paramRequest.getWebPage().getWebSite().getUserRepository();
-        String userId = null;
+        //String userId = null;
+        Annotation annotation=null;
         if (user!=null && user.isSigned()){
-            userId = user.getId();
+            //userId = user.getId();
             if (target!=null&& !target.isEmpty()&&
                 bodyValue!=null&& !bodyValue.isEmpty()){           
-                Annotation annotation =new Annotation(bodyValue,target,user.getId());
-                String annotationId=AnnotationMgr.getInstance().addAnnotation(annotation);
+                annotation =new Annotation(bodyValue,target,user.getId());
+                annotation=AnnotationMgr.getInstance().addAnnotation(annotation);
             }            
         }
         PrintWriter out = response.getWriter();
         response.setHeader("Cache-Control", "no-cache");
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Content-Type", "application/json");
-        List<Annotation> annotationList = AnnotationMgr.getInstance().findByTarget(target,userId);
-        StringBuilder sb = new StringBuilder("[");
-        annotationList.forEach((Annotation a)->{
-            sb.append("{\"id\":\"");
-            sb.append(a.getId());
+        if(annotation ==null){
+            response.sendError(123, "No se pudo agregar");
+        }else{
+            //List<Annotation> annotationList = AnnotationMgr.getInstance().findByTarget(target,userId);
+            StringBuilder sb = new StringBuilder("{");
+            //annotationList.forEach((Annotation a)->{
+            sb.append("\"id\":\"");
+            sb.append(annotation.getId());
             sb.append("\",\"bodyValue\":\"");
-            sb.append(a.getBodyValue().replace("\n","\\n"));
+            sb.append(annotation.getBodyValue().replace("\n","\\n"));
             sb.append("\",\"creatorName\":\"");
             String creatorName="";
-            if(ur.getUser(a.getCreator())!=null){
-                creatorName=ur.getUser(a.getCreator()).getFullName();
+            if(ur.getUser(annotation.getCreator())!=null){
+                creatorName=ur.getUser(annotation.getCreator()).getFullName();
             }  
             sb.append(creatorName);
-            sb.append("\"},");
-        });
-        if(',' == sb.charAt(sb.length()-1)){
-            sb.deleteCharAt(sb.length()-1);
-        }
-        sb.append("]");
-        out.print(sb.toString());
+            sb.append("\"}");
+            out.print(sb.toString());            
+        }    
     }
     private Entry getEntry(String id) throws IOException {
         String baseUri = getResourceBase().getWebSite().getModelProperty("search_endPoint");
