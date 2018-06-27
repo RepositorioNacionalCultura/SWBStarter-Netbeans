@@ -1,5 +1,6 @@
 package mx.gob.cultura.portal.resources;
 
+import com.hp.hpl.jena.ontology.OntModel;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.SocketException;
@@ -36,6 +37,9 @@ public class UserRegistry extends GenericResource {
     
     private String confirmationActionUrl = null;
 
+    private static final String DATACRED_URI =
+            "http://www.semanticwebbuilder.org/swb4/ontology#plainCredential";
+    
     public void doView(HttpServletRequest request, HttpServletResponse response,
             SWBParamRequest paramsRequest) throws IOException {
         
@@ -58,6 +62,7 @@ public class UserRegistry extends GenericResource {
             throws SWBResourceException, IOException {
         
         String action = response.getAction();
+        String alert = null;
         UserRepository userRepo = response.getWebPage().getWebSite().getUserRepository();
         String nextMode = SWBParamRequest.Mode_VIEW;
         
@@ -72,42 +77,47 @@ public class UserRegistry extends GenericResource {
             }
         } else if ("confirming".equals(action)) {
             User user = this.activateUser(request, userRepo);
-            if (SWBPlatform.getSecValues().isMultiple()) {
-                String login = user.getEmail();
-                Iterator<SWBSessionObject> llist = SWBPortal.getUserMgr().listSessionObjects();
-                while (llist.hasNext()) {
-                    SWBSessionObject so = llist.next();
-                    Iterator<Principal> lpri = so.getSubjectByUserRep(userRepo.getId())
-                             .getPrincipals().iterator();
-                    if (lpri.hasNext() && login.equalsIgnoreCase(((User) lpri.next()).getLogin())) {
-                        throw new SWBResourceException("User already logged in");
-                    }
-                }
-            }
+            StringBuilder credential = new StringBuilder(16);
             
-            if (null != user && null != user.getId()) {
-                //se agrega el usuario a la sesion
-                User oldUser = response.getUser();
-                String id = user.getId() + user.getLogin();
+            if (null != user) {
+                if (SWBPlatform.getSecValues().isMultiple()) {
+                    String login = user.getLogin();
+                     Iterator<SWBSessionObject> llist =SWBPortal.getUserMgr().listSessionObjects();
+                     while(llist.hasNext()) {
+                         SWBSessionObject so = llist.next();
+                         Iterator<Principal> lpri = so.getSubjectByUserRep(userRepo.getId()).getPrincipals().iterator();
+                         if (lpri.hasNext() && login.equalsIgnoreCase(((User)lpri.next()).getLogin())) {
+                             alert = "msg_alreadyLoggedin";
+                         }
+                     }
+                }
+                
                 try {
-                    user.checkCredential(id.toCharArray());
-                    System.out.println("credentials, checked?? " + user.isSigned());
+                    OntModel ont = SWBPlatform.getSemanticMgr().getSchema().getRDFOntModel();
+                    credential.append(user.getSemanticObject().getRDFResource()
+                        .getProperty(ont.createDatatypeProperty(
+                                UserRegistry.DATACRED_URI)).getString());
+
+                    user.checkCredential(credential.toString().toCharArray());
+                    Subject subject = SWBPortal.getUserMgr().getSubject(request,
+                                        response.getWebPage().getWebSiteId());
+                    subject.getPrincipals().clear();
+                    subject.getPrincipals().add(user);
+                    if (null == user.getLanguage()) {
+                        user.setLanguage("es");   //forzar lenguaje si no se dio de alta.
+                    }
+                    user.getSemanticObject().getRDFResource().
+                            removeAll(ont.createDatatypeProperty(UserRegistry.DATACRED_URI));
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
                 }
-                
-                Subject subject = SWBPortal.getUserMgr().getSubject(request,
-                                    response.getWebPage().getWebSiteId());
-                subject.getPrincipals().clear();
-                subject.getPrincipals().add(user);
-                oldUser = user;
-                if (null == user.getLanguage()) {
-                    user.setLanguage("es");   //forzar lenguaje si no se dio de alta.
-                }
-            } else {
-                UserRegistry.LOG.debug("El usuario al crear la sesion despues de confirmar email!!!");
+            
             }
-            if (!user.isSigned()) {
+            
+            if (null != alert) {
+                response.setRenderParameter("condition", alert);
+            }
+            if (user.isSigned()) {
                 nextMode = "homeRedirect";
             }
         }
@@ -165,13 +175,17 @@ public class UserRegistry extends GenericResource {
                     encryptdPwd = SWBUtils.CryptoWrapper.passwordDigest(password);
                     newUser = userRepo.createUser();
                     newUser.setLogin(email);
-                    newUser.setPassword(encryptdPwd);
+                    newUser.setPassword(password);  //encryptdPwd
                     newUser.setLanguage("es");
                     newUser.setFirstName(name);
                     newUser.setLastName(lastName);
                     newUser.setEmail(email);
+                    System.out.println("Contraseña para nuevo usuario: " + password);
                     //newUser.setActive(true);
                     SemanticObject obj = newUser.getSemanticObject();
+                    OntModel ont = SWBPlatform.getSemanticMgr().getSchema().getRDFOntModel();
+                    obj.getRDFResource().addLiteral(ont.createDatatypeProperty(
+                        UserRegistry.DATACRED_URI), password);
                 } catch (Exception e) {
                     condition = "msg_encryptingError";
                 }
