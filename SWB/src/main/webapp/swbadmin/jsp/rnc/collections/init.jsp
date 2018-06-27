@@ -59,7 +59,7 @@
     <div class="row">
         <img src="/work/models/repositorio/img/agregado-07.jpg" class="circle">
         <div>
-            <h2 class="oswM nombre">Leonor Rivas Mercado</h2>
+            <h2 class="oswM nombre"><%=paramRequest.getUser().getFullName()%></h2>
             <p class="subnombre">Lorem ipsum dolor sit amet, consecetur adipscing elit.</p>
             <button class="btn-cultura btn-blanco">EDITAR PERFIL</button>
         </div>
@@ -93,7 +93,7 @@
             <div class="contactabloque imgColabora radius-overflow margen0 sinsombra">
                 <div class="contactabloque-in ">
                     <p class="oswM">Busca obras de tu interés<br> y agrégalas a tus colecciones</p>
-                    <button class="btn-cultura btn-rojo" type="submit">EXPLORAR <span class="ion-chevron-right"></span></button>
+                    <button class="btn-cultura btn-rojo" onclick="javascript:location.replace('/swb/repositorio/home');" type="button">EXPLORAR <span class="ion-chevron-right"></span></button>
                 </div>
             </div>
         </div>

@@ -12,29 +12,18 @@
     WebSite site = paramRequest.getWebPage().getWebSite();
     String userLang = paramRequest.getUser().getLanguage();
 %>
-<div class="col-12 col-sm-6  col-md-3 col-lg-3 order-md-3 order-sm-3 order-3 clave">
-    <div class="redes">
-        <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
-        <span class="ion-social-twitter"></span>
-    </div>
-    <div>
-        <p class="tit2"><%=paramRequest.getLocaleString("usrmsg_view_detail_key_words")%></p>
-        <p>
-            <%
-                int i = 0;
-                for (String key : entry.getKeywords()) {
-                    i++;
-                    out.println("<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word=" + key + "\">" + key + "</a>");
-                    if (i < entry.getKeywords().size()) {
-                        out.println(" / ");
-                    }
-                }
-            %>
-        </p>
-    </div>
-    <div class="">
-        <a href="<%=back%>">
-            <i aria-hidden="true" class="fa fa-long-arrow-left"></i> <%=paramRequest.getLocaleString("usrmsg_view_detail_back")%>
-        </a>
-    </div>
+<div class="col-2 palabrastit">
+	<span class="rojo"><%=paramRequest.getLocaleString("usrmsg_view_detail_words")%></span> <span class=""><%=paramRequest.getLocaleString("usrmsg_view_detail_key")%></span> <span class="ion-ios-arrow-thin-right"></span>
+</div>
+<div class="col-10 palabrascont">
+    <% 
+        for (String key :  entry.getKeywords()) {
+            out.println("<a href=\"/"+userLang+"/"+site.getId()+"/resultados?word="+key+"\">"+key+"</a>");
+        }
+    %>
+</div>
+<div class="">
+    <a href="<%=back%>">
+        <i aria-hidden="true" class="fa fa-long-arrow-left"></i> <%=paramRequest.getLocaleString("usrmsg_view_detail_back")%>
+    </a>
 </div>

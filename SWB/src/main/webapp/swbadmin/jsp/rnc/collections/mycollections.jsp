@@ -171,7 +171,7 @@
     <div class="row">
         <img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">
         <div>
-            <h2 class="oswM nombre">Leonor Rivas Mercado</h2>
+            <h2 class="oswM nombre"><%=paramRequest.getUser().getFullName()%></h2>
             <p class="subnombre">Lorem ipsum dolor sit amet, consecetur adipscing elit.</p>
             <button class="btn-cultura btn-blanco">EDITAR PERFIL</button>
         </div>

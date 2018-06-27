@@ -123,6 +123,12 @@
         <div class="row">              
             <jsp:include page="../rack.jsp" flush="true"/>
             <jsp:include page="../techdata.jsp" flush="true"/>
+        </div>
+    </div>
+</section>
+<section id="palabras">
+    <div class="container">
+        <div class="row">
             <jsp:include page="../keywords.jsp" flush="true"/>
         </div>
     </div>
