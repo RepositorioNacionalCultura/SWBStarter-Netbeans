@@ -15,8 +15,9 @@
     List<Annotation> annotations = (List<Annotation>) request.getAttribute("annotations");
     User user = paramRequest.getUser();
     String id = (String)request.getAttribute("id");
+    boolean isAnnotator = (boolean)request.getAttribute("isAnnotator");
     UserRepository ur=paramRequest.getWebPage().getWebSite().getUserRepository();
-    if(user!=null && user.isSigned()){
+    if(user!=null && user.isSigned()&&isAnnotator){
         SWBResourceURL saveURL = paramRequest.getRenderUrl();
         saveURL.setMode(MyAnnotations.ASYNC_ADD);
         saveURL.setCallMethod(SWBResourceURL.Call_DIRECT);
@@ -31,7 +32,7 @@
                 //$.each(data, function(index, element) {
                 element=data;
                     lContent += '<div class="media">'+
-                                '<img class="align-self-start mr-3" src="/usuario.jpg">'+
+                                '<img class="align-self-start mr-3" src="/work/models/repositorio/img/usuario.jpg">'+
                                 '<div class="media-body">'+
                                 '<p class="mt-0 rojo">'+element.creatorName+'</p>';                        
                     bvs=element.bodyValue;
@@ -84,12 +85,16 @@
 <%
     if(user==null || !user.isSigned()){
 %>    
-            <p><a href="#modal-sesion" class="oswM">Inicia sesión</a></p>         
+            <p><a href="#modal-sesion" data-toggle="modal" data-target="#modal-sesion" class="oswM">Inicia sesión</a></p>   
+
+            
+            
+            
 <%
-    }else{
+    }else if(isAnnotator){
 %>                
             <div class="media">
-                <img class="align-self-start mr-3" src="/usuario.jpg">
+                <img class="align-self-start mr-3" src="/work/models/repositorio/img/usuario.jpg">
                 <div class="media-body">
                     <textarea  name="bodyValue" id="bodyValue"></textarea>
                     <button class="btn btn-rojo" onclick="addAnnotation();return false;">Agregar anotación</button>
@@ -110,7 +115,7 @@
         
 %>
                 <div class="media">
-                    <img class="align-self-start mr-3" src="/usuario.jpg">
+                    <img class="align-self-start mr-3" src="/work/models/repositorio/img/usuario.jpg">
                     <div class="media-body">
                         <p class="mt-0 rojo"><%=creatorName%></p>
 <%  

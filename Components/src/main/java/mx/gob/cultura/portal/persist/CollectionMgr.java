@@ -116,6 +116,23 @@ public class CollectionMgr {
         return list;
     }
     
+    public List<Collection> collectionsByStatus(Boolean status) {
+        List<Collection> list = new ArrayList<>();
+        try {
+            Block<Document> c = new Block<Document>() {
+                @Override
+                public void apply(final Document document) {
+                    list.add(getCollection(document));
+                }
+           };
+            MongoCollection<Document> mongoCollection = getCollection();
+            mongoCollection.find(eq("status", status)).forEach(c);
+        }catch (Exception u) {
+            LOG.error(u);
+        }
+        return list;
+    }
+    
     public Long countByUser(String userId) {
         MongoCollection<Document> mongoCollection = getCollection();
         return mongoCollection.count(Filters.eq("userid", userId));

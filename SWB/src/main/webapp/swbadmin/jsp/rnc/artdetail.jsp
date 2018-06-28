@@ -141,10 +141,10 @@
     </div>
 </section>
 <section id="palabras">
-	<div class="container">
-		<div class="row">
-			<jsp:include page="keywords.jsp" flush="true"/>
-		</div>
+    <div class="container">
+        <div class="row">
+            <jsp:include page="keywords.jsp" flush="true"/>
+        </div>
     </div>
 </section>
 

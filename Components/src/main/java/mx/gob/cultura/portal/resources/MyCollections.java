@@ -43,8 +43,9 @@ import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_TOTAL;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_VISIBLE;
 
 import static mx.gob.cultura.portal.utils.Constants.PAGE_LIST;
-import static mx.gob.cultura.portal.utils.Constants.PAGE_JUMP_SIZE;
 import static mx.gob.cultura.portal.utils.Constants.PAGE_NUM_ROW;
+import static mx.gob.cultura.portal.utils.Constants.PAGE_JUMP_SIZE;
+
 import static mx.gob.cultura.portal.utils.Constants.STR_JUMP_SIZE;
 import static mx.gob.cultura.portal.utils.Constants.TOTAL_PAGES;
 
@@ -98,7 +99,7 @@ public class MyCollections extends GenericResource {
         String path = "/swbadmin/jsp/rnc/collections/mycollections.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
-            List<Collection> collectionList = collectionList(request, paramRequest.getUser());
+            List<Collection> collectionList = collectionList(paramRequest.getUser());
             setCovers(paramRequest, collectionList, 3);
             request.setAttribute(FULL_LIST, collectionList);
             request.setAttribute(PARAM_REQUEST, paramRequest);
@@ -127,14 +128,6 @@ public class MyCollections extends GenericResource {
         } catch (ServletException se) {
             LOG.info(se.getMessage());
         }
-    }
-    
-    public List<Collection> collectionList(HttpServletRequest request, User user) {
-        List<Collection> collection = new ArrayList<>();
-        if (null != user && user.isSigned() /**&& null != request.getSession().getAttribute("mycollections")**/)
-            //collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");
-            collection = collectionList(user.getId());
-        return collection;
     }
     
     public void collectionById(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
@@ -212,7 +205,7 @@ public class MyCollections extends GenericResource {
             Collection collection = setCollection(request);
             if (null != user && user.isSigned() && !collection.isEmpty() && null != request.getParameter(IDENTIFIER)) {
                 //Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
-                collectionList = collectionList(request, user);//(List<Collection>)request.getSession().getAttribute("mycollections");
+                collectionList = collectionList(user);//(List<Collection>)request.getSession().getAttribute("mycollections");
                 //if (!exist(collectionList, collection.getTitle(), request.getParameter(IDENTIFIER))) {
                 if (!exist(collection.getTitle(), request.getParameter(IDENTIFIER))) {
                     for (Collection c : collectionList) {
@@ -338,6 +331,13 @@ public class MyCollections extends GenericResource {
         return covers;
     }
     
+    private List<Collection> collectionList(User user) {
+        List<Collection> collection = new ArrayList<>();
+        if (null != user && user.isSigned())
+            collection = mgr.collections(user.getId());
+        return collection;
+    }
+    
     private Entry getEntry(String _id) {
         String uri = SWBPlatform.getEnv("rnc/endpointURL",getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim() + "/api/v1/search?identifier=";
         uri += _id;
@@ -345,7 +345,7 @@ public class MyCollections extends GenericResource {
         return req.makeRequest();
     }
     
-    private void init(HttpServletRequest request) throws SWBResourceException, java.io.IOException {
+    protected void init(HttpServletRequest request) throws SWBResourceException, java.io.IOException {
         int pagenum = 0;
         String p = request.getParameter("p");
         if (null != p) pagenum = Integer.parseInt(p);
@@ -405,10 +405,6 @@ public class MyCollections extends GenericResource {
         return mgr.updateCollection(c);
     }
     
-    private List<Collection> collectionList(String userid) {
-        return mgr.collections(userid);
-    }
-    
     private Long count(String userid) {
         Long count = 0L;
         try {
@@ -432,7 +428,7 @@ public class MyCollections extends GenericResource {
         return collection;
     }
      
-    private void setCovers(SWBParamRequest paramRequest, List<Collection> list,  int size) {
+    protected void setCovers(SWBParamRequest paramRequest, List<Collection> list,  int size) {
         String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
         if (null == baseUri || baseUri.isEmpty())
             baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();

@@ -23,6 +23,7 @@
                     titles = book.getRecordtitle();
                     if (!titles.isEmpty()) title = titles.get(0).getValue();
                     SearchCulturalProperty.setThumbnail(book, site, 0);
+                    if (null == book.getResourcethumbnail()) book.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-multimedia.png");
         %>
                     <div>
                         <a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=book.getId()%>&n=0">
