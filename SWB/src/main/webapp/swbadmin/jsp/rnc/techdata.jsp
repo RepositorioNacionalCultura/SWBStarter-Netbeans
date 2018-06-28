@@ -13,8 +13,7 @@
     String period = "";
     String creator = "";
     List<Title> titles = new ArrayList<>();
-    List<String> holders = new ArrayList<>();
-    List<String> creators = new ArrayList<>();
+    List<String> holders = new ArrayList<>();	List<String> creators = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     if (null != entry) {
@@ -33,64 +32,67 @@
 	if (!titles.isEmpty()) title = titles.get(0).getValue();
     }
 %>
-<div class="col-12 col-sm-12 col-md-6 col-lg-6 order-md-2 order-sm-1 order-1 ficha ">
-	<h3 class="oswM"><%=title%></h3>
-	<% if (null != entry && null != entry.getDescription() && !entry.getDescription().isEmpty()) { %>
-			<p><%=entry.getDescription().get(0)%></p>
-	<% } %>
+<div class="col-12 col-sm-12 col-md-9 col-lg-9 order-md-2 order-sm-1 order-1 ficha ">
+    <h3 class="oswM"><%=title%></h3>
+    <% if (null != entry && null != entry.getDescription() && !entry.getDescription().isEmpty()) { %>
+            <p><%=entry.getDescription().get(0)%></p>
+            <hr>
+    <% } %>
     <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
-    <table>
-		<tr>
-			<th colspan="2"><%=paramRequest.getLocaleString("usrmsg_view_detail_data_sheet")%></th>
-        </tr>
-        <tr>
-			<td><%=paramRequest.getLocaleString("usrmsg_view_detail_artist")%></td>
-			<td><%=creator%></td>
-        </tr>
-        <tr>
-			<td><%=paramRequest.getLocaleString("usrmsg_view_detail_date")%></td>
-            <td><%=period%></td>
-        </tr>
-        <tr>
-			<td><%=paramRequest.getLocaleString("usrmsg_view_detail_type_object")%></td>
-            <td><%=type%></td>
-        </tr>
-        <tr>
-			<td><%=paramRequest.getLocaleString("usrmsg_view_detail_identifier")%></td>
-            <td><%=entry.getIdentifiers()%></td>
-        </tr>
-        <tr>
-            <td><%=paramRequest.getLocaleString("usrmsg_view_detail_institution")%></td>
-            <td><%=holder%></td>
-        </tr>
-        <%
-            if (null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty()) {
-	%>
-                <tr>
-                    <td><%=paramRequest.getLocaleString("usrmsg_view_detail_rights")%></td>
-                    <td><a href="<%=entry.getDigitalObject().get(0).getRights().getUrl()%>"><%=entry.getDigitalObject().get(0).getRights().getRightstitle()%></a></td>
-                </tr>
-	<%
-            }
-            if (null != entry.getLang() && entry.getLang().size() > 2) {
-	%>
-                <tr>
-                    <td><%=paramRequest.getLocaleString("usrmsg_view_detail_lang")%></td>
-                    <% if (entry.getLang().size() == 4) { %>
-                    <td><%=entry.getLang().get(2)%>, <%=entry.getLang().get(3)%></td>
-                    <% }else if (entry.getLang().size() == 3) { %>
-                    <td><%=entry.getLang().get(1)%>, <%=entry.getLang().get(2)%></td>
-                    <% } %>
-                </tr>
-	<%
-            }
-            if (null != entry.getLugar() && !entry.getLugar().isEmpty()) {
-	%>
-                <tr>
-                    <td><%=paramRequest.getLocaleString("usrmsg_view_detail_place")%></td>
-                    <td><%=entry.getLugar()%></td>
-		</tr>
-        <% } %>
-    </table>
-    <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
+    <div class="tabla">
+        <table>
+            <tr>
+                <th colspan="2"><%=paramRequest.getLocaleString("usrmsg_view_detail_data_sheet")%></th>
+            </tr>
+            <tr>
+                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_artist")%></td>
+                <td><%=creator%></td>
+            </tr>
+            <tr>
+                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_date")%></td>
+                <td><%=period%></td>
+            </tr>
+            <tr>
+                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_type_object")%></td>
+                <td><%=type%></td>
+            </tr>
+            <tr>
+                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_identifier")%></td>
+                <td><%=entry.getIdentifiers()%></td>
+            </tr>
+            <tr>
+                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_institution")%></td>
+                <td><%=holder%></td>
+            </tr>
+            <%
+                if (null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty()) {
+            %>
+            <tr>
+                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_rights")%></td>
+                <td><a href="<%=entry.getDigitalObject().get(0).getRights().getUrl()%>"><%=entry.getDigitalObject().get(0).getRights().getRightstitle()%></a></td>
+            </tr>
+            <%
+                }
+                if (null != entry.getLang() && entry.getLang().size() > 2) {
+            %>
+            <tr>
+                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_lang")%></td>
+                <% if (entry.getLang().size() == 4) {%>
+                <td><%=entry.getLang().get(2)%>, <%=entry.getLang().get(3)%></td>
+                <% } else if (entry.getLang().size() == 3) {%>
+                <td><%=entry.getLang().get(1)%>, <%=entry.getLang().get(2)%></td>
+                <% } %>
+            </tr>
+            <%
+                }
+                if (null != entry.getLugar() && !entry.getLugar().isEmpty()) {
+            %>
+            <tr>
+                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_place")%></td>
+                <td><%=entry.getLugar()%></td>
+            </tr>
+            <% }%>
+        </table>
+        <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
+    </div>
 </div>
