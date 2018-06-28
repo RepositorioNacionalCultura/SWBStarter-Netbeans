@@ -11,7 +11,7 @@ import javax.servlet.RequestDispatcher;
 import org.semanticwb.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-//import mx.gob.cultura.portal.utils.Utils;
+import mx.gob.cultura.portal.utils.Utils;
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.SWBPortal;
 import org.semanticwb.SWBUtils;
@@ -106,7 +106,7 @@ public class SessionInitializer extends GenericResource {
         try {
             PrintWriter out = response.getWriter();
             if (!paramsRequest.getUser().isSigned()) {
-                out.println(SessionInitializer.getFacebookLink(paramsRequest.getWebPage().getWebSiteId()));
+                out.println(SessionInitializer.getFacebookLink(paramsRequest));
             } else {
                 out.println("<!-- user is signed -->");
             }
@@ -117,15 +117,19 @@ public class SessionInitializer extends GenericResource {
     
     /**
      * Genera el vinculo de HTML para ejecutar el inicio de sesion con Facebook
-     * @param modelId el identificador del sitio a partir del cual se obtiene la imagen a mostrar
+     * @param paramRequest 
      * @return un {@code String} representando un enlace para iniciar sesion con Facebook
      */
-    public static String getFacebookLink(String modelId) {
+    public static String getFacebookLink(SWBParamRequest paramRequest) {
         
         StringBuilder text = new StringBuilder(128);
-        text.append("<a href=\"#\" onclick=\"javascript:faceLogin();\"><img src=\"/work/models/");
-        text.append(modelId);
-        text.append("/img/icono-fb.png\"></a>\n");
+        text.append("<a href=\"#\" onclick=\"javascript:faceLogin();\">");
+        try {
+            text.append(paramRequest.getLocaleString("lbl_facebookLogin"));
+        } catch (SWBResourceException swbe) {
+            text.append("Inicia con Facebook");
+        }
+        text.append(" <span class=\"ion-social-facebook\"></span></a>\n");
         return text.toString();
     }
     
@@ -141,27 +145,35 @@ public class SessionInitializer extends GenericResource {
         String resourceUrl = paramRequest.getRenderUrl()
                 .setMode(SWBParamRequest.Mode_VIEW)
                 .setCallMethod(SWBParamRequest.Call_DIRECT).toString();
-        String twitterUrl = Utilities.getResourceURL(paramRequest.getWebPage().getWebSite(), OAuthTwitter.class, resourceUrl);
+        String twitterUrl = Utils.getResourceURL(paramRequest.getWebPage().getWebSite(), OAuthTwitter.class, resourceUrl);
         
         text.append("<a href=\"");
         text.append(twitterUrl);
-        text.append("\" ><img src=\"/work/models/");
-        text.append(paramRequest.getWebPage().getWebSite().getId());
-        text.append("/img/icono-tw.png\"></a>\n");
+        text.append("\" >");
+        try {
+            text.append(paramRequest.getLocaleString("lbl_twitterLogin"));
+        } catch (SWBResourceException swbe) {
+            text.append("Inicia con Twitter");
+        }
+        text.append(" <span class=\"ion-social-twitter\"></span></a>\n");
         return text.toString();
     }
     
     /**
      * Genera el vinculo de HTML para ejecutar el inicio de sesion con Google+
-     * @param modelId el identificador del sitio a partir del cual se obtiene el icono a mostrar
+     * @param paramRequest 
      * @return un {@code String} representando un enlace para iniciar sesion con Google+
      */
-    public static String getGoogleLink(String modelId) {
+    public static String getGoogleLink(SWBParamRequest paramRequest) {
         
         StringBuilder text = new StringBuilder(128);
-        text.append("<a href=\"#\" id=\"loginWithGoogle\" onclick=\"javascript:loginGPByClick();\"><img src=\"/work/models/");
-        text.append(modelId);
-        text.append("/img/icono-goo.png\" /></a>\n");
+        text.append("<a href=\"#\" id=\"loginWithGoogle\" onclick=\"javascript:loginGPByClick();\">");
+        try {
+            text.append(paramRequest.getLocaleString("lbl_googleLogin"));
+        } catch (SWBResourceException swbe) {
+            text.append("Inicia con Google+");
+        }
+        text.append(" <span class=\"ion-social-google\"></span></a>\n");
         return text.toString();
     }
     
@@ -353,6 +365,14 @@ public class SessionInitializer extends GenericResource {
                     SemanticObject obj = user.getSemanticObject();
                     obj.getRDFResource().addLiteral(ont.createDatatypeProperty(
                             SessionInitializer.TWITTERID_URI), id);
+                }
+            } else if (SessionInitializer.GOOGLEP.equals(source)) {
+                if (user.getSemanticObject().getRDFResource()
+                        .getProperty(ont.createDatatypeProperty(
+                                SessionInitializer.GOOGLEID_URI)) == null) {
+                    SemanticObject obj = user.getSemanticObject();
+                    obj.getRDFResource().addLiteral(ont.createDatatypeProperty(
+                            SessionInitializer.GOOGLEID_URI), id);
                 }
             }
         }

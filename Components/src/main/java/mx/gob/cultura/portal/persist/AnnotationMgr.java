@@ -64,7 +64,7 @@ public class AnnotationMgr {
         return INSTANCE;
     }
 
-    public String addAnnotation(Annotation annotation){
+    public Annotation addAnnotation(Annotation annotation){
         try {
             MongoCollection<Document> mongoCollection = getCollection();
             if (null != mongoCollection) {
@@ -73,10 +73,10 @@ public class AnnotationMgr {
                 .append("target",annotation.getTarget())
                 .append("creator", annotation.getCreator())
                 .append("created", now)  
-                .append("modified", now );
+                .append("modified", now );                
                 mongoCollection.insertOne(document);
-                ObjectId id = (ObjectId)document.get("_id");
-                return id.toString();
+                //ObjectId id = (ObjectId)document.get("_id");
+                return new Annotation(document);
             }
         }catch (Exception u) {
             LOG.error(u);

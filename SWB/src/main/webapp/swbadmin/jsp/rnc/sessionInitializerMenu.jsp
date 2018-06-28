@@ -249,7 +249,7 @@
             try {
                 dialogTitle = paramsRequest.getLocaleString("lbl_dialogTitle");
             } catch (SWBResourceException swbe) {
-                dialogTitle = "Si tienes una cuenta, inicia ahora";
+                dialogTitle = "Inicia sesión con tu cuenta";
             }
             String userField;
             try {
@@ -261,7 +261,7 @@
             try {
                 userplaceHldr = paramsRequest.getLocaleString("lbl_userplaceHldr");
             } catch (SWBResourceException swbe) {
-                userplaceHldr = "nombre de usuario";
+                userplaceHldr = "Ingresa tu correo elctrónico";
             }
             String pswdField;
             try {
@@ -273,13 +273,13 @@
             try {
                 pwdplaceHldr = paramsRequest.getLocaleString("lbl_pwdplaceHldr");
             } catch (SWBResourceException swbe) {
-                pwdplaceHldr = "********";
+                pwdplaceHldr = "Ingresa tu contraseña";
             }
             String submitBtn;
             try {
                 submitBtn = paramsRequest.getLocaleString("lbl_submitBtn");
             } catch (SWBResourceException swbe) {
-                submitBtn = "Iniciar sesión";
+                submitBtn = "Iniciar";
             }
             String socialLogin;
             try {
@@ -300,43 +300,57 @@
                 createAccountTxt = "Crea aquí tu cuenta";
             }
 %>
-            <div class="modal fade" id="modal-sesion">
-                <div class="modal-dialog">
+            <div class="modal fade" id="modal-sesion" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+                <div class="modal-dialog modal-exh" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h3 class="modal-title oswM rojo"><%=dialogTitle%></h3>
+                            <h3 class="modal-title oswM"><%=dialogTitle%></h3>
                             <button type="button" class="close" data-dismiss="modal">
-                                <span class="ion-close-round"></span>
+                                <span class="ion-close-outline"></span>
                             </button>
                         </div>
                         <div class="modal-body modal-sesion">
                             <form name="loginForm" action="<%=loginUrl%>" method="post">
                                 <div class="form-group">
-                                    <label for="wb_username" class="rojo"><%=userField%></label>
-                                    <input type="text" id="wb_username" class="form-control" name="wb_username" aria-describedby="usernameHelp" placeholder="<%=userplaceHldr%>"/>
+                                    <span class="ion-android-mail"></span>
+                                    <input type="email" class="form-control" id="wb_username" name="wb_username" aria-describedby="emailHelp" placeholder="<%=userplaceHldr%>">
                                 </div>
                                 <div class="form-group">
-                                    <label for="wb_password" class="rojo"><%=pswdField%></label>
-                                    <input type="password" id="wb_password" name="wb_password" class="form-control" placeholder="<%=pwdplaceHldr%>"/>
+                                    <span class="ion-android-lock"></span>
+                                    <input type="password" class="form-control" id="wb_password" name="wb_password" placeholder="<%=pwdplaceHldr%>">
                                 </div>
-<%--                            <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="dropdownCheck" >
-                                    <label class="form-check-label" for="dropdownCheck">Recuérdame</label>
-                                </div> --%>
-                                <button type="submit" class="btn-cultura btn-negro"><%=submitBtn%></button>
+                                <div>
+                                    <button type="submit" class="btn-cultura btn-rojo"><%=submitBtn%></button>
+                                    <%--a href="#" class="modal-olvidaste">¿Olvidaste tu contraseña?</a--%>
+                                </div>
+<%
+            if (showFB) {
+%>
+                                <div class="iniciaFace">
+                                    <%=SessionInitializer.getFacebookLink(paramsRequest)%>
+                                </div>
+<%
+            }
+            if (showTwitter) {
+%>
+                                <div class="iniciaTwit">
+                                    <%=SessionInitializer.getTwitterLink(paramsRequest)%>
+                                </div>
+<%
+            }
+%>
+                        </div>        
                             </form>
-<%--                            <p><a href="#" class="link">Olvidé mi usuario o contraseña</a></p>
-                                <hr> --%>
-                            <p class="oswM rojo inicia"><%=socialLogin%>
+<%--                            <p class="oswM rojo inicia"><%=socialLogin%>
                         <%=showFB ? SessionInitializer.getFacebookLink(paramsRequest.getWebPage().getWebSiteId()) : ""%>
                         <%=showTwitter ? SessionInitializer.getTwitterLink(paramsRequest) : ""%>
                         <%=showGPlus ? SessionInitializer.getGoogleLink(paramsRequest.getWebPage().getWebSiteId()) : ""%>
                             </p>
-                        </div>
+                        
                         <div class="nocuenta rojo-bg">
                           <h5><%=userAccountTxt%></h5>
                           <p><a href="<%=wpRegistry.getRealUrl(paramsRequest.getUser().getLanguage())%>" class="btn-cultura btn-negro"><%=createAccountTxt%></a></p>
-                        </div>
+                        </div --%>
 <%
             if (SWBPlatform.getSecValues().isEncrypt()) {
 %>
@@ -403,7 +417,7 @@
             try {
                 mainLabel = paramsRequest.getLocaleString("lbl_out");
             } catch (SWBResourceException swbe) {
-                mainLabel = "Terminar sesión";
+                mainLabel = "Cerrar sesión";
             }
             StringBuilder initials = new StringBuilder(2);
             if (!paramsRequest.getUser().getFirstName().isEmpty()) {
