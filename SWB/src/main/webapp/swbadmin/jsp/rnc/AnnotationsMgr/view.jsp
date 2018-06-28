@@ -20,6 +20,7 @@
     User user = paramRequest.getUser();
     String userId = "";
     boolean isAdmin=(boolean) request.getAttribute("isAdmin");
+    boolean isAnnotator = (boolean)request.getAttribute("isAnnotator");
     if (user.isSigned()){
         userId=user.getId();                 
     }    
@@ -40,7 +41,7 @@
     modURL.setMode(AnnotationsMgr.ASYNC_MODIFY);
     SWBResourceURL delURL = paramRequest.getRenderUrl().setCallMethod(SWBResourceURL.Call_DIRECT);
     delURL.setMode(AnnotationsMgr.ASYNC_DELETE);    
-    if (!userId.isEmpty()){
+    if (!userId.isEmpty()&&(isAdmin||isAnnotator)){
 %>
 
 <script>
@@ -50,7 +51,7 @@
                 if(data.deleted){
                     $('#div_'+id).replaceWith('<div>borrado :/</div>');
                 }else{
-                    $('#div_'+data.id).replaceWith(buildDiv(data,""));
+                    $('#div_'+data.id).replaceWith(buildDiv(data));
                 }    
 
             }).fail(function( jqxhr, textStatus, error ) {
@@ -66,7 +67,7 @@
     console.log("fillList");
 
 console.log("getJSON");            
-            $.getJSON('<%=listURL%>',{'cp',0}, function (data) {
+            $.getJSON('<%//=listURL%>',{'cp',0}, function (data) {
 console.log("data:");
 console.log(data);
                 ulElem=$('#annotationList')
@@ -84,10 +85,9 @@ console.log(element);
             });
 
     }*/
-    function buildDiv(element,ext){
-    console.log("buildDiv"+element);    
+    function buildDiv(element){
+        console.log("buildDiv"+element);    
         lContent ='';
-        if(ext===undefined){ext='';}
 <%  
         if(isAdmin){
 %>        
@@ -100,8 +100,7 @@ console.log(element);
             lContent += '<textarea id="bv'+element.id+'">'+element.bodyValue+'</textarea>'+
                         '<button type="button" class="btn btn-rojo" onclick="callAction(\'<%=modURL.toString()%>\',\''+element.id+'\',$(\'#bv'+element.id+'\').val());return false;">Cambiar</button>';
             lContent += '<a href="#" onclick="callAction(\'<%=delURL.toString()%>\',\''+element.id+'\');return false;">Borrar</a>'+
-                        '<a href="#" onclick="callAction(\'<%=accURL.toString()%>\',\''+element.id+'\');return false;">Autorizar</a>'
-                        +''+ext;
+                        '<a href="#" onclick="callAction(\'<%=accURL.toString()%>\',\''+element.id+'\');return false;">Autorizar</a>';
             lContent += '</div>'+
                         '</div>';  
             liContent=lContent;
@@ -136,11 +135,9 @@ console.log(element);
                 }       
             }
             if(element.isMod){
-                lContent += '<a href="#" onclick="callAction(\'<%=accURL.toString()%>\',\''+element.id+'\');return false;">Autorizar</a>'
-                            +''+ext;
+                lContent += '<a href="#" onclick="callAction(\'<%=accURL.toString()%>\',\''+element.id+'\');return false;">Autorizar</a>';
             }else{   
-                lContent += '<a href="#" onclick="callAction(\'<%=rjcURL.toString()%>\',\''+element.id+'\');return false;">Desautorizar</a>'
-                        +''+ext;
+                lContent += '<a href="#" onclick="callAction(\'<%=rjcURL.toString()%>\',\''+element.id+'\');return false;">Desautorizar</a>';
             }    
             lContent += '</div>'+
                         '</div>';  
@@ -158,8 +155,7 @@ console.log(element);
                         '<p class="mt-0 rojo"><a href="/swb/repositorio/detalle?id='+element.oid+'">'+element.bicTitle+'</a></p>';                       
             lContent += '<textarea id="bv'+element.id+'">'+element.bodyValue+'</textarea>'+
                         '<button type="button" class="btn btn-rojo" onclick="callAction(\'<%=modURL.toString()%>\',\''+element.id+'\',$(\'#bv'+element.id+'\').val());return false;">Cambiar</button>';
-            lContent += '<a href="#" onclick="callAction(\'<%=delURL.toString()%>\',\''+element.id+'\');return false;">Borrar</a>'
-                        +''+ext;
+            lContent += '<a href="#" onclick="callAction(\'<%=delURL.toString()%>\',\''+element.id+'\');return false;">Borrar</a>';
             lContent += '</div>'+
                         '</div>';  
             liContent=lContent;
