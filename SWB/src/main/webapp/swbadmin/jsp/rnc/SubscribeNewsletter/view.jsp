@@ -21,12 +21,13 @@
     console.log("subscribeNL");
         if($('#emailNL').val().length>0){
             $.getJSON('<%=subURL.toString()%>',{'email':$('#emailNL').val()}, function (data) {                
-               if(data.subscribed){; 
-                   $('#div_nl').html("<%=paramRequest.getLocaleString("msg_newsletter")%>");
+               if(data.subscribed){;
+                   $('#div_nl').html('<div class="rojo-bg"><%=paramRequest.getLocaleString("msg_newsletter")%></div>');
                }else{
-                   $('#div_nl').html("<%=paramRequest.getLocaleString("err_newsletter")%>");
+                   $('#div_nl').html('<div class="rojo-bg"><%=paramRequest.getLocaleString("err_newsletter")%></div>');
                }
-               $('#div_nl').addClass("btn-rojo");
+               $('#div_nl').removeClass("input-group");
+               $('#div_nl').addClass("newsgracias");
                 /*ulContent ='';
                 $.each(data, function(index, element) {
                     ulContent += '<li><em>'+element.creatorName+'</em>'+element.bodyValue+'</li>';
@@ -36,7 +37,7 @@
             }).fail(function( jqxhr, textStatus, error ) {
                 var err = textStatus + ", " + error;
                 console.log( "Request Failed: " + err );
-                $('#div_nl').html("Request Failed: " + err);
+                $('#div_nl').html('<div class="rojo-bg">Request Failed: '+err+'</div>');
                 //alert(err)
             });
 
