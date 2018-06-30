@@ -185,7 +185,7 @@ public class Utils {
         boolean isActionUrl = true;
         while (resourceIt.hasNext()) {
             Resource resource = resourceIt.next(); 
-            if (objectClass.getCanonicalName().equals(resource.getResourceType().getResourceClassName()) && resource.isActive()) {
+            if (resource.getResourceType()!=null && objectClass.getCanonicalName().equals(resource.getResourceType().getResourceClassName()) && resource.isActive()) {
                 resourceId = resource.getId();
                 break;
             }
