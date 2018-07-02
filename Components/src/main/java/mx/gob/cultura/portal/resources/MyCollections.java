@@ -24,6 +24,7 @@ import mx.gob.cultura.portal.persist.CollectionMgr;
 import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Collection;
 import mx.gob.cultura.portal.request.GetBICRequest;
+import static mx.gob.cultura.portal.utils.Constants.COLLECTION;
 
 import org.semanticwb.model.User;
 import org.semanticwb.SWBPlatform;
@@ -66,8 +67,7 @@ public class MyCollections extends GenericResource {
     public static final String MODE_VIEW_USR = "VIEW_USR";
     public static final String MODE_VIEW_ALL = "VIEW_ALL";
     public static final String ACTION_DEL_FAV = "DEL_FAV";
-    
-    private static final String COLLECTION = "collection";
+   
     private static final String COLLECTION_RENDER = "_collection";
     
     private static final Logger LOG = Logger.getLogger(MyCollections.class.getName());
@@ -142,7 +142,7 @@ public class MyCollections extends GenericResource {
             }
             if (null != collection && null != collection.getElements()) {
                 for (String _id : collection.getElements()) {
-                    Entry entry = getEntry(_id);
+                    Entry entry = getEntry(paramRequest, _id);
                     if (null != entry) {
                         favorites.add(entry);
                         SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), 0);
@@ -320,11 +320,15 @@ public class MyCollections extends GenericResource {
         while (it.hasNext()) {
             String uri = baseUri + "/api/v1/search?identifier=" + it.next();
             GetBICRequest req = new GetBICRequest(uri);
-            Entry entry = req.makeRequest();
-            if (null != entry && null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty()
-                    && null != entry.getDigitalObject().get(0).getUrl() && !entry.getDigitalObject().get(0).getUrl().isEmpty() && null != entry.getDigitalObject().get(0).getMediatype()
-                    && null != entry.getDigitalObject().get(0).getMediatype().getMime() && entry.getDigitalObject().get(0).getMediatype().getMime().startsWith("image")) {
-                covers.add(entry.getDigitalObject().get(0).getUrl());
+            try {
+                Entry entry = req.makeRequest();
+                if (null != entry && null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty()
+                        && null != entry.getDigitalObject().get(0).getUrl() && !entry.getDigitalObject().get(0).getUrl().isEmpty() && null != entry.getDigitalObject().get(0).getMediatype()
+                        && null != entry.getDigitalObject().get(0).getMediatype().getMime() && entry.getDigitalObject().get(0).getMediatype().getMime().startsWith("image")) {
+                    covers.add(entry.getDigitalObject().get(0).getUrl());
+                }
+            }catch (Exception e) {
+                LOG.info(e.getMessage());
             }
             if (covers.size() >= size) break;
         }
@@ -338,8 +342,12 @@ public class MyCollections extends GenericResource {
         return collection;
     }
     
-    private Entry getEntry(String _id) {
-        String uri = SWBPlatform.getEnv("rnc/endpointURL",getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim() + "/api/v1/search?identifier=";
+    protected Entry getEntry(SWBParamRequest paramRequest,String _id) {
+        String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
+        if (null == baseUri || baseUri.isEmpty()) {
+            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
+        }
+        String uri = baseUri + "/api/v1/search?identifier=";
         uri += _id;
         GetBICRequest req = new GetBICRequest(uri);
         return req.makeRequest();

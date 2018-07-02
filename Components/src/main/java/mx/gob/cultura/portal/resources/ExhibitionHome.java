@@ -70,7 +70,7 @@ public class ExhibitionHome extends GenericAdmResource {
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         response.setContentType("text/html; charset=UTF-8");
-        String jsppath = "/swbadmin/jsp/rnc/exhibitions/tematic/index.jsp";
+        String jsppath = "/swbadmin/jsp/rnc/exhibitions/tematic/init.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(jsppath);
         try {
             request.setAttribute(PARAM_REQUEST, paramRequest);
