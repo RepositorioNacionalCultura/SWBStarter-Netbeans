@@ -86,6 +86,7 @@ public class AnnotationsMgr extends GenericAdmResource{
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         User user = paramRequest.getUser();
         boolean isAdmin = false;
+        boolean isAnnotator = false;
         int currentPage = 1;
         int totalPages = 1;
         String order = "";
@@ -111,8 +112,9 @@ public class AnnotationsMgr extends GenericAdmResource{
         String path = "/swbadmin/jsp/rnc/"+this.getClass().getSimpleName()+"/view.jsp";
         
         List<Annotation> annotationList = new ArrayList<>();
-        if (user.isSigned()){
+        if (user!=null && user.isSigned()){
             isAdmin=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "")));
+            isAnnotator=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", ""))); 
             if(isAdmin){                
                 annotationList= AnnotationMgr.getInstance().findByPaged(null,null,RECORDS_PER_PAGE, currentPage,order,1);
                 totalPages = AnnotationMgr.getInstance().countPages(null, null,RECORDS_PER_PAGE);
@@ -127,6 +129,7 @@ public class AnnotationsMgr extends GenericAdmResource{
             request.setAttribute("paramRequest", paramRequest);
             request.setAttribute("annotations", annotationsToList(annotationList,user.getId()));
             request.setAttribute("isAdmin", isAdmin);
+            request.setAttribute("isAnnotator", isAnnotator);
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("totalPages", totalPages);
             request.setAttribute("order", order);

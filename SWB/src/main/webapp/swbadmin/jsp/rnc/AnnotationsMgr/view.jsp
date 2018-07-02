@@ -20,6 +20,7 @@
     User user = paramRequest.getUser();
     String userId = "";
     boolean isAdmin=(boolean) request.getAttribute("isAdmin");
+    boolean isAnnotator = (boolean)request.getAttribute("isAnnotator");
     if (user.isSigned()){
         userId=user.getId();                 
     }    
@@ -39,17 +40,18 @@
     SWBResourceURL modURL = paramRequest.getRenderUrl().setCallMethod(SWBResourceURL.Call_DIRECT);
     modURL.setMode(AnnotationsMgr.ASYNC_MODIFY);
     SWBResourceURL delURL = paramRequest.getRenderUrl().setCallMethod(SWBResourceURL.Call_DIRECT);
-    delURL.setMode(AnnotationsMgr.ASYNC_DELETE);
-    if (!userId.isEmpty()){
+    delURL.setMode(AnnotationsMgr.ASYNC_DELETE);    
+    if (!userId.isEmpty()&&(isAdmin||isAnnotator)){
 %>
 
 <script>
     function callAction(url,id,bodyValue){
+            console.log("callAction"+id);
             $.getJSON(url,{'id':id,'bodyValue':bodyValue}, function (data) {
                 if(data.deleted){
-                    $('#li'+id).replaceWith('<li>borrado</li>');
+                    $('#div_'+id).replaceWith('<div>borrado :/</div>');
                 }else{
-                    $('#li'+data.id).replaceWith(buildLi(data,"***"));
+                    $('#div_'+data.id).replaceWith(buildDiv(data));
                 }    
 
             }).fail(function( jqxhr, textStatus, error ) {
@@ -65,7 +67,7 @@
     console.log("fillList");
 
 console.log("getJSON");            
-            $.getJSON('<%=listURL%>',{'cp',0}, function (data) {
+            $.getJSON('<%//=listURL%>',{'cp',0}, function (data) {
 console.log("data:");
 console.log(data);
                 ulElem=$('#annotationList')
@@ -83,50 +85,113 @@ console.log(element);
             });
 
     }*/
-    function buildLi(elem,ext){
-    console.log("buildLi"+elem);    
-        liContent ='';
-        if(ext===undefined){ext='';}
+    function buildDiv(element){
+        console.log("buildDiv"+element);    
+        lContent ='';
 <%  
         if(isAdmin){
 %>        
-        if(elem.isOwn && elem.isMod){
-            liContent = '<li id="li'+elem.id+'">'
-                +'<a href="/swb/repositorio/detalle?id='+elem.oid+'">'+elem.bicTitle+'('+elem.bicCreator+')</a>'
-                +'<form><i>'+elem.creator+'</i>'+'<em>'+elem.created+'</em>'+'<textarea id="bv'+elem.id+'">'+elem.bodyValue+'</textarea>'
-                +'<button type="button" onclick="callAction(\'<%=modURL.toString()%>\',\''+elem.id+'\',$(\'#bv'+elem.id+'\').val());return false;">Cambiar</button>'
-                +'<a href="#" onclick="callAction(\'<%=delURL.toString()%>\',\''+elem.id+'\');return false;">Borrar</a>'
-                +'<a href="#" onclick="callAction(\'<%=accURL.toString()%>\',\''+elem.id+'\');return false;">Autorizar</a>'
-                +'</form>'+ext+'</li>';
-        }else if(elem.isMod){
-            liContent = '<li id="li'+elem.id+'">'
-                +'<a href="/swb/repositorio/detalle?id='+elem.oid+'">'+elem.bicTitle+'('+elem.bicCreator+')</a>'
-                +'<i>'+elem.creator+'</i>'+'<em>'+elem.created+'</em>'+elem.bodyValue                        
-                +'<a href="#" onclick="callAction(\'<%=accURL.toString()%>\',\''+elem.id+'\');return false;">Autorizar</a>'
-                +''+ext+'</li>';
-        }else{            
-            liContent = '<li id="li'+elem.id+'">'
-                +'<a href="/swb/repositorio/detalle?id='+elem.oid+'">'+elem.bicTitle+'('+elem.bicCreator+')</a>'
-                +'<i>'+elem.creator+'</i>'+'<em>'+elem.created+'</em>'+elem.bodyValue                                        
-                +'<a href="#" onclick="callAction(\'<%=rjcURL.toString()%>\',\''+elem.id+'\');return false;">Desautorizar</a>'
-                +''+ext+'</li>';
+        if(element.isOwn && element.isMod){
+            lContent += '<div class="media" id="div_'+element.id+'">'+
+                        '<div class="media-body">'+
+                        '<p class="mt-0 fecha">'+element.created+'</p>'+
+                        '<p class="oswB uppercase">'+element.creator+'</p>'+
+                        '<p class="mt-0 rojo"><a href="/swb/repositorio/detalle?id='+element.oid+'">'+element.bicTitle+'</a></p>';                       
+            lContent += '<textarea id="bv'+element.id+'">'+element.bodyValue+'</textarea>'+
+                        '<button type="button" class="btn btn-rojo" onclick="callAction(\'<%=modURL.toString()%>\',\''+element.id+'\',$(\'#bv'+element.id+'\').val());return false;">Cambiar</button>';
+            lContent += '<a href="#" onclick="callAction(\'<%=delURL.toString()%>\',\''+element.id+'\');return false;">Borrar</a>'+
+                        '<a href="#" onclick="callAction(\'<%=accURL.toString()%>\',\''+element.id+'\');return false;">Autorizar</a>';
+            lContent += '</div>'+
+                        '</div>';  
+            liContent=lContent;
+        }else{  
+            lContent += '<div class="media" id="div_'+element.id+'">'+
+                        '<div class="media-body">'+
+                        '<p class="mt-0 fecha">'+element.created+'</p>'+
+                        '<p class="oswB uppercase">'+element.creator+'</p>'+
+                        '<p class="mt-0 rojo"><a href="/swb/repositorio/detalle?id='+element.oid+'">'+element.bicTitle+'</a></p>';                       
+            bvs=element.bodyValue;
+            if(bvs){
+                bva=bvs.split('\n');
+                for (i=0;i<bva.length;i++){
+                    //console.log(i+"-"+bva.length);
+                    if (i<2){
+                        lContent +='<p>'+bva[i]+'</p>';
+                    }else{
+                        if(i==2){
+                            lContent +='<div class="collapse" id="vermas-'+element.id+'">';
+                        }
+                        lContent +='<p>'+bva[i]+'</p>';                      
+                        if(i==bva.length-1){
+                            lContent +='</div>'+
+                                '<p class="vermas vermas-0 vermas-rojo vermas-'+element.id+'">'+
+                                '<button aria-controls="vermas" aria-expanded="false" class="btn-vermas '+
+                                'btn-vermas-'+element.id+'" data-target="#vermas-'+element.id+'" data-toggle="collapse" '+
+                                'type="button">Ver más <span class="ion-plus-circled"></span></button>'+
+                                '<span class="linea"></span>'+
+                                '</p>';
+                        }
+                    }    
+                }       
+            }
+            if(element.isMod){
+                lContent += '<a href="#" onclick="callAction(\'<%=accURL.toString()%>\',\''+element.id+'\');return false;">Autorizar</a>';
+            }else{   
+                lContent += '<a href="#" onclick="callAction(\'<%=rjcURL.toString()%>\',\''+element.id+'\');return false;">Desautorizar</a>';
+            }    
+            lContent += '</div>'+
+                        '</div>';  
+            liContent=lContent;
         }
 
 <%
         }else{
 %>        
-        if(elem.isMod){
-            liContent = '<li id="li'+elem.id+'">'
-                +'<a href="/swb/repositorio/detalle?id='+elem.oid+'">'+elem.bicTitle+'('+elem.bicCreator+')</a>'
-                +'<form><!--'+elem.creator+'-->'+'<em>'+elem.created+'</em>'+'<textarea id="bv'+elem.id+'">'+elem.bodyValue+'</textarea>'
-                +'<button type="button" onclick="callAction(\'<%=modURL.toString()%>\',\''+elem.id+'\',$(\'#bv'+elem.id+'\').val());return false;">Cambiar</button>'
-                +'<a href="#" onclick="callAction(\'<%=delURL.toString()%>\',\''+elem.id+'\');return false;">Borrar</a>'
-                +'</form>'+ext+'</li>';
+        if(element.isMod){
+            lContent += '<div class="media" id="div_'+element.id+'">'+
+                        '<div class="media-body">'+
+                        '<p class="mt-0 fecha">'+element.created+'</p>'+
+                        '<p class="oswB uppercase">'+element.creator+'</p>'+
+                        '<p class="mt-0 rojo"><a href="/swb/repositorio/detalle?id='+element.oid+'">'+element.bicTitle+'</a></p>';                       
+            lContent += '<textarea id="bv'+element.id+'">'+element.bodyValue+'</textarea>'+
+                        '<button type="button" class="btn btn-rojo" onclick="callAction(\'<%=modURL.toString()%>\',\''+element.id+'\',$(\'#bv'+element.id+'\').val());return false;">Cambiar</button>';
+            lContent += '<a href="#" onclick="callAction(\'<%=delURL.toString()%>\',\''+element.id+'\');return false;">Borrar</a>';
+            lContent += '</div>'+
+                        '</div>';  
+            liContent=lContent;
         }else{            
-            liContent = '<li id="li'+elem.id+'">'
-                +'<a href="/swb/repositorio/detalle?id='+elem.oid+'">'+elem.bicTitle+'('+elem.bicCreator+')</a>'
-                +'<i>'+elem.creator+'</i>'+'<em>'+elem.created+'</em>'+elem.bodyValue                        
-                +''+ext+'</li>';
+            lContent += '<div class="media" id="div_'+element.id+'">'+
+                        '<div class="media-body">'+
+                        '<p class="mt-0 fecha">'+element.created+'</p>'+
+                        '<p class="oswB uppercase">'+element.creator+'</p>'+
+                        '<p class="mt-0 rojo"><a href="/swb/repositorio/detalle?id='+element.oid+'">'+element.bicTitle+'</a></p>';                       
+            bvs=element.bodyValue;
+            if(bvs){
+                bva=bvs.split('\n');
+                for (i=0;i<bva.length;i++){
+                    //console.log(i+"-"+bva.length);
+                    if (i<2){
+                        lContent +='<p>'+bva[i]+'</p>';
+                    }else{
+                        if(i==2){
+                            lContent +='<div class="collapse" id="vermas-'+element.id+'">';
+                        }
+                        lContent +='<p>'+bva[i]+'</p>';                      
+                        if(i==bva.length-1){
+                            lContent +='</div>'+
+                                '<p class="vermas vermas-0 vermas-rojo vermas-'+element.id+'">'+
+                                '<button aria-controls="vermas" aria-expanded="false" class="btn-vermas '+
+                                'btn-vermas-'+element.id+'" data-target="#vermas-'+element.id+'" data-toggle="collapse" '+
+                                'type="button">Ver más <span class="ion-plus-circled"></span></button>'+
+                                '<span class="linea"></span>'+
+                                '</p>';
+                        }
+                    }    
+                }       
+            }   
+            lContent += '</div>'+
+                        '</div>';  
+            liContent=lContent;
         }
 <%  
         }
@@ -134,45 +199,81 @@ console.log(element);
         return liContent;
     }
 </script>         
-
 <%
     }
 %>        
-
+    <section id="contenidoInterna">
+        <div class="espacioTop"></div>
+        <div class="content container">
+            <!-- contenido -->
+            <div class="container usrTit">
+                <!--div class="row">
+                   <img src="img/agregado-07.jpg" class="circle">
+                   <div>
+                       <h2 class="oswM nombre">Leonor Rivas Mercado</h2>
+                       <p>Institución Lorem Ipsum</p>
+                       <p>Mi Puesto, Área de interés</p>
+                       <button class="btn-cultura btn-blanco">EDITAR PERFIL</button>
+                   </div>
+                </div>
+                <div class="buscacol">
+                    <button class="" type="submit"><span class="ion-search"></span></button>
+                    <input id="buscaColeccion" class="form-control" type="text" placeholder="BUSCA EN LAS ANOTACIONES... " aria-label="Search">
+                </div-->
+            </div>
 <!--div>
         <a href="<%=pagerUrl+"?p="+currentPage+"&o=&f="+filter%>">normal</a>
         <a href="<%=pagerUrl+"?p="+currentPage+"&o="+AnnotationsMgr.ORDER_DATE+"&f="+filter%>">fecha</a>
 </div-->
-
-<ul id="annotationList">
+            <div id="anotaciones" class="misanotaciones">
+                <h3 class="oswB vino"><span class="h3linea"></span>MIS ANOTACIONES<span class="h3linea"></span></h3>
 <%
     for(Map<String,String> annotation:annotations){
+            String id=annotation.get("id");
      %>
-     <li id="li<%=annotation.get("id")%>">
-        <a href="/swb/repositorio/detalle?id=<%=annotation.get("oid")%>"><%=annotation.get("bicTitle")%>(<%=annotation.get("bicCreator")%>)</a>
+                <div class="media" id="div_<%=id%>">
+                   <div class="media-body">
+                       <p class="mt-0 fecha"><%=annotation.get("created")%></p>
+                       <p class="oswB uppercase"><%=annotation.get("creator")%></p>
+                       <p class="mt-0 rojo"><a href="/swb/repositorio/detalle?id=<%=annotation.get("oid")%>"><%=annotation.get("bicTitle")%><%//=annotation.get("bicCreator")%></a></p>
 <%      
         if(annotation.containsKey("isOwn")&&annotation.containsKey("isMod")){   
 
 %>       
-        <form>
-            <!-- <%=annotation.get("creator")%> -->
-            <em><%=annotation.get("created")%></em>
-            <textarea id="bodyValue<%=annotation.get("id")%>"><%=annotation.get("bodyValue")%></textarea>
-            <button type="button" onclick="callAction('<%=modURL.toString()%>','<%=annotation.get("id")%>',$('#bodyValue<%=annotation.get("id")%>').val());return false;" >Cambiar</button>
-        </form> 
+            <textarea id="bodyValue<%=id%>"><%=annotation.get("bodyValue")%></textarea>
+            <button type="button" class="btn btn-rojo" onclick="callAction('<%=modURL.toString()%>','<%=id%>',$('#bodyValue<%=id%>').val());return false;" >Cambiar</button> 
 <%      
            
-        }else{ 
-            if(annotation.containsKey("isOwn")){
-%>                 
-        <i><%=annotation.get("creator")%></i>
-<%              
-        }   
-%>         
-        <em><%=annotation.get("created")%></em>
-        <%=annotation.get("bodyValue")%> <i><%=annotation.get("created")%> </i> 
+        }else{
+            String[] bvs=annotation.get("bodyValue").split("\n");
+            for(int i =0; i < bvs.length;i++){
+                if (i<2){
+%>                        
+                        <p><%=bvs[i]%></p>                       
 <%
+                }else{
+                    if(i==2){
+%>                        
+                        <div class="collapse" id="vermas-<%=id%>">                     
+<%
+                    }
+%>                        
+                        <p><%=bvs[i]%></p>                       
+<%
+                    if(i==bvs.length-1){
+%>                        
+                        </div>
+                        <p class="vermas vermas-0 vermas-rojo vermas-<%=id%>">
+                            <button aria-controls="vermas" aria-expanded="false" class="btn-vermas btn-vermas-<%=id%>" data-target="#vermas-<%=id%>" data-toggle="collapse" type="button">Ver más <span class="ion-plus-circled"></span></button>
+                            <span class="linea"></span>
+                        </p>                        
+<%
+                    } // @rgjs corregir hidden de ver mas
+                }
+            }   
         }
+%>                   
+<%
         if (annotation.containsKey("isOwn")&&annotation.containsKey("isMod")){
 %>         
              <a href="#" onclick="callAction('<%=delURL.toString()%>','<%=annotation.get("id")%>');return false;">Borrar</a>
@@ -190,37 +291,30 @@ console.log(element);
 <%
             }
         }
-%>
-    </li>           
+%> 
+                    </div> 
+                </div>         
 <%      
     }
 %>
-</ul>
-<div class="container paginacion">
-    <hr>
-    <ul id='pager' class="azul">
-        <li><a href="<%=pagerUrl+"?p="+(currentPage>1?currentPage-1:1)+"&o="+order+"&f="+filter%>"><i class="ion-ios-arrow-back" aria-hidden="true"></i></a></li>
-<%
-    for(int i=1; i<=totalPages;i++){
-%>        
-        <li><a href="<%=pagerUrl+"?p="+i+"&o="+order+"&f="+filter%>" <%=currentPage==i?"class=\"select\"":""%>><%=i%></a></li>
-<%                
-    }
-%>        
-        <li><a href="<%=pagerUrl+"?p="+(currentPage<totalPages?currentPage+1:totalPages)+"&o="+order+"&f="+filter%>"><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
-    </ul>
-</div>
-
-<!--div id="dialog-message-tree" title="error">
-    <p>
-        <div id="dialog-text-tree"></div>
-    </p>
-</div>
-
-<div id="dialog-success-tree" title="éxito">
-    <p>
-        <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
-        <div id="dialog-msg-tree"></div>
-    </p>
-</div-->
-
+            </div>
+            <div class="container paginacion">
+                <hr>
+                <ul class="azul">
+                    <li><a href="<%=pagerUrl+"?p="+(currentPage>1?currentPage-1:1)%>"><i class="ion-ios-arrow-back" aria-hidden="true"></i></a></li>
+                    <!--li><a href="<%//=pagerUrl+"?p="+(currentPage>1?currentPage-1:1)+"&o="+order+"&f="+filter%>"><i class="ion-ios-arrow-back" aria-hidden="true"></i></a></li-->
+            <%
+                for(int i=1; i<=totalPages;i++){
+            %>        
+                    <li><a href="<%=pagerUrl+"?p="+i%>" <%=currentPage==i?"class=\"select\"":""%>><%=i%></a></li>
+                    <!--li><a href="<%//=pagerUrl+"?p="+i+"&o="+order+"&f="+filter%>" <%//=currentPage==i?"class=\"select\"":""%>><%//=i%></a></li-->
+            <%                
+                }
+            %>        
+                    <li><a href="<%=pagerUrl+"?p="+(currentPage<totalPages?currentPage+1:totalPages)%>"><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
+                    <!--li><a href="<%//=pagerUrl+"?p="+(currentPage<totalPages?currentPage+1:totalPages)+"&o="+order+"&f="+filter%>"><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li-->
+                </ul>
+            </div>
+            <!-- contenido -->
+        </div>
+    </section>

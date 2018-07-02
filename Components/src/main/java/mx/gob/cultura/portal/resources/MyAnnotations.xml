@@ -3,12 +3,9 @@
 	<xslfile>admresource.xslt</xslfile>
     <form name="frmAnnotationMgr" action="true" method="POST">
 		<admdbconnmgr defconn="true"/>
-        <fieldset legend="Administrador">
-            <input type="TEXT" name="AdmRol" label="*Rol del administrador:" size="50" jsrequired="true" />
-        </fieldset>
         <fieldset legend="Anotador">
             <input type="TEXT" name="AnnRol" label="*Rol del anotador:" size="50" jsrequired="true" />
-        </fieldset>        
+        </fieldset>
         <fieldset>
             <input type="submit" name="btnSave" id="btnSave" value="Guardar"/>
             <input type="reset"  name="btnReset" id="btnReset" value="Restablecer" />
