@@ -118,12 +118,11 @@ public class ExhibitionHome extends GenericAdmResource {
             org.bson.Document bson = new org.bson.Document("url", exhibition.getUrl(usrlanguage, false)).append("path", this.path).append("id", exhibition.getId())
                 .append("target", null != exhibition.getTarget() && !"".equalsIgnoreCase(exhibition.getTarget()) ? exhibition.getTarget() : "_self")
                 .append("desc", exhibition.getDisplayDescription(usrlanguage) == null ? "" : exhibition.getDisplayDescription(usrlanguage))
-                .append("title", exhibition.getDisplayName(usrlanguage));
+                .append("title", exhibition.getDisplayName(usrlanguage)).append("author", exhibition.getCreator().getFullName());
             if (null != exhibition.getProperty("posters") && !exhibition.getProperty("posters").isEmpty()) {
                 if (exhibition.getProperty("posters").indexOf("#") >0) {
                     String [] posters = exhibition.getProperty("posters").split("#");
                     for (int i=0; i<posters.length; i++) {
-                        System.out.println("poster: " + i + " " + posters[i]);
                         elements.add(posters[i]);
                     }
                 }else elements.add(exhibition.getProperty("posters"));
