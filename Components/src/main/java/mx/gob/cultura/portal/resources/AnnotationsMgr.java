@@ -353,8 +353,10 @@ System.out.println(sb);
                 if(entry.getId()!=null){
                     map.put("oid",entry.getId());
                 }    
-                if(entry.getRecordtitle()!=null){
+                if(entry.getRecordtitle()!=null && entry.getRecordtitle().size()>0){
                     map.put("bicTitle",entry.getRecordtitle().get(0).getValue());            
+                }else{
+                    map.put("bicTitle","sin título");            
                 }    
                 if(entry.getCreator()!=null){
                     map.put("bicCreator",entry.getCreator().get(0));
