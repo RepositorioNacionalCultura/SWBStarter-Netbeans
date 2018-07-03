@@ -60,7 +60,7 @@ public class MyAnnotations extends GenericAdmResource{
         boolean isAnnotator= false;
         if (oid!=null&&!oid.isEmpty()){
             Entry entry = getEntry(oid);
-            if (entry!=null&&entry.getIdentifier()!=null&&entry.getIdentifier().get(0)!=null){                
+            if (entry!=null&&entry.getIdentifier()!=null && entry.getIdentifier().size()>0){                
                 id= entry.getIdentifier().get(0).getValue(); 
             }
         }

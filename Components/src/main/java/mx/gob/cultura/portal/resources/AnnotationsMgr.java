@@ -301,7 +301,7 @@ System.out.println(sb);
         //Entry entry = req.makeRequest();       
         ListBICRequest req = new ListBICRequest(uri);        
         Document document = req.makeRequest();
-        if(document!=null&&document.getRecords()!=null&&document.getRecords().get(0)!=null){
+        if(document!=null&&document.getRecords()!=null && document.getRecords().size()>0){
             entry=document.getRecords().get(0);
         }         
         return entry;
@@ -358,8 +358,10 @@ System.out.println(sb);
                 }else{
                     map.put("bicTitle","sin título");            
                 }    
-                if(entry.getCreator()!=null){
+                if(entry.getCreator()!=null && entry.getCreator().size()>0){
                     map.put("bicCreator",entry.getCreator().get(0));
+                }else{
+                    map.put("bicCreator","sin creador");
                 }    
             }
         } catch (IOException ex) {
