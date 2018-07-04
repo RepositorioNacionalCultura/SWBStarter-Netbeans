@@ -231,7 +231,7 @@ public class SearchCulturalProperty extends PagerAction {
         String uri = baseUri + "/api/v1/search?q=";
         try {
             uri += URLEncoder.encode(getParamSearch(words), StandardCharsets.UTF_8.name());
-            uri += getFilters(request);
+            uri += URLEncoder.encode(getFilters(request), StandardCharsets.UTF_8.name());
         } catch (UnsupportedEncodingException uex) {
             LOG.error(uex);
         }
@@ -255,22 +255,26 @@ public class SearchCulturalProperty extends PagerAction {
         StringBuilder filters = new StringBuilder();
         filters.append(getFilter(request, "resourcetype"));
         filters.append(getFilter(request, "mediatype"));
-        filters.append(getFilter(request, "dates"));
+        //filters.append(getFilter(request, "dates"));
         filters.append(getFilter(request, "rights"));
         filters.append(getFilter(request, "lang"));
         filters.append(getFilter(request, "holder"));
         if (filters.length() > 0) {
-            filters.deleteCharAt(filters.length()-1);
+            filters.deleteCharAt(0);
             filters.insert(0, "&filter=");
         }
+        System.out.println("getFilters: " + filters.toString());
         return URLEncoder.encode(filters.toString(), StandardCharsets.UTF_8.name());
     }
 
     private String getFilter(HttpServletRequest request, String att) {
         StringBuilder filter = new StringBuilder();
         if (null != request.getParameter(att) && !request.getParameter(att).isEmpty()) {
-            filter.append(att).append("|");
-            filter.append(request.getParameter(att)).append("&");
+            String [] filters = request.getParameter(att).split(",");
+            for (int i=0; i<filters.length; i++) {
+                filter.append(",").append(att).append(":").append(filters[i]);
+                System.out.println("att: " + filter.toString());
+            }
         }else return "";
         return filter.toString();
     }
