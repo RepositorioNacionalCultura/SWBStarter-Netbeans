@@ -341,7 +341,6 @@ public class HTMLCulture extends GenericResource {
         
         File wp = new File(workPath);
         if (!wp.exists()) wp.mkdirs();
-        System.out.println("isEnabledForFileUpload: " + HTMLCultureUtils.isEnabledForFileUpload(paramRequest));
         if (HTMLCultureUtils.isEnabledForFileUpload(paramRequest) && ACT_UPLOADFILE.equals(action) && ServletFileUpload.isMultipartContent(request)) {
             DiskFileItemFactory factory = new DiskFileItemFactory();
             ServletFileUpload sfu = new ServletFileUpload(factory);
@@ -353,7 +352,6 @@ public class HTMLCulture extends GenericResource {
                     FileItem item = iter.next();
                     if (!item.isFormField()) {
                         String itemName = item.getName();
-                        System.out.println("itemName: " + itemName);
                         if (HTMLCultureUtils.isValidFileType(itemName, extensions)) {
                             String fileName = HTMLCultureUtils.sanitizeFileName(itemName);
                             item.write(new File(workPath+fileName));

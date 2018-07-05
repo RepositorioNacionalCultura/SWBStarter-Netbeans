@@ -27,6 +27,7 @@ public final class Constants {
     
     public static final String IDENTIFIER = "id";
     public static final String MODE_PAGE = "PAGE";
+    public static final String COLLECTION = "collection";
     public static final String PARAM_REQUEST = "paramRequest";
     
 }
