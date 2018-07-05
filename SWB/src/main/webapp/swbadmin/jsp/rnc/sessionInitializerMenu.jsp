@@ -80,24 +80,6 @@
                   });
               });
 <%      if (!paramsRequest.getUser().isSigned()) {%>
-//              gapi.signin2.render('googlePButton', {
-//                  scope: 'profile email openid',
-//                  onsuccess: function(googleUser) {
-//                                console.log('Usuario firmado!\n' + JSON.stringify(googleUser));
-//                                alert('Usuario firmado!\n' + JSON.stringify(googleUser));
-//                                var user = {
-//                                    id : googleUser.getAuthResponse().id_token,
-//                                    name : googleUser.getBasicProfile().getName(),
-//                                    email : googleUser.getBasicProfile().getEmail()
-//                                };
-//                                console.log('Usuario firmado!\n' + JSON.stringify(googleUser));
-//                                openSWBSession(user, '<%=SessionInitializer.GOOGLEP%>');
-//                            },
-//                  onfailure: function() {
-//                                alert("No se podrá iniciar sesión con Google+!");
-//                            }
-//              });
-//              loginGoogleUser(document.getElementById("loginWithGoogle"));
           }
           
           function loginGPByClick() {
@@ -142,7 +124,6 @@
               }
               alert("Listo!!!");
           }
-          
 <%      } else { %>
           }
           function signOutGP() {
@@ -190,10 +171,6 @@
             }
           }
           function openSWBSession(user, source) {
-//            FB.api('/me', function(response) {
-//              var name = response.name ? response.name : '';
-//              var faceId = response.id ? response.id : '';
-//              var email = response.email ? response.email : '';
               var xhttp = new XMLHttpRequest();
               xhttp.onreadystatechange = function() {
                 if (this.readyState === 4 && this.status === 200) {
@@ -205,7 +182,6 @@
               xhttp.open("POST", "<%=sessionUrl%>", false); //false = sincrona
               xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
               xhttp.send("id=" + user.id + "&email=" + user.email + "&name=" + user.name + "&source=" + source);
-//            });
           }
           function faceLogin() {
             FB.login(function(response) {
@@ -217,24 +193,22 @@
                       email : response.email ? response.email : ''
                   };
                   openSWBSession(user, '<%=SessionInitializer.FACEBOOK%>');
-//                  var xhttp = new XMLHttpRequest();
-//                  xhttp.onreadystatechange = function() {
-//                    if (this.readyState === 4 && this.status === 200) {
-//                      location.reload();
-//                    } else {
-//                        console.log("status del envio: " + this.status);
-//                    }
-//                  };
-//                  xhttp.open("POST", "<%=sessionUrl%>", false); //false = sincrona
-//                  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
-//                  xhttp.send("id=" + faceId + "&email=" + email + "&name=" + name + "&source=<%=SessionInitializer.FACEBOOK%>");
                 });
               }
             });
           }
+          var userRegistered = false;
+          window.originalContent = "";
+          
+          function checkIfUsed() {
+            if (userRegistered) {
+                document.getElementsByClassName("modal-content")[0].innerHTML = window.originalContent;
+                userRegistered = false;
+            }
+          }
         </script>
         <div class="sesion">
-            <button class="btn-sesion" data-toggle="modal" data-target="#modal-sesion"><!-- id="dropdownMenuLink" -->
+            <button class="btn-sesion" data-toggle="modal" data-target="#modal-sesion" onclick="javascript:checkIfUsed();">
                 <span class="ion-person"></span>
                 <i><%=mainLabel%></i>
             </button>
@@ -291,14 +265,143 @@
             try {
                 userAccountTxt = paramsRequest.getLocaleString("lbl_userAccount");
             } catch (SWBResourceException swbe) {
-                userAccountTxt =  "¿No tienes una cuenta?";
+                userAccountTxt =  "¿No tienes cuenta?";
             }
             String createAccountTxt;
             try {
                 createAccountTxt = paramsRequest.getLocaleString("lbl_createAccount");
             } catch (SWBResourceException swbe) {
-                createAccountTxt = "Crea aquí tu cuenta";
+                createAccountTxt = "Regístrate aquí";
             }
+            String mailPlaceHldrTxt;
+            try {
+                mailPlaceHldrTxt = paramsRequest.getLocaleString("lbl_mailPlaceHldr");
+            } catch (SWBResourceException swbe) {
+                mailPlaceHldrTxt = "Ingresa tu correo electrónico";
+            }
+            String pwdPlaceHldrTxt;
+            try {
+                pwdPlaceHldrTxt = paramsRequest.getLocaleString("lbl_passwrdPlaceHldr");
+            } catch (SWBResourceException swbe) {
+                pwdPlaceHldrTxt = "Crea tu contraseña";
+            }
+            String pwdConfPlaceHldrTxt;
+            try {
+                pwdConfPlaceHldrTxt = paramsRequest.getLocaleString("lbl_passwrdConfPlaceHldr");
+            } catch (SWBResourceException swbe) {
+                pwdConfPlaceHldrTxt = "Repite tu contraseña";
+            }
+            String useTermsTxt;
+            try {
+                useTermsTxt = paramsRequest.getLocaleString("lbl_useTerms");
+            } catch (SWBResourceException swbe) {
+                useTermsTxt = "términos de uso y la política de privacidad";
+            }
+            String useTermsAcceptTxt;
+            try {
+                useTermsAcceptTxt = paramsRequest.getLocaleString("lbl_useTermsAcceptText");
+            } catch (SWBResourceException swbe) {
+                useTermsAcceptTxt = "Acepto los ";
+            }
+            String registryBtnTxt;
+            try {
+                registryBtnTxt = paramsRequest.getLocaleString("lbl_registryBtn");
+            } catch (SWBResourceException swbe) {
+                registryBtnTxt = "Continuar";
+            }
+            String url2RegisterUser = SessionInitializer.getRegisterDirectLink(paramsRequest);
+            
+            String pswdMismatchTxt;
+            try {
+                pswdMismatchTxt = paramsRequest.getLocaleString("msg_pswdMismatch");
+            } catch (SWBResourceException swbe) {
+                pswdMismatchTxt = "La contraseña no coincide con la confirmación.";
+            }
+            String emailNotValidTxt;
+            try {
+                emailNotValidTxt = paramsRequest.getLocaleString("msg_emailNotValid");
+            } catch (SWBResourceException swbe) {
+                emailNotValidTxt = "La cuenta de correo proporcionada no es válida.";
+            }
+            String allValidationsTxt;
+            try {
+                allValidationsTxt = paramsRequest.getLocaleString("msg_allValidations");
+            } catch (SWBResourceException swbe) {
+                allValidationsTxt = "Favor de proporcionar un nombre, cuenta de correo válida y contraseña con su confirmación.";
+            }
+            String userRegisteredTxt;
+            try {
+                userRegisteredTxt = paramsRequest.getLocaleString("lbl_userRegistered");
+            } catch (SWBResourceException swbe) {
+                userRegisteredTxt = "¿Ya tienes una cuenta?";
+            }
+            String loginAltTxt;
+            try {
+                loginAltTxt = paramsRequest.getLocaleString("lbl_loginAlt");
+            } catch (SWBResourceException swbe) {
+                loginAltTxt = "Inicia sesión aquí";
+            }
+            String registryModalTitleTxt;
+            try {
+                registryModalTitleTxt = paramsRequest.getLocaleString("lbl_registryTitle");
+            } catch (SWBResourceException swbe) {
+                registryModalTitleTxt = "Regístrate";
+            }
+            String termsPolicyCheckedTxt;
+            try {
+                termsPolicyCheckedTxt = paramsRequest.getLocaleString("msg_registryTitle");
+            } catch (SWBResourceException swbe) {
+                termsPolicyCheckedTxt = "Los términos de uso y políticas de privacidad, deben ser aceptados.";
+            }
+            String registryProblemTxt;
+            try {
+                registryProblemTxt = paramsRequest.getLocaleString("msg_registryProblem");
+            } catch (SWBResourceException swbe) {
+                registryProblemTxt = "Hubo un problema al registrarte:";
+            }
+            String regCatastropheTxt;
+            try {
+                regCatastropheTxt = paramsRequest.getLocaleString("msg_regCatastrophe");
+            } catch (SWBResourceException swbe) {
+                regCatastropheTxt = "El servidor no pudo crear el registro. :(";
+            }
+            String titleRegSuccessTxt;
+            try {
+                titleRegSuccessTxt = paramsRequest.getLocaleString("lbl_titleRegSuccess");
+            } catch (SWBResourceException swbe) {
+                titleRegSuccessTxt = "¡Gracias!";
+            }
+            String registryCont1Txt;
+            try {
+                registryCont1Txt = paramsRequest.getLocaleString("lbl_registryCont1");
+            } catch (SWBResourceException swbe) {
+                registryCont1Txt = "Te hemos enviado un correo de verificación";
+            }
+            String registryCont2Txt;
+            try {
+                registryCont2Txt = paramsRequest.getLocaleString("lbl_registryCont2");
+            } catch (SWBResourceException swbe) {
+                registryCont2Txt = "Por favor revisa tu correo y accede al link para finalizar tu registro.";
+            }
+            String registryCont3Txt;
+            try {
+                registryCont3Txt = paramsRequest.getLocaleString("lbl_registryCont3");
+            } catch (SWBResourceException swbe) {
+                registryCont3Txt = "Si no has recibido nuestro correo de confirmación, te pedimos revisar en la carpeta de spam o ";
+            }
+            String contactLinkTxt;
+            try {
+                contactLinkTxt = paramsRequest.getLocaleString("lbl_contactLink");
+            } catch (SWBResourceException swbe) {
+                contactLinkTxt = "ponte en contacto con nosotros.";
+            }
+            String regCloseBtnTxt;
+            try {
+                regCloseBtnTxt = paramsRequest.getLocaleString("lbl_regCloseBtn");
+            } catch (SWBResourceException swbe) {
+                regCloseBtnTxt = "Cerrar";
+            }
+
 %>
             <div class="modal fade" id="modal-sesion" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
                 <div class="modal-dialog modal-exh" role="document">
@@ -310,27 +413,29 @@
                             </button>
                         </div>
                         <div class="modal-body modal-sesion">
-                            <form name="loginForm" action="<%=loginUrl%>" method="post">
-                                <div class="form-group">
-                                    <span class="ion-android-mail"></span>
-                                    <input type="email" class="form-control" id="wb_username" name="wb_username" aria-describedby="emailHelp" placeholder="<%=userplaceHldr%>">
-                                </div>
-                                <div class="form-group">
-                                    <span class="ion-android-lock"></span>
-                                    <input type="password" class="form-control" id="wb_password" name="wb_password" placeholder="<%=pwdplaceHldr%>">
-                                </div>
-                                <div>
-                                    <button type="submit" class="btn-cultura btn-rojo"><%=submitBtn%></button>
-                                    <%--a href="#" class="modal-olvidaste">¿Olvidaste tu contraseña?</a--%>
-                                </div>
+                            <div id="modalFormContainer">
+                                <form name="loginForm" action="<%=loginUrl%>" method="post">
+                                    <div class="form-group">
+                                        <span class="ion-android-mail"></span>
+                                        <input type="email" class="form-control" id="wb_username" name="wb_username" aria-describedby="emailHelp" placeholder="<%=userplaceHldr%>">
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="ion-android-lock"></span>
+                                        <input type="password" class="form-control" id="wb_password" name="wb_password" placeholder="<%=pwdplaceHldr%>">
+                                    </div>
+                                    <div>
+                                        <button type="submit" class="btn-cultura btn-rojo"><%=submitBtn%></button>
+                                        <%--a href="#" class="modal-olvidaste">¿Olvidaste tu contraseña?</a--%>
+                                    </div>
+                                </form>
+                            </div>
 <%
             if (showFB) {
 %>
                                 <div class="iniciaFace">
                                     <%=SessionInitializer.getFacebookLink(paramsRequest)%>
                                 </div>
-<%
-            }
+<%          }
             if (showTwitter) {
 %>
                                 <div class="iniciaTwit">
@@ -339,18 +444,15 @@
 <%
             }
 %>
-                        </div>        
-                            </form>
-<%--                            <p class="oswM rojo inicia"><%=socialLogin%>
-                        <%=showFB ? SessionInitializer.getFacebookLink(paramsRequest.getWebPage().getWebSiteId()) : ""%>
-                        <%=showTwitter ? SessionInitializer.getTwitterLink(paramsRequest) : ""%>
+                            <div id="modalFooter">
+                                <p class="oswM"><%=userAccountTxt%> <a href="#" onclick="javascript:changeModal(1);" class="rojo"><%=createAccountTxt%></a></p>
+                            </div>
+                        </div>
+<%--
                         <%=showGPlus ? SessionInitializer.getGoogleLink(paramsRequest.getWebPage().getWebSiteId()) : ""%>
-                            </p>
-                        
-                        <div class="nocuenta rojo-bg">
-                          <h5><%=userAccountTxt%></h5>
-                          <p><a href="<%=wpRegistry.getRealUrl(paramsRequest.getUser().getLanguage())%>" class="btn-cultura btn-negro"><%=createAccountTxt%></a></p>
-                        </div --%>
+--%>
+                    </div>
+                </div>
 <%
             if (SWBPlatform.getSecValues().isEncrypt()) {
 %>
@@ -368,9 +470,130 @@
 <%
             }
 %>
-                    </div>
-                </div>
             </div>
+            <script type="text/javascript">
+                window.originalContent = document.getElementsByClassName("modal-content")[0].innerHTML;
+                
+                function isEmailValid(val) {
+                    var filter = /^([a-zA-Z0-9\_\-\.])+@(([a-zA-Z0-9\-\_])+\.)+([a-zA-Z0-9]{2,4})$/;
+                    var ret = true;
+                    if (val === "" || !filter.test(val)) {
+                        ret = false;
+                    }
+                    return ret;
+                }
+
+                function validate(form) {
+                    var retValue = true;
+                    if (form.checkValidity()) {
+
+                        if (form.pass2.value !== form.passConf.value) {
+                            alert("<%=pswdMismatchTxt%>");
+                            retValue = false;
+                        }
+                        if (!isEmailValid(form.email.value)) {
+                            alert("<%=emailNotValidTxt%>")
+                            retValue = false;
+                        }
+                        if (!form.termsPrivacy.checked) {
+                            alert("<%=termsPolicyCheckedTxt%>");
+                            retValue = false;
+                        }
+                    } else {
+                        alert("<%=allValidationsTxt%>");
+                        retValue = false;
+                    }
+
+                    if (retValue) {
+                        var data = "email=" + form.email.value + "&pass2=" + form.pass2.value +
+                                "&passConf=" + form.passConf.value + "&termsPrivacy=" + form.termsPrivacy.value;
+                        var xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function() {
+                          if (this.readyState === 4 && this.status === 200) {
+                              if (this.responseText === "msgSent") {
+                                changeModal(3);
+                              } else {
+                                var result = this.responseText;
+                                form.reset();
+                                alert("<%=registryProblemTxt%> " + result);
+                              }
+                          } else if (this.readyState === 4 && this.status === 500) {
+                              alert("<%=regCatastropheTxt%>");
+                              form.reset();
+                          }
+                        };
+                        xhttp.open("POST", form.action, true);
+                        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        xhttp.send(encodeURI(data));
+                    
+                        //form.submit();
+                    }
+                }
+                var newContent1 = "<form id=\"regUser\" method=\"post\" action=\"<%=url2RegisterUser%>\">" +
+                                "<div class=\"form-group\">" +
+                                "<span class=\"ion-android-mail\"></span>" +
+                                "<input type=\"email\" class=\"form-control\" id=\"email\" name=\"email\" aria-describedby=\"emailHelp\" placeholder=\"<%=mailPlaceHldrTxt%>\" required=\"required\">" +
+                                "</div>" +
+                                "<div class=\"form-group\">" +
+                                "<span class=\"ion-android-lock\"></span>" +
+                                "<input type=\"password\" class=\"form-control\" id=\"pass2\" name=\"pass2\" placeholder=\"<%=pwdPlaceHldrTxt%>\" required=\"required\">" +
+                                "</div>" +
+                                "<div class=\"form-group\">" +
+                                "<span class=\"ion-android-lock\"></span>" +
+                                "<input type=\"password\" class=\"form-control\" id=\"passConf\" name=\"passConf\" placeholder=\"<%=pwdConfPlaceHldrTxt%>\" required=\"required\">" +
+                                "</div>" +
+                                "<div class=\"form-group form-check\">" +
+                                "<input type=\"checkbox\" class=\"form-check-input\" id=\"termsPrivacy\" name=\"termsPrivacy\" value=\"true\">" +
+                                "<label class=\"form-check-label\" for=\"termsPrivacy\"><%=useTermsAcceptTxt%> <a href=\"#\" target=\"_blank\"><%=useTermsTxt%></a></label>" +
+                                "<button type=\"button\" class=\"btn-cultura btn-rojo\" onclick=\"validate(this.form);\"><%=registryBtnTxt%></button>" +
+                                "</div>" +
+                                "</form>";
+                var newContent2 = "<p class=\"oswM\"><%=userRegisteredTxt%> <a href=\"#\" onclick=\"javascript:changeModal(2);\" class=\"rojo\"><%=loginAltTxt%></a></p>";
+                var newContent3 = "<%=registryModalTitleTxt%>";
+                var otherContent = "<form name=\"loginForm\" action=\"<%=loginUrl%>\" method=\"post\">" +
+                            "<div class=\"form-group\">" +
+                            "<span class=\"ion-android-mail\"></span>" +
+                            "<input type=\"email\" class=\"form-control\" id=\"wb_username\" name=\"wb_username\" aria-describedby=\"emailHelp\" placeholder=\"<%=userplaceHldr%>\">" +
+                            "</div>" +
+                            "<div class=\"form-group\">" +
+                            "<span class=\"ion-android-lock\"></span>" +
+                            "<input type=\"password\" class=\"form-control\" id=\"wb_password\" name=\"wb_password\" placeholder=\"<%=pwdplaceHldr%>\">" +
+                            "</div>" +
+                            "<div>" +
+                            "<button type=\"submit\" class=\"btn-cultura btn-rojo\"><%=submitBtn%></button>" +
+                            "</div>" +
+                            "</form>";
+                var otherContent2 = "<p class=\"oswM\"><%=userAccountTxt%> <a href=\"#\" onclick=\"javascript:changeModal(1);\" class=\"rojo\"><%=createAccountTxt%></a></p>";
+                var otherContent3 = "<%=dialogTitle%>";
+                
+                function changeModal(interface2Show) {
+                    var container = document.getElementById("modalFormContainer");
+                    var container2 = document.getElementById("modalFooter");
+                    var container3 = document.getElementsByClassName("modal-title oswM");
+                    if (container !== undefined && container2 !== undefined && container3.length > 0) {
+                        if (interface2Show === 1) {
+                            container3[0].innerHTML = newContent3;
+                            container.innerHTML = newContent1;
+                            container2.innerHTML = newContent2;
+                        } else if (interface2Show === 2) {
+                            container3[0].innerHTML = otherContent3;
+                            container.innerHTML = otherContent;
+                            container2.innerHTML = otherContent2;
+                        } else if (interface2Show === 3) {
+                            container = document.getElementsByClassName("modal-body modal-sesion");
+                            container3[0].classList.add("center");
+                            container3[0].innerHTML = "<%=titleRegSuccessTxt%>";
+                            var greetings = "<p class=\"center rojo bold\"><%=registryCont1Txt%></p>" + 
+                                    "<p class=\"center\"><%=registryCont2Txt%></p>" +
+                                    "<p class=\"center\"><%=registryCont3Txt%>" +
+                                    "<a href=\"#\" class=\"rojo\"><%=contactLinkTxt%></a></p>" +
+                                    "<button type=\"submit\" class=\"btn-cultura btn-rojo\" data-dismiss=\"modal\"><%=regCloseBtnTxt%></button>";
+                            container[0].innerHTML = greetings;
+                            userRegistered = true;
+                        }
+                    }
+                }
+            </script>
 <%
         } else {  //si si existe el usuario en sesion de SWB
             WebPage wpCollections = paramsRequest.getWebPage().getWebSite().getWebPage("miscolecciones");

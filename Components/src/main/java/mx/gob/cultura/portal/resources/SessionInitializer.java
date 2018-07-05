@@ -417,4 +417,22 @@ public class SessionInitializer extends GenericResource {
         }
     }
     
+    /**
+     * Genera el vinculo de HTML para ejecutar el registro de un usuario con llamado
+     * directo al recurso bajo la accion correspondiente para crear el registro
+     * @param paramRequest
+     * @return un {@code String} que representa el elemento de HTML que contiene 
+     * la ejecucion para registrar a un usuario en el sitio
+     */
+    public static String getRegisterDirectLink(SWBParamRequest paramRequest) {
+        
+//        StringBuilder text = new StringBuilder(128);
+        String resourceUrl = paramRequest.getActionUrl()
+                .setAction(UserRegistry.REGISTER_ACTION)
+                .setCallMethod(SWBParamRequest.Call_DIRECT)
+                .toString();
+        String registryUrl = Utils.getResourceURL(paramRequest.getWebPage().getWebSite(),
+                                        UserRegistry.class, resourceUrl);
+        return registryUrl;
+    }
 }
