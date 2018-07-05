@@ -49,11 +49,11 @@
                 .append("   <div class=\"col-11 col-md-7 video-players\">")
                 .append("       <div class=\"col-12 video-botones\">");
 		if (iDigit > 1)
-                    divVisor.append("           <button type=\"button\" id=\"prev\" class=\"prev\"><span class=\"ion-ios-skipbackward\"></span></button>");
-                divVisor.append("           <button type=\"button\" id=\"play-pause\" class=\"play\"><span class=\"ion-ios-play\"></span></button>");
+                    divVisor.append("       <button type=\"button\" id=\"prev\" class=\"prev\"><span class=\"ion-ios-skipbackward\"></span></button>");
+                divVisor.append("       <button type=\"button\" id=\"play-pause\" class=\"play\"><span class=\"ion-ios-play\"></span></button>");
 		if (iDigit < vids) {
-                    String next = "onclick=\"nextObj('"+entry.getId()+"',"+iDigit+");\"";
-                    divVisor.append("           <button type=\"button\" id=\"next\" class=\"next\"").append(next).append("><span class=\"ion-ios-skipforward\"></span></button>");
+                    String next = "onclick=\"nextObj('"+digitURL+"?id=',"+entry.getId()+"',"+iDigit+");\"";
+                    divVisor.append("       <button type=\"button\" id=\"next\" class=\"next\"").append(next).append("><span class=\"ion-ios-skipforward\"></span></button>");
 		}
                 divVisor.append("       </div>")
                 .append("       <div class=\"col-12 video-range\">")
@@ -92,11 +92,8 @@
         }
     }
     String scriptFB = Utils.getScriptFBShare(request);
-    String back = (String)request.getAttribute("back");
 %>
 <%=scriptFB%>
-<%=scriptHeader%>
-<%=scriptCallVisor%>
 <section id="detalle">
     <div id="idetail" class="detalleimg">
         <div class="obranombre">
@@ -127,6 +124,8 @@
                 </div>
             </div>
         </div>
+        <%=scriptHeader%>
+        <%=scriptCallVisor%>
         <%=divVisor%>
     </div>
 </section>

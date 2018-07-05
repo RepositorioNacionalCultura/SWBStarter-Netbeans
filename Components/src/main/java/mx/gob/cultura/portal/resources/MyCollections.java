@@ -241,15 +241,18 @@ public class MyCollections extends GenericResource {
                 }
             }
         }else if (ACTION_DEL_FAV.equals(response.getAction())) {
-            if (null != request.getParameter(IDENTIFIER) && null != request.getParameter(ENTRY) && null != request.getSession().getAttribute("mycollections")) {
+            if (null != request.getParameter(IDENTIFIER) && null != request.getParameter(ENTRY) /**&& null != request.getSession().getAttribute("mycollections")**/) {
                 //Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
-                collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");
-                for (Collection c : collectionList) {
-                    if (c.getId().equals(request.getParameter(IDENTIFIER)) && !c.getElements().isEmpty() && !request.getParameter(ENTRY).trim().isEmpty() && c.getElements().contains(request.getParameter(ENTRY))) {
-                        c.getElements().remove(request.getParameter(ENTRY));
-                        break;
-                    }
+                //collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");
+                Collection c = mgr.findById(request.getParameter(IDENTIFIER));
+                if (null != c && !c.getElements().isEmpty() && !request.getParameter(ENTRY).trim().isEmpty() && c.getElements().contains(request.getParameter(ENTRY))) {
+                    c.getElements().remove(request.getParameter(ENTRY));
+                    mgr.updateCollection(c);
                 }
+                Gson gson = new Gson();
+                response.setRenderParameter(COLLECTION_RENDER, gson.toJson(c));
+                response.setMode(MODE_RES_ADD);
+                response.setCallMethod(SWBParamRequest.Call_DIRECT);
             }
         }else if (ACTION_ADD.equals(response.getAction())) {
             Collection c = setCollection(request);

@@ -464,8 +464,10 @@ public class HTMLCulture extends GenericResource {
                 }
                 if (textSaved) {
                     WebPage wp = paramRequest.getWebPage();
+                    System.out.println("wp: " + wp);
                     StringBuilder poster = new StringBuilder();
                     String resourcePath = resource.getWorkPath() + "/" + (versionNumber) + "/" + FOLDER;
+                    System.out.println("resourcePath: " + resourcePath);
                     File imagesDirectory = new File(directoryToCreate);
                     if (imagesDirectory.exists() && SWBUtils.IO.createDirectory(directoryToCreate)) {
                         for (String strFile : imagesDirectory.list()) {

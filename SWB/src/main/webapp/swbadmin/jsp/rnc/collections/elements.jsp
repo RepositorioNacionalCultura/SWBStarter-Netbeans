@@ -12,7 +12,17 @@
     String _msg = null != request.getParameter("_msg") && "2".equals(request.getParameter("_msg")) ? "Se actualizó correctamente en su colección." : "";
     WebPage detail = site.getWebPage("detalle");
     String uri = detail.getRealUrl(paramRequest.getUser().getLanguage());
+    SWBResourceURL delURL = paramRequest.getActionUrl();
+    delURL.setMode(SWBResourceURL.Mode_VIEW);
+    delURL.setAction(MyCollections.ACTION_DEL_FAV);
 %>
+<script>
+    $(document).ready(function () {
+        $("#alertSuccess").on('hidden.bs.modal', function () {
+            window.location.replace('<%=uels%>?id=<%=c.getId()%>&_msg=2');
+        });
+    });
+</script>
 <script>
     function editByForm(id) {
 	var xhttp = new XMLHttpRequest();
@@ -54,6 +64,18 @@
 	}
         return true;
     }
+    function del(id,entry) {
+        var xhttp = new XMLHttpRequest();
+	var url = '<%=delURL%>'+'?id='+id+'&entry='+entry;
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                jQuery("#dialog-text").text("Se actualizó correctamente en su colección.");
+		$('#alertSuccess').modal('show');
+            }
+	};
+        xhttp.open("POST", url, true);
+        xhttp.send();
+    }
 </script>
 <div class="col-md-3"><a class=" oswL" href="javascript:history.go(-1)"><i aria-hidden="true" class="fa fa-long-arrow-left"></i> Regresar</a></div>
 <div class="container coleccionSecc">
@@ -67,12 +89,12 @@
                 </div>
                 <p><%=_msg%></p>
                 <p><%=c.getDescription()%></p>
-                <hr class="rojo">
+                <!--hr class="rojo">
                 <div class="row redes">
                     <a href="#"><span class="ion-social-facebook"></span> Compartir</a>
                     <a href="#"><span class="ion-social-twitter"></span> Tweet</a>
                     <a href="#" class="rojo"><span class="ion-heart rojo"></span> Favoritos (356)</a>
-                </div>
+                </div-->
             </div>
         </div>
         <div class="col-3 col-sm-4 coleccionSecc-02">
@@ -95,7 +117,6 @@
                                     List<String> creators = item.getCreator();
                                     List<Title> titles = item.getRecordtitle();
                                     List<String> resourcetype = item.getResourcetype();
-                                    //List<DigitalObject> digitalobject = item.getDigitalObject();
                                     if (!titles.isEmpty()) title = titles.get(0);
                                     String creator = creators.size() > 0 ? creators.get(0) : "";
                                     String type = resourcetype.size() > 0 ? resourcetype.get(0) : "";
@@ -108,6 +129,9 @@
                                             <p class="oswB azul tit"><a href="<%=uri%>?id=<%=item.getId()%>"><%=title.getValue()%></a></p>
                                             <p class="azul autor"><a href="#"><%=creator%></a></p>
                                             <p class="tipo"><%=type%></p>
+                                            <%  if (null != paramRequest.getUser() && paramRequest.getUser().isSigned()) { %>
+                                                    <a href="#" onclick="del('<%=c.getId()%>', '<%=item.getId()%>')">Quitar de la colección</a>
+                                            <%  } %>
                                         </div>
                                     </div>
                             <%
