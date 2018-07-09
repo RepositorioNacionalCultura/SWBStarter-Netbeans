@@ -19,6 +19,7 @@
         <p class="tit2"><%=paramRequest.getLocaleString("usrmsg_view_detail_more_collection")%></p>
         <%  if (!c.isEmpty()) {
                 for (Entry book : c)  {
+                    int i = 0;
                     String title = "";
                     titles = book.getRecordtitle();
                     if (!titles.isEmpty()) title = titles.get(0).getValue();
@@ -33,6 +34,8 @@
                         <p><%=title%></p>
                     </div><hr>
         <%
+                    if (i>0) break;
+                    i++;
                 }
             }
         %>
