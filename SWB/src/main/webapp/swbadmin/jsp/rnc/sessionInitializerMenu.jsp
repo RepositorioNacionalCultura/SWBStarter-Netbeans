@@ -409,21 +409,21 @@
                         <div class="modal-header">
                             <h3 class="modal-title oswM"><%=dialogTitle%></h3>
                             <button type="button" class="close" data-dismiss="modal">
-                                <span class="ion-close-outline"></span>
+                                <span class="ion-ios-close-outline"></span>
                             </button>
                         </div>
                         <div class="modal-body modal-sesion">
                             <div id="modalFormContainer">
                                 <form name="loginForm" action="<%=loginUrl%>" method="post">
-                                    <div class="form-group">
+                                    <div class="form-group form-ses-01">
                                         <span class="ion-android-mail"></span>
                                         <input type="email" class="form-control" id="wb_username" name="wb_username" aria-describedby="emailHelp" placeholder="<%=userplaceHldr%>">
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group form-ses-02">
                                         <span class="ion-android-lock"></span>
                                         <input type="password" class="form-control" id="wb_password" name="wb_password" placeholder="<%=pwdplaceHldr%>">
                                     </div>
-                                    <div>
+                                    <div class="form-ses-03">
                                         <button type="submit" class="btn-cultura btn-rojo"><%=submitBtn%></button>
                                         <%--a href="#" class="modal-olvidaste">¿Olvidaste tu contraseña?</a--%>
                                     </div>
@@ -530,19 +530,19 @@
                     }
                 }
                 var newContent1 = "<form id=\"regUser\" method=\"post\" action=\"<%=url2RegisterUser%>\">" +
-                                "<div class=\"form-group\">" +
+                                "<div class=\"form-group form-reg-01\">" +
                                 "<span class=\"ion-android-mail\"></span>" +
                                 "<input type=\"email\" class=\"form-control\" id=\"email\" name=\"email\" aria-describedby=\"emailHelp\" placeholder=\"<%=mailPlaceHldrTxt%>\" required=\"required\">" +
                                 "</div>" +
-                                "<div class=\"form-group\">" +
+                                "<div class=\"form-group form-reg-02\">" +
                                 "<span class=\"ion-android-lock\"></span>" +
                                 "<input type=\"password\" class=\"form-control\" id=\"pass2\" name=\"pass2\" placeholder=\"<%=pwdPlaceHldrTxt%>\" required=\"required\">" +
                                 "</div>" +
-                                "<div class=\"form-group\">" +
+                                "<div class=\"form-group form-reg-0\">" +
                                 "<span class=\"ion-android-lock\"></span>" +
                                 "<input type=\"password\" class=\"form-control\" id=\"passConf\" name=\"passConf\" placeholder=\"<%=pwdConfPlaceHldrTxt%>\" required=\"required\">" +
                                 "</div>" +
-                                "<div class=\"form-group form-check\">" +
+                                "<div class=\"form-group form-check form-reg-04\">" +
                                 "<input type=\"checkbox\" class=\"form-check-input\" id=\"termsPrivacy\" name=\"termsPrivacy\" value=\"true\">" +
                                 "<label class=\"form-check-label\" for=\"termsPrivacy\"><%=useTermsAcceptTxt%> <a href=\"#\" target=\"_blank\"><%=useTermsTxt%></a></label>" +
                                 "<button type=\"button\" class=\"btn-cultura btn-rojo\" onclick=\"validate(this.form);\"><%=registryBtnTxt%></button>" +
@@ -551,15 +551,15 @@
                 var newContent2 = "<p class=\"oswM\"><%=userRegisteredTxt%> <a href=\"#\" onclick=\"javascript:changeModal(2);\" class=\"rojo\"><%=loginAltTxt%></a></p>";
                 var newContent3 = "<%=registryModalTitleTxt%>";
                 var otherContent = "<form name=\"loginForm\" action=\"<%=loginUrl%>\" method=\"post\">" +
-                            "<div class=\"form-group\">" +
+                            "<div class=\"form-group form-ses-01\">" +
                             "<span class=\"ion-android-mail\"></span>" +
                             "<input type=\"email\" class=\"form-control\" id=\"wb_username\" name=\"wb_username\" aria-describedby=\"emailHelp\" placeholder=\"<%=userplaceHldr%>\">" +
                             "</div>" +
-                            "<div class=\"form-group\">" +
+                            "<div class=\"form-group form-ses-02\">" +
                             "<span class=\"ion-android-lock\"></span>" +
                             "<input type=\"password\" class=\"form-control\" id=\"wb_password\" name=\"wb_password\" placeholder=\"<%=pwdplaceHldr%>\">" +
                             "</div>" +
-                            "<div>" +
+                            "<div class=\"form-ses-03\">" +
                             "<button type=\"submit\" class=\"btn-cultura btn-rojo\"><%=submitBtn%></button>" +
                             "</div>" +
                             "</form>";
