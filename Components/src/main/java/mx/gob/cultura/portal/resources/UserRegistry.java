@@ -35,6 +35,10 @@ public class UserRegistry extends GenericResource {
     
     private static final Logger LOG = SWBUtils.getLogger(UserRegistry.class);
     
+    public static final String REGISTER_ACTION = "creating";
+    
+    public static final String REGISTER_MODE = "confirmRegistry";
+    
     private String confirmationActionUrl = null;
 
     private static final String DATACRED_URI =
@@ -64,17 +68,20 @@ public class UserRegistry extends GenericResource {
         String action = response.getAction();
         String alert = null;
         UserRepository userRepo = response.getWebPage().getWebSite().getUserRepository();
-        String nextMode = SWBParamRequest.Mode_VIEW;
+        String nextMode = null;
+        System.out.println("Referer: " + request.getHeader("Referer"));
         
-        if ("creating".equals(action)) {
+        if (UserRegistry.REGISTER_ACTION.equals(action)) {
             User created = this.createProfile(request, userRepo);
             if (null == created) {
                 response.setRenderParameter("condition",
                         (String) request.getAttribute("condition"));
+                System.out.println("USUARIO NO CREADO");
             } else {
                 this.sendConfirmationEmail(created);
-                response.setRenderParameter("condition", "msg_confirmMail");
+                System.out.println("Se creo, el usuario  >>>");
             }
+            nextMode = UserRegistry.REGISTER_MODE;
         } else if ("confirming".equals(action)) {
             User user = this.activateUser(request, userRepo);
             StringBuilder credential = new StringBuilder(16);
@@ -117,9 +124,9 @@ public class UserRegistry extends GenericResource {
             if (null != alert) {
                 response.setRenderParameter("condition", alert);
             }
-            if (user.isSigned()) {
+//            if (user.isSigned()) {
                 nextMode = "homeRedirect";
-            }
+//            }
         }
         response.setMode(nextMode);
     }
@@ -130,6 +137,8 @@ public class UserRegistry extends GenericResource {
         
         if (paramRequest.getMode().equals("homeRedirect")) {
             redirect2Home(request, response, paramRequest);
+        } else if (paramRequest.getMode().equals("confirmRegistry")) {
+            confirmRegistry(request, response, paramRequest);
         } else {
             super.processRequest(request, response, paramRequest);
         }
@@ -153,6 +162,23 @@ public class UserRegistry extends GenericResource {
         }
     }
     
+    private void confirmRegistry(HttpServletRequest request, HttpServletResponse response,
+            SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        
+        try {
+            response.setContentType("Text/html");
+            PrintWriter out = response.getWriter();
+            if (request.getParameter("condition") == null || request.getParameter("condition").isEmpty()) {
+                out.print("msgSent");
+            } else {
+                out.print(request.getParameter("condition"));
+            }
+            out.flush();
+        } catch (IOException ioe) {
+            UserRegistry.LOG.error("Confirming registry", ioe);
+        }
+    }
+    
     private User createProfile(HttpServletRequest request, UserRepository userRepo) {
         
         User newUser = null;
@@ -161,11 +187,12 @@ public class UserRegistry extends GenericResource {
         String email = request.getParameter("email");
         String password = request.getParameter("pass2");
         String passwordConfirm = request.getParameter("passConf");
+        String termsPrivacy = request.getParameter("termsPrivacy");
         String condition = null;
         //boolean profCreated = true;
         
         if (null != password && null != email && !password.isEmpty() &&
-                password.equals(passwordConfirm) && !email.isEmpty()) {
+                password.equals(passwordConfirm) && !email.isEmpty() && termsPrivacy.equals("true")) {
             
             User user = userRepo.getUserByLogin(email);
             
@@ -177,8 +204,8 @@ public class UserRegistry extends GenericResource {
                     newUser.setLogin(email);
                     newUser.setPassword(password);  //encryptdPwd
                     newUser.setLanguage("es");
-                    newUser.setFirstName(name);
-                    newUser.setLastName(lastName);
+                    //newUser.setFirstName(name);
+                    //newUser.setLastName(lastName);
                     newUser.setEmail(email);
                     System.out.println("Contraseña para nuevo usuario: " + password);
                     //newUser.setActive(true);
