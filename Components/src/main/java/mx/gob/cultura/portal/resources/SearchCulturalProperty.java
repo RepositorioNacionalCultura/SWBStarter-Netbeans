@@ -231,7 +231,7 @@ public class SearchCulturalProperty extends PagerAction {
         String uri = baseUri + "/api/v1/search?q=";
         try {
             uri += URLEncoder.encode(getParamSearch(words), StandardCharsets.UTF_8.name());
-            uri += URLEncoder.encode(getFilters(request), StandardCharsets.UTF_8.name());
+            uri += getFilters(request);
         } catch (UnsupportedEncodingException uex) {
             LOG.error(uex);
         }
@@ -255,27 +255,39 @@ public class SearchCulturalProperty extends PagerAction {
         StringBuilder filters = new StringBuilder();
         filters.append(getFilter(request, "resourcetype"));
         filters.append(getFilter(request, "mediatype"));
-        //filters.append(getFilter(request, "dates"));
+        filters.append(getFilterDate(request, "datecreated"));
         filters.append(getFilter(request, "rights"));
-        filters.append(getFilter(request, "lang"));
-        filters.append(getFilter(request, "holder"));
+        filters.append(getFilter(request, "languages"));
+        filters.append(getFilter(request, "holders"));
         if (filters.length() > 0) {
             filters.deleteCharAt(0);
             filters.insert(0, "&filter=");
         }
         System.out.println("getFilters: " + filters.toString());
-        return URLEncoder.encode(filters.toString(), StandardCharsets.UTF_8.name());
+        return filters.toString();
+        //return URLEncoder.encode(filters.toString(), StandardCharsets.UTF_8.name());
     }
 
-    private String getFilter(HttpServletRequest request, String att) {
+    private String getFilter(HttpServletRequest request, String att) throws UnsupportedEncodingException {
         StringBuilder filter = new StringBuilder();
         if (null != request.getParameter(att) && !request.getParameter(att).isEmpty()) {
-            String [] filters = request.getParameter(att).split(",");
+            String [] filters = request.getParameter(att).split("::");
             for (int i=0; i<filters.length; i++) {
-                filter.append(",").append(att).append(":").append(filters[i]);
+                if (att.equalsIgnoreCase("mediatype")) filters[i] = this.getMediaType(filters[i]);
+                filter.append(",").append(att).append(":").append(URLEncoder.encode(filters[i], StandardCharsets.UTF_8.name()));
                 System.out.println("att: " + filter.toString());
             }
         }else return "";
+        return filter.toString();
+    }
+    
+    private String getFilterDate(HttpServletRequest request, String att) {
+        StringBuilder filter = new StringBuilder();
+        if (null != request.getParameter(att) && !request.getParameter(att).isEmpty()) {
+            String [] filters = request.getParameter(att).split(",");
+            if (filters.length == 2)
+                filter.append(",").append("datestart:").append(filters[0]).append(",dateend:").append(filters[1]);
+        }
         return filter.toString();
     }
 
@@ -350,7 +362,7 @@ public class SearchCulturalProperty extends PagerAction {
             if (c.getName().startsWith("audio")) audio.setCount(audio.getCount() + c.getCount());
             if (c.getName().startsWith("video") || c.getName().equalsIgnoreCase("application/octet-stream")) video.setCount(video.getCount() + c.getCount());
             if (c.getName().equalsIgnoreCase("application/pdf")) pdf.setCount(pdf.getCount() + c.getCount());
-            if (c.getName().startsWith("x-world")) three.setCount(three.getCount() + c.getCount());
+            if (c.getName().startsWith("model/x3d")) three.setCount(three.getCount() + c.getCount());
             if (c.getName().equalsIgnoreCase("application/zip")) zip.setCount(zip.getCount() + c.getCount());
             if (c.getName().equalsIgnoreCase("application/epub+zip")) eBook.setCount(eBook.getCount() + c.getCount());
         }
@@ -362,6 +374,20 @@ public class SearchCulturalProperty extends PagerAction {
         if (three.getCount() > 0) types.add(three);
         if (zip.getCount() > 0) types.add(zip);
         return types;
+    }
+    
+    private String getMediaType(String type) {
+        String mediaType = null;
+        switch(type) {
+            case "Imagen" : mediaType = "image/jpeg"; break;
+            case "Audio" : mediaType = "audio/x-aiff"; break;
+            case "Video" : mediaType = "application/octet-stream"; break;
+            case "PDF" : mediaType = "application/pdf"; break;
+            case "EPUB" : mediaType = "application/epub+zip"; break;
+            case "3D" : mediaType = "model/x3d+binary"; break;
+            case "ZIP" : mediaType = "application/zip"; break;
+        }
+        return mediaType;
     }
 
     private String getRange(HttpServletRequest request) {

@@ -18,12 +18,14 @@
     int iDigit = (Integer) request.getAttribute("iDigit");
     int iPrev = iDigit - 1;
     int iNext = iDigit + 1;
+    StringBuilder scriptHeader = new StringBuilder();
     StringBuilder scriptCallVisor = new StringBuilder();
     List<DigitalObject> digitalobjects = new ArrayList<>();
     Entry entry = (Entry) request.getAttribute("entry");
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
+    WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
         if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
@@ -33,6 +35,8 @@
             digital = pdfs > iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
             creator = creators.size() > 0 ? creators.get(0) : "";
             if (!titles.isEmpty()) title = titles.get(0).getValue();
+            scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
+            scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-pdf.css'/>");
             divVisor.append("<div id=\"pdfdetail\"></div>");
             scriptCallVisor.append("<script type=\"text/javascript\">")
                 .append("   $(document).ready(function() {")
@@ -42,7 +46,7 @@
         }
     }
 %>
-<div id="idetail" class="detalleimg">
+<!--div id="idetail" class="detalleimg"-->
     <div class="obranombre">
         <h3 class="oswB"><%=title%></h3>
         <p class="oswL"><%=creator%></p>
@@ -85,6 +89,7 @@
             </div>
         </div>
     </div>
+    <%=scriptHeader%>
     <%=divVisor%>
     <%=scriptCallVisor%>
-</div>
+<!--/div-->

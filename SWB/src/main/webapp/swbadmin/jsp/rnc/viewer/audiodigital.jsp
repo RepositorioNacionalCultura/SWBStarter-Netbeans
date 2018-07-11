@@ -221,7 +221,7 @@
                                     <span class="song-title"><%=song%></span>
                                     <span class="song-artist"><%=creator%></span>
                                 </div>
-                                <span class="song-duration">3:30</span>
+                                <!--span class="song-duration">3:30</span-->
                             </div>
 		<%
                             index++;

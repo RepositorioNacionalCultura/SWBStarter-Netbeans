@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>    
-<%@page import="mx.gob.cultura.portal.response.Entry,java.util.List"%>
+<%@page import="mx.gob.cultura.portal.response.Entry,java.util.List, org.semanticwb.portal.api.SWBParamRequest"%>
 <%
     int numBloque = 0;
     int ultimoBloque = 0;
@@ -13,6 +13,8 @@
     Integer paginasPorBloque = (Integer)request.getAttribute("PAGE_JUMP_SIZE");
     Integer registrosPorPagina = (Integer)request.getAttribute("NUM_RECORDS_VISIBLE");
     Integer totalRegistros = (Integer)request.getAttribute("NUM_RECORDS_TOTAL");
+    Integer last = (Integer)request.getAttribute("LAST_RECORD");
+    Integer first = (Integer)request.getAttribute("FIRST_RECORD");
     if (null == paginaActual) paginaActual = 1;
     if (paginaActual != 0 && totalPaginas !=0 && totalRegistros != 0 && registrosPorPagina != 0) {
 	numBloque = (paginaActual-1)/paginasPorBloque - (paginaActual-1)%paginasPorBloque/paginasPorBloque;
@@ -24,23 +26,25 @@
 	if (ultimoRegistroMostrado>totalRegistros) ultimoRegistroMostrado = totalRegistros;
 	if (paginaFinalBloque>totalPaginas) paginaFinalBloque = totalPaginas;
     }
+    SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     String m = null != request.getAttribute("m") ? (String)request.getAttribute("m") : "g";
     String f = null != request.getAttribute("f") ? (String)request.getAttribute("f") : "relvdes";
 %>
 <div class="container paginacion">
+    <p><%=first%>-<%=last%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=totalRegistros%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%></p>
     <ul class="azul">
     <!-- liga para saltar al bloque anterior -->
     <%
 	if (totalPages > 1) { //TODO: Check condition
             if (numBloque==0) {
     %>
-		<li><a href="#"><i class="ion-ios-arrow-back" aria-hidden="true"></i></a></li>
+		<li><a href="#"><i class="ion-ios-arrow-back" aria-hidden="true"></i><i class="ion-ios-arrow-back" aria-hidden="true"></i></a></li>
     <%
             }else {
 		int primeraPaginaBloqueAnterior = (numBloque-1)*paginasPorBloque+1;
     %>
 		<li>
-                    <a href="#" onclick="javascript:doPage(<%= primeraPaginaBloqueAnterior+",'"+m+"','"+f %>')"><i class="ion-ios-arrow-back" aria-hidden="true"></i></a>
+                    <a href="#" onclick="javascript:doPage(<%= primeraPaginaBloqueAnterior+",'"+m+"','"+f %>')"><i class="ion-ios-arrow-back" aria-hidden="true"></i><i class="ion-ios-arrow-back" aria-hidden="true"></i></a>
 		</li>
     <%
             }
@@ -61,12 +65,12 @@
         if (totalPages > 1) {
 	    if (numBloque==ultimoBloque || totalRegistros==0) {
     %>
-                <li><a href="#"><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
+                <li><a href="#"><i class="ion-ios-arrow-forward" aria-hidden="true"></i><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
     <%
             }else {
                 int primeraPaginaBloqueSiguiente = (numBloque+1)*paginasPorBloque+1;
     %>
-		<li><a href="#" onclick="javascript:doPage(<%= primeraPaginaBloqueSiguiente+",'"+m+"','"+f %>')"><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
+		<li><a href="#" onclick="javascript:doPage(<%= primeraPaginaBloqueSiguiente+",'"+m+"','"+f %>')"><i class="ion-ios-arrow-forward" aria-hidden="true"></i><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
     <%
             }
         }
