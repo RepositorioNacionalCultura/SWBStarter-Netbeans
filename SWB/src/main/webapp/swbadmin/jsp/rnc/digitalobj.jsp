@@ -45,7 +45,7 @@
                     .append("	id:\"pyramid\",")
                     .append("	showHomeControl: false,")
                     .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
-                    .append("	showNavigator: false,")
+                    .append("	showNavigator: true,")
                     .append("	tileSources:   {")
                     .append("		type: 'image',")
                     .append("		url: '").append(digital.getUrl()).append("'")
