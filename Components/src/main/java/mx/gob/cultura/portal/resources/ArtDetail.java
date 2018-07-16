@@ -208,7 +208,7 @@ public class ArtDetail extends GenericAdmResource {
             } else if (mimeType.equalsIgnoreCase("application/octet-stream")) {
                 if (url.endsWith(".zip")) {
                     path = "/swbadmin/jsp/rnc/digitalobj.jsp";
-                } else if (url.endsWith(".avi") || url.endsWith(".mp4")) {
+                } else if (url.endsWith(".avi") || url.endsWith(".mp4") || url.endsWith(".MP4")) {
                     path = "/swbadmin/jsp/rnc/viewer/videodigital.jsp";
                 }
             } else if (mimeType.equalsIgnoreCase("video/mp4") || mimeType.equalsIgnoreCase("video/quicktime") || mimeType.equalsIgnoreCase("video/x-msvideo") || mimeType.equalsIgnoreCase("video/mpeg")) {
@@ -226,7 +226,7 @@ public class ArtDetail extends GenericAdmResource {
             } else if (mimeType.equalsIgnoreCase("application/octet-stream")) {
                 if (url.endsWith(".zip")) {
                     path = "/swbadmin/jsp/rnc/artdetail.jsp";
-                } else if (url.endsWith(".avi") || url.endsWith(".mp4")) {
+                } else if (url.endsWith(".avi") || url.endsWith(".mp4") || url.endsWith(".MP4")) {
                     path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
                 }
             } else if (mimeType.equalsIgnoreCase("video/mp4") || mimeType.equalsIgnoreCase("video/quicktime") || mimeType.equalsIgnoreCase("video/x-msvideo") || mimeType.equalsIgnoreCase("video/mpeg")) {

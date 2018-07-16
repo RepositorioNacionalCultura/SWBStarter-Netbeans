@@ -9,9 +9,8 @@
     String userLang = paramRequest.getUser().getLanguage();
     Entry entry = (Entry)request.getAttribute("entry");
     String rackuri = "javascript:location.replace('/"+paramRequest.getUser().getLanguage()+"/"+paramRequest.getWebPage().getWebSiteId()+"/resultados?word=";
-    if (!entry.getCollection().isEmpty()) {
+    if (!entry.getCollection().isEmpty())
         rackuri += entry.getCollection().get(0);
-    }
     rackuri += "')";
 %>
 <div class="col-12 col-sm-6  col-md-3 col-lg-3 order-md-1 order-sm-2 order-2 mascoleccion">
