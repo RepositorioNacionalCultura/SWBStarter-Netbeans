@@ -43,15 +43,15 @@
     <a name="showPage"></a>
     <% if (!references.isEmpty()) {%>
     <div id="references">
-        <div class="ruta row">
+        <!--div class="ruta row">
             <div class="col-12 col-sm-8 col-md-8">
                 <p class="oswLc"><%=first%>-<%=last%> de <%=total%> resultados</p>
             </div>
             <div class="col-12 col-sm-4 col-md-4 ordenar">
-                <!--a href="#" onclick="setGrid();"><i class="fa fa-th select" aria-hidden="true"></i></a>
-                <a href="#" onclick="setList();"><i class="fa fa-th-list" aria-hidden="true"></i></a-->
+                <a href="#" onclick="setGrid();"><i class="fa fa-th select" aria-hidden="true"></i></a>
+                <a href="#" onclick="setList();"><i class="fa fa-th-list" aria-hidden="true"></i></a>
             </div>
-        </div>
+        </div-->
         <div id="resultados" class="card-columns">
             <%
                 for (ArtWork art : references) {
@@ -62,15 +62,11 @@
                     List<Title> titles = reference.getRecordtitle();
                     List<String> creators = reference.getCreator();
                     List<DigitalObject> digitalobject = reference.getDigitalObject();
-                    if (!digitalobject.isEmpty()) {
-                        digital = digitalobject.get(0);
-                    }
-                    if (!titles.isEmpty()) {
-                        title = titles.get(0);
-                    }
-                    if (!creators.isEmpty()) {
-                        creator = creators.get(0);
-                    }
+                    if (!digitalobject.isEmpty()) digital = digitalobject.get(0);
+                    if (!titles.isEmpty()) title = titles.get(0);
+                    if (!creators.isEmpty()) creator = creators.get(0);
+                    List<String> resourcetype = reference.getResourcetype();
+                    String type = resourcetype.size() > 0 ? resourcetype.get(0) : "";
             %>
             <div class="pieza-res card">
                 <a href="/swb/<%=site.getId()%>/detalle?id=<%=reference.getId()%>" target="blank">
@@ -79,12 +75,10 @@
                 <div>
                     <p class="oswB azul tit"><a href="#"><%=title.getValue()%></a></p>
                     <p class="azul autor"><a href="#"><%=creator%></a></p>
-                    <p class="tipo"><input type="checkbox" name="hiddenarts" value="<%=reference.getId()%>" <% if (art.isHidden()) {
-                                                                                        out.print("checked");
-                                                                                    }%>>Ocultar
-                        <br/><input type="checkbox" name="favarts" value="<%=reference.getId()%>" <% if (art.isFavorite()) {
-                                                                                                out.print("checked");
-                                                                                            } %>>Favorito</p>
+                    <!--p class="tipo">
+                        <input type="checkbox" name="hiddenarts" value="<%=reference.getId()%>" <% if (art.isHidden()) out.print("checked"); %>>Ocultar
+                        <br/><input type="checkbox" name="favarts" value="<%=reference.getId()%>" <% if (art.isFavorite()) out.print("checked"); %>>Favorito</p-->
+                    <p class="tipo"><%=type%></p>
                 </div>
             </div>
             <%
