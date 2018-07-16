@@ -35,7 +35,9 @@
                                         if (digObj.getMediatype().getMime().startsWith("image") && !digObj.getUrl().isEmpty()) {
                                 %>
                                 <div class="card-img-cont">
-                                    <img class="card-img-top" src="<%=digObj.getUrl()%>"/>
+                                    <a href="<%=detailPath%>?id=<%=item.getId()%>">
+                                        <img class="card-img-top" src="<%=digObj.getUrl()%>"/>
+                                    </a>
                                 </div>
                                 <%
                                             break;
@@ -48,8 +50,10 @@
                                     }
                                 %>
                                 <div class="card-body">
-                                    <p class="tit"><%=item.getRecordtitle().get(0).getValue()%></p>
-                                    <p class="card-text"><%=authorName%></p>
+                                    <a href="<%=detailPath%>?id=<%=item.getId()%>">
+                                        <p class="tit"><%=item.getRecordtitle().get(0).getValue()%></p>
+                                        <p class="card-text"><%=authorName%></p>
+                                    </a>
                                 </div>
                                 <div class="card-footer">
                                     <small class="text-muted">
