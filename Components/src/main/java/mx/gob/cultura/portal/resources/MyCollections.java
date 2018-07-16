@@ -135,6 +135,7 @@ public class MyCollections extends GenericResource {
             request.setAttribute("mycollections", collectionList);
             request.setAttribute(NUM_RECORDS_TOTAL, collectionList.size());
             request.setAttribute(COUNT_BY_STAT, collectionList(null).size());
+            request.setAttribute(COUNT_BY_USER, collectionList.size());
             init(request);
             rd.include(request, response);
         } catch (ServletException se) {

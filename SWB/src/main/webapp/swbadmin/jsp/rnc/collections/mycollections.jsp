@@ -221,18 +221,22 @@
 <div id="references">
     <div class="container">
         <div class="row mosaico-contenedor">
-            <div class="col-6 col-md-4">
-                <div class="mosaico radius-overflow">
-                    <a href="#" data-toggle="modal" data-target="#modalExh">
-                        <span class="ion-ios-plus rojo"></span>
-                    </a>
+        <%
+            if (MyCollections.MODE_VIEW_MYALL.equalsIgnoreCase(paramRequest.getMode())) {
+	%>
+                <div class="col-6 col-md-4">
+                    <div class="mosaico radius-overflow">
+                        <a href="#" data-toggle="modal" data-target="#modalExh">
+                            <span class="ion-ios-plus rojo"></span>
+                        </a>
+                    </div>
+                    <div class="mosaico-txt ">
+                        <p><span class="ion-locked rojo"></span> Crear colección</p>
+                        <p>Lorem ipsum dolor sit</p>
+                    </div>
                 </div>
-                <div class="mosaico-txt ">
-                    <p><span class="ion-locked rojo"></span> Crear colección</p>
-                    <p>Lorem ipsum dolor sit</p>
-                </div>
-            </div>
             <%
+                }
                 if (!boards.isEmpty()) {
                     for (Collection c : boards) {
             %>
