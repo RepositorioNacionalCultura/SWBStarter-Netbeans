@@ -66,10 +66,12 @@
             </tr>
             <%
                 if (null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty()) {
+                    String url = "";
+                    if (entry.getDigitalObject().get(0).getRights().getUrl().startsWith("http")) url = "<a href='" + entry.getDigitalObject().get(0).getRights().getUrl() + "'>";
             %>
             <tr>
                 <td><%=paramRequest.getLocaleString("usrmsg_view_detail_rights")%></td>
-                <td><a href="<%=entry.getDigitalObject().get(0).getRights().getUrl()%>"><%=entry.getDigitalObject().get(0).getRights().getRightstitle()%></a></td>
+                <td><%=url%><%=entry.getDigitalObject().get(0).getRights().getRightstitle()%></a></td>
             </tr>
             <%
                 }

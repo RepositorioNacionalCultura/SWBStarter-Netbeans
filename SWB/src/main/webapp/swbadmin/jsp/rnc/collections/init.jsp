@@ -4,7 +4,7 @@
     Author     : sergio.tellez
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, 
+<%@ page import="org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, org.semanticwb.model.WebSite, mx.gob.cultura.portal.resources.MyCollections, 
          mx.gob.cultura.portal.response.Collection, java.util.List"%>
 <%
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
@@ -12,16 +12,23 @@
     SWBResourceURL saveURL = paramRequest.getActionUrl();
     saveURL.setMode(SWBResourceURL.Mode_VIEW);
     saveURL.setAction(MyCollections.ACTION_ADD);
+    
+    WebSite site = paramRequest.getWebPage().getWebSite();
+    String userLang = paramRequest.getUser().getLanguage();
+    
+    SWBResourceURL wall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_MYALL);
+    wall.setCallMethod(SWBParamRequest.Call_CONTENT);
 
-    SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_ALL);
-    uels.setCallMethod(SWBParamRequest.Call_CONTENT);
-
+    SWBResourceURL uall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_ALL);
+    uall.setCallMethod(SWBParamRequest.Call_CONTENT);
+    
     Long size = (Long) request.getAttribute("NUM_RECORDS_TOTAL");
+    Integer allc = (Integer)request.getAttribute("COUNT_BY_STAT");
 %>
 <script>
     $(document).ready(function () {
         $("#alertSuccess").on('hidden.bs.modal', function () {
-            window.location.replace('<%=uels%>');
+            window.location.replace('<%=wall%>');
         });
     });
 </script>
@@ -61,7 +68,7 @@
         <div>
             <h2 class="oswM nombre"><%=paramRequest.getUser().getFullName()%></h2>
             <p class="subnombre">Lorem ipsum dolor sit amet, consecetur adipscing elit.</p>
-            <button class="btn-cultura btn-blanco">EDITAR PERFIL</button>
+            <button class="btn-cultura btn-blanco" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/Registro');">EDITAR PERFIL</button>
         </div>
     </div>
     <div class="buscacol">
@@ -70,10 +77,10 @@
     </div>
 </div>
 <div class="menuColecciones">
-    <a href="<%=uels%>" class="selected">Mis colecciones (<%=size%>)</a>
+    <a href="<%=wall%>" class="selected">Mis colecciones (<%=size%>)</a>
     <a href="#" class="">Mis favoritos (0)</a>
     <a href="#" class="">Recomendados (20)</a>
-    <a href="#" class="">Todos (50)</a>
+    <a href="<%=uall%>" class="">Todos (<%=allc%>)</a>
     <a href="#" class="">Temas (1)</a>
 </div>
 <div class="container">
@@ -93,7 +100,7 @@
             <div class="contactabloque imgColabora radius-overflow margen0 sinsombra">
                 <div class="contactabloque-in ">
                     <p class="oswM">Busca obras de tu interés<br> y agrégalas a tus colecciones</p>
-                    <button class="btn-cultura btn-rojo" onclick="javascript:location.replace('/swb/repositorio/home');" type="button">EXPLORAR <span class="ion-chevron-right"></span></button>
+                    <button class="btn-cultura btn-rojo" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/coleccion');" type="button">EXPLORAR <span class="ion-chevron-right"></span></button>
                 </div>
             </div>
         </div>

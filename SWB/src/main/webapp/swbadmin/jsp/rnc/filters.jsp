@@ -34,14 +34,15 @@
 	for (i=0; i<inputElements.length; i++) {
             inputElements[i].checked = false;
 	}
+        doSort('<%=word%>','relvdes');
     }
     function filter() {
 	var filters = '&';
 	var rights = '&rights=';
-        var holders = 'holders=';
+        var holder = '&holder=';
 	var dates = '&datecreated=';
         var mediatype = '&mediatype=';
-	var languages = '&languages=';
+	var lang = '&lang=';
         var resourcetype='resourcetype=';
 	var inputElements = document.getElementsByClassName('form-check-input');
         for (i=0; i<inputElements.length; i++) {
@@ -50,22 +51,22 @@
                     resourcetype += '::'+inputElements[i].value;
 		}else if (inputElements[i].name == 'mediatype') {
                     mediatype += '::'+inputElements[i].value;
-                }else if (inputElements[i].name == 'rights') {
+		}else if (inputElements[i].name == 'rights') {
                     rights += '::'+inputElements[i].value;
-		}else if (inputElements[i].name == 'languages') {
-                    languages += '::'+inputElements[i].value;
-                }else if (inputElements[i].name == 'holders') {
-                    holders += '::'+inputElements[i].value;
-                }
+		}else if (inputElements[i].name == 'lang') {
+                    lang += '::'+inputElements[i].value;
+		}else if (inputElements[i].name == 'holder') {
+                    holder += '::'+inputElements[i].value;
+		}
             }
 	}
-	dates+=document.getElementById("bx1").value+","+document.getElementById("bx2").value;
-	if (languages.length > 11) {languages = languages.replace("=::","=");}else {languages=''}
+        if (lang.length > 6) {lang = lang.replace("=::","=");}else {lang=''}
 	if (rights.length > 8) {rights = rights.replace("=::","=");}else {rights=''}
-        if (holders.length > 8) {holders = holders.replace("=::","=");}else {holders=''}
+        if (holder.length > 8) {holder = holder.replace("=::","=");}else {holder=''}
 	if (mediatype.length > 11) {mediatype = mediatype.replace("=::","=");}else {mediatype=''}
         if (resourcetype.length > 13) {resourcetype = resourcetype.replace("=::","=");}else {resourcetype=''}
-	filters += resourcetype + mediatype + rights + languages + holders + dates;
+	dates+=document.getElementById("bx1").value+","+document.getElementById("bx2").value;
+        filters += resourcetype + mediatype + rights + lang + holder + dates;
         doSort('<%=word%>'+filters,'relvdes');
     }
     function doSort(w, f) {
@@ -76,7 +77,35 @@
             }
         });
     }
-    function validate(val, min, max) {
+    function validate(ele, min, max) {
+	var val = ele.value;
+	if (!val.match(/^\d+$/)) {
+            document.getElementById("bx1").value = min
+            document.getElementById("bx2").value = max
+            alert('<%=paramRequest.getLocaleString("usrmsg_view_search_year_digit_error")%>');
+	}
+        if (val < min) {
+            ele.focus();
+            alert('<%=paramRequest.getLocaleString("usrmsg_view_search_year_min_error")%> ' + min);
+	}
+        if (val > max) {
+            ele.focus();
+            alert('<%=paramRequest.getLocaleString("usrmsg_view_search_year_max_error")%> ' + max);
+	}
+        if (ele.name == 'bx2' && validateRange(document.getElementById("bx1").value, document.getElementById("bx2").value)) {
+            filter();
+	}
+    }
+    function validateRange(min, max) {
+        if (min > max) {
+            alert('<%=paramRequest.getLocaleString("usrmsg_view_search_range_min_error")%>');
+            return false;
+	}
+        if (max < min) {
+            alert('<%=paramRequest.getLocaleString("usrmsg_view_search_range_max_error")%>');
+            return false;
+	}
+        return true;
     }
 </script>
 <div id="sidebar">
@@ -204,7 +233,7 @@
                                 for (CountName r : languages) {
                                     if (null != r.getName() && !r.getName().equalsIgnoreCase("es")) {
                             %>
-					<li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="languages" value="<%=r.getName()%>"><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
+					<li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="lang" value="<%=r.getName()%>"><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
                             <%
                                     }
 				}
@@ -226,7 +255,7 @@
                     <%
                         for (CountName r : holders) {
                     %>
-                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="holders" value="<%=r.getName()%>"><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="holder" value="<%=r.getName()%>"><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
                     <%
 			}
                     %>

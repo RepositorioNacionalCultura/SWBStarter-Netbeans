@@ -34,7 +34,7 @@
                         <p><%=title%></p>
                     </div><hr>
         <%
-                    if (i>0) break;
+                    if (i>1) break;
                     i++;
                 }
             }

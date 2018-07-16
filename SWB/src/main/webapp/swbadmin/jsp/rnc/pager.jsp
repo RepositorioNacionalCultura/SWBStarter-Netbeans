@@ -60,6 +60,16 @@
             }
         }
     %>	
+    
+    <!-- liga para saltar a la página final -->
+	
+    <%
+        if (totalPages > paginasPorBloque && paginaActual != totalPages) {
+            out.println("<li><a href=\"#\">...</a></li>");
+            out.println("<li><a href=\"#\" onclick=\"javascript:doPage("+totalPages+",'"+m+"','"+f+"')\">"+totalPages+"</a></li>");
+        }
+    %>
+        
 	<!-- liga para saltar al bloque posterior -->
     <%
         if (totalPages > 1) {

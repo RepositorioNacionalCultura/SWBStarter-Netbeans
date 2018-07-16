@@ -6,6 +6,7 @@
     List<Entry> itemsList = (List<Entry>)request.getAttribute("myelements");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
+    String userLang = paramRequest.getUser().getLanguage();
     SWBResourceURL uedt = paramRequest.getRenderUrl().setMode(SWBResourceURL.Mode_EDIT);
     uedt.setCallMethod(SWBParamRequest.Call_DIRECT);
     SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
@@ -95,6 +96,17 @@
                     <a href="#"><span class="ion-social-twitter"></span> Tweet</a>
                     <a href="#" class="rojo"><span class="ion-heart rojo"></span> Favoritos (356)</a>
                 </div-->
+                <%
+                    if (itemsList.isEmpty()) {
+		%>
+                        <div class="contactabloque imgColabora radius-overflow margen0 sinsombra">  
+                            <div class="contactabloque-in ">
+                                <p class="oswM">Busca obras de tu interés<br>
+                                    y agrégalas a tus colecciones</p>
+				<button class="btn-cultura btn-rojo" type="submit">EXPLORAR <span class="ion-chevron-right"></span></button>
+                            </div>
+			</div>
+                <% } %>
             </div>
         </div>
         <div class="col-3 col-sm-4 coleccionSecc-02">
@@ -103,65 +115,69 @@
         </div>
     </div>
 </div>
-<div class="container" style="padding:30px; text-align: center; background:#efefef">
-    <div class="row offcanvascont">
-	<div id="contenido">
-            <%
-                if (!itemsList.isEmpty()) {
-            %>
-                    <div id="references">
-                        <div id="resultados" class="card-columns">
-                            <%
-                                for (Entry item : itemsList) {
-                                    Title title = new Title();
-                                    List<String> creators = item.getCreator();
-                                    List<Title> titles = item.getRecordtitle();
-                                    List<String> resourcetype = item.getResourcetype();
-                                    if (!titles.isEmpty()) title = titles.get(0);
-                                    String creator = creators.size() > 0 ? creators.get(0) : "";
-                                    String type = resourcetype.size() > 0 ? resourcetype.get(0) : "";
-                            %>
-                                    <div class="pieza-res card">
-                                        <a href="<%=uri%>?id=<%=item.getId()%>">
-                                            <img src="<%=item.getResourcethumbnail()%>" />
-                                        </a>
-                                        <div>
-                                            <p class="oswB azul tit"><a href="<%=uri%>?id=<%=item.getId()%>"><%=title.getValue()%></a></p>
-                                            <p class="azul autor"><a href="#"><%=creator%></a></p>
-                                            <p class="tipo"><%=type%></p>
-                                            <%  if (null != paramRequest.getUser() && paramRequest.getUser().isSigned()) { %>
-                                                    <a href="#" onclick="del('<%=c.getId()%>', '<%=item.getId()%>')">Quitar de la colección</a>
-                                            <%  } %>
-                                        </div>
-                                    </div>
-                            <%
-				}
-                            %>
-			</div>
+<%
+    if (!itemsList.isEmpty()) {
+%>
+    <div class="container">
+	<div class="row">
+            <div>
+                <div id="references">
+                    <div id="resultados" class="card-columns">
+                        <%
+                            for (Entry item : itemsList) {
+                                Title title = new Title();
+                                List<String> creators = item.getCreator();
+                                List<Title> titles = item.getRecordtitle();
+                                List<String> resourcetype = item.getResourcetype();
+                                if (!titles.isEmpty()) title = titles.get(0);
+                                String creator = creators.size() > 0 ? creators.get(0) : "";
+                                String type = resourcetype.size() > 0 ? resourcetype.get(0) : "";
+                        %>
+                        <div class="pieza-res card">
+                            <a href="<%=uri%>?id=<%=item.getId()%>">
+                                <img src="<%=item.getResourcethumbnail()%>" />
+                            </a>
+                            <div>
+                                <p class="oswB azul tit"><a href="<%=uri%>?id=<%=item.getId()%>"><%=title.getValue()%></a></p>
+                                <p class="azul autor"><a href="#"><%=creator%></a></p>
+                                <p class="tipo"><%=type%></p>
+                                <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned()) {%>
+                                    <a href="#" onclick="del('<%=c.getId()%>', '<%=item.getId()%>')">Quitar de la colección</a>
+                                <% } %>
+                            </div>
+                        </div>
+                        <%
+                            }
+                        %>
                     </div>
-            <%
-		}else out.print("<h3 class=\"oswB azul\">Agregue favoritos a su colección " + c.getTitle()+ "</h3>");
-            %>
-	</div>
-    </div>
-    <!--resultados -->
-</div>
-<div class="coleccionSecc-03 col-12 col-md-8 col-lg-6">
-    <div class="agregarColecc ">
-	<a href="#">
-            <span class="ion-ios-plus"></span>
-            <em class="oswM">Agregar  desde la colección</em>
-            <span class="btn-cultura">Explorar <span class="ion-chevron-right"></span></span>
-        </a>
-	<div>
-            <img src="/work/models/repositorio/img/cabecera-carranza.jpg">
+                </div>
+            </div>
         </div>
     </div>
-</div>
+    <!--resultados -->
+    <div class="coleccionSecc-03 col-12 col-md-8 col-lg-6">
+        <div class="agregarColecc ">
+            <a href="#" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/coleccion');">
+                <span class="ion-ios-plus"></span>
+                <em class="oswM">Agregar  desde la colección</em>
+                <span class="btn-cultura">Explorar <span class="ion-chevron-right"></span></span>
+            </a>
+            <div>
+                <img src="/work/models/repositorio/img/cabecera-carranza.jpg">
+            </div>
+        </div>
+    </div>
+<%
+    } else {
+%>
+    <div class="coleccionSecc-03 col-12 col-md-8 col-lg-6"></div>
+<%
+    }
+%>
 <script>
     var d = new Date("<%=c.getDate()%>");
     var months = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
-    document.getElementById("fdate").innerHTML = d.getDay() + " DE " + months[d.getMonth()] + " DE " + d.getFullYear();
+    document.getElementById("fdate").innerHTML = d.getDate() + " DE " + months[d.getMonth()] + " DE " + d.getFullYear();
 </script>
 
 <div class="modal fade" id="editCollection" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true"></div>

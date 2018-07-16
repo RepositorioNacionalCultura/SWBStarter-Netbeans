@@ -46,15 +46,15 @@
         <a name="showPage"></a>
         <% if (!references.isEmpty()) {%>
         <div id="references">
-            <div class="ruta row">
+            <!--div class="ruta row">
                 <div class="col-12 col-sm-8 col-md-8">
                     <p class="oswLc"><%=first%>-<%=last%> de <%=total%> resultados</p>
                 </div>
-                <!--div class="col-12 col-sm-4 col-md-4 ordenar">
+                <div class="col-12 col-sm-4 col-md-4 ordenar">
                         <a href="#" onclick="setGrid();"><i class="fa fa-th select" aria-hidden="true"></i></a>
                         <a href="#" onclick="setList();"><i class="fa fa-th-list" aria-hidden="true"></i></a>
-                </divv-->
-                </di>
+                </div>
+            </div-->
                 <div id="resultados" class="card-columns">
                     <%
                         for (Entry reference : references) {

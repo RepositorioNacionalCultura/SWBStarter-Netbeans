@@ -31,8 +31,16 @@
     }
 </script>
 <div class="row resultadosbar">
-    <div class="col-md-3 regresar"><a class="rojo" href="javascript:history.go(-1)"><span class="ion-arrow-left-c"></span><%=paramRequest.getLocaleString("usrmsg_view_search_back")%></a></div>
-    <div class="col-md-9 rutatop"><p><a href="/<%=userLang%>/<%=site.getId()%>/home"><%=paramRequest.getWebPage().getWebSite().getHomePage().getDisplayName(userLang)%></a> / <%=paramRequest.getLocaleString("usrmsg_view_search_collection")%></p></div>
+    <div class="col-md-3 regresar">
+        <button class="btn btn-rojo" onclick="javascript:history.go(-1)">
+            <span class="ion-chevron-left"></span><%=paramRequest.getLocaleString("usrmsg_view_search_back")%>
+        </button>
+    </div>
+    <div class="col-md-9 rutatop">
+        <p class="oswL">
+            <a href="/<%=userLang%>/<%=site.getId()%>/home"><%=paramRequest.getWebPage().getWebSite().getHomePage().getDisplayName(userLang)%></a> / <%=paramRequest.getLocaleString("usrmsg_view_search_collection")%>
+        </p>
+    </div>
 </div>
 <div class="row offcanvascont">
     <div class="offcanvas rojo-bg">

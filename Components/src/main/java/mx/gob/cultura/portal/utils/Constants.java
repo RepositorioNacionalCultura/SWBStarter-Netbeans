@@ -24,10 +24,14 @@ public final class Constants {
     public static final String STR_JUMP_SIZE = "PAGE_JUMP_SIZE";
     public static final String NUM_RECORDS_TOTAL = "NUM_RECORDS_TOTAL";
     public static final String NUM_RECORDS_VISIBLE = "NUM_RECORDS_VISIBLE";
+    public static final String COUNT_BY_USER = "COUNT_BY_USER";
+    public static final String COUNT_BY_STAT = "COUNT_BY_STAT";
     
     public static final String IDENTIFIER = "id";
     public static final String MODE_PAGE = "PAGE";
     public static final String COLLECTION = "collection";
     public static final String PARAM_REQUEST = "paramRequest";
     
+    public static final Boolean COLLECTION_PUBLIC = true;
+    public static final Boolean COLLECTION_PRIVATE = false;
 }

@@ -29,13 +29,19 @@
     SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
     uels.setCallMethod(SWBParamRequest.Call_CONTENT);
 
-    SWBResourceURL wall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_ALL);
+    SWBResourceURL wall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_MYALL);
     wall.setCallMethod(SWBParamRequest.Call_CONTENT);
-
+    
     WebSite site = paramRequest.getWebPage().getWebSite();
+    String userLang = paramRequest.getUser().getLanguage();
 
-    //Integer size = null != boards ? boards.size() : 0;
-    Integer size = (Integer) request.getAttribute("NUM_RECORDS_TOTAL");
+    Integer allc = (Integer)request.getAttribute("COUNT_BY_STAT");
+
+    Integer cusr = (Integer)request.getAttribute("COUNT_BY_USER");
+
+    SWBResourceURL uall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_ALL);
+    uall.setCallMethod(SWBParamRequest.Call_CONTENT);
+    
 %>
 <script>
     $(document).ready(function () {
@@ -45,6 +51,10 @@
     });
 </script>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
+<script>
+	dojo.require("dijit.dijit"); // loads the optimized dijit layer
+	dojo.require('dijit.Dialog');
+</script>
 <script type="text/javascript">
     function addByForm() {
         //Do not use in dialog
@@ -102,16 +112,18 @@
         }
         return true;
     }
-    function edit(id) {
-        var leftPosition = (screen.width) ? (screen.width - 480) / 3 : 0;
-        var topPosition = (screen.height) ? (screen.height - 441) / 3 : 0;
-        var url = '<%=uedt.toString()%>?id=' + id;
-        popCln = window.open(
-                url, 'popCln', 'height=441,width=480,left=' + leftPosition + ',top=' + topPosition + ',resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no')
-    }
     function del(id) {
-        document.getElementById("addCollForm").action = '<%=udel.toString()%>?id=' + id;
-        document.getElementById("addCollForm").submit();
+	var xhttp = new XMLHttpRequest();
+	var url = '<%=udel%>'+'?id='+id;
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                dialogMsgConfirm.hide();
+                jQuery("#dialog-text").text("Se actualizó correctamente en su colección.");
+		$('#alertSuccess').modal('show');
+            }
+	};
+        xhttp.open("POST", url, true);
+	xhttp.send();
     }
     function changeStatus(id) {
         dojo.xhrPost({
@@ -166,6 +178,23 @@
         }
         return true;
     }
+    function messageConfirm(msg, id) {
+	var entry = "'"+id+"'";
+	var html =
+            '<div id="messageDialgopC" name="messageDialgopC" style="width:350px; border:1px solid #b7b7b7; background:#fff; padding:8px; margin:0 auto; height:150px; overflow:auto;">' +
+                '<p style="color:#999;">'+ msg +'</p>'+
+                '<table><tr>' + 
+                    '<td style="width:50%; align="center"><input id="btnRenv" class="btn btn-sm rojo" type="button" name="btnRenv" onClick="del('+entry+')" value="Aceptar"/></td>' +
+                    '<td style="width:50%; align="center"><input id="btnCanc" class="btn btn-sm rojo" type="button" name="btnCanc" onClick="dialogMsgConfirm.hide();" value="Cancelar"/></td>' +
+                '</tr></table>' +
+            '</div>';
+	dialogMsgConfirm = new dijit.Dialog({
+            content: html,
+	    style: "width:300px;",
+            showTitle: false, draggable : false, closable : false,
+	});	
+	dialogMsgConfirm.show();
+    }
 </script>
 <div class="container usrTit">
     <div class="row">
@@ -173,7 +202,7 @@
         <div>
             <h2 class="oswM nombre"><%=paramRequest.getUser().getFullName()%></h2>
             <p class="subnombre">Lorem ipsum dolor sit amet, consecetur adipscing elit.</p>
-            <button class="btn-cultura btn-blanco">EDITAR PERFIL</button>
+            <button class="btn-cultura btn-blanco" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/Registro');">EDITAR PERFIL</button>
         </div>
     </div>
     <div class="buscacol">
@@ -182,10 +211,10 @@
     </div>
 </div>
 <div class="menuColecciones">
-    <a href="'<%=wall%>" class="selected">Mis colecciones (<%=size%>)</a>
+    <a href="'<%=wall%>" class="selected">Mis colecciones (<%=cusr%>)</a>
     <a href="#" class="">Mis favoritos (0)</a>
     <a href="#" class="">Recomendados (20)</a>
-    <a href="#" class="">Todos (50)</a>
+    <a href="<%=uall%>" class="">Todos (<%=allc%>)</a>
     <a href="#" class="">Temas (1)</a>
 </div>
 <a name="showPage"></a>
@@ -244,6 +273,7 @@
                                 <p>Curada por: <%=paramRequest.getUser().getFullName()%></p>
                                 <a href="#"><span class="ion-social-facebook"></span></a>
                                 <a href="#"><span class="ion-social-twitter"></span></a>
+                                <a href="#" onclick="messageConfirm('¿Está usted seguro de eliminar la colección?', '<%=c.getId()%>');">Eliminar</a>
                                 <a href="#" onclick="editByForm('<%=c.getId()%>');"><span class="ion-edit"></span></a>
                             </div>
                         </div>
@@ -254,6 +284,18 @@
             <%
                 }
             %>
+        </div>
+    </div>
+</div>
+<div class="coleccionSecc-03 col-12 col-md-8 col-lg-6">
+    <div class="agregarColecc ">
+        <a href="#" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/coleccion');">
+            <span class="ion-ios-plus"></span>
+            <em class="oswM">Agregar  desde la colección</em>
+            <span class="btn-cultura">Explorar <span class="ion-chevron-right"></span></span>
+        </a>
+        <div>
+            <img src="/work/models/repositorio/img/cabecera-carranza.jpg">
         </div>
     </div>
 </div>

@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.io.IOException;
+import java.net.URLEncoder;
+import org.semanticwb.Logger;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +36,10 @@ import org.semanticwb.model.WebSite;
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.GenericResource;
 import org.semanticwb.portal.api.SWBResourceException;
+
+import org.semanticwb.SWBUtils;
 import static mx.gob.cultura.portal.resources.SearchCulturalProperty.getCapitalizeName;
+
 /**
  *
  * @author sergio.tellez
@@ -56,7 +61,7 @@ public class Exhibition extends GenericResource {
     public static final String ACTION = "act";
     public static final String MODE_VIEW_EDIT = "vEdit";
     
-    private static final Logger LOG = Logger.getLogger(ArtDetail.class.getName());
+    private static final Logger LOG = SWBUtils.getLogger(Exhibition.class);
     
     public void doViewFix(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
         String path = "/swbadmin/jsp/rnc/exhibitions/admExhibition.jsp";
@@ -74,7 +79,7 @@ public class Exhibition extends GenericResource {
             rd.include(request, response);
             //}
         } catch (ServletException ex) {
-            Logger.getLogger(Exhibition.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex);
         }
     }
     
@@ -127,7 +132,7 @@ public class Exhibition extends GenericResource {
 	    request.setAttribute("paramRequest", paramRequest);
 	    rd.include(request, response);
 	}catch (ServletException se) {
-            LOG.log(Level.SEVERE, se.getMessage());
+            LOG.error(se);
 	}
     }
     
@@ -158,10 +163,8 @@ public class Exhibition extends GenericResource {
             request.setAttribute("paramRequest", paramRequest);
             RequestDispatcher rd = request.getRequestDispatcher(path);
 	    rd.include(request, response);
-	} catch (ServletException | SWBResourceException ex) {
-            Logger.getLogger(Exhibition.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SWBException ex) {
-            Logger.getLogger(Exhibition.class.getName()).log(Level.SEVERE, null, ex);
+	} catch (ServletException | SWBException ex) {
+            LOG.error(ex);
         }
     }
     
@@ -224,7 +227,7 @@ public class Exhibition extends GenericResource {
             getResourceBase().updateAttributesToDB();
             doAdminResume(request, response, paramRequest);
 	} catch (IOException | SWBException ex) {
-            Logger.getLogger(Exhibition.class.getName()).log(Level.SEVERE, null, ex);
+           LOG.error(ex);
         }
     }
     
@@ -236,7 +239,7 @@ public class Exhibition extends GenericResource {
             RequestDispatcher rd = request.getRequestDispatcher(path);
             rd.include(request, response);
         } catch (ServletException ex) {
-            Logger.getLogger(Exhibition.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex);
         }
     }
     
@@ -405,10 +408,14 @@ public class Exhibition extends GenericResource {
         Document document = null;
         String words = request.getParameter("criteria");
         String base = site.getModelProperty("search_endPoint");
-        if (null == base || base.isEmpty()) {
+        if (null == base || base.isEmpty())
             base = SWBPlatform.getEnv("rnc/endpointURL",getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim() + "/api/v1/search?q=";
+        String uri = base + "/api/v1/search?q=";
+         try {
+            uri += URLEncoder.encode(getParamSearch(words), StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException uex) {
+            LOG.error(uex);
         }
-        String uri = base + getParamSearch(words);
         uri += getRange(request);
         if (null != request.getParameter("sort")) {
             String sorted = request.getParameter("sort") + getResourceBase().getAttribute("order");
@@ -421,7 +428,7 @@ public class Exhibition extends GenericResource {
         try {
             document = req.makeRequest();
         }catch (Exception se) {
-            LOG.log(Level.SEVERE, se.getMessage());
+            LOG.error(se);
         }
         return document;
     }
@@ -444,7 +451,7 @@ public class Exhibition extends GenericResource {
         try {
             document = req.makeRequest();
         }catch (Exception se) {
-            LOG.log(Level.SEVERE, se.getMessage());
+            LOG.error(se);
         }
         return document;
     }

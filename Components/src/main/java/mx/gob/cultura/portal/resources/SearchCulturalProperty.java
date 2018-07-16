@@ -257,15 +257,13 @@ public class SearchCulturalProperty extends PagerAction {
         filters.append(getFilter(request, "mediatype"));
         filters.append(getFilterDate(request, "datecreated"));
         filters.append(getFilter(request, "rights"));
-        filters.append(getFilter(request, "languages"));
-        filters.append(getFilter(request, "holders"));
+        filters.append(getFilter(request, "lang"));
+        filters.append(getFilter(request, "holder"));
         if (filters.length() > 0) {
             filters.deleteCharAt(0);
             filters.insert(0, "&filter=");
         }
-        System.out.println("getFilters: " + filters.toString());
         return filters.toString();
-        //return URLEncoder.encode(filters.toString(), StandardCharsets.UTF_8.name());
     }
 
     private String getFilter(HttpServletRequest request, String att) throws UnsupportedEncodingException {
@@ -275,7 +273,6 @@ public class SearchCulturalProperty extends PagerAction {
             for (int i=0; i<filters.length; i++) {
                 if (att.equalsIgnoreCase("mediatype")) filters[i] = this.getMediaType(filters[i]);
                 filter.append(",").append(att).append(":").append(URLEncoder.encode(filters[i], StandardCharsets.UTF_8.name()));
-                System.out.println("att: " + filter.toString());
             }
         }else return "";
         return filter.toString();
@@ -380,7 +377,7 @@ public class SearchCulturalProperty extends PagerAction {
         String mediaType = null;
         switch(type) {
             case "Imagen" : mediaType = "image/jpeg"; break;
-            case "Audio" : mediaType = "audio/x-aiff"; break;
+            case "Audio" : mediaType = "audio/x-wav"; break;
             case "Video" : mediaType = "application/octet-stream"; break;
             case "PDF" : mediaType = "application/pdf"; break;
             case "EPUB" : mediaType = "application/epub+zip"; break;

@@ -56,7 +56,7 @@
                             .append("	id:\"pyramid\",")
                             .append("	showHomeControl: false,")
                             .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
-                            .append("	showNavigator: false,")
+                            .append("	showNavigator: true,")
                             .append("	tileSources:   {")
                             .append("		type: 'image',")
                             .append("		url: '").append(digital.getUrl()).append("'")
@@ -64,7 +64,7 @@
                             .append("});")
                             .append("</script>");
             } else {
-                if (digital.getUrl().endsWith(".zip")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
+                if (digital.getUrl().endsWith(".zip") || digital.getUrl().startsWith("application/vnd")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
                 else divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");
             }
             type = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
