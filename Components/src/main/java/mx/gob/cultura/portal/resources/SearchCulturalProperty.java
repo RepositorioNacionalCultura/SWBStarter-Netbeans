@@ -443,7 +443,7 @@ public class SearchCulturalProperty extends PagerAction {
                             else if (!type.isEmpty() && type.startsWith("audio"))
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-audio.png");
                             else if (type.equalsIgnoreCase("text/richtext") || (!type.isEmpty() && type.startsWith("application/vnd")))
-                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-imagen.png");
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-multimedia.png");
                             else if (type.equalsIgnoreCase("image/jpeg"))
                                 e.setResourcethumbnail(dObj.getUrl());
                         }
