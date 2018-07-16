@@ -232,7 +232,7 @@ public class SessionInitializer extends GenericResource {
             //se agrega el usuario a la sesion
             User oldUser = response.getUser();
             String id = request.getParameter("id");
-            System.out.println("checkCredential: " + id);
+//            System.out.println("checkCredential: " + id);
             try {
                 user.checkCredential(id.toCharArray());
             } catch (Exception e) {
@@ -393,6 +393,12 @@ public class SessionInitializer extends GenericResource {
             if (paramRequest.getAction().equals("closeSession")) {
                 WebPage home = WebPage.ClassMgr.getWebPage("home", paramRequest.getWebPage().getWebSite());
                 url = home.getRealUrl(paramRequest.getUser().getLanguage());
+            }
+            if (request.getSession().getAttribute("returnPoint") != null) {
+                url = (String) request.getSession().getAttribute("returnPoint");
+                if (url.contains("_rid")) {
+                    url = url.substring(0, url.indexOf("/_rid"));
+                }
             }
             response.setContentType("Text/html");
             PrintWriter out = response.getWriter();

@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import org.semanticwb.Logger;
 import org.semanticwb.SWBPortal;
 import org.semanticwb.SWBUtils;
+import org.semanticwb.model.WebSite;
 import org.semanticwb.portal.api.GenericResource;
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceException;
@@ -277,14 +278,19 @@ public class OAuthTwitter extends GenericResource {
             String reqHost = request.getRequestURL().toString();
             int indexColon = reqHost.indexOf(":", 7);
             String pathBegining = null;
+            WebSite website = paramRequest.getWebPage().getWebSite();
             if (indexColon != -1) {
                 pathBegining = reqHost.substring(0, reqHost.indexOf("/", indexColon));
             } else {
                 pathBegining = reqHost.substring(0, reqHost.indexOf("/", 7));
             }
-            String callback = pathBegining + paramRequest.getRenderUrl().setCallMethod(
+            String callbackTmp = pathBegining + paramRequest.getRenderUrl().setCallMethod(
                     SWBParamRequest.Call_DIRECT).setMode("authenticateToken").toString();
+            int indexSection = callbackTmp.indexOf(website.getId()) + website.getId().length() + 1;
+            String callback = callbackTmp.substring(0, indexSection) +
+                     "home" + callbackTmp.substring(callbackTmp.indexOf("/", indexSection + 1));
             
+            request.getSession().setAttribute("returnPoint", reqHost);
             //Se recaban los datos para la firma de la peticion
             TreeMap<String, String> params2Sign = new TreeMap();
             params2Sign.put("oauth_callback", callback);
@@ -715,7 +721,8 @@ public class OAuthTwitter extends GenericResource {
             HashMap<String, String> headers, String url)
             throws IOException {
 
-        CharSequence paramString = (null == params) ? "" : delimit(params.entrySet(), "&", "=", true);
+        CharSequence paramString = (null == params || params.isEmpty())
+                ? "" : delimit(params.entrySet(), "&", "=", true);
         URL serverUrl = new URL(paramString.length() > 0
                                 ? (url + "?" + paramString) : url);
 //        System.out.println("URL: \n" + serverUrl);
