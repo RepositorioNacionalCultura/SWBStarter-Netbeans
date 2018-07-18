@@ -706,7 +706,7 @@ select:-webkit-autofill { background-color:#FFF !important; color:#525252}
 .displaynone    { opacity:0;}
 .visiblehidden  { visibility:hidden}
 /*BUSCA NAV*/
-.buscanav { transition:all 1s,;}
+.buscanav { transition:all 1s;}
 .buscanav { border-radius:3px; border:solid 1px #666; z-index:200; position:fixed; top:15px}
 .buscanav button,
 .buscanav input { background:none; border:none; display:inline-block}
@@ -1825,10 +1825,7 @@ img.circle + div button { width:auto; align-self:baseline}
 
 /* - - - - SAFARI HACK - - - */
 @media screen and (min-color-index:0) 
-and(-webkit-min-device-pixel-ratio:0) { @media
-{
-    
-}}
+and(-webkit-min-device-pixel-ratio:0) { @media }
 /* - - - - FIREFOX HACK - - - */
 @-moz-document url-prefix() { 
     #buscadisplay { margin-top:276px} /* El doble de pixeles de Chrome, para que el display de sugerencias no tape el buscador*/ 

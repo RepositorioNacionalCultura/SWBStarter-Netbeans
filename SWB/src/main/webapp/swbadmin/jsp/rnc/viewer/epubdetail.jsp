@@ -40,9 +40,13 @@
                     .append("   <div id=\"area\"></div>")
                     .append("   <div id=\"next\" onclick=\"Book.nextPage();\" class=\"arrow\"><span class=\"ion-chevron-right\"></span></div>")
                     .append("</div>");
-                    scriptCallVisor.append("<script>")
-                        .append("   Book.renderTo(\"area\");{")
-                        .append("</script>");
+                scriptCallVisor.append("<script>")
+                    .append("	\"use strict\";")
+                    .append("	var Book = ePub(\"").append(digital.getUrl()).append("\");")
+                    .append("</script>")
+                    .append("<script>")
+                    .append("   Book.renderTo(\"area\");")
+                    .append("</script>");
                     type = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
                     creator = creators.size() > 0 ? creators.get(0) : "";
                     period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
@@ -52,11 +56,9 @@
     }
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
-    String back = (String)request.getAttribute("back");
     String scriptFB = Utils.getScriptFBShare(request);
 %>
 <%=scriptFB%>
-<%=scriptHeader%>
 <section id="detalle">
     <div id="idetail" class="detalleimg">
         <div class="obranombre">
@@ -101,10 +103,11 @@
                 </div>
             </div>
         </div>
-        <%=divVisor%>
+        <%=scriptHeader%>
+	<%=divVisor%>
+	<%=scriptCallVisor%>
     </div>
 </section>
-<%=scriptCallVisor%>
 <section id="detalleinfo">
     <div class="container">
         <div class="row">              

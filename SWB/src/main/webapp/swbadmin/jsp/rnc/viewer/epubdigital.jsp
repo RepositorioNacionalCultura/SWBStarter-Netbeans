@@ -16,6 +16,8 @@
     List<Title> titles = new ArrayList<>();
     List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
+    StringBuilder scriptHeader = new StringBuilder();
+    StringBuilder scriptCallVisor = new StringBuilder();
     int iDigit = (Integer)request.getAttribute("iDigit");
     int iPrev = iDigit-1;
     int iNext = iDigit+1;
@@ -24,6 +26,7 @@
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
+    WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
         if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
@@ -35,11 +38,20 @@
             creator = creators.size() > 0 ? creators.get(0) : "";
             if (!titles.isEmpty()) title = titles.get(0).getValue();
             if (null != url && url.endsWith(".epub")) {
+                scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>")
+                    .append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-epub.css'/>");
                 divVisor.append("<div id=\"main\">")
                     .append("   <div id=\"prev\" onclick=\"Book.prevPage();\" class=\"arrow\"><span class=\"ion-chevron-left\"></span></div>")
                     .append("   <div id=\"area\"></div>")
                     .append("   <div id=\"next\" onclick=\"Book.nextPage();\" class=\"arrow\"><span class=\"ion-chevron-right\"></span></div>")
                     .append("</div>");
+                scriptCallVisor.append("<script>")
+                    .append("	\"use strict\";")
+                    .append("	var Book = ePub(\"").append(digital.getUrl()).append("\");")
+                    .append("</script>")
+                    .append("<script>")
+                    .append("   Book.renderTo(\"area\");{")
+                    .append("</script>");
                 creator = creators.size() > 0 ? creators.get(0) : "";
             }
         }
@@ -88,5 +100,7 @@
             </div>
         </div>
     </div>
+    <%=scriptHeader%>
     <%=divVisor%>
+    <%=scriptCallVisor%>
 </div>
