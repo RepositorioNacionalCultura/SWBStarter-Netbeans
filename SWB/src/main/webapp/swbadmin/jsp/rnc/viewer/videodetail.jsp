@@ -52,7 +52,7 @@
                     divVisor.append("       <button type=\"button\" id=\"prev\" class=\"prev\"><span class=\"ion-ios-skipbackward\"></span></button>");
                 divVisor.append("       <button type=\"button\" id=\"play-pause\" class=\"play\"><span class=\"ion-ios-play\"></span></button>");
 		if (iDigit < vids) {
-                    String next = "onclick=\"nextObj('"+digitURL+"?id=',"+entry.getId()+"',"+iDigit+");\"";
+                    String next = "onclick=\"nextObj('"+digitURL+"?id=','"+entry.getId()+"',"+iDigit+");\"";
                     divVisor.append("       <button type=\"button\" id=\"next\" class=\"next\"").append(next).append("><span class=\"ion-ios-skipforward\"></span></button>");
 		}
                 divVisor.append("       </div>")

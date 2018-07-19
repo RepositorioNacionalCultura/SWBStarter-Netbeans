@@ -39,8 +39,8 @@
                 String mime = null != digital.getMediatype() ? digital.getMediatype().getMime() : "";
                 if (digital.getUrl().endsWith(".mp4")) mime = "video/mp4";
                 scriptHeader.append("<script src=\"https://cdn.plyr.io/2.0.18/plyr.js\"></script>");
-		scriptHeader.append("<script>plyr.setup();</script>");
-                scriptHeader.append("<script type=\"text/javascript\" src=\"/work/models/").append(site.getId()).append("/js/viewer-video.js\"></script>");
+		//scriptHeader.append("<script>plyr.setup();</script>");
+                //scriptHeader.append("<script type=\"text/javascript\" src=\"/work/models/").append(site.getId()).append("/js/viewer-video.js\"></script>");
                 scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-video-2.css'/>");
                 divVisor.append("<video id=\"video\" width=\"97%\" poster=\"").append(entry.getResourcethumbnail()).append("\" controls controlsList=\"nodownload\">");
                 divVisor.append("	<source src=\"").append(digital.getUrl()).append("\" type=\"").append(mime).append("\">");
@@ -50,7 +50,7 @@
                 .append("   <div class=\"col-11 col-md-7 video-players\">")
                 .append("       <div class=\"col-12 video-botones\">");
 		if (iPrev >= 0) {
-                    String prev = "onclick=\"nextObj('"+digitURL+"?id=',"+entry.getId()+"',"+iPrev+");\"";
+                    String prev = "onclick=\"nextObj('"+digitURL+"?id=','"+entry.getId()+"',"+iPrev+");\"";
                     divVisor.append("           <button type=\"button\" id=\"prev\" class=\"prev\"").append(prev).append("><span class=\"ion-ios-skipbackward\"></span></button>");
                 }
                 divVisor.append("           <button type=\"button\" id=\"play-pause\" class=\"play\"><span class=\"ion-ios-play\"></span></button>");
