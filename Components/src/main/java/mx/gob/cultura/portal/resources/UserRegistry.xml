@@ -5,6 +5,7 @@
 		<admdbconnmgr defconn="true"/>
         <fieldset legend="Anotador">
             <input type="TEXT" name="AnnRol" label="*Rol del anotador:" size="50" jsrequired="true" />
+            <input type="TEXT" name="email" label="Correo que recibira la solicitud:" size="50" jsrequired="true" />
         </fieldset>
         <fieldset>
             <input type="submit" name="btnSave" id="btnSave" value="Guardar"/>

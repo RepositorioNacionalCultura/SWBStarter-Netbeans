@@ -85,11 +85,12 @@
 <%
     if(user==null || !user.isSigned()){
 %>    
-            <p><a href="#modal-sesion" data-toggle="modal" data-target="#modal-sesion" class="oswM">Inicia sesión</a></p>     
+            <p><a href="#modal-sesion" data-toggle="modal" data-target="#modal-sesion" class="oswM">Inicia sesión</a></p>    
+            <p><a href="/es/repositorio/Registro?beannotator" class="oswM">Registrate</a></p> 
 <%
     }else if(user.isSigned()&& !isAnnotator){
 %>    
-            <p><a href="/es/repositorio/Registro?beannotator" data-toggle="modal" data-target="#modal-sesion" class="oswM">Registrate</a></p>     
+            <p><a href="/es/repositorio/Registro?beannotator" class="oswM">Registrate</a></p>     
 <%
     }else if(isAnnotator){
 %>                

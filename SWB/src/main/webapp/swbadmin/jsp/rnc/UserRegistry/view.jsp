@@ -31,7 +31,7 @@
         editMode=false;
     }
     if(request.getParameter(UserRegistry.ACTION_BE_ANNOTATOR)!=null){
-        toBeAnnotator=true;
+        toBeAnnotator=true;        
     }
     //String btnChngImage;
     String errorMsg = null;
@@ -166,8 +166,6 @@
                 <%
                 OntModel ont = SWBPlatform.getSemanticMgr().getSchema().getRDFOntModel();
                 String tmpValue;
-//System.out.println(user.getSemanticObject().getRDFResource());         
-
 
                 Statement tmpStat=user.getSemanticObject().getRDFResource().getProperty(ont.createDatatypeProperty(UserRegistry.ORGANITATION_NAME_URI));
                 if (tmpStat!=null){
@@ -230,6 +228,12 @@
                 }
 %>    
                 <div class="espacio"></div>
+<%
+                if(toBeAnnotator){
+%>                 <input type="hidden" name="<%=UserRegistry.ACTION_BE_ANNOTATOR%>" value="true"> 
+<%
+                }
+%> 
                 <button type="submit" class="btn-cultura btn-rojo" name="btnSubmit" onclick="validate(this.form); return false;"><%=paramsRequest.getLocaleString("btn_save")%></button>
                 <!--button type="button" class="btn-cultura btn-blanco">Desactivar cuenta</button-->
             </form>

@@ -21,6 +21,7 @@ import org.semanticwb.model.User;
 import org.semanticwb.model.UserRepository;
 import org.semanticwb.model.WebPage;
 import org.semanticwb.platform.SemanticObject;
+import org.semanticwb.platform.SemanticObserver;
 import org.semanticwb.portal.SWBSessionObject;
 import org.semanticwb.portal.api.GenericAdmResource;
 import org.semanticwb.portal.api.SWBActionResponse;
@@ -31,7 +32,7 @@ import org.semanticwb.portal.api.SWBResourceURLImp;
 
 /**
  * Realiza la visualizacion y cambios en la informacion del perfil de usuarios
- * @author jose.jimenez
+ * @author jose.jimenez / rene.jara
  */
 public class UserRegistry extends GenericAdmResource {
     
@@ -61,11 +62,23 @@ public class UserRegistry extends GenericAdmResource {
             "http://www.semanticwebbuilder.org/swb4/ontology#areaInterest";
     
     private UserRepository userRepository;
-    
+      
+    static {
+         User.sclass.registerObserver(new SemanticObserver() 
+        {
+            @Override
+            public void notify(SemanticObject obj, Object prop, String lang, String action)
+            {  
+                //System.out.println("notify:obj:"+obj+" prop:"+prop+" action:"+action);
+                //notify:obj:http://user.repositorio.swb#swb_User:13 prop:http://www.semanticwebbuilder.org/swb4/ontology#hasRole action:ADD
+                //if(obj.instanceOf())
+            }
+        });       
+    }
     @Override
     public void init() throws SWBResourceException {
         super.init(); 
-        userRepository=getResourceBase().getWebSite().getUserRepository();        
+        userRepository=getResourceBase().getWebSite().getUserRepository();   
     }
     
     @Override
@@ -117,6 +130,10 @@ public class UserRegistry extends GenericAdmResource {
                 }               
                 this.sendConfirmationEmail(created);
                 System.out.println("Se creo, el usuario  >>>");
+                System.out.println(request.getParameter(ACTION_BE_ANNOTATOR));
+                if (request.getParameter(ACTION_BE_ANNOTATOR)!=null){
+                    this.sendBeAnnotatorEmail(created);
+                }
             }
             nextMode = UserRegistry.REGISTER_MODE;
         }else if (response.Action_EDIT.equals(action)) {
@@ -125,16 +142,11 @@ public class UserRegistry extends GenericAdmResource {
                 response.setRenderParameter("condition",
                         (String) request.getAttribute("condition"));
                 System.out.println("USUARIO NO actualizado");
-            } /*else {
-             
-            if (null == this.confirmationActionUrl) {
-                    String serverUrl = request.getScheme() + "://" + request.getServerName() + ((request.getServerPort() != 80)? (":" + request.getServerPort()) : "");
-                    SWBResourceURLImp urlAcc = new SWBResourceURLImp(request, this.getResourceBase(), response.getWebPage(), SWBResourceURL.UrlType_ACTION);
-                    this.confirmationActionUrl = serverUrl + urlAcc.setAction("confirming").toString();
-                }               
-                this.sendConfirmationEmail(created);
-                System.out.println("Se creo, el usuario  >>>");
-            }*/
+            } else {             
+                if (request.getParameter(ACTION_BE_ANNOTATOR)!=null){
+                    this.sendBeAnnotatorEmail(updated);
+                }
+            }
             nextMode = response.Mode_VIEW;
         }else if (ACTION_CONFIRMING.equals(action)) {
             User user = this.activateUser(request);
@@ -242,15 +254,15 @@ System.out.println("editar agregar ser");
     }
     
     private void confirmRegistry(HttpServletRequest request, HttpServletResponse response,
-            SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+            SWBParamRequest paramsRequest) throws SWBResourceException, IOException {
         
         try {
             response.setContentType("Text/html");
             PrintWriter out = response.getWriter();
             if (request.getParameter("condition") == null || request.getParameter("condition").isEmpty()) {
-                out.print("msgSent");
+                out.print(paramsRequest.getLocaleString("msgSent"));
             } else {
-                out.print(request.getParameter("condition"));
+                out.print(paramsRequest.getLocaleString(request.getParameter("condition")));
             }
             out.flush();
         } catch (IOException ioe) {
@@ -326,7 +338,7 @@ System.out.println("editar agregar ser");
                 //}
             } else {
 //System.out.println("5");                  
-                condition = "msg_userExists";
+                condition = "msgUserExists";
             }
         } else if (null != password && null != passwordConfirm && !password.equals(passwordConfirm)) {
 //System.out.println("6");              
@@ -467,7 +479,31 @@ System.out.println("editar agregar ser");
             UserRegistry.LOG.error("Enviando el correo de confirmacion del registro");
         }
     }
-    
+    private void sendBeAnnotatorEmail(User user) {
+System.out.println("sendBeAnnotatorEmail");        
+        StringBuilder body = new StringBuilder(256);
+        StringBuilder linkUrl = new StringBuilder(128);
+        //boolean noProblem = false;
+        
+        OntModel ont = SWBPlatform.getSemanticMgr().getSchema().getRDFOntModel();
+        body.append("El usuario ");
+        body.append(user.getName());
+        body.append("\n");
+        body.append(user.getSemanticObject().getRDFResource().getProperty(ont.createDatatypeProperty(UserRegistry.POSITION_TITLE_URI)).getString());
+        body.append("\n");
+        body.append(user.getSemanticObject().getRDFResource().getProperty(ont.createDatatypeProperty(UserRegistry.ORGANITATION_NAME_URI)).getString());
+        body.append("\n desea ser anotador");
+        
+        try {
+        //    if (noProblem) {
+                SWBUtils.EMAIL.sendBGEmail(this.getResourceBase().getAttribute("email", "admnl@cultura.gob.mx"),
+                        "Usuario desea ser anotador",
+                        body.toString());
+        //    }
+        } catch (SocketException se) {
+            UserRegistry.LOG.error("Usuario desea ser anotador");
+        }
+    }
     /**
      * Activa el registro del usuario, siempre que la cuenta de correo proporcionada
      * corresponda con el dato de validacion contenido en el hash recibido
