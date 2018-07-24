@@ -5,13 +5,15 @@
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DateDocument, mx.gob.cultura.portal.response.DigitalObject"%>
-<%@ page import="mx.gob.cultura.portal.resources.ArtDetail, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.ArrayList, java.util.List"%>
+<%@ page import="mx.gob.cultura.portal.resources.ArtDetail, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, 
+         org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.ArrayList, java.util.List, org.bson.Document"%>
 <%
     String type = "";
     String title = "";
     String holder = "";
     String period = "";
     String creator = "";
+    Document desc = null;
     List<Title> titles = new ArrayList<>();
     List<String> holders = new ArrayList<>();	List<String> creators = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
@@ -30,15 +32,18 @@
 	creator = creators.size() > 0 ? creators.get(0) : "";
         period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
 	if (!titles.isEmpty()) title = titles.get(0).getValue();
+        desc = Utils.getDescription(entry.getDescription());
     }
 %>
 <div class="col-12 col-sm-12 col-md-9 col-lg-9 order-md-2 order-sm-1 order-1 ficha ">
     <h3 class="oswM"><%=title%></h3>
-    <% if (null != entry && null != entry.getDescription() && !entry.getDescription().isEmpty()) { %>
-            <p><%=entry.getDescription().get(0)%></p>
+    <%  if (null != desc) { %>
+            <p id="shortdesc"><%=desc.get("short")%></p>
+            <a name="showPage"></a>
+            <p id="moredesc" style="display:none;"><%=desc.get("full")%></p>
             <hr>
     <% } %>
-    <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
+    <p class="vermas"><a href="#showPage" onclick="moreDesc()"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
     <div class="tabla">
         <table>
             <tr>
@@ -98,3 +103,16 @@
         <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
     </div>
 </div>
+<script>
+    function moreDesc() {
+        var x = document.getElementById("moredesc");
+	var s = document.getElementById("shortdesc");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+            s.style.display = "none";
+	} else {
+            x.style.display = "none";
+            s.style.display = "block";
+	}
+    }
+</script>

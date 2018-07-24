@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import org.semanticwb.model.WebSite;
 import org.semanticwb.model.Resource;
 import javax.servlet.http.HttpServletRequest;
+import org.bson.Document;
 
 /**
  *
@@ -134,6 +135,18 @@ public class Utils {
             }
         }
         return elements;
+    }
+    
+    public static org.bson.Document getDescription(List<String> descriptions) {
+        if (null == descriptions || descriptions.isEmpty()) return null;
+        String description = descriptions.get(0);
+        if (null == description || description.isEmpty()) return null;
+        org.bson.Document bson = new org.bson.Document("full", description);
+        if (description.length() > 240)
+            bson.append("short", description.substring(0, 240)+"...");
+        else
+            bson.append("short", description);
+        return bson;
     }
     
     /**
