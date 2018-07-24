@@ -643,10 +643,10 @@
                 mainLabel = "Cerrar sesión";
             }
             StringBuilder initials = new StringBuilder(2);
-            if (!paramsRequest.getUser().getFirstName().isEmpty()) {
+            if (paramsRequest.getUser().getFirstName()!=null && !paramsRequest.getUser().getFirstName().isEmpty()) {
                 initials.append(paramsRequest.getUser().getFirstName().charAt(0));
             }
-            if (!paramsRequest.getUser().getLastName().isEmpty()) {
+            if (paramsRequest.getUser().getLastName()!=null && !paramsRequest.getUser().getLastName().isEmpty()) {
                 initials.append(paramsRequest.getUser().getLastName().charAt(0));
             }
 %>
