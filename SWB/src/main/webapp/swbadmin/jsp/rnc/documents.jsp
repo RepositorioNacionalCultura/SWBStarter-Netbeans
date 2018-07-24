@@ -18,11 +18,11 @@
     List<Entry> references = null != request.getAttribute("PAGE_LIST") ? (List<Entry>) request.getAttribute("PAGE_LIST") : new ArrayList();
 %>
 <script type="text/javascript">
-    function setList() { doPage(1, 'l', 'relvdes'); }
-    function setGrid() { doPage(1, 'g', 'relvdes'); }
-    function doPage(p, m, f) {
+    function setList() { doPage(1, 'l', 'relvdes', ''); }
+    function setGrid() { doPage(1, 'g', 'relvdes', ''); }
+    function doPage(p, m, f, fs) {
         dojo.xhrPost({
-            url: '<%=pageURL%>?p='+p+'&m='+m+'&sort='+f+'&word=<%=word%>',
+            url: '<%=pageURL%>?p='+p+'&m='+m+'&sort='+f+'&word=<%=word%>'+fs,
             load: function(data) {
                 dojo.byId('references').innerHTML=data;
 		location.href = '#showPage';

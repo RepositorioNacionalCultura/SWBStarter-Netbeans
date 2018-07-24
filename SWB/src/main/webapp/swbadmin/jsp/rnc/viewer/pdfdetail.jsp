@@ -52,7 +52,6 @@
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     
     String scriptFB = Utils.getScriptFBShare(request);
-    String back = (String)request.getAttribute("back");
 %>
 <%=scriptFB%>
 <%=scriptHeader%>

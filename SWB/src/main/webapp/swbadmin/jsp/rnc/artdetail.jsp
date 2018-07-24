@@ -78,7 +78,6 @@
             period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
         }
     }
-    String back = (String)request.getAttribute("back");
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     //llamada a la generacion del script para compartir con Facebook: funcion fbShare()

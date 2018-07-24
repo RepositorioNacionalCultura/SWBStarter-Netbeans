@@ -5,7 +5,8 @@
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="mx.gob.cultura.portal.response.DigitalObject"%>
-<%@ page import="mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, java.util.ArrayList, java.util.List"%>
+<%@ page import="mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, 
+         java.util.ArrayList, java.util.List, org.semanticwb.portal.api.SWBResourceURL"%>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
     int audios = 0;
@@ -18,7 +19,11 @@
     StringBuilder scriptCallVisor = new StringBuilder();
     List<DigitalObject> digitalobjects = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
+    Integer iPrev = (Integer)request.getAttribute("iprev");
+    Integer iNext = (Integer)request.getAttribute("inext");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
+    SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
+    digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
 	if (null != entry.getDigitalObject()) {
@@ -27,7 +32,7 @@
             digitalobjects = entry.getDigitalObject();
             creator = creators.size() > 0 ? creators.get(0) : "";
             audios = null != digitalobjects ? digitalobjects.size() : 0;
-            if (!titles.isEmpty()) title = titles.get(0).getValue();
+            if (!titles.isEmpty()) title = titles.get(0).getValue().replace("\"", "");
             if (audios > 0) {
                 scriptHeader.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/work/models/").append(site.getId()).append("/audio/css/audio.css\" />");
                 divVisor.append("<script>")
@@ -59,8 +64,6 @@
         }
     }
 %>
-<%=scriptHeader%>
-<%=divVisor%>
     <div id="idetail" class="detallelist">
 	<div class="explora">
             <div class="explora2">
@@ -80,8 +83,22 @@
                 </div>
                 <div class="explo3 row">
                     <div class="col-6">
+                        <%
+                            if (iPrev >= 0) {
+			%>
+                                <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iPrev%>);"><span class="ion-chevron-left"></span> <%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%></a>
+			<%						
+                            }
+			%>
                     </div>
                     <div class="col-6">
+                        <%
+                            if (iNext > 0) {
+			%>
+				<a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iNext%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
+			<%
+                            }
+			%>
                     </div>
                 </div>
             </div>
@@ -231,5 +248,7 @@
             </div>
         </div>
     </div>
+    <%=scriptHeader%>
+    <%=divVisor%>
+    <%=scriptCallVisor%>
 </div>
-<%=scriptCallVisor%>

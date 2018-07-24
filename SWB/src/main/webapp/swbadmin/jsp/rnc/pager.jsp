@@ -29,6 +29,7 @@
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     String m = null != request.getAttribute("m") ? (String)request.getAttribute("m") : "g";
     String f = null != request.getAttribute("f") ? (String)request.getAttribute("f") : "relvdes";
+    String fs = null != request.getAttribute("filters") ? (String)request.getAttribute("filters") : "";
 %>
 <div class="container paginacion">
     <p><%=first%>-<%=last%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=totalRegistros%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%></p>
@@ -44,8 +45,8 @@
 		int primeraPaginaBloqueAnterior = (numBloque-1)*paginasPorBloque+1;
     %>
 		<li>
-                    <a href="#" onclick="javascript:doPage(<%= primeraPaginaBloqueAnterior+",'"+m+"','"+f %>')"><i class="ion-ios-arrow-back" aria-hidden="true"></i><i class="ion-ios-arrow-back" aria-hidden="true"></i></a>
-		</li>
+                    <a href="#" onclick="javascript:doPage(<%= primeraPaginaBloqueAnterior+",'"+m+"','"+f+"','"+fs %>')"><i class="ion-ios-arrow-back" aria-hidden="true"></i><i class="ion-ios-arrow-back" aria-hidden="true"></i></a>
+                </li>
     <%
             }
 	}
@@ -56,7 +57,7 @@
             if (i==paginaActual) {
                 out.println("<li><a href=\"#\" class=\"select\">"+i+"</a></li>");
             }else {
-		out.println("<li><a href=\"#\" onclick=\"javascript:doPage("+i+",'"+m+"','"+f+"')\">"+i+"</a></li>");
+		out.println("<li><a href=\"#\" onclick=\"javascript:doPage("+i+",'"+m+"','"+f+"','"+fs+"')\">"+i+"</a></li>");
             }
         }
     %>	
@@ -66,7 +67,7 @@
     <%
         if (totalPages > paginasPorBloque && paginaActual != totalPages) {
             out.println("<li><a href=\"#\">...</a></li>");
-            out.println("<li><a href=\"#\" onclick=\"javascript:doPage("+totalPages+",'"+m+"','"+f+"')\">"+totalPages+"</a></li>");
+            out.println("<li><a href=\"#\" onclick=\"javascript:doPage("+totalPages+",'"+m+"','"+f+"','"+fs+"')\">"+totalPages+"</a></li>");
         }
     %>
         
@@ -80,7 +81,9 @@
             }else {
                 int primeraPaginaBloqueSiguiente = (numBloque+1)*paginasPorBloque+1;
     %>
-		<li><a href="#" onclick="javascript:doPage(<%= primeraPaginaBloqueSiguiente+",'"+m+"','"+f %>')"><i class="ion-ios-arrow-forward" aria-hidden="true"></i><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
+		<li>
+                    <a href="#" onclick="javascript:doPage(<%=primeraPaginaBloqueSiguiente+",'"+m+"','"+f+"','"+fs %>')"><i class="ion-ios-arrow-forward" aria-hidden="true"></i><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a>
+                </li>
     <%
             }
         }

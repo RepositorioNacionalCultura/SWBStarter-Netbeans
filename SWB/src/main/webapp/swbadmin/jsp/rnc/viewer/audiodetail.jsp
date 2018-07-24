@@ -11,9 +11,7 @@
 <%
     int audios = 0;
     String title = "";
-    //String period = "";
     String creator = "";
-    //String resource = "";
     List<Title> titles = new ArrayList<>();
     List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
@@ -63,7 +61,6 @@
             }
         }
     }
-    String back = (String)request.getAttribute("back");
     String scriptFB = Utils.getScriptFBShare(request);
 %>
 <%=scriptFB%>

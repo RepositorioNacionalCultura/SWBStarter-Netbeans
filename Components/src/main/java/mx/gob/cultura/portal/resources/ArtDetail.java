@@ -77,8 +77,11 @@ public class ArtDetail extends GenericAdmResource {
                 if (null != entry) {
                     int position = null != request.getParameter(POSITION) ? Utils.toInt(request.getParameter(POSITION)) : 0;
                     entry.setPosition(position);
+                    DigitalObject ob = getDigitalObject(entry.getDigitalObject(), position);
+                    if (ob.getMediatype().getMime().startsWith("audio"))
+                        request.setAttribute("inext", iNext(entry.getDigitalObject(), position, "audio"));
                     SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), position);
-                    path = getViewerPath(getDigitalObject(entry.getDigitalObject(), position), SWBParamRequest.Mode_VIEW);
+                    path = getViewerPath(ob, SWBParamRequest.Mode_VIEW);
                     incHits(request, entry, baseUri, uri);
                 }
                 request.setAttribute("entry", entry);
@@ -111,12 +114,18 @@ public class ArtDetail extends GenericAdmResource {
                 Entry entry = req.makeRequest();
                 if (null != entry) {
                     entry.setPosition(iDigit);
+                    DigitalObject ob = getDigitalObject(entry.getDigitalObject(), iDigit);
                     SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), iDigit);
                     int images = null != entry.getDigitalObject() ? entry.getDigitalObject().size() : 0;
-                    path = getViewerPath(getDigitalObject(entry.getDigitalObject(), iDigit), MODE_DIGITAL);
+                    path = getViewerPath(ob, MODE_DIGITAL);
                     if (iDigit >= 0 && iDigit <= images) {
                         request.setAttribute("iDigit", iDigit);
                         request.setAttribute("digital", entry.getDigitalObject().get(iDigit));
+                    }
+                    if (ob.getMediatype().getMime().startsWith("audio")) {
+                        System.out.println("doDigital: " + ob);
+                        request.setAttribute("iprev", iPrev(entry.getDigitalObject(), iDigit, "audio"));
+                        request.setAttribute("inext", iNext(entry.getDigitalObject(), iDigit, "audio"));
                     }
                     incHits(request, entry, baseUri, uri);
                 }
@@ -175,13 +184,34 @@ public class ArtDetail extends GenericAdmResource {
     }
 
     private DigitalObject getDigitalObject(List<DigitalObject> list, int position) {
-        if (null == list || list.isEmpty() || position > list.size()) {
-            return null;
-        }
-        if (position <= 0) {
-            return list.get(0);
-        }
+        if (null == list || list.isEmpty() || position > list.size()) return null;
+        if (position <= 0) return list.get(0);
         return list.get(position);
+    }
+    
+    private Integer iNext (List<DigitalObject> list, int position, String type) {
+        Integer inext = 0;
+        for (int i = position++; i < list.size(); i++) {
+            DigitalObject o = list.get(i);
+            if (!o.getMediatype().getMime().startsWith(type)) {
+                inext = i;
+                break;
+            } 
+        }
+        return inext;
+    }
+    
+    private Integer iPrev(List<DigitalObject> list, int position, String type) {
+        Integer iprev = 0;
+        if (position > list.size()+1 || position < 1) return iprev;
+        for (int i = position--; i > 0; i--) {
+            DigitalObject o = list.get(i);
+            if (!o.getMediatype().getMime().startsWith(type)) {
+                iprev = i;
+                break;
+            }
+        }
+        return iprev;
     }
 
     private String getMimeType(DigitalObject digital) {
@@ -194,9 +224,7 @@ public class ArtDetail extends GenericAdmResource {
 
     private String getViewerPath(DigitalObject digital, String mode) {
         String path = "/swbadmin/jsp/rnc/artdetail.jsp";
-        if (null == digital) {
-            return path;
-        }
+        if (null == digital) return path;
         String mimeType = getMimeType(digital);
         String url = null != digital.getUrl() ? digital.getUrl() : "";
         if (null == mimeType || mimeType.isEmpty()) {

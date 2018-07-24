@@ -29,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.HttpURLConnection;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 import org.semanticwb.SWBException;
@@ -133,7 +134,7 @@ public class SearchCulturalProperty extends PagerAction {
                 publicationList = document.getRecords();
                 setType(document.getRecords(),  paramRequest.getWebPage().getWebSite());
                 request.setAttribute("aggs", getAggregation(document.getAggs()));
-                //request.setAttribute("creators", getCreators(document.getRecords()));
+                request.setAttribute("audio", getAgg(document.getAggs(), "audio"));
                 request.setAttribute(FULL_LIST, document.getRecords());
                 request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
                 cassette(request, document.getTotal(), getPage(request));
@@ -224,14 +225,16 @@ public class SearchCulturalProperty extends PagerAction {
     }
     
     private Document getReference(HttpServletRequest request, WebSite site) {
+        String filters = "";
         Document document = null;
         String words = request.getParameter("word");
         String baseUri = site.getModelProperty("search_endPoint");
         if (null == baseUri || baseUri.isEmpty()) baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim();
         String uri = baseUri + "/api/v1/search?q=";
         try {
+            filters = null != request.getParameter("filter") ? getPageFilter(request) : getFilters(request);
             uri += URLEncoder.encode(getParamSearch(words), StandardCharsets.UTF_8.name());
-            uri += getFilters(request);
+            uri += filters;
         } catch (UnsupportedEncodingException uex) {
             LOG.error(uex);
         }
@@ -251,6 +254,21 @@ public class SearchCulturalProperty extends PagerAction {
         return document;
     }
     
+    private String getPageFilter(HttpServletRequest request) throws UnsupportedEncodingException { 
+        StringBuilder filters = new StringBuilder();
+        String [] params = request.getParameter("filter").split(",");
+        for (int i=0; i<params.length; i++) {
+            String [] pair = params[i].split(":");
+            filters.append(",").append(pair[0]).append(":").append(URLEncoder.encode(pair[1], StandardCharsets.UTF_8.name()));
+        }
+        if (filters.length() > 0) {
+            filters.deleteCharAt(0);
+            filters.insert(0, "&filter=");
+            request.setAttribute("filters", filters.toString());
+        }
+        return filters.toString();
+    }
+    
     private String getFilters(HttpServletRequest request) throws UnsupportedEncodingException {
         StringBuilder filters = new StringBuilder();
         filters.append(getFilter(request, "resourcetype"));
@@ -262,6 +280,7 @@ public class SearchCulturalProperty extends PagerAction {
         if (filters.length() > 0) {
             filters.deleteCharAt(0);
             filters.insert(0, "&filter=");
+            request.setAttribute("filters", URLDecoder.decode(filters.toString(), StandardCharsets.UTF_8.name()));
         }
         return filters.toString();
     }
@@ -345,6 +364,20 @@ public class SearchCulturalProperty extends PagerAction {
         return aggregation;
     }
     
+    private List<CountName> getAgg(List<Aggregation> aggs, String type) {
+        List<CountName> list= new ArrayList<>();
+        if (null != aggs && !aggs.isEmpty()) {
+            for (Aggregation a : aggs) {
+                if (null !=  a.getMediastype()) {
+                    for (CountName c : a.getMediastype()) {
+                        if (c.getName().startsWith(type)) list.add(c);
+                    }
+                }
+            }
+        }
+        return list;
+    }
+    
     private List<CountName> getTypes(List<CountName> media) {
         List<CountName> types = new ArrayList<>();
         CountName pdf = new CountName("PDF", 0);
@@ -383,6 +416,7 @@ public class SearchCulturalProperty extends PagerAction {
             case "EPUB" : mediaType = "application/epub+zip"; break;
             case "3D" : mediaType = "model/x3d+binary"; break;
             case "ZIP" : mediaType = "application/zip"; break;
+            default : mediaType = type;
         }
         return mediaType;
     }

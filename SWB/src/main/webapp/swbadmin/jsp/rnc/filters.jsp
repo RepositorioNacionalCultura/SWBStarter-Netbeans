@@ -3,6 +3,7 @@
 <%@page import="mx.gob.cultura.portal.response.CountName"%>
 <%@page import="org.semanticwb.portal.api.SWBParamRequest,org.semanticwb.portal.api.SWBResourceURL,java.util.ArrayList, java.util.List"%>
 <%
+    String audios = "";
     boolean showFilters = false;
     List<CountName> dates = new ArrayList<>();
     List<CountName> rights = new ArrayList<>();
@@ -12,6 +13,7 @@
     List<CountName> resourcetypes = new ArrayList<>();
     String word = (String)request.getAttribute("word");
     Aggregation aggs = (Aggregation)request.getAttribute("aggs");
+    List<CountName> audio = (List<CountName>)request.getAttribute("audio");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     SWBResourceURL pageURL = paramRequest.getRenderUrl().setMode("SORT");
     pageURL.setCallMethod(SWBParamRequest.Call_DIRECT);
@@ -23,6 +25,11 @@
         if (null !=  aggs.getLanguages()) languages = aggs.getLanguages();
 	if (null !=  aggs.getMediastype()) mediastype = aggs.getMediastype();
         if (null !=  aggs.getResourcetypes()) resourcetypes = aggs.getResourcetypes();
+        if (null != audio && !audio.isEmpty()) {
+            for (CountName c : audio) {
+                audios += "::" + c.getName();
+            }
+	}
     }
 %>
 <script type="text/javascript">
@@ -50,7 +57,11 @@
                 if (inputElements[i].name == 'resourcetype') {
                     resourcetype += '::'+inputElements[i].value;
 		}else if (inputElements[i].name == 'mediatype') {
-                    mediatype += '::'+inputElements[i].value;
+                    if ('Audio' == inputElements[i].value) {
+			mediatype += '<%=audios%>';
+                    }else {
+			mediatype += '::'+inputElements[i].value;
+                    }
 		}else if (inputElements[i].name == 'rights') {
                     rights += '::'+inputElements[i].value;
 		}else if (inputElements[i].name == 'lang') {
