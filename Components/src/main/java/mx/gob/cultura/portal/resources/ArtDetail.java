@@ -123,7 +123,6 @@ public class ArtDetail extends GenericAdmResource {
                         request.setAttribute("digital", entry.getDigitalObject().get(iDigit));
                     }
                     if (ob.getMediatype().getMime().startsWith("audio")) {
-                        System.out.println("doDigital: " + ob);
                         request.setAttribute("iprev", iPrev(entry.getDigitalObject(), iDigit, "audio"));
                         request.setAttribute("inext", iNext(entry.getDigitalObject(), iDigit, "audio"));
                     }
