@@ -97,6 +97,7 @@
                     %>
                     </div>
                     <jsp:include page="pager.jsp" flush="true"/>
+                    <jsp:include page="footer.jsp" flush="true"/>
 		</div>
 	<%
             }else if (null != word) { out.println(paramRequest.getLocaleString("usrmsg_view_search_no_results") + " " + word); }
