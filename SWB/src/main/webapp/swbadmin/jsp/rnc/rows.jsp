@@ -58,5 +58,18 @@
     <jsp:include page="pager.jsp" flush="true"/>
 </div>
 <%
+    }else if (null != word) { 
+%>	
+	<div id="references">
+            <div class="ruta-resultado row">
+                <div class="col-12 col-sm-8 col-md-8">
+                    <p class="oswL rojo"><%=paramRequest.getLocaleString("usrmsg_view_search_no_results")%> <span class="oswB rojo"><%=word%></span></p>
+		</div>
+                <div class="col-12 col-sm-4 col-md-4 ordenar"></div>
+            </div>
+            <div id="resultados" class="<%=mode%>"></div>
+            <div class="container paginacion"></div>
+	</div>
+<%
     }
 %>
