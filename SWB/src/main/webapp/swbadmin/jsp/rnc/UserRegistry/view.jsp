@@ -138,28 +138,6 @@
                     <label for="email"><%=paramsRequest.getLocaleString("lbl_eMail")%></label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="usuario@servidor.com" required="required" value="<%=user.getEmail()!=null?user.getEmail():""%>">
                 </div>
-                <!--h4 class="rojo">Cambiar contraseña</h4>
-                <div class="form-group">
-                    <label for="pass1">Contraseña actual</label>
-                    <input type="pass1" class="form-control" id="pass1" aria-describedby="emailHelp" placeholder="">
-                </div-->
-                <div class="form-group">
-                    <label for="pass2"><%=user.isSigned()?paramsRequest.getLocaleString("lbl_newPwd"):paramsRequest.getLocaleString("lbl_pwd")%></label>
-                    <input type="password" class="form-control" id="pass2" name="pass2" <%=!editMode?"required=\"required\"":""%>>
-                </div>
-                <div class="form-group">
-                      <label for="passConf"><%=user.isSigned()?paramsRequest.getLocaleString("lbl_newPwdConf"):paramsRequest.getLocaleString("lbl_pwdConf")%></label>
-                      <input type="password" class="form-control" id="passConf" name="passConf" <%=!editMode?"required=\"required\"":""%>>
-                </div>                
-                <div class="form-check">
-                    <input type="checkbox" class="" id="checar" onclick="showData(this);">
-                    <label class="form-check-label" for="checar"><%=paramsRequest.getLocaleString("lbl_show")%></label>
-                </div>
-                  <!--h4 class="rojo">Privacidad</h4>
-                  <div class="form-check">
-                        <input type="checkbox" class="" id="privado">
-                        <label class="privado" for="privado"><span class="ion-locked"></span> Perfil Privado</label>
-                  </div-->
 <%
                 if(isAnnotator || toBeAnnotator){
 %>                   
@@ -216,7 +194,34 @@
                 </div>  
 <%
                 }
-%> 
+%>                 
+<%
+                if(editMode){
+%>                 <h4 class="rojo">Cambiar contraseña</h4>
+<%
+                }
+%>                 
+                <!--div class="form-group">
+                    <label for="pass1">Contraseña actual</label>
+                    <input type="pass1" class="form-control" id="pass1" aria-describedby="emailHelp" placeholder="">
+                </div-->
+                <div class="form-group">
+                    <label for="pass2"><%=user.isSigned()?paramsRequest.getLocaleString("lbl_newPwd"):paramsRequest.getLocaleString("lbl_pwd")%></label>
+                    <input type="password" class="form-control" id="pass2" name="pass2" <%=!editMode?"required=\"required\"":""%>>
+                </div>
+                <div class="form-group">
+                      <label for="passConf"><%=user.isSigned()?paramsRequest.getLocaleString("lbl_newPwdConf"):paramsRequest.getLocaleString("lbl_pwdConf")%></label>
+                      <input type="password" class="form-control" id="passConf" name="passConf" <%=!editMode?"required=\"required\"":""%>>
+                </div>                
+                <div class="form-check">
+                    <input type="checkbox" class="" id="checar" onclick="showData(this);">
+                    <label class="form-check-label" for="checar"><%=paramsRequest.getLocaleString("lbl_show")%></label>
+                </div>
+                  <!--h4 class="rojo">Privacidad</h4>
+                  <div class="form-check">
+                        <input type="checkbox" class="" id="privado">
+                        <label class="privado" for="privado"><span class="ion-locked"></span> Perfil Privado</label>
+                  </div-->
 <%
                 if(!editMode){
 %>        

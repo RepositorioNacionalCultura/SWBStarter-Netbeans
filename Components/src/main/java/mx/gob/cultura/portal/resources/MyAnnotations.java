@@ -66,7 +66,7 @@ public class MyAnnotations extends GenericAdmResource{
         }
         User user = paramRequest.getUser();
         if (user!=null && user.isSigned()){
-            isAnnotator=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", "")));          
+            isAnnotator=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", "Anotador")));          
         }
         response.setContentType("text/html; charset=UTF-8");
        // String basePath = "/work/models/" + paramRequest.getWebPage().getWebSite().getId() + "/jsp/" + this.getClass().getSimpleName() + "/";
