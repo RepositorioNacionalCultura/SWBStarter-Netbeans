@@ -3,6 +3,10 @@
     Created on : 23/04/2018, 05:35:01 PM
     Author     : rene.jara
 --%>
+<%@page import="mx.gob.cultura.portal.resources.AnnotationsMgr"%>
+<%@page import="org.semanticwb.model.WebPage"%>
+<%@page import="org.semanticwb.model.Resource"%>
+<%@page import="org.semanticwb.portal.api.SWBResourceURLImp"%>
 <%@page import="org.semanticwb.model.UserRepository"%>
 <%@page import="org.semanticwb.model.User"%>
 <%@page import="mx.gob.cultura.portal.resources.MyAnnotations"%>
@@ -17,6 +21,13 @@
     String id = (String)request.getAttribute("id");
     boolean isAnnotator = (boolean)request.getAttribute("isAnnotator");
     UserRepository ur=paramRequest.getWebPage().getWebSite().getUserRepository();
+    
+    
+    Resource resMng=paramRequest.getWebPage().getWebSite().getResource(paramRequest.getResourceBase().getAttribute("AnnRes", "197"));
+    WebPage  wpMng=paramRequest.getWebPage().getWebSite().getWebPage(paramRequest.getResourceBase().getAttribute("AnnMng", "AdmAnotaciones"));      
+    SWBResourceURLImp urlMng = new SWBResourceURLImp(request, resMng, wpMng, SWBResourceURL.UrlType_RENDER);
+    urlMng.setMode(AnnotationsMgr.MODE_MANAGE);
+
     if(user!=null && user.isSigned()&&isAnnotator){
         SWBResourceURL saveURL = paramRequest.getRenderUrl();
         saveURL.setMode(MyAnnotations.ASYNC_ADD);
@@ -38,9 +49,9 @@
                     bvs=element.bodyValue;
                     if(bvs){
                         bva=bvs.split('\n');
-                        for (i=0;i<bva.length;i++){
+                        for (i=0;i<bva.length && i<3;i++){
                             console.log(i+"-"+bva.length);
-                            if (i<2){
+                            if (0<2){//para no borrar el if
                                 lContent +='<p>'+bva[i]+'</p>';
                             }else{
                                 if(i==2){
@@ -57,7 +68,8 @@
                                         '</p>';
                                 }
                             }    
-                        }       
+                        }
+                        lContent +='<a href="<%=wpMng.getUrl()%>?id='+element.id+'" class="btn-vermas" >Ver más <span class="ion-plus-circled"></span></a>';
                     }                    
                     lContent += '</div>'+
                                 '</div>'; 
@@ -121,8 +133,8 @@
                         <p class="mt-0 rojo"><%=creatorName%></p>
 <%  
         String[] bvs=annotation.getBodyValue().split("\n");
-        for(int i =0; i < bvs.length;i++){
-            if (i<2){
+        for(int i =0; i < bvs.length && i<3 ;i++){
+            if (0<2){//para no borrar el if
 %>                        
                         <p><%=bvs[i]%></p>                       
 <%
@@ -147,12 +159,18 @@
             }   
         }
 %>                                              
+                        <a href="<%=wpMng.getUrl()%>?id=<%=annotation.getId()%>" class="btn-vermas" >Ver más <span class="ion-plus-circled"></span></a>
                     </div>
                 </div>              
     <%      
     }
     %>
             </div>
-        </div> 
-        <p><a href="/es/repositorio/AdmAnotaciones" class="oswM">Administrar mis anotaciones</a></p>
+        </div>
+<%
+    //String admUrl=paramRequest.getWebPage().getWebSite().getResource()
+
+   //lContent += '<a href="#" onclick="callAction(\'/es/repositorio/AdmAnotaciones/_rid/197/_mto/3/_mod/acp\',\''+element.id+'\');return false;">Autorizar</a>';
+%>            
+    <p><a href="<%=urlMng.toString()%>" class="oswM">Administrar mis anotaciones</a></p>
     </section>   

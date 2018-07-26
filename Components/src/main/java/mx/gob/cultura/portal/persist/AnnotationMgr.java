@@ -150,6 +150,27 @@ public class AnnotationMgr {
         return ret;      
     }
 
+    public Annotation findById(String id, String user){        
+        BasicDBObject query = new BasicDBObject("_id", new ObjectId(id));  
+        Annotation annotation=null;        
+        if(user==null || user.isEmpty()){ //  y públicas 
+            query.put("moderator",new BasicDBObject("$exists",true).append("$ne",""));
+        }else{ //  y sean del usuario o públicas 
+            BasicDBList orClause = new BasicDBList();
+            orClause.add(new BasicDBObject("creator",user));
+            orClause.add(new BasicDBObject("moderator",new BasicDBObject("$exists",true).append("$ne","")));
+            query.put("$or",orClause);
+        }
+        try {
+            MongoCollection<Document> mongoCollection = getCollection();
+            Document doc=mongoCollection.find(query).first();  
+            annotation = new Annotation(doc);
+        }catch (Exception u) {
+            LOG.error("findById",u);
+        }
+        return annotation;
+    }
+        
     public List<Annotation> findByTarget(String target, String creator){
         ArrayList<Annotation> list = new ArrayList<>();        
         BasicDBObject query = new BasicDBObject("target",target);      
@@ -166,7 +187,7 @@ public class AnnotationMgr {
             MongoCollection<Document> mongoCollection = getCollection();
             mongoCollection.find(query).sort(order).forEach((Consumer<Document>) doc -> list.add(new Annotation(doc)));
         }catch (Exception u) {
-            LOG.error(u);
+            LOG.error("findByTarget",u);
         }
         return list;
     }
@@ -198,7 +219,7 @@ public class AnnotationMgr {
             MongoCollection<Document> mongoCollection = getCollection();
             mongoCollection.find(query).sort(order).skip(offset).limit(pageSize).forEach((Consumer<Document>) doc -> list.add(new Annotation(doc)));
         }catch (Exception u) {
-            LOG.error(u);
+            LOG.error("findByPaged",u);
         }
         return list;
     }
@@ -221,7 +242,7 @@ public class AnnotationMgr {
                 pages+=1;
             }            
         }catch (Exception u) {
-            LOG.error(u);
+            LOG.error("countPages",u);
         }
         return pages.intValue();
     }    
