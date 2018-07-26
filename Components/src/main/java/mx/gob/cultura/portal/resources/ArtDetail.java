@@ -68,7 +68,7 @@ public class ArtDetail extends GenericAdmResource {
             baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
         }
         String uri = baseUri + "/api/v1/search?identifier=";
-        String path = "/swbadmin/jsp/rnc/artdetail.jsp";
+        String path = "/swbadmin/jsp/rnc/preview.jsp";
         try {
             if (null != request.getParameter(IDENTIFIER)) {
                 uri += request.getParameter(IDENTIFIER);
@@ -81,7 +81,8 @@ public class ArtDetail extends GenericAdmResource {
                     if (ob.getMediatype().getMime().startsWith("audio"))
                         request.setAttribute("inext", iNext(entry.getDigitalObject(), position, "audio"));
                     SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), position);
-                    path = getViewerPath(ob, SWBParamRequest.Mode_VIEW);
+                    if (null != request.getParameter(POSITION))
+                        path = getViewerPath(ob, SWBParamRequest.Mode_VIEW);
                     incHits(request, entry, baseUri, uri);
                 }
                 request.setAttribute("entry", entry);

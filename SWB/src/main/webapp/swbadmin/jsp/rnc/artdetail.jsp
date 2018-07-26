@@ -9,7 +9,9 @@
 <script type="text/javascript" src="/swbadmin/js/rnc/detail.js"></script>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
-    int iDigit = 1;
+    int iPrev = 0;
+    int iNext = 0;
+    int iDigit = 0;
     int images = 0;
     String type = "";
     String title = "";
@@ -26,12 +28,15 @@
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
+        iDigit = entry.getPosition();
+	iPrev = iDigit-1;
+	iNext = iDigit+1;
         if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
             titles = entry.getRecordtitle();
             digitalobjects = entry.getDigitalObject();
             images = null != digitalobjects ? digitalobjects.size() : 0;
-            digital = images >= iDigit ? digitalobjects.get(iDigit - 1) : new DigitalObject();
+            digital = images >= iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
             if (null == digital.getUrl()) digital.setUrl("");
             if (digital.getUrl().endsWith(".dzi")) {
                     scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
@@ -69,7 +74,7 @@
                             .append("});")
                             .append("</script>");
             } else {
-                if (digital.getUrl().endsWith(".zip") || digital.getUrl().endsWith(".rtf") || digital.getUrl().startsWith("application/vnd")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
+                if (digital.getUrl().endsWith(".zip") || digital.getUrl().endsWith(".rtf") || digital.getUrl().endsWith(".docx")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
                 else divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");
             }
             type = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
@@ -84,8 +89,6 @@
     String scriptFB = Utils.getScriptFBShare(request);
 %>
 <%=scriptFB%>
-
-<%=scriptHeader%>
 
 <section id="detalle">
     <div id="idetail" class="detalleimg">
@@ -113,16 +116,16 @@
                 <div class="explo3 row">
                     <div class="col-6">
                         <%
-                            if (iDigit > 1) {
+                            if (iPrev >= 0) {
                         %>
-                                <span class="ion-chevron-left"></span> <%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%>
+                                <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iPrev%>);"><span class="ion-chevron-left"></span> <%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%></a>
                         <%
                             }
                         %>
                     </div>
                     <div class="col-6">
                         <%
-                            if (iDigit < images) {
+                            if (iNext < images) {
                         %>
                                 <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iDigit%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
                         <%
@@ -132,6 +135,7 @@
                 </div>
             </div>
         </div>
+        <%=scriptHeader%>
         <%=divVisor%>
         <%=scriptCallVisor%>
     </div>

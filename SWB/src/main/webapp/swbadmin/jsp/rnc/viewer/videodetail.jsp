@@ -10,10 +10,10 @@
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
     int vids = 0;
-    int iDigit = 1;
-    String type = "";
+    int iPrev = 0;
+    int iNext = 0;
+    int iDigit = 0;
     String title = "";
-    String period = "";
     String creator = "";
     DigitalObject digital = null;
     List<Title> titles = new ArrayList<>();
@@ -28,12 +28,15 @@
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     if (null != entry) {
+        iDigit = entry.getPosition();
+	iPrev = iDigit-1;
+	iNext = iDigit+1;
 	if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
             titles = entry.getRecordtitle();
             digitalobjects = entry.getDigitalObject();
             vids = null != digitalobjects ? digitalobjects.size() : 0;
-            digital = vids >= iDigit ? digitalobjects.get(iDigit-1) : new DigitalObject();
+            digital = vids >= iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
             if (null != digital.getUrl()) {
 		String mime = null != digital.getMediatype() ? digital.getMediatype().getMime() : "";
 		if (digital.getUrl().endsWith(".mp4")) mime = "video/mp4";
@@ -48,13 +51,15 @@
 		divVisor.append("<div id=\"video-controls\" class=\"row\">")
                 .append("   <div class=\"col-11 col-md-7 video-players\">")
                 .append("       <div class=\"col-12 video-botones\">");
-		if (iDigit > 1)
-                    divVisor.append("       <button type=\"button\" id=\"prev\" class=\"prev\"><span class=\"ion-ios-skipbackward\"></span></button>");
-                divVisor.append("       <button type=\"button\" id=\"play-pause\" class=\"play\"><span class=\"ion-ios-play\"></span></button>");
-		if (iDigit < vids) {
-                    String next = "onclick=\"nextObj('"+digitURL+"?id=','"+entry.getId()+"',"+iDigit+");\"";
-                    divVisor.append("       <button type=\"button\" id=\"next\" class=\"next\"").append(next).append("><span class=\"ion-ios-skipforward\"></span></button>");
-		}
+		if (iPrev >= 0) {
+                    String prev = "onclick=\"nextObj('"+digitURL+"?id=','"+entry.getId()+"',"+iPrev+");\"";
+                    divVisor.append("           <button type=\"button\" id=\"prev\" class=\"prev\"").append(prev).append("><span class=\"ion-ios-skipbackward\"></span></button>");
+                }
+                divVisor.append("           <button type=\"button\" id=\"play-pause\" class=\"play\"><span class=\"ion-ios-play\"></span></button>");
+		if (iNext < vids) {
+                    String next = "onclick=\"nextObj('"+digitURL+"?id=','"+entry.getId()+"',"+iNext+");\"";
+                    divVisor.append("           <button type=\"button\" id=\"next\" class=\"next\"").append(next).append("><span class=\"ion-ios-skipforward\"></span></button>");
+                }
                 divVisor.append("       </div>")
                 .append("       <div class=\"col-12 video-range\">")
                 .append("           <span class=\"video-time oswM\">0:00:00</span>")
@@ -84,10 +89,8 @@
                     .append("       });")
                     .append("	});")
                     .append("</script>");
-		type = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
                 creator = creators.size() > 0 ? creators.get(0) : "";
                 if (!titles.isEmpty()) title = titles.get(0).getValue();
-                period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
             }
         }
     }

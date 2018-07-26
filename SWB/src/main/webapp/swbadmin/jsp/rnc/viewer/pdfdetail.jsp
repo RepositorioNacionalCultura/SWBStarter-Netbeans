@@ -10,10 +10,10 @@
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
     int pdfs = 0;
-    int iDigit = 1;
-    String type = "";
+    int iPrev = 0;
+    int iNext = 0;
+    int iDigit = 0;
     String title = "";
-    String period = "";
     String creator = "";
     DigitalObject digital = null;
     List<Title> titles = new ArrayList<>();
@@ -26,12 +26,15 @@
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
+        iDigit = entry.getPosition();
+	iPrev = iDigit-1;
+	iNext = iDigit+1;
 	if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
             titles = entry.getRecordtitle();
             digitalobjects = entry.getDigitalObject();
             pdfs = null != digitalobjects ? digitalobjects.size() : 0;
-            digital = pdfs >= iDigit ? digitalobjects.get(iDigit-1) : new DigitalObject();
+            digital = pdfs >= iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
             if (null != digital.getUrl() && (digital.getUrl().endsWith(".pdf") || digital.getUrl().endsWith("view"))) {
 		scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
                 scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-pdf.css'/>");
@@ -41,10 +44,8 @@
                     .append("       PDFObject.embed(\"").append(digital.getUrl()).append("\", \"#pdfdetail\");")
                     .append("   });")
                     .append("</script>");
-		type = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
 		creator = creators.size() > 0 ? creators.get(0) : "";
 		if (!titles.isEmpty()) title = titles.get(0).getValue();
-                period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
             }
         }
     }
@@ -54,7 +55,6 @@
     String scriptFB = Utils.getScriptFBShare(request);
 %>
 <%=scriptFB%>
-<%=scriptHeader%>
 <section id="detalle">
     <div id="idetail" class="detalleimg">
 	<div class="obranombre">
@@ -80,18 +80,18 @@
 		<div class="explo3 row">
                     <div class="col-6">
                         <%
-                            if (iDigit > 1) {
+                            if (iPrev >= 0) {
 			%>
-                                <span class="ion-chevron-left"></span> <%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%>
+                                <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iPrev%>);"><span class="ion-chevron-left"></span> <%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%></a>
 			<%
                             }
 			%>
                     </div>
                     <div class="col-6">
                         <%
-                            if (iDigit < pdfs) {
+                            if (iNext < pdfs) {
 			%>
-                                <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iDigit%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
+                                <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iNext%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
 			<%
                             }
 			%>
@@ -99,6 +99,7 @@
                 </div>
             </div>
 	</div>
+        <%=scriptHeader%>
 	<%=divVisor%>
         <%=scriptCallVisor%>
     </div>

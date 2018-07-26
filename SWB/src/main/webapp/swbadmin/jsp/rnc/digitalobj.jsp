@@ -16,6 +16,7 @@
     List<Title> titles = new ArrayList<>();
     List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
+    StringBuilder scriptHeader = new StringBuilder();
     StringBuilder scriptCallVisor = new StringBuilder();
     int iDigit = (Integer) request.getAttribute("iDigit");
     int iPrev = iDigit - 1;
@@ -36,6 +37,8 @@
             url = null != digital.getUrl() ? digital.getUrl() : "";
             creator = creators.size() > 0 ? creators.get(0) : "";
             if (!titles.isEmpty()) title = titles.get(0).getValue();
+            scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
+            scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
             if (!url.isEmpty() && url.endsWith(".dzi"))
 		divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
             else if (digital.getUrl().endsWith("view") || digital.getUrl().endsWith(".png") || digital.getUrl().endsWith(".jpg") || digital.getUrl().endsWith(".JPG")) {
@@ -58,7 +61,7 @@
                     .append("});")
                     .append("</script>");
             }else {
-                if (digital.getUrl().endsWith(".zip") || digital.getUrl().endsWith(".rtf") || digital.getUrl().startsWith("application/vnd")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
+                if (digital.getUrl().endsWith(".zip") || digital.getUrl().endsWith(".rtf") || digital.getUrl().endsWith(".docx")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
 		else divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");
             }
         }
@@ -107,6 +110,7 @@
             </div>
         </div>
     </div>
+    <%=scriptHeader%>
     <%=divVisor%>
     <%=scriptCallVisor%>
 </div>
