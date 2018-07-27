@@ -27,7 +27,10 @@ public final class Constants {
     public static final String COUNT_BY_USER = "COUNT_BY_USER";
     public static final String COUNT_BY_STAT = "COUNT_BY_STAT";
     
+    public static final String WORD = "w";
+    public static final String NUM_RECORD = "r";
     public static final String IDENTIFIER = "id";
+    public static final String FILTER = "filter";
     public static final String MODE_PAGE = "PAGE";
     public static final String COLLECTION = "collection";
     public static final String PARAM_REQUEST = "paramRequest";

@@ -33,7 +33,10 @@ import java.util.List;
 import mx.gob.cultura.portal.request.ListBICRequest;
 import mx.gob.cultura.portal.response.DigitalObject;
 import mx.gob.cultura.portal.response.Document;
+import static mx.gob.cultura.portal.utils.Constants.WORD;
+import static mx.gob.cultura.portal.utils.Constants.FILTER;
 import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
+import static mx.gob.cultura.portal.utils.Constants.NUM_RECORD;
 
 /**
  *
@@ -62,18 +65,12 @@ public class ArtDetail extends GenericAdmResource {
 
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
-        //Get baseURI from site properties first
-        String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
-        if (null == baseUri || baseUri.isEmpty()) {
-            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
-        }
-        String uri = baseUri + "/api/v1/search?identifier=";
         String path = "/swbadmin/jsp/rnc/preview.jsp";
+        String baseUri = getBaseUri(paramRequest);
+        String uri = getParamUri(baseUri, request);
         try {
-            if (null != request.getParameter(IDENTIFIER)) {
-                uri += request.getParameter(IDENTIFIER);
-                GetBICRequest req = new GetBICRequest(uri);
-                Entry entry = req.makeRequest();
+            if (null != uri) {
+                Entry entry = getEntry(request, uri);
                 if (null != entry) {
                     int position = null != request.getParameter(POSITION) ? Utils.toInt(request.getParameter(POSITION)) : 0;
                     entry.setPosition(position);
@@ -88,13 +85,54 @@ public class ArtDetail extends GenericAdmResource {
                 request.setAttribute("entry", entry);
                 request.setAttribute("collection", explore(entry, baseUri));
             }
-            request.setAttribute("paramRequest", paramRequest);
-            request.setAttribute("back", back(request, paramRequest));
+            setParams(request, paramRequest);
             RequestDispatcher rd = request.getRequestDispatcher(path);
             rd.include(request, response);
         } catch (ServletException se) {
             LOG.error(se);
         }
+    }
+    
+    private Entry getEntry(HttpServletRequest request, String uri) {
+        Entry entry = null;
+        Document document = null;
+        if (null != request.getParameter(IDENTIFIER)) {
+            GetBICRequest req = new GetBICRequest(uri);
+            entry = req.makeRequest();
+        }else {
+            ListBICRequest list = new ListBICRequest(uri);
+            document = list.makeRequest();
+            if (null != document && !document.getRecords().isEmpty())
+                entry = document.getRecords().get(0);
+        }
+        return entry;
+    }
+    
+    private String getParamUri(String base, HttpServletRequest request) {
+        StringBuilder uri = new StringBuilder(base);
+        uri.append("/api/v1/search?");
+        if (null != request.getParameter(IDENTIFIER)) uri.append("identifier=").append(request.getParameter(IDENTIFIER));
+        else {
+            if (null != request.getParameter(WORD)) uri.append("q=").append(request.getParameter(WORD));
+            if (null != request.getParameter(NUM_RECORD)) uri.append("&from=").append(request.getParameter(NUM_RECORD)).append("&size=1");
+        }
+        return uri.toString();
+    }
+    
+    private String getBaseUri(SWBParamRequest paramRequest) {
+        //Get baseURI from site properties first
+        String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
+        if (null == baseUri || baseUri.isEmpty())
+            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
+        return baseUri;
+    }
+    
+    private void setParams(HttpServletRequest request, SWBParamRequest paramRequest) throws IOException {
+        request.setAttribute("paramRequest", paramRequest);
+        request.setAttribute("back", back(request, paramRequest));
+        if (null != request.getParameter(WORD)) request.setAttribute(WORD, request.getParameter(WORD));
+        if (null != request.getParameter(FILTER)) request.setAttribute(FILTER, request.getParameter(FILTER));
+        if (null != request.getParameter(NUM_RECORD)) request.setAttribute(NUM_RECORD, request.getParameter(NUM_RECORD));
     }
 
     public void doDigital(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
