@@ -12,7 +12,7 @@
     Integer first = (Integer)request.getAttribute("FIRST_RECORD");  
     Integer total = (Integer)request.getAttribute("NUM_RECORDS_TOTAL");
     String word = null != request.getAttribute("word") ? Utils.suprXSS((String)request.getAttribute("word")) : "";
-    String uri = !word.isEmpty() ? "&word="+word+"&leap="+first : "";
+    String uri = !word.isEmpty() ? "&w="+word+"&word="+word+"&leap="+first : "";
 %>
 <% if (!references.isEmpty()) {  %>
     <div id="references">
@@ -42,11 +42,11 @@
 		String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
         %>
                 <div class="pieza-res card">
-                    <a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%><%=uri%>">
+                    <a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%><%=uri%>">
                         <img src="<%=reference.getResourcethumbnail()%>" />
                     </a>
                     <div>
-                        <p class="tit"><a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%><%=uri%>"><%=title.getValue()%></a></p>
+                        <p class="tit"><a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%><%=uri%>"><%=title.getValue()%></a></p>
                         <p class="autor"><a href="#"><%=creator%></a><br/><i><%=holder%></i></p>
                         <p class="tipo"><%=resource%></p>
                     </div>
