@@ -48,7 +48,7 @@
             console.log("callAction"+id);
             $.getJSON(url,{'id':id,'bodyValue':bodyValue}, function (data) {
                 if(data.deleted){
-                    $('#div_'+id).replaceWith('<div>borrado :/</div>');
+                    $('#div_'+id).replaceWith('<div>borrado</div>');
                 }else{
                     $('#div_'+data.id).replaceWith(buildDiv(data));
                 }    
@@ -228,11 +228,11 @@ console.log(element);
 <%  
         if(isAdmin){
 %>                 
-                <h3 class="oswB vino"><span class="h3linea"></span>ANOTACIONES<span class="h3linea"></span></h3>
+                <h3 class="oswB vino"><span class="h3linea"></span><%=paramRequest.getLocaleString("lbl_title1")%><span class="h3linea"></span></h3>
 <%  
         }else{
 %> 
-                <h3 class="oswB vino"><span class="h3linea"></span>MIS ANOTACIONES<span class="h3linea"></span></h3>
+                <h3 class="oswB vino"><span class="h3linea"></span><%=paramRequest.getLocaleString("lbl_title2")%><span class="h3linea"></span></h3>
 <%  
         }
 %>                 
@@ -249,7 +249,7 @@ console.log(element);
                       <p class="vermas vermas-1top vermas-rojo">
                           <!--button class="btn-vermas" type="button" data-toggle="collapse" data-target="#vermas" aria-expanded="false" aria-controls="vermas">Ver anotación<span class="ion-plus-circled"></span>
                           </button-->
-                          <a href="<%=paramRequest.getWebPage().getUrl()%>?id=<%=annotation.get("id")%>" class="btn-vermas" >Ver anotación <span class="ion-plus-circled"></span></a>
+                          <a href="<%=paramRequest.getWebPage().getUrl()%>?id=<%=annotation.get("id")%>" class="btn-vermas" ><%=paramRequest.getLocaleString("btn_see_more")%> <span class="ion-plus-circlVer anotacióned"></span></a>
                           <!--span class="linea"></span-->
                        </p>
                   </div>                
@@ -342,4 +342,5 @@ console.log(element);
             </div>
             <!-- contenido -->
         </div>
+        <button class="btn btn-rojo" onclick="window.location=document.referrer;return false;"><%=paramRequest.getLocaleString("btn_back")%></button>        
     </section>

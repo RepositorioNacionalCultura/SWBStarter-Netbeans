@@ -48,7 +48,8 @@
 <script>
     function callAction(url,id){
         console.log("callAction"+id);
-        $.getJSON(url,{'id':id}, function (data) {                        
+        $.getJSON(url,{'id':id}, function (data) { 
+            console.log(data);
             if(data.deleted){
                 $('#div_bodyValue').replaceWith('<div>Borrado </div>');
                 waitBack;
@@ -56,6 +57,7 @@
                 updateActions(data);
             }  
         }).fail(function( jqxhr, textStatus, error ) {
+            console.log(jqxhr);
             var err = textStatus + ", " + error;
             console.log( "Request Failed: " + err );
             alert(err);
@@ -83,27 +85,18 @@
         lContent ='';            
 <%  
         if(isAdmin){
-%>        
-console.log("1");        
-        if(element.isOwn && element.isMod){
-console.log("2");                    
-            /*
-            lContent += '<textarea id="bv'+element.id+'">'+element.bodyValue+'</textarea>'+
-            */
-            lContent += '<a href="#" onclick="editEnable();return false;" class="btn btn-blanco"><span class="ion-edit rojo"></span> Editar anotación</a>';
-            lContent += '<a href="#" onclick="callAction(\'<%=delURL.toString()%>\',\''+element.id+'\');return false;" class="btn btn-blanco"><span class="ion-edit rojo"></span> Borrar</a>'+
-                        '<a href="#" onclick="callAction(\'<%=accURL.toString()%>\',\''+element.id+'\');return false;" class="btn btn-blanco"><span class="ion-edit rojo"></span> Autorizar</a>';                        
+%>              
+        if(element.isOwn && element.isMod){                   
+            lContent += '<a href="#" onclick="editEnable();return false;" class="btn btn-blanco"><span class="ion-edit rojo"></span> <%=paramRequest.getLocaleString("btn_edit")%></a>';
+            lContent += '<a href="#" onclick="callAction(\'<%=delURL.toString()%>\',\''+element.id+'\');return false;" class="btn btn-blanco"><span class="ion-edit rojo"></span> <%=paramRequest.getLocaleString("btn_del")%></a>'+
+                        '<a href="#" onclick="callAction(\'<%=accURL.toString()%>\',\''+element.id+'\');return false;" class="btn btn-blanco"><span class="ion-edit rojo"></span> <%=paramRequest.getLocaleString("btn_acc")%></a>';                        
             liContent=lContent;
-//console.log(liContent);
-        }else{
-console.log("3");                    
+        }else{                  
             bvs=element.bodyValue;
-            if(element.isMod){
-console.log("4");                        
-                lContent += '<a href="#" onclick="callAction(\'<%=accURL.toString()%>\',\''+element.id+'\');return false;" class="btn btn-blanco"><span class="ion-edit rojo"></span> Autorizar</a>';
-            }else{   
-console.log("5");                        
-                lContent += '<a href="#" onclick="callAction(\'<%=rjcURL.toString()%>\',\''+element.id+'\');return false;" class="btn btn-blanco"><span class="ion-edit rojo"></span> Desautorizar</a>';
+            if(element.isMod){                      
+                lContent += '<a href="#" onclick="callAction(\'<%=accURL.toString()%>\',\''+element.id+'\');return false;" class="btn btn-blanco"><span class="ion-edit rojo"></span> <%=paramRequest.getLocaleString("btn_acc")%></a>';
+            }else{                          
+                lContent += '<a href="#" onclick="callAction(\'<%=rjcURL.toString()%>\',\''+element.id+'\');return false;" class="btn btn-blanco"><span class="ion-edit rojo"></span> <%=paramRequest.getLocaleString("btn_rjc")%></a>';
             }     
             liContent=lContent;
         }
@@ -112,11 +105,8 @@ console.log("5");
         }else{
 %>        
         if(element.isMod){
-            /*
-            lContent += '<textarea id="bv'+element.id+'">'+element.bodyValue+'</textarea>'+
-            */
             lContent += '<a href="#" onclick="editEnable();return false;" class="btn btn-blanco"><span class="ion-edit rojo"></span> Editar anotación</a';
-            lContent += '<a href="#" onclick="callAction(\'<%=delURL.toString()%>\',\''+element.id+'\');return false;" class="btn btn-blanco"><span class="ion-edit rojo"></span> Borrar</a>';
+            lContent += '<a href="#" onclick="callAction(\'<%=delURL.toString()%>\',\''+element.id+'\');return false;" class="btn btn-blanco"><span class="ion-edit rojo"></span> <%=paramRequest.getLocaleString("btn_del")%></a>';
             liContent=lContent;
         }else{ 
             bvs=element.bodyValue;
@@ -124,10 +114,8 @@ console.log("5");
         }
 <%  
         }
-%>             
-//console.log(liContent);        
-            $('#div_actions').replaceWith('<div class="row redes" id="div_actions">'+liContent+'</div>');
-               
+%>                    
+            $('#div_actions').replaceWith('<div class="row redes" id="div_actions">'+liContent+'</div>');    
     }
     
     function updateDiv(element){
@@ -141,7 +129,7 @@ console.log("5");
                             '<textarea id="bodyValue" rows="'+bva.length+'" cols="80" >'+
                             element.bodyValue+
                             '</textarea>'+
-                            '<a href="#" onclick="callUpdate(\'<%=modURL.toString()%>\','+element.id+',$("#bodyValue").val());return false;" class="btn btn-blanco "><span class="ion-edit rojo"></span> Guardar</a>'+
+                            '<a href="#" onclick="callUpdate(\'<%=modURL.toString()%>\','+element.id+',$("#bodyValue").val());return false;" class="btn btn-blanco "><span class="ion-edit rojo"></span> <%=paramRequest.getLocaleString("btn_save")%></a>'+
                             '</div>';
                 $('#bodyValueTar').replaceWith(lContent);
                 console.log("bodyValueTar");
@@ -192,14 +180,14 @@ console.log("5");
                             </div>
                             <hr class="rojo">
                             <div class="row redes" id="div_actions">
-                                <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span> Compartir</a>
-                                <a href="#"><span class="ion-social-twitter"></span> Tweet</a>
+                                <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span> <%=paramRequest.getLocaleString("btn_fb")%></a>
+                                <a href="#"><span class="ion-social-twitter"></span> <%=paramRequest.getLocaleString("btn_tw")%></a>
 <%      
         if(annotation.containsKey("isOwn")&&annotation.containsKey("isMod")){   
 
 %>       
             <!--textarea id="bodyValue<//%=id%>"><%=annotation.get("bodyValue")%></textarea-->
-            <a href="#" onclick="editEnable();return false;" class="btn btn-blanco "><span class="ion-edit rojo"></span> Editar anotación</a>
+            <a href="#" onclick="editEnable();return false;" class="btn btn-blanco "><span class="ion-edit rojo"></span> <%=paramRequest.getLocaleString("btn_edit")%></a>
             
 <%      
            
@@ -208,18 +196,18 @@ console.log("5");
    <%
         if (annotation.containsKey("isOwn")&&annotation.containsKey("isMod")){
 %>         
-             <a href="#" onclick="callAction('<%=delURL.toString()%>','<%=annotation.get("id")%>');return false;" class="btn btn-blanco "><span class="ion-edit rojo"></span> Borrar</a>
+             <a href="#" onclick="callAction('<%=delURL.toString()%>','<%=annotation.get("id")%>');return false;" class="btn btn-blanco "><span class="ion-trash-a rojo"></span> <%=paramRequest.getLocaleString("btn_del")%></a>
 <%      
         } 
         if(isAdmin){
             if (annotation.containsKey("isMod")){
 
 %>         
-            <a href="#" onclick="callAction('<%=accURL.toString()%>','<%=annotation.get("id")%>');return false;" class="btn btn-blanco" ><span class="ion-edit rojo"></span> Autorizar</a>             
+            <a href="#" onclick="callAction('<%=accURL.toString()%>','<%=annotation.get("id")%>');return false;" class="btn btn-blanco" ><span class="ion-checkmark-round rojo"></span> <%=paramRequest.getLocaleString("btn_acc")%></a>             
 <%
             }else{
 %>         
-             <a href="#" onclick="callAction('<%=rjcURL.toString()%>','<%=annotation.get("id")%>');return false;" class="btn btn-blanco"><span class="ion-edit rojo"></span> Desautorizar</a>
+             <a href="#" onclick="callAction('<%=rjcURL.toString()%>','<%=annotation.get("id")%>');return false;" class="btn btn-blanco"><span class="ion-close-round rojo"></span> <%=paramRequest.getLocaleString("btn_rjc")%></a>
 <%
             }
         }
@@ -239,7 +227,7 @@ console.log("5");
 %>         
             <div id="bodyValueTar" class="d-none">
                 <textarea id="bodyValue" rows="<%=bvs.length%>" cols="80" ><%=annotation.get("bodyValue")%></textarea>
-                <a href="#" onclick="callUpdate('<%=modURL.toString()%>','<%=annotation.get("id")%>',$('#bodyValue').val());return false;" class="btn btn-blanco "><span class="ion-edit rojo"></span> Guardar</a>
+                <a href="#" onclick="callUpdate('<%=modURL.toString()%>','<%=annotation.get("id")%>',$('#bodyValue').val());return false;" class="btn btn-blanco "><span class="ion-edit rojo"></span> <%=paramRequest.getLocaleString("btn_save")%></a>
             </div>    
 <%      
         }
@@ -253,7 +241,7 @@ console.log("5");
             } 
 %>
             </div>
-            <button class="btn btn-rojo" onclick="back();return false;">Regresar</button>
+            <button class="btn btn-rojo" onclick="window.location=document.referrer;return false;"><%=paramRequest.getLocaleString("btn_back")%></button>
         </div>
     </section>
 <%

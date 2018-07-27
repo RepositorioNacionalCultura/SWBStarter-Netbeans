@@ -42,7 +42,7 @@ public class Annotation implements Serializable{
     public Annotation(Document doc) {
         ObjectId oid = (ObjectId)doc.get("_id");
         this.id = oid.toString();
-        this.bodyValue = doc.getString("bodyValue").replaceAll("[^a-zA-ZñÑáéíóúÁÉÍÓÚ\\s:,;.\\/()]","");
+        this.bodyValue = doc.getString("bodyValue").replaceAll("[^a-zA-ZñÑáéíóúÁÉÍÓÚ\\s:,;.\\/()\"]","");
         this.target = doc.getString("target");
         this.creator = doc.getString("creator");
         this.created = doc.getDate("created");
