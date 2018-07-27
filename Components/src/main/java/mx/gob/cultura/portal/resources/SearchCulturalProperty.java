@@ -132,7 +132,7 @@ public class SearchCulturalProperty extends PagerAction {
             Document document = getReference(request, paramRequest.getWebPage().getWebSite());
             if (null != document) {
                 publicationList = document.getRecords();
-                setType(document.getRecords(),  paramRequest.getWebPage().getWebSite());
+                setType(document.getRecords(),  paramRequest.getWebPage().getWebSite(), 0);
                 request.setAttribute("aggs", getAggregation(document.getAggs()));
                 request.setAttribute("audio", getAgg(document.getAggs(), "audio"));
                 request.setAttribute(FULL_LIST, document.getRecords());
@@ -162,7 +162,7 @@ public class SearchCulturalProperty extends PagerAction {
                 if (null != document) {
                     publicationList = document.getRecords();
                     cassette(request, document.getTotal(), 1);
-                    setType(document.getRecords(),  paramRequest.getWebPage().getWebSite());
+                    setType(document.getRecords(),  paramRequest.getWebPage().getWebSite(), 0);
                     request.setAttribute(FULL_LIST, document.getRecords());
                     request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
                 }
@@ -192,7 +192,7 @@ public class SearchCulturalProperty extends PagerAction {
         document = getReference(request, paramRequest.getWebPage().getWebSite());
         if (null != document) {
             publicationList = document.getRecords();
-            setType(document.getRecords(),  paramRequest.getWebPage().getWebSite());
+            setType(document.getRecords(),  paramRequest.getWebPage().getWebSite(), pagenum);
             request.setAttribute(FULL_LIST, publicationList);
             request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
             page(pagenum, request);
@@ -487,11 +487,12 @@ public class SearchCulturalProperty extends PagerAction {
         }
     }
     
-    private void setType(List<Entry> references, WebSite site) {
+    private void setType(List<Entry> references, WebSite site, int page) {
         int i = 0;
+        int p = page > 0 ? page-1 : 0;
         if (null != references && !references.isEmpty()) {
             for (Entry e : references) {
-                e.setPosition(i);
+                e.setPosition(i + (p)*SEGMENT);
                 setThumbnail(e, site, 0);
                 i++;
             }
