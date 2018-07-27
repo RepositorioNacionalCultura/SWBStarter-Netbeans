@@ -28,6 +28,7 @@ import mx.gob.cultura.portal.response.Annotation;
 import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.response.Entry;
 import org.semanticwb.SWBPlatform;
+import org.semanticwb.SWBUtils;
 import org.semanticwb.model.User;
 import org.semanticwb.model.UserRepository;
 import org.semanticwb.portal.api.GenericAdmResource;
@@ -133,12 +134,13 @@ public class AnnotationsMgr extends GenericAdmResource{
                 totalPages = AnnotationMgr.getInstance().countPages(null, user.getId(),RECORDS_PER_PAGE);
             } */ 
             userid= user.getId();
-        }           
+        } 
+        String lang=user.getLanguage();
         annotation = AnnotationMgr.getInstance().findById(id, user.getId());
         RequestDispatcher dis = request.getRequestDispatcher(path);
         try {
             request.setAttribute("paramRequest", paramRequest);
-            request.setAttribute("annotation", annotationToMap(annotation, user.getId()));
+            request.setAttribute("annotation", annotationToMap(annotation, user.getId(),lang));
             request.setAttribute("isAdmin", isAdmin);
             request.setAttribute("isAnnotator", isAnnotator);
 //            request.setAttribute("currentPage", currentPage);
@@ -192,11 +194,12 @@ public class AnnotationsMgr extends GenericAdmResource{
                 totalPages = AnnotationMgr.getInstance().countPages(null, user.getId(),RECORDS_PER_PAGE);
             }            
         }    
+        String lang=user.getLanguage();
        
         RequestDispatcher dis = request.getRequestDispatcher(path);
         try {
             request.setAttribute("paramRequest", paramRequest);
-            request.setAttribute("annotations", annotationsToList(annotationList,user.getId()));
+            request.setAttribute("annotations", annotationsToList(annotationList,user.getId(),lang));
             request.setAttribute("isAdmin", isAdmin);
             request.setAttribute("isAnnotator", isAnnotator);
             request.setAttribute("currentPage", currentPage);
@@ -248,21 +251,23 @@ System.out.println("user:"+user);
     
     public void asyAccept(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException{
         String id = request.getParameter("id");
-        User user = paramRequest.getUser();         
+        User user = paramRequest.getUser();  
+        String lang=user.getLanguage();
         if(user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "")))){
             Annotation a = AnnotationMgr.getInstance().acceptAnnotation(id, user.getId());        
             PrintWriter out = response.getWriter();
             response.setHeader("Cache-Control", "no-cache");
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Content-Type", "application/json");
-            String s=mapToStringBuilder(annotationToMap(a,user.getId())).toString();
+            String s=mapToStringBuilder(annotationToMap(a,user.getId(),lang)).toString();
             out.print(s);
         }            
     }
     
     public void asyReject(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         String id = request.getParameter("id");
-        User user = paramRequest.getUser(); 
+        User user = paramRequest.getUser();
+        String lang=user.getLanguage();
         if(user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "")))){                        
             Annotation a = AnnotationMgr.getInstance().rejectAnnotation(id);
 
@@ -271,14 +276,17 @@ System.out.println("user:"+user);
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Content-Type", "application/json");
 
-            out.print(mapToStringBuilder(annotationToMap(a,user.getId())).toString());
+            out.print(mapToStringBuilder(annotationToMap(a,user.getId(),lang)).toString());
         }    
     }
     
     public void asyModify(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         String id = request.getParameter("id");
         String bodyValue = request.getParameter("bodyValue");
+        
+System.out.println(bodyValue); 
         User user = paramRequest.getUser(); 
+        String lang=user.getLanguage();
         Annotation a = AnnotationMgr.getInstance().updateAnnotation(id,bodyValue);
       
         PrintWriter out = response.getWriter();
@@ -286,7 +294,7 @@ System.out.println("user:"+user);
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Content-Type", "application/json");
 
-        out.print(mapToStringBuilder(annotationToMap(a,user.getId())).toString());
+        out.print(mapToStringBuilder(annotationToMap(a,user.getId(),lang)).toString());
     }
     
     public void asyDelete(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
@@ -376,22 +384,22 @@ System.out.println(sb);
         return entry;
     }
     
-    private List<Map<String,String>> annotationsToList(List<Annotation> annotations, String userId){
+    private List<Map<String,String>> annotationsToList(List<Annotation> annotations, String userId, String lang){
         List<Map<String,String>> list = new ArrayList<>();
         if(annotations!=null){                        
             annotations.forEach((Annotation a)->{
-                list.add(annotationToMap(a, userId));
+                list.add(annotationToMap(a, userId, lang));
             });
         }       
         return list;
     } 
     
-    private Map<String,String> annotationToMap(Annotation annotation, String userId){
+    private Map<String,String> annotationToMap(Annotation annotation, String userId,String lang){
         Map<String,String> map = new HashMap<>();
         OntModel ont = SWBPlatform.getSemanticMgr().getSchema().getRDFOntModel();
         if(annotation!=null){
             DateFormat df;
-            Locale currentLocale=new Locale("es","MX");
+            Locale currentLocale=new Locale(lang,"MX");
 
             df = DateFormat.getDateInstance(DateFormat.LONG, currentLocale);
 
@@ -468,13 +476,14 @@ System.out.println(sb);
             sb.append("\"");
             sb.append(k);
             sb.append("\":\"");
-            sb.append(v.replace("\n","\\n"));
+            sb.append(v.replace("\n","\\n").replace("\"", "\\\""));
             sb.append("\",");            
         });        
         if(',' == sb.charAt(sb.length()-1)){
             sb.deleteCharAt(sb.length()-1);
         }
         sb.append("}");
+System.out.println(sb);        
         return sb;
     }
     

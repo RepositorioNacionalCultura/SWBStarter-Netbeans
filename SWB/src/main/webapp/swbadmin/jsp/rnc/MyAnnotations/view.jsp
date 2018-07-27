@@ -21,7 +21,7 @@
     String id = (String)request.getAttribute("id");
     boolean isAnnotator = (boolean)request.getAttribute("isAnnotator");
     UserRepository ur=paramRequest.getWebPage().getWebSite().getUserRepository();
-    
+    String lang=user.getLanguage();
     
     Resource resMng=paramRequest.getWebPage().getWebSite().getResource(paramRequest.getResourceBase().getAttribute("AnnRes", "197"));
     WebPage  wpMng=paramRequest.getWebPage().getWebSite().getWebPage(paramRequest.getResourceBase().getAttribute("AnnMng", "AdmAnotaciones"));      
@@ -63,13 +63,13 @@
                                         '<p class="vermas vermas-0 vermas-rojo vermas-'+element.id+'">'+
                                         '<button aria-controls="vermas" aria-expanded="false" class="btn-vermas '+
                                         'btn-vermas-'+element.id+'" data-target="#vermas-'+element.id+'" data-toggle="collapse" '+
-                                        'type="button">Ver más <span class="ion-plus-circled"></span></button>'+
+                                        'type="button"><%=paramRequest.getLocaleString("lbl_see_more")%> <span class="ion-plus-circled"></span></button>'+
                                         '<span class="linea"></span>'+
                                         '</p>';
                                 }
                             }    
                         }
-                        lContent +='<a href="<%=wpMng.getUrl()%>?id='+element.id+'" class="btn-vermas" >Ver más <span class="ion-plus-circled"></span></a>';
+                        lContent +='<a href="<%=wpMng.getUrl()%>?id='+element.id+'" class="btn-vermas" ><%=paramRequest.getLocaleString("lbl_see_more")%> <span class="ion-plus-circled"></span></a>';
                     }                    
                     lContent += '</div>'+
                                 '</div>'; 
@@ -91,18 +91,18 @@
 %>    
     <section id="anotaciones">
         <div class="container">
-            <h3 class="oswB rojo">Anotaciones</h3>
-            <p><strong>¿Qué son las anotaciones?</strong></p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <h3 class="oswB rojo"><%=paramRequest.getLocaleString("lbl_title")%></h3>
+            <p><strong><%=paramRequest.getLocaleString("lbl_subtitle")%></strong></p>
+            <p><%=paramRequest.getLocaleString("lbl_description")%></p>
 <%
     if(user==null || !user.isSigned()){
 %>    
-            <p><a href="#modal-sesion" data-toggle="modal" data-target="#modal-sesion" class="oswM">Inicia sesión</a></p>    
-            <p><a href="/es/repositorio/Registro?beannotator" class="oswM">Registrate</a></p> 
+            <p><a href="#modal-sesion" data-toggle="modal" data-target="#modal-sesion" class="oswM"><%=paramRequest.getLocaleString("lbl_log_in")%></a></p>    
+            <p><a href="/<%=lang%>/repositorio/Registro?beannotator" class="oswM"><%=paramRequest.getLocaleString("lbl_register")%></a></p> 
 <%
     }else if(user.isSigned()&& !isAnnotator){
 %>    
-            <p><a href="/es/repositorio/Registro?beannotator" class="oswM">Registrate</a></p>     
+            <p><a href="/<%=lang%>/repositorio/Registro?beannotator" class="oswM"><%=paramRequest.getLocaleString("lbl_register")%></a></p>     
 <%
     }else if(isAnnotator){
 %>                
@@ -110,7 +110,7 @@
                 <img class="align-self-start mr-3" src="/work/models/repositorio/img/usuario.jpg">
                 <div class="media-body">
                     <textarea  name="bodyValue" id="bodyValue"></textarea>
-                    <button class="btn btn-rojo" onclick="addAnnotation();return false;">Agregar anotación</button>
+                    <button class="btn btn-rojo" onclick="addAnnotation();return false;"><%=paramRequest.getLocaleString("btn_add")%></button>
                  </div>
             </div> 
 <%
@@ -151,7 +151,7 @@
 %>                        
                         </div>
                         <p class="vermas vermas-0 vermas-rojo vermas-<%=annotation.getId()%>">
-                            <button aria-controls="vermas" aria-expanded="false" class="btn-vermas btn-vermas-<%=annotation.getId()%>" data-target="#vermas-<%=annotation.getId()%>" data-toggle="collapse" type="button">Ver más <span class="ion-plus-circled"></span></button>
+                            <button aria-controls="vermas" aria-expanded="false" class="btn-vermas btn-vermas-<%=annotation.getId()%>" data-target="#vermas-<%=annotation.getId()%>" data-toggle="collapse" type="button"><%=paramRequest.getLocaleString("lbl_see_more")%> <span class="ion-plus-circled"></span></button>
                             <span class="linea"></span>
                         </p>                        
 <%
@@ -159,7 +159,7 @@
             }   
         }
 %>                                              
-                        <a href="<%=wpMng.getUrl()%>?id=<%=annotation.getId()%>" class="btn-vermas" >Ver más <span class="ion-plus-circled"></span></a>
+                        <a href="<%=wpMng.getUrl()%>?id=<%=annotation.getId()%>" class="btn-vermas" ><%=paramRequest.getLocaleString("lbl_see_more")%> <span class="ion-plus-circled"></span></a>
                     </div>
                 </div>              
     <%      
@@ -168,9 +168,10 @@
             </div>
         </div>
 <%
-    //String admUrl=paramRequest.getWebPage().getWebSite().getResource()
-
-   //lContent += '<a href="#" onclick="callAction(\'/es/repositorio/AdmAnotaciones/_rid/197/_mto/3/_mod/acp\',\''+element.id+'\');return false;">Autorizar</a>';
+    if(isAnnotator){  
 %>            
     <p><a href="<%=urlMng.toString()%>" class="oswM">Administrar mis anotaciones</a></p>
+<%
+    }
+%>
     </section>   
