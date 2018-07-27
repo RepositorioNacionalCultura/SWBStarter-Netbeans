@@ -21,7 +21,6 @@ import org.semanticwb.model.User;
 import org.semanticwb.model.UserRepository;
 import org.semanticwb.model.WebPage;
 import org.semanticwb.platform.SemanticObject;
-import org.semanticwb.platform.SemanticObserver;
 import org.semanticwb.portal.SWBSessionObject;
 import org.semanticwb.portal.api.GenericAdmResource;
 import org.semanticwb.portal.api.SWBActionResponse;
@@ -63,18 +62,6 @@ public class UserRegistry extends GenericAdmResource {
     
     private UserRepository userRepository;
       
-    static {
-         User.sclass.registerObserver(new SemanticObserver() 
-        {
-            @Override
-            public void notify(SemanticObject obj, Object prop, String lang, String action)
-            {  
-                //System.out.println("notify:obj:"+obj+" prop:"+prop+" action:"+action);
-                //notify:obj:http://user.repositorio.swb#swb_User:13 prop:http://www.semanticwebbuilder.org/swb4/ontology#hasRole action:ADD
-                //if(obj.instanceOf())
-            }
-        });       
-    }
     @Override
     public void init() throws SWBResourceException {
         super.init(); 
@@ -98,7 +85,7 @@ public class UserRegistry extends GenericAdmResource {
             request.setAttribute("isAnnotator", isAnnotator);
             rd.include(request, response);
         } catch(ServletException se) {
-            UserRegistry.LOG.info(se.getMessage());
+            LOG.error(se.getMessage());
         }
 /*        if (null == this.confirmationActionUrl) {
             String serverUrl = request.getScheme() + "://" + request.getServerName() + ((request.getServerPort() != 80)? (":" + request.getServerPort()) : "");
@@ -181,8 +168,8 @@ public class UserRegistry extends GenericAdmResource {
                     }
                     user.getSemanticObject().getRDFResource().
                             removeAll(ont.createDatatypeProperty(UserRegistry.DATACRED_URI));
-                } catch (Exception e) {
-                    e.printStackTrace(System.err);
+                } catch (Exception ex) {
+                    LOG.error("Actualizando usuario",ex);
                 }
             
             }
@@ -193,31 +180,7 @@ public class UserRegistry extends GenericAdmResource {
 //            if (user.isSigned()) {
                 nextMode = "homeRedirect";
 //            }
-        } else if(ACTION_BE_ANNOTATOR.equals(action)||
-                //response.Action_EDIT.equals(action) ||
-                response.Action_ADD.equals(action)){ 
-System.out.println("editar agregar ser");
-//System.out.println(request.getParameter("usrFirstName"));
-//System.out.println(request.getParameter("usrLastName"));
-//System.out.println(request.getParameter("email"));
-
-
-
-
-/**
- * recibe todos los parametros
- * 
- * si es add
- * 
- * agraga os basicos
- * 
- * 
-
-
-*/
-
-            nextMode = UserRegistry.REGISTER_MODE;
-        }
+        } 
 //System.out.println("termino");        
         response.setMode(nextMode);
     }
@@ -249,7 +212,7 @@ System.out.println("editar agregar ser");
                     "';</script></head></html>");
             out.flush();
         } catch (IOException e) {
-            UserRegistry.LOG.error("Redirecting user", e);
+            LOG.error("Redirecting user", e);
         }
     }
     
@@ -266,7 +229,7 @@ System.out.println("editar agregar ser");
             }
             out.flush();
         } catch (IOException ioe) {
-            UserRegistry.LOG.error("Confirming registry", ioe);
+            LOG.error("Confirming registry", ioe);
         }
     }
     private User createProfile(HttpServletRequest request) {
@@ -457,7 +420,7 @@ System.out.println("editar agregar ser");
                     Long.toString(user.getCreated().getTime())), "UTF-8"));
             noProblem = true;
         } catch(Exception e) {
-            UserRegistry.LOG.error("Error al encriptar parametro en correo");
+            LOG.error("Error al encriptar parametro en correo");
         }
         
         System.out.println("confirmation mail:\n" + linkUrl);
@@ -476,7 +439,7 @@ System.out.println("editar agregar ser");
                         body.toString());
             }
         } catch (SocketException se) {
-            UserRegistry.LOG.error("Enviando el correo de confirmacion del registro");
+            LOG.error("Enviando el correo de confirmacion del registro");
         }
     }
     private void sendBeAnnotatorEmail(User user) {
@@ -501,7 +464,7 @@ System.out.println("sendBeAnnotatorEmail");
                         body.toString());
         //    }
         } catch (SocketException se) {
-            UserRegistry.LOG.error("Usuario desea ser anotador");
+            LOG.error("Usuario desea ser anotador");
         }
     }
     /**
@@ -527,7 +490,7 @@ System.out.println("sendBeAnnotatorEmail");
                     legitHash = SWBUtils.CryptoWrapper.passwordDigest(fulanito.getEmail() +
                             Long.toString(fulanito.getCreated().getTime()));
                 } catch(Exception e) {
-                    UserRegistry.LOG.error("Error al encriptar parametro para activar usuario");
+                    LOG.error("Error al encriptar parametro para activar usuario");
                 }
                 if (hash.equals(legitHash)) {
                     fulanito.setActive(true);

@@ -6,6 +6,10 @@
         <fieldset legend="Anotador">
             <input type="TEXT" name="AnnRol" label="*Rol del anotador:" size="50" jsrequired="true" />
         </fieldset>
+        <fieldset legend="Anotaciones">
+            <input type="TEXT" name="AnnRes" label="*Id del recurso de administración de anotaciones:" size="50" jsrequired="true" />
+            <input type="TEXT" name="AnnMng" label="*Id de sección de administración de anotaciones:" size="50" jsrequired="true" />
+        </fieldset>
         <fieldset>
             <input type="submit" name="btnSave" id="btnSave" value="Guardar"/>
             <input type="reset"  name="btnReset" id="btnReset" value="Restablecer" />
