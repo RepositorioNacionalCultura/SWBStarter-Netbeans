@@ -37,6 +37,7 @@ import static mx.gob.cultura.portal.utils.Constants.WORD;
 import static mx.gob.cultura.portal.utils.Constants.FILTER;
 import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORD;
+import static mx.gob.cultura.portal.utils.Constants.TOTAL;
 
 /**
  *
@@ -79,8 +80,9 @@ public class ArtDetail extends GenericAdmResource {
                         request.setAttribute("inext", iNext(entry.getDigitalObject(), position, "audio"));
                     SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), position);
                     if (null != request.getParameter(POSITION))
-                        path = getViewerPath(ob, SWBParamRequest.Mode_VIEW);
-                    incHits(request, entry, baseUri, uri);
+                        path = this.getViewerPath(ob, SWBParamRequest.Mode_VIEW);
+                    else path = getViewerPath(entry.getRights().getMedia().getMime(), SWBParamRequest.Mode_VIEW);
+                    incHits(entry, baseUri, uri);
                 }
                 request.setAttribute("entry", entry);
                 request.setAttribute("collection", explore(entry, baseUri));
@@ -102,8 +104,10 @@ public class ArtDetail extends GenericAdmResource {
         }else {
             ListBICRequest list = new ListBICRequest(uri);
             document = list.makeRequest();
-            if (null != document && !document.getRecords().isEmpty())
+            if (null != document && !document.getRecords().isEmpty()) {
                 entry = document.getRecords().get(0);
+                request.setAttribute(TOTAL, document.getTotal());
+            }
         }
         return entry;
     }
@@ -132,6 +136,7 @@ public class ArtDetail extends GenericAdmResource {
         request.setAttribute("back", back(request, paramRequest));
         if (null != request.getParameter(WORD)) request.setAttribute(WORD, request.getParameter(WORD));
         if (null != request.getParameter(FILTER)) request.setAttribute(FILTER, request.getParameter(FILTER));
+        if (null != request.getParameter(TOTAL)) request.setAttribute(TOTAL, Utils.toInt(request.getParameter(TOTAL)));
         if (null != request.getParameter(NUM_RECORD)) request.setAttribute(NUM_RECORD, request.getParameter(NUM_RECORD));
     }
 
@@ -156,7 +161,7 @@ public class ArtDetail extends GenericAdmResource {
                     DigitalObject ob = getDigitalObject(entry.getDigitalObject(), iDigit);
                     SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), iDigit);
                     int images = null != entry.getDigitalObject() ? entry.getDigitalObject().size() : 0;
-                    path = getViewerPath(ob, MODE_DIGITAL);
+                    path = getViewerPath(entry.getRights().getMedia().getMime(), MODE_DIGITAL);
                     if (iDigit >= 0 && iDigit <= images) {
                         request.setAttribute("iDigit", iDigit);
                         request.setAttribute("digital", entry.getDigitalObject().get(iDigit));
@@ -165,7 +170,7 @@ public class ArtDetail extends GenericAdmResource {
                         request.setAttribute("iprev", iPrev(entry.getDigitalObject(), iDigit, "audio"));
                         request.setAttribute("inext", iNext(entry.getDigitalObject(), iDigit, "audio"));
                     }
-                    incHits(request, entry, baseUri, uri);
+                    incHits(entry, baseUri, uri);
                 }
                 request.setAttribute("entry", entry);
             }
@@ -251,6 +256,35 @@ public class ArtDetail extends GenericAdmResource {
         }
         return iprev;
     }
+    
+    private String getViewerPath(String type, String mode) {
+        String path = "/swbadmin/jsp/rnc/preview.jsp";
+        if (null == type) return path;
+        if (mode.equalsIgnoreCase(MODE_DIGITAL)) {
+            if (type.equalsIgnoreCase("pdf"))
+                path = "/swbadmin/jsp/rnc/viewer/pdfdigital.jsp";
+            else if (type.equalsIgnoreCase("video"))
+                path = "/swbadmin/jsp/rnc/viewer/videodigital.jsp";
+            else if (type.equalsIgnoreCase("epub"))
+                path = "/swbadmin/jsp/rnc/viewer/epubdigital.jsp";
+            else if (type.equalsIgnoreCase("audio"))
+                path = "/swbadmin/jsp/rnc/viewer/audiodigital.jsp";
+            else
+                path = "/swbadmin/jsp/rnc/digitalobj.jsp";
+        } else {
+            if (type.equalsIgnoreCase("imagen"))
+                path = "/swbadmin/jsp/rnc/artdetail.jsp";
+            else if (type.equalsIgnoreCase("pdf"))
+                path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
+            else if (type.equalsIgnoreCase("video"))
+                path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
+            else if (type.equalsIgnoreCase("epub"))
+                path = "/swbadmin/jsp/rnc/viewer/epubdetail.jsp";
+            else if (type.equalsIgnoreCase("audio"))
+                path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
+        }
+        return path;
+    }
 
     private String getMimeType(DigitalObject digital) {
         if (null != digital && null != digital.getMediatype() && null != digital.getMediatype().getMime()) {
@@ -310,10 +344,9 @@ public class ArtDetail extends GenericAdmResource {
         return path;
     }
 
-    private void incHits(HttpServletRequest request, Entry entry, String baseUri, String uri) {
+    private void incHits(Entry entry, String baseUri, String uri) {
         try {
             if (null != entry) {
-                entry.setPosition(Utils.toInt(request.getParameter(POSITION)));
                 uri = baseUri
                         + "/api/v1/search/hits/"
                         + entry.getId();

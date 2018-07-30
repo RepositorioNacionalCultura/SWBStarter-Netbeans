@@ -460,25 +460,21 @@ public class SearchCulturalProperty extends PagerAction {
                 if (position < list.size()) {
                     DigitalObject dObj = list.get(position);
                     if (null != dObj && null != dObj.getMediatype() && null != dObj.getMediatype().getMime()) {
-                        String type = dObj.getMediatype().getMime();
-                        e.setType(type);
+                        String type = position == 0 ? e.getRights().getMedia().getMime() : dObj.getMediatype().getMime();
                         if (!existImg(e.getResourcethumbnail())) {
-                            if (type.equalsIgnoreCase("application/octet-stream")) {
-                                if (dObj.getUrl().endsWith(".zip"))
-                                    e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-zip.png");
-                                else if (dObj.getUrl().endsWith(".avi"))
-                                    e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-video.png");
-                            }else if (!type.isEmpty() && type.startsWith("video")) 
-                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-video.png");
-                            else if (type.equalsIgnoreCase("application/pdf"))
-                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-pdf.png");
-                            else if (type.equalsIgnoreCase("application/zip"))
+                            if (type.equalsIgnoreCase("zip"))
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-zip.png");
-                            else if (!type.isEmpty() && type.startsWith("audio"))
+                            else if (type.equalsIgnoreCase("avi") || type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("wav"))
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-video.png");
+                            else if (!type.isEmpty() && type.startsWith("video")) 
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-video.png");
+                            else if (type.equalsIgnoreCase("pdf"))
+                                e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-pdf.png");
+                            else if (type.equalsIgnoreCase("aiff"))
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-audio.png");
-                            else if (type.equalsIgnoreCase("text/richtext") || (!type.isEmpty() && type.startsWith("application/vnd")))
+                            else if (type.equalsIgnoreCase("conjunto de archivos") || type.equalsIgnoreCase("multimedia"))
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-multimedia.png");
-                            else if (type.equalsIgnoreCase("image/jpeg"))
+                            else if (type.equalsIgnoreCase("imagen") || type.equalsIgnoreCase("jpg") || type.equalsIgnoreCase("png"))
                                 e.setResourcethumbnail(dObj.getUrl());
                         }
                     }

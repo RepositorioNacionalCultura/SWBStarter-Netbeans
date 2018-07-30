@@ -28,6 +28,7 @@ public final class Constants {
     public static final String COUNT_BY_STAT = "COUNT_BY_STAT";
     
     public static final String WORD = "w";
+    public static final String TOTAL = "t";
     public static final String NUM_RECORD = "r";
     public static final String IDENTIFIER = "id";
     public static final String FILTER = "filter";

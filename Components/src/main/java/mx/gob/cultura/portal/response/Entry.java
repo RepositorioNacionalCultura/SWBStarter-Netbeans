@@ -37,6 +37,8 @@ public class Entry implements Serializable {
     private List<String> keywords;
     private List<String> collection;
     
+    private Rights rights;
+    private List<String> generator;
     private String resourcethumbnail;
 
     public Stats getResourcestats() {
@@ -61,6 +63,14 @@ public class Entry implements Serializable {
 
     public void setResourcetype(List<String> resourcetype) {
         this.resourcetype = resourcetype;
+    }
+    
+    public Rights getRights() {
+        return rights;
+    }
+
+    public void setRights(Rights rights) {
+        this.rights = rights;
     }
     
     public Entry() {
@@ -186,6 +196,14 @@ public class Entry implements Serializable {
     public void setLugar(String lugar) {
         this.lugar = lugar;
     }
+
+    public List<String> getGenerator() {
+        return generator;
+    }
+
+    public void setGenerator(List<String> generator) {
+        this.generator = generator;
+    }
     
     private void init() {
         DateDocument date = new DateDocument();
@@ -199,6 +217,9 @@ public class Entry implements Serializable {
         this.keywords = new ArrayList<>();
         this.description = new ArrayList<>();
         this.recordtitle = new ArrayList<>();
+        this.rights = new Rights();
+        this.rights.setMedia(new MediaType());
+        this.rights.getMedia().setMime("");
     }
     
     public String getIdentifiers() {
