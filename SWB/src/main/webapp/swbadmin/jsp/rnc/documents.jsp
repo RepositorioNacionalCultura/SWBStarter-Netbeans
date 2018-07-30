@@ -12,7 +12,7 @@
     pagesURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     WebSite site = paramRequest.getWebPage().getWebSite();
     String word = (String) request.getAttribute("word");
-    Integer total = (Integer) request.getAttribute("NUM_RECORDS_TOTAL");
+    Integer t = (Integer) request.getAttribute("NUM_RECORDS_TOTAL");
     if (null != word) wxss = Utils.suprXSS(word);
     String userLang = paramRequest.getUser().getLanguage();
     List<Entry> references = null != request.getAttribute("PAGE_LIST") ? (List<Entry>) request.getAttribute("PAGE_LIST") : new ArrayList();
@@ -59,7 +59,7 @@
                     <div class="ruta-resultado row">
 			<div class="col-12 col-sm-8 col-md-8">
                             <% if (null != wxss) { %>
-				<p class="oswL rojo"><%=total%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
+				<p class="oswL rojo"><%=t%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
                             <% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
 			</div>
                         <div class="col-12 col-sm-4 col-md-4 ordenar">
@@ -83,11 +83,11 @@
                             String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
                     %>
                             <div class="pieza-res card">
-                                <a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&n=<%=reference.getPosition()%>">
+                                <a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&w=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%>">
                                     <img src="<%=reference.getResourcethumbnail()%>" />
                                 </a>
                                 <div>
-                                    <p class="tit"><a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&n=<%=reference.getPosition()%>"><%=title.getValue()%></a></p>
+                                    <p class="tit"><a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&w=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%>"><%=title.getValue()%></a></p>
                                     <p class="autor"><a href="#"><%=creator%></a><br/><i><%=holder%></i></p>
                                     <p class="tipo"><%=resource%></p>
                                 </div>
