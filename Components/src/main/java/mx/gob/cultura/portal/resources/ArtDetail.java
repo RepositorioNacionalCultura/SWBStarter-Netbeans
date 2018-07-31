@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -118,10 +119,25 @@ public class ArtDetail extends GenericAdmResource {
         if (null != request.getParameter(IDENTIFIER)) uri.append("identifier=").append(request.getParameter(IDENTIFIER));
         else {
             if (null != request.getParameter(WORD)) uri.append("q=").append(URLEncoder.encode(Utils.getParamSearch(request.getParameter(WORD)), StandardCharsets.UTF_8.name()));
-            if (null != request.getParameter(FILTER)) uri.append("&filter=").append(request.getParameter(FILTER));
+            if (null != request.getParameter(FILTER)) uri.append(getPageFilter(request));
             if (null != request.getParameter(NUM_RECORD)) uri.append("&from=").append(request.getParameter(NUM_RECORD)).append("&size=1");
         }
         return uri.toString();
+    }
+    
+     private String getPageFilter(HttpServletRequest request) throws UnsupportedEncodingException { 
+        StringBuilder filters = new StringBuilder();
+        String [] params = request.getParameter(FILTER).split(",");
+        for (int i=0; i<params.length; i++) {
+            String [] pair = params[i].split(":");
+            filters.append(",").append(pair[0]).append(":").append(URLEncoder.encode(pair[1], StandardCharsets.UTF_8.name()));
+        }
+        if (filters.length() > 0) {
+            filters.deleteCharAt(0);
+            filters.insert(0, "&filter=");
+            request.setAttribute("filters", URLDecoder.decode(filters.toString(), StandardCharsets.UTF_8.name()));
+        }
+        return filters.toString();
     }
     
     private String getBaseUri(SWBParamRequest paramRequest) {

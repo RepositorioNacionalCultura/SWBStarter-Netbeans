@@ -47,7 +47,7 @@
                     .append("       \"songs\": [");
 		for (DigitalObject digital : digitalobjects) {
                     String type = (null != digital.getMediatype() && null != digital.getMediatype().getMime()) ?  digital.getMediatype().getMime() : "";
-                    if (!type.isEmpty() && type.startsWith("audio")) {
+                    if (!type.isEmpty() && type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3")) {
                         scriptCallVisor.append("			{")
                             .append("       \"name\": \"").append(title).append("\",")
                             .append("       \"artist\": \"").append(creator).append("\",")
@@ -230,7 +230,7 @@
                         int id = index + 1;
                         String type = (null != digital.getMediatype() && null != digital.getMediatype().getMime()) ?  digital.getMediatype().getMime() : "";
                         String song = (null != digital.getMediatype() && null != digital.getMediatype().getName()) ?  digital.getMediatype().getName() : "";
-                        if (!type.isEmpty() && type.startsWith("audio")) {
+                        if (!type.isEmpty() && type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3")) {
 		%>
                             <div class="song amplitude-song-container amplitude-play-pause" amplitude-song-index="<%=index%>">
                                 <span class="song-number"><%=id%>.</span>
