@@ -10,16 +10,17 @@
     if (null != request.getAttribute("mode")) mode = (String)request.getAttribute("mode");
     Integer last = (Integer)request.getAttribute("LAST_RECORD");
     Integer first = (Integer)request.getAttribute("FIRST_RECORD");  
-    Integer total = (Integer)request.getAttribute("NUM_RECORDS_TOTAL");
+    Integer t = (Integer)request.getAttribute("NUM_RECORDS_TOTAL");
     String word = null != request.getAttribute("word") ? Utils.suprXSS((String)request.getAttribute("word")) : "";
     String uri = !word.isEmpty() ? "&w="+word+"&word="+word+"&leap="+first : "";
+    String fs = null != request.getAttribute("filters") ? "&fs="+request.getAttribute("filters") : "";
 %>
 <% if (!references.isEmpty()) {  %>
     <div id="references">
         <div class="ruta-resultado row">
             <div class="col-12 col-sm-8 col-md-8">
 		<% if (null != word) { %>
-                    <p class="oswL rojo"><%=first%>-<%=last%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=total%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=word%></span></p>
+                    <p class="oswL rojo"><%=first%>-<%=last%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=t%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=word%></span></p>
 		<% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
             </div>
             <div class="col-12 col-sm-4 col-md-4 ordenar">
@@ -42,11 +43,11 @@
 		String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
         %>
                 <div class="pieza-res card">
-                    <a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%><%=uri%>">
+                    <a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%><%=fs%><%=uri%>">
                         <img src="<%=reference.getResourcethumbnail()%>" />
                     </a>
                     <div>
-                        <p class="tit"><a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%><%=uri%>"><%=title.getValue()%></a></p>
+                        <p class="tit"><a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%><%=fs%><%=uri%>"><%=title.getValue()%></a></p>
                         <p class="autor"><a href="#"><%=creator%></a><br/><i><%=holder%></i></p>
                         <p class="tipo"><%=resource%></p>
                     </div>

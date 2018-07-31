@@ -20,11 +20,15 @@
     StringBuilder divVisor = new StringBuilder();
     List<DigitalObject> digitalobjects = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
+    Integer r = null != request.getParameter("r") ? Utils.toInt(request.getParameter("r")) + 1 : 0;
+    String w = null != request.getParameter("w") ? request.getParameter("w") : "";
+    Integer iprev = null != request.getParameter("r") ? Utils.toInt(request.getParameter("r")) : 0;
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
     String userLang = paramRequest.getUser().getLanguage();
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
+    Integer t = null != request.getAttribute("t") ? (Integer)request.getAttribute("t") : 0;
     if (null != entry) {
         if (null != entry.getDigitalObject()) {
             int n = 0;
@@ -38,48 +42,48 @@
             if (null == digital.getUrl()) digital.setUrl("");
             divVisor.append("<div class=\"tablaVisualizaCont\">")
                 .append("	<div class=\"container\">")
-                .append("           <h3 class=\"oswM\">").append(title).append("</h3>")
-                .append("           <p class=\"oswL\">").append(creator).append("</p>")
+                .append("		<h3 class=\"oswM\">").append(title).append("</h3>")
+                .append("		<p class=\"oswL\">").append(creator).append("</p>")
                 .append("		<div class=\"tablaVisualizaTab\">")
-                .append("                   <table>")
-                .append("			<tr>")
-                .append("                           <th style=\"text-align:left; width:60%;\">")
-                .append("				Nombre")
-                .append("                           </th>")
-                .append("                           <th style=\"text-align:left;\">")
-                .append("				Formato")
-                .append("                           </th>")
-                .append("                           <th style=\"text-align:left;\">")
-                .append("				Enlace")
-                .append("                           </th>")
-                .append("			</tr>");
+                .append("			<table>")
+                .append("				<tr>")
+                .append("					<th style=\"text-align:left; width:60%;\">")
+                .append("						Nombre")
+                .append("					</th>")
+                .append("					<th style=\"text-align:left;\">")
+                .append("						Formato")
+                .append("					</th>")
+                .append("					<th style=\"text-align:left;\">")
+                .append("						Enlace")
+                .append("					</th>")
+                .append("				</tr>");
                 for (DigitalObject ob : digitalobjects) {
                     String action = ob.getMediatype().getMime().startsWith("audio") ? "Escuchar" : "Ver";
                     divVisor.append("		<tr>")
-                        .append("                   <td style=\"text-align:left; width:60%;\">")
+                        .append("					<td style=\"text-align:left; width:60%;\">")
                         .append(ob.getMediatype().getName())
-                        .append("                   </td>")
-                        .append("                   <td style=\"text-align:left;\">")
+                        .append("					</td>")
+                        .append("					<td style=\"text-align:left;\">")
                         .append(ob.getMediatype().getMime())
-                        .append("                   </td>")
-                        .append("                   <td style=\"text-align:left;\">");
-                    if (ob.getUrl().endsWith(".avi") || ob.getUrl().endsWith(".zip") || ob.getUrl().endsWith(".rtf") || ob.getUrl().endsWith(".docx")) {
+                        .append("					</td>")
+                        .append("					<td style=\"text-align:left;\">");
+                    if (ob.getUrl().endsWith(".avi") || ob.getUrl().endsWith(".zip") || ob.getUrl().endsWith(".rtf") || ob.getUrl().endsWith(".docx") || ob.getUrl().endsWith(".aiff")) {
                         action = "Descargar";
                         divVisor.append("<a href='").append(ob.getUrl()).append("'>").append(action).append("</a>");
                     } else {
-                        divVisor.append("<a href=\"/").append(userLang).append("/")
-                        .append(site.getId()).append("/").append("detalle?id=").append(entry.getId()).append("&n=").append(n).append("\">").append(action).append("</a>");
+                        divVisor.append("						<a href=\"/").append(userLang).append("/")
+                            .append(site.getId()).append("/").append("detalle?id=").append(entry.getId()).append("&n=").append(n).append("\">").append(action).append("</a>");
                     }
-                    divVisor.append("               </td>")
-                        .append("		</tr>");
+                    divVisor.append("					</td>")
+                        .append("				</tr>");
                     n++;
                 }
-            divVisor.append("           </table>")
-                .append("           </div>")
-                .append("       </div>")
-                .append("   </div>");
+                divVisor.append("	</table>")
+                    .append("       </div>")
+                    .append("	</div>")
+                    .append("</div>");
+            }
         }
-    }
 %>
 <section id="detalle">
     <div id="idetail" class="detalleimg">
@@ -102,21 +106,21 @@
                 <div class="explo3 row">
                     <div class="col-6">
                         <%
-                            if (iDigit > 1) {
+                            if (iprev > 0) {
                         %>
-                        <span class="ion-chevron-left"></span> <%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%>
+                                <a href="#" onclick="nextResult('/<%=userLang%>/<%=site.getId()%>/detalle?w=<%=w%>&r=<%=iprev%>&t=<%=t%>');"><%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%> <span class="ion-chevron-left"></span></a>
                         <%
                             }
                         %>
                     </div>
                     <div class="col-6">
                         <%
-                            if (iDigit < images) {
+                            if (iDigit < t) {
                         %>
-                        <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', 0);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
-                            <%
-                                }
-                            %>
+                                <a href="#" onclick="nextResult('/<%=userLang%>/<%=site.getId()%>/detalle?w=<%=w%>&r=<%=r%>&t=<%=t%>');"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
+                        <%
+                            }
+                        %>
                     </div>
                 </div>
             </div>
@@ -134,27 +138,27 @@
 </section>
 <section id="palabras">
     <div class="container">
-	<div class="row">
+        <div class="row">
             <jsp:include page="keywords.jsp" flush="true"/>
-	</div>
+        </div>
     </div>
 </section>
 <div id="dialog-message-tree" title="error">
     <p>
-        <div id="dialog-text-tree"></div>
+	<div id="dialog-text-tree"></div>
     </p>
 </div>
 
 <div id="dialog-success-tree" title="éxito">
     <p>
-        <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
+	<span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
 	<div id="dialog-msg-tree"></div>
     </p>
 </div>
 
 <div id="addCollection">
     <p>
-        <div id="addCollection-tree"></div>
+	<div id="addCollection-tree"></div>
     </p>
 </div>
 
