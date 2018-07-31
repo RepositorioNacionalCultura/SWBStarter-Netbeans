@@ -156,6 +156,17 @@ public class ArtDetail extends GenericAdmResource {
         if (null != request.getParameter(TOTAL)) request.setAttribute(TOTAL, Utils.toInt(request.getParameter(TOTAL)));
         if (null != request.getParameter(NUM_RECORD)) request.setAttribute(NUM_RECORD, request.getParameter(NUM_RECORD));
     }
+    
+    private String back(HttpServletRequest request, SWBParamRequest paramRequest) throws java.io.IOException {
+        StringBuilder params = new StringBuilder();
+        int p = ((null != request.getParameter("leap") ? Utils.toInt(request.getParameter("leap")) : 0) / 8) + 1;
+        params.append("/").append(paramRequest.getUser().getLanguage()).append("/").append(paramRequest.getWebPage().getWebSiteId()).append("/resultados");
+        if (null != request.getParameter("word")) params.append("?word=").append(request.getParameter("word"));
+        if (null != request.getParameter(FILTER)) params.append("&filter=").append(request.getParameter(FILTER));
+        if (p > 1) params.append("&p=").append(p);
+        String back = (null != request.getParameter("word")) ? "javascript:location.replace('" + params.toString() + "');" : "javascript:history.go(-1)";
+        return back;
+    }
 
     public void doDigital(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
         int iDigit = 0;
@@ -235,12 +246,6 @@ public class ArtDetail extends GenericAdmResource {
             LOG.error(se);
         }
         return null != document ? document.getRecords() : new ArrayList<>();
-    }
-
-    private String back(HttpServletRequest request, SWBParamRequest paramRequest) throws java.io.IOException {
-        int p = ((null != request.getParameter("leap") ? Utils.toInt(request.getParameter("leap")) : 0) / 8) + 1;
-        String back = (p > 1) ? "javascript:location.replace('/" + paramRequest.getUser().getLanguage() + "/" + paramRequest.getWebPage().getWebSiteId() + "/resultados?word=" + request.getParameter("word") + "&p=" + p + "');" : "javascript:history.go(-1)";
-        return back;
     }
 
     private DigitalObject getDigitalObject(List<DigitalObject> list, int position) {
