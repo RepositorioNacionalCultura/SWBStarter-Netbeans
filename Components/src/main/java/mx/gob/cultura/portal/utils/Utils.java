@@ -148,6 +148,23 @@ public class Utils {
         return bson;
     }
     
+    public static String getParamSearch(String words) {
+        StringBuilder parameters = new StringBuilder();
+        String fix = words.replaceAll(",", " ").replaceAll(" ,", " ").replaceAll(", ", " ");
+        String[] search = fix.split(" ");
+        if (search.length > 0) {
+            for (int i=0; i<search.length; i++) {
+                parameters.append("%2B");
+                String param  = search[i].trim();
+                parameters.append(param);
+            }
+            if (parameters.length() > 1)
+                parameters.delete(0, 3);
+            return parameters.toString();
+        }else
+            return words;
+    }
+    
     /**
      * Genera un tag script para disponer de la funcionalidad para compartir contenido de un sitio Web.
      * Se requiere que el recurso que incluya esta funcion, se ejecute en una plantilla de SWB que

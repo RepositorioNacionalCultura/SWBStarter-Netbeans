@@ -35,6 +35,7 @@ import mx.gob.cultura.portal.response.DigitalObject;
 import mx.gob.cultura.portal.response.Document;
 import static mx.gob.cultura.portal.utils.Constants.WORD;
 import static mx.gob.cultura.portal.utils.Constants.FILTER;
+import static mx.gob.cultura.portal.utils.Constants.IDENTIFIER;
 import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORD;
 import static mx.gob.cultura.portal.utils.Constants.TOTAL;
@@ -46,7 +47,6 @@ import static mx.gob.cultura.portal.utils.Constants.TOTAL;
 public class ArtDetail extends GenericAdmResource {
 
     private static final String POSITION = "n";
-    private static final String IDENTIFIER = "id";
     private static final String MODE_VISOR = "VISOR";
     private static final String MODE_DIGITAL = "DIGITAL";
     private static final Logger LOG = SWBUtils.getLogger(ArtDetail.class);
@@ -112,12 +112,13 @@ public class ArtDetail extends GenericAdmResource {
         return entry;
     }
     
-    private String getParamUri(String base, HttpServletRequest request) {
+    private String getParamUri(String base, HttpServletRequest request) throws UnsupportedEncodingException {
         StringBuilder uri = new StringBuilder(base);
         uri.append("/api/v1/search?");
         if (null != request.getParameter(IDENTIFIER)) uri.append("identifier=").append(request.getParameter(IDENTIFIER));
         else {
-            if (null != request.getParameter(WORD)) uri.append("q=").append(request.getParameter(WORD));
+            if (null != request.getParameter(WORD)) uri.append("q=").append(URLEncoder.encode(Utils.getParamSearch(request.getParameter(WORD)), StandardCharsets.UTF_8.name()));
+            if (null != request.getParameter(FILTER)) uri.append("&filter=").append(request.getParameter(FILTER));
             if (null != request.getParameter(NUM_RECORD)) uri.append("&from=").append(request.getParameter(NUM_RECORD)).append("&size=1");
         }
         return uri.toString();

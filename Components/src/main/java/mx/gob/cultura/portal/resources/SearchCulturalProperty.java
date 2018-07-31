@@ -233,7 +233,7 @@ public class SearchCulturalProperty extends PagerAction {
         String uri = baseUri + "/api/v1/search?q=";
         try {
             filters = null != request.getParameter("filter") ? getPageFilter(request) : getFilters(request);
-            uri += URLEncoder.encode(getParamSearch(words), StandardCharsets.UTF_8.name());
+            uri += URLEncoder.encode(Utils.getParamSearch(words), StandardCharsets.UTF_8.name());
             uri += filters;
         } catch (UnsupportedEncodingException uex) {
             LOG.error(uex);
@@ -434,23 +434,6 @@ public class SearchCulturalProperty extends PagerAction {
         range.append(String.valueOf(s));
         range.append("&size=").append(SEGMENT);
         return range.toString();
-    }
-
-    private String getParamSearch(String words) {
-        StringBuilder parameters = new StringBuilder();
-        String fix = words.replaceAll(",", " ").replaceAll(" ,", " ").replaceAll(", ", " ");
-        String[] search = fix.split(" ");
-        if (search.length > 0) {
-            for (int i=0; i<search.length; i++) {
-                parameters.append("%2B");
-                String param  = search[i].trim();
-                parameters.append(param);
-            }
-            if (parameters.length() > 1)
-                parameters.delete(0, 3);
-            return parameters.toString();
-        }else
-            return words;
     }
     
     public static void setThumbnail(Entry e, WebSite site, int position) {
