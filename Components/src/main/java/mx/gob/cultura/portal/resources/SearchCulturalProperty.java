@@ -264,7 +264,7 @@ public class SearchCulturalProperty extends PagerAction {
         if (filters.length() > 0) {
             filters.deleteCharAt(0);
             filters.insert(0, "&filter=");
-            request.setAttribute("filters", filters.toString());
+            request.setAttribute("filters", URLDecoder.decode(filters.toString(), StandardCharsets.UTF_8.name()));
         }
         return filters.toString();
     }
