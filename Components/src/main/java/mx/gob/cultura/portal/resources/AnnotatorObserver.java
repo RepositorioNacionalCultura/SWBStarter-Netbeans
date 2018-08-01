@@ -45,44 +45,28 @@ public class AnnotatorObserver implements SWBAppObject{
                     WebSite wsite=SWBContext.getWebSite("repositorio");
                     UserRepository urep=wsite.getUserRepository();
                     String roleId=wsite.getModelProperty("annotator_role_id");
+                    String body =wsite.getModelProperty("annotator_mail_msg");
+                    String subject =wsite.getModelProperty("annotator_mail_sub");
                     if(roleId==null){
                         roleId="Anotador";
                     }
+                    if(subject==null){
+                        subject="Bienvenid@ como anotador";
+                    }
+                    if(body==null){
+                        body="Estimad@ <br> {username} <br> has sido aceptad@ como anotador del Repositotio Digital del Patrimonio Cultural Nacional";
+                    }                    
                     Role role=urep.getRole(roleId);
+                    body=body.replace("{username}", user.getFullName());
                     if(user.hasRole(role)){
                         try {
-                            SWBUtils.EMAIL.sendBGEmail(user.getEmail(), "Bienvenid@ como anotador", "Estimad@ \n "+user.getFullName()+"\n has sido aceptad@ como anotador del Repositotio Digital del Patrimonio Cultural Nacional");
+                            SWBUtils.EMAIL.sendBGEmail(user.getEmail(), subject, body);
                         } catch (SocketException ex) {
                             LOG.error("Error al enviar correo de aceptacion como anotador", ex);
                         }
                                 
                     }
                 }
-/*                
-                
-                if(obj.getGenericInstance() instanceof User){
-                    System.out.println("Obvio!!!");
-                    User user=(User)obj.getGenericInstance();
-                    System.out.println(user.getFullName());
-                }
-                SemanticProperty swb_hasRole=SWBPlatform.getSemanticMgr().getVocabulary().getSemanticProperty("http://www.semanticwebbuilder.org/swb4/ontology#hasRole");
-                if(prop instanceof SemanticProperty){
-                    System.out.println("Obvio!!!");
-                    SemanticProperty semanticProperty=(SemanticProperty)prop;
-                    System.out.println(semanticProperty.getName());
-                    System.out.println(semanticProperty.getSemanticObject());                    
-                    for(Statement st:semanticProperty.getRDFProperty().listProperties().toList()){
-                        System.out.println(st);
-                        //System.out.println(st.getLiteral());                                       
-                        //System.out.println(st.getString());                    
-                    }
-                    System.out.println();
-                }                
-                if("ADD".equals(action)){
-                    System.out.println(obj.getClass());
-                    System.out.println(prop.getClass());
-                }
-*/
             }
         }); 
     }
