@@ -12,7 +12,7 @@
     Integer first = (Integer)request.getAttribute("FIRST_RECORD");  
     Integer t = (Integer)request.getAttribute("NUM_RECORDS_TOTAL");
     String word = null != request.getAttribute("word") ? Utils.suprXSS((String)request.getAttribute("word")) : "";
-    String uri = !word.isEmpty() ? "&w="+word+"&word="+word+"&leap="+first : "";
+    String uri = !word.isEmpty() ? "&word="+word+"&leap="+first : "";
     String fs = null != request.getAttribute("filters") ? "&fs="+request.getAttribute("filters") : "";
 %>
 <% if (!references.isEmpty()) {  %>

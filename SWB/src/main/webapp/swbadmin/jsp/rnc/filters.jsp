@@ -103,6 +103,9 @@
             ele.focus();
             alert('<%=paramRequest.getLocaleString("usrmsg_view_search_year_max_error")%> ' + max);
 	}
+        if (ele.name == 'bx1' && validateRange(document.getElementById("bx1").value, document.getElementById("bx2").value)) {
+            filter();
+	}
         if (ele.name == 'bx2' && validateRange(document.getElementById("bx1").value, document.getElementById("bx2").value)) {
             filter();
 	}

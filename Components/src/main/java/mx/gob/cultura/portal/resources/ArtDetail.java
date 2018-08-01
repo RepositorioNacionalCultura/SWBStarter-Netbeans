@@ -179,9 +179,8 @@ public class ArtDetail extends GenericAdmResource {
         try {
             if (null != request.getParameter(IDENTIFIER)) {
                 uri += request.getParameter(IDENTIFIER);
-                if (null != request.getParameter(POSITION)) {
+                if (null != request.getParameter(POSITION))
                     iDigit = Utils.toInt(request.getParameter(POSITION));
-                }
                 GetBICRequest req = new GetBICRequest(uri);
                 Entry entry = req.makeRequest();
                 if (null != entry) {
@@ -189,7 +188,9 @@ public class ArtDetail extends GenericAdmResource {
                     DigitalObject ob = getDigitalObject(entry.getDigitalObject(), iDigit);
                     SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), iDigit);
                     int images = null != entry.getDigitalObject() ? entry.getDigitalObject().size() : 0;
-                    path = getViewerPath(entry.getRights().getMedia().getMime(), MODE_DIGITAL);
+                    if (null != request.getParameter(POSITION))
+                        path = getViewerPath(ob, MODE_DIGITAL);
+                    else path = getViewerPath(entry.getRights().getMedia().getMime(), MODE_DIGITAL);
                     if (iDigit >= 0 && iDigit <= images) {
                         request.setAttribute("iDigit", iDigit);
                         request.setAttribute("digital", entry.getDigitalObject().get(iDigit));
@@ -319,49 +320,30 @@ public class ArtDetail extends GenericAdmResource {
     private String getViewerPath(DigitalObject digital, String mode) {
         String path = "/swbadmin/jsp/rnc/artdetail.jsp";
         if (null == digital) return path;
-        String mimeType = getMimeType(digital);
-        String url = null != digital.getUrl() ? digital.getUrl() : "";
-        if (null == mimeType || mimeType.isEmpty()) {
-            return path;
-        }
+        String type = getMimeType(digital);
+        if (null == type || type.isEmpty()) return path;
         if (mode.equalsIgnoreCase(MODE_DIGITAL)) {
-            if (mimeType.equalsIgnoreCase("application/pdf")) {
+            if (type.equalsIgnoreCase("pdf"))
                 path = "/swbadmin/jsp/rnc/viewer/pdfdigital.jsp";
-            } else if (mimeType.equalsIgnoreCase("application/octet-stream")) {
-                if (url.endsWith(".zip")) {
-                    path = "/swbadmin/jsp/rnc/digitalobj.jsp";
-                }else if (url.endsWith(".avi") || url.endsWith(".mp4") || url.endsWith(".MP4")) {
-                    path = "/swbadmin/jsp/rnc/viewer/videodigital.jsp";
-                }else if (url.endsWith(".epub")) {
-                    path = "/swbadmin/jsp/rnc/viewer/epubdigital.jsp";
-                }
-            } else if (mimeType.equalsIgnoreCase("video/mp4") || mimeType.equalsIgnoreCase("video/quicktime") || mimeType.equalsIgnoreCase("video/x-msvideo") || mimeType.equalsIgnoreCase("video/mpeg")) {
+            else if (type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("mov"))
                 path = "/swbadmin/jsp/rnc/viewer/videodigital.jsp";
-            } else if (mimeType.equalsIgnoreCase("application/epub+zip")) {
+            else if (type.equalsIgnoreCase("epub"))
                 path = "/swbadmin/jsp/rnc/viewer/epubdigital.jsp";
-            } else if (!mimeType.isEmpty() && mimeType.startsWith("audio")) {
+            else if (type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
                 path = "/swbadmin/jsp/rnc/viewer/audiodigital.jsp";
-            } else {
+            else
                 path = "/swbadmin/jsp/rnc/digitalobj.jsp";
-            }
         } else {
-            if (mimeType.equalsIgnoreCase("application/pdf")) {
+            if (type.equalsIgnoreCase("jpg") || type.equalsIgnoreCase("png"))
+                path = "/swbadmin/jsp/rnc/artdetail.jsp";
+            else if (type.equalsIgnoreCase("pdf"))
                 path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
-            } else if (mimeType.equalsIgnoreCase("application/octet-stream")) {
-                if (url.endsWith(".zip")) {
-                    path = "/swbadmin/jsp/rnc/artdetail.jsp";
-                } else if (url.endsWith(".avi") || url.endsWith(".mp4") || url.endsWith(".MP4")) {
-                    path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
-                }else if (url.endsWith(".epub")) {
-                    path = "/swbadmin/jsp/rnc/viewer/epubdetail.jsp";
-                }
-            } else if (mimeType.equalsIgnoreCase("video/mp4") || mimeType.equalsIgnoreCase("video/quicktime") || mimeType.equalsIgnoreCase("video/x-msvideo") || mimeType.equalsIgnoreCase("video/mpeg")) {
+            else if (type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("mov"))
                 path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
-            } else if (mimeType.equalsIgnoreCase("application/epub+zip")) {
+            else if (type.equalsIgnoreCase("epub"))
                 path = "/swbadmin/jsp/rnc/viewer/epubdetail.jsp";
-            } else if (!mimeType.isEmpty() && mimeType.startsWith("audio")) {
+            else if (type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
                 path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
-            }
         }
         return path;
     }

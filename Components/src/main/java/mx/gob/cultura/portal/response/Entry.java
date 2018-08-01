@@ -226,10 +226,10 @@ public class Entry implements Serializable {
         StringBuilder identifiers = new StringBuilder();
         if (null != this.identifier) {
             for (Identifier ide : this.identifier) {
-		identifiers.append(ide.getValue()).append("|");
+		identifiers.append(ide.getValue()).append(" |");
             }
             if (identifiers.length() > 0)
-                identifiers.delete(identifiers.length()-1, identifiers.length());
+                identifiers.delete(identifiers.length()-2, identifiers.length());
 	}
         return identifiers.toString();
     }
