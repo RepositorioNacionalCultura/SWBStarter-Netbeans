@@ -14,11 +14,8 @@
     //String swbAction = paramsRequest.getUser().isSigned() ? "editing" : "creating";
     User user = paramsRequest.getUser();
     SWBResourceURL url = paramsRequest.getActionUrl();   
-//System.out.println("-------------------------------------------view.jsp");
+System.out.println("-------------------------------------------view.jsp");
     
-    for(Statement st:user.getSemanticObject().getRDFResource().listProperties().toList()){
-//System.out.println(st);        
-    }
     boolean editMode;  
     boolean isAnnotator = (boolean)request.getAttribute("isAnnotator");
     boolean toBeAnnotator =false;
@@ -34,14 +31,19 @@
         toBeAnnotator=true;        
     }
     //String btnChngImage;
+    String errorCode = null;
     String errorMsg = null;
-    
     if (null != request.getParameter("condition") && !request.getParameter("condition").isEmpty()) {
-//System.out.println("jsp:condition:"+request.getParameter("condition"));        
-        errorMsg = paramsRequest.getLocaleString(request.getParameter("condition"));
-//System.out.println("jsp:errorMsg:"+errorMsg);        
+System.out.println("jsp:condition:"+request.getParameter("condition"));        
+        errorCode = request.getParameter("condition");
+        if ("msgSent".equals(errorCode)){
+            errorMsg = paramsRequest.getLocaleString("msgSent");
+        }else{
+            errorMsg = paramsRequest.getLocaleString(errorCode);
+        }    
+System.out.println("jsp:errorMsg:"+errorMsg);        
     }else{
-//System.out.println("jsp:sin condition:"); 
+System.out.println("jsp:sin condition:"); 
     }
 %>
 <div class="container editarPerfil">

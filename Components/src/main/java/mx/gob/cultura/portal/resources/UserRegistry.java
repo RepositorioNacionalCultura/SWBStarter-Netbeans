@@ -7,7 +7,9 @@ import java.io.PrintWriter;
 import java.net.SocketException;
 import java.net.URLEncoder;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 import org.semanticwb.Logger;
 import javax.security.auth.Subject;
 import javax.servlet.RequestDispatcher;
@@ -223,8 +225,8 @@ public class UserRegistry extends GenericAdmResource {
             response.setContentType("Text/html");
             PrintWriter out = response.getWriter();
             if (request.getParameter("condition") == null || request.getParameter("condition").isEmpty()) {
-                out.print(paramsRequest.getLocaleString("msgSent"));
-            } else {
+                out.print(paramsRequest.getLocaleString("msgSuccess"));
+            } else {                
                 out.print(paramsRequest.getLocaleString(request.getParameter("condition")));
             }
             out.flush();
@@ -404,11 +406,16 @@ public class UserRegistry extends GenericAdmResource {
         StringBuilder linkUrl = new StringBuilder(128);
         boolean noProblem = false;
         
-        body.append("Estimad@ ");
-        body.append(user.getName());
-        body.append("\nPara completar el registro de usuario en el Repositotio Digital del Patrimonio Cultural Nacional, ");
-        body.append("es necesario que confirmes tu cuenta de correo, haciendo clic en la siguiente liga: \n");
-        body.append("<a href=\"");
+        //emailSubRegAck
+        body.append(this.getResourceBase().getAttribute("emailMsgRegAck", "{link}"));
+        
+        replaceString(body,"{username}",user.getFullName());
+        
+        //body.append("Estimad@ ");
+        //body.append(user.getName());
+        //body.append("\nPara completar el registro de usuario en el Repositotio Digital del Patrimonio Cultural Nacional, ");
+        //body.append("es necesario que confirmes tu cuenta de correo, haciendo clic en la siguiente liga: \n");
+        //body.append("<a href=\"");
         
         linkUrl.append(this.confirmationActionUrl);
         linkUrl.append("?account=");
@@ -423,19 +430,20 @@ public class UserRegistry extends GenericAdmResource {
             LOG.error("Error al encriptar parametro en correo");
         }
         
-        System.out.println("confirmation mail:\n" + linkUrl);
-        body.append(linkUrl);
-        body.append("\">Confirmar registro</a>\n");
-        body.append("Si no funciona el v&iacute;nculo anterior, por favor ");
-        body.append("copia la siguiente ruta en tu navegador para confirmar tu registro:\n\n");
-        body.append(linkUrl);
-        body.append("\n\n¡Por tu atenci&oacute;n, muchas gracias!");
+        System.out.println("Confirmation registry mail:\n" + linkUrl);
+        replaceString(body,"{link}",linkUrl.toString());
+        //body.append(linkUrl);
+        //body.append("\">Confirmar registro</a>\n");
+        //body.append("Si no funciona el v&iacute;nculo anterior, por favor ");
+        //body.append("copia la siguiente ruta en tu navegador para confirmar tu registro:\n\n");
+        //body.append(linkUrl);
+        //body.append("\n\n¡Por tu atenci&oacute;n, muchas gracias!");
         //body.append("");
         
         try {
             if (noProblem) {
                 SWBUtils.EMAIL.sendBGEmail(user.getEmail(),
-                        "Confirmacion de registro de usuario",
+                        this.getResourceBase().getAttribute("emailSubRegAck", "Confirmacion de registro de usuario"),
                         body.toString());
             }
         } catch (SocketException se) {
@@ -445,24 +453,21 @@ public class UserRegistry extends GenericAdmResource {
     private void sendBeAnnotatorEmail(User user) {
 System.out.println("sendBeAnnotatorEmail");        
         StringBuilder body = new StringBuilder(256);
-        StringBuilder linkUrl = new StringBuilder(128);
+        //StringBuilder linkUrl = new StringBuilder(128);
         //boolean noProblem = false;
-        
+        //emailSubAnnNtf
         OntModel ont = SWBPlatform.getSemanticMgr().getSchema().getRDFOntModel();
-        body.append("El usuario ");
-        body.append(user.getName());
-        body.append("\n");
-        body.append(user.getSemanticObject().getRDFResource().getProperty(ont.createDatatypeProperty(UserRegistry.POSITION_TITLE_URI)).getString());
-        body.append("\n");
-        body.append(user.getSemanticObject().getRDFResource().getProperty(ont.createDatatypeProperty(UserRegistry.ORGANITATION_NAME_URI)).getString());
-        body.append("\n desea ser anotador");
+        
+        body.append(this.getResourceBase().getAttribute("emailMsgAnnNtf", "{link}"));
+        
+        replaceString(body,"{username}",user.getFullName());
+        replaceString(body,"{titlejob}",user.getSemanticObject().getRDFResource().getProperty(ont.createDatatypeProperty(UserRegistry.POSITION_TITLE_URI)).getString());
+        replaceString(body,"{institution}",user.getSemanticObject().getRDFResource().getProperty(ont.createDatatypeProperty(UserRegistry.ORGANITATION_NAME_URI)).getString());
         
         try {
-        //    if (noProblem) {
-                SWBUtils.EMAIL.sendBGEmail(this.getResourceBase().getAttribute("email", "admnl@cultura.gob.mx"),
-                        "Usuario desea ser anotador",
+            SWBUtils.EMAIL.sendBGEmail(this.getResourceBase().getAttribute("email", "anotador@cultura.gob.mx"),
+                        this.getResourceBase().getAttribute("emailSubAnnNtf", "Notificación"),
                         body.toString());
-        //    }
         } catch (SocketException se) {
             LOG.error("Usuario desea ser anotador");
         }
@@ -501,4 +506,41 @@ System.out.println("sendBeAnnotatorEmail");
         }
         return fulanito;
     }
+    public void replaceString(StringBuilder sb,String toReplace,String replacement) {      
+        int index;
+        while ((index = sb.lastIndexOf(toReplace)) != -1) {
+            sb.replace(index, index + toReplace.length(), replacement);
+        }
+    }
+    
+    /*public static void sendBGEmail(String toEmail, String subject, String body)
+                throws java.net.SocketException
+        {
+
+            ArrayList acol = new ArrayList();
+            if (toEmail != null && toEmail.indexOf(";") > 0)
+            {
+                StringTokenizer strTokens = new StringTokenizer(toEmail, ";");
+                while (strTokens.hasMoreTokens())
+                {
+                    String token = strTokens.nextToken();
+                    if (token == null)
+                    {
+                        continue;
+                    }
+                    javax.mail.internet.InternetAddress address = new javax.mail.internet.InternetAddress();
+                    address.setAddress(token);
+                    acol.add(address);
+                }
+            }
+            else if (toEmail != null)
+            {
+                javax.mail.internet.InternetAddress address = new javax.mail.internet.InternetAddress();
+                address.setAddress(toEmail);
+                acol.add(address);
+            }
+            SWBUtils.EMAIL.sendBGEmail(SWBUtils.EMAIL.adminEmail, null, acol,
+                    null, null, subject, null, body, SWBUtils.EMAIL.smtpuser,
+                    SWBUtils.EMAIL.smtppassword, null);
+        }*/
 }
