@@ -16,9 +16,9 @@
     DigitalObject digital = null;
     List<Title> titles = new ArrayList<>();
     List<String> creators = new ArrayList<>();
-	StringBuilder divVisor = new StringBuilder();
-	StringBuilder scriptHeader = new StringBuilder();
-	StringBuilder scriptCallVisor = new StringBuilder();
+    StringBuilder divVisor = new StringBuilder();
+    StringBuilder scriptHeader = new StringBuilder();
+    StringBuilder scriptCallVisor = new StringBuilder();
     List<DigitalObject> digitalobjects = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
 	Integer r = null != request.getParameter("r") ? Utils.toInt(request.getParameter("r")) : 0;
@@ -61,7 +61,8 @@
 				.append("					</th>")
 				.append("				</tr>");
 			for (DigitalObject ob : digitalobjects)	{
-				String action = ob.getMediatype().getMime().startsWith("audio") ? "Escuchar" : "Ver";
+                            String mime = ob.getMediatype().getMime();
+                            String action = mime.equalsIgnoreCase("wav") || mime.equalsIgnoreCase("mp3") ? "Escuchar" : "Ver";
 				divVisor.append("		<tr>")
 				.append("					<td style=\"text-align:left; width:60%;\">")
 				.append(ob.getMediatype().getName())
