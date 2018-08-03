@@ -17,21 +17,20 @@
     List<Title> titles = new ArrayList<>();
     List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
-    StringBuilder scriptHeader = new StringBuilder();
-    StringBuilder scriptCallVisor = new StringBuilder();
+    String scriptFB = Utils.getScriptFBShare(request);
     List<DigitalObject> digitalobjects = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
-	Integer r = null != request.getParameter("r") ? Utils.toInt(request.getParameter("r")) : 0;
-	String w = null != request.getParameter("word") ? request.getParameter("word") : "";
-	Integer iprev = r - 1;
-	Integer inext = r + 1;
-	SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
-	WebSite site = paramRequest.getWebPage().getWebSite();
-	String userLang = paramRequest.getUser().getLanguage();
-	SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
+    Integer r = null != request.getParameter("r") ? Utils.toInt(request.getParameter("r")) : 0;
+    String w = null != request.getParameter("word") ? request.getParameter("word") : "";
+    Integer iprev = r - 1;
+    Integer inext = r + 1;
+    SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
+    WebSite site = paramRequest.getWebPage().getWebSite();
+    String userLang = paramRequest.getUser().getLanguage();
+    SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
-	Integer t = null != request.getAttribute("t") ? (Integer)request.getAttribute("t") : 0;
-	String fs = null != request.getAttribute("filter") ? "&filter="+request.getAttribute("filter") : "";
+    Integer t = null != request.getAttribute("t") ? (Integer)request.getAttribute("t") : 0;
+    String fs = null != request.getAttribute("filter") ? "&filter="+request.getAttribute("filter") : "";
     if (null != entry) {
 		if (null != entry.getDigitalObject()) {
 			int n = 0;
@@ -86,13 +85,10 @@
 				.append("		</div>")
 				.append("	</div>")
 				.append("</div>");
-			type = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
-			period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
 		}
     }
-	String back = (String)request.getAttribute("back");
-	String scriptFB = Utils.getScriptFBShare(request);
 %>
+<%=scriptFB%>
 <section id="detalle">
 	<div id="idetail" class="detalleimg">
 		 <div class="explora">
@@ -116,7 +112,7 @@
 						<%
 							if (iprev > -1) {
 						%>
-								<span class="ion-chevron-left"></span><a href="#" onclick="nextResult('/<%=userLang%>/<%=site.getId()%>/detalle?word=<%=w%>&r=<%=iprev%>&t=<%=t%><%=fs%>');"><%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%></a>
+								<span class="ion-chevron-left"></span><a href="#" onclick="nextResult('/<%=userLang%>/<%=site.getId()%>/detalle?word=<%=w%>&r=<%=iprev%>&t=<%=t%><%=fs%>');"><%=paramRequest.getLocaleString("usrmsg_view_detail_prev_record")%></a>
 						<%
 							}
 						%>
@@ -125,7 +121,7 @@
 						<%
 							if (inext < t) {
 						%>
-								<a href="#" onclick="nextResult('/<%=userLang%>/<%=site.getId()%>/detalle?word=<%=w%>&r=<%=inext%>&t=<%=t%><%=fs%>');"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
+								<a href="#" onclick="nextResult('/<%=userLang%>/<%=site.getId()%>/detalle?word=<%=w%>&r=<%=inext%>&t=<%=t%><%=fs%>');"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_record")%> <span class="ion-chevron-right"></span></a>
 						<%
 							}
 						%>

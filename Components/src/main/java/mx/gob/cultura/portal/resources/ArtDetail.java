@@ -54,7 +54,7 @@ public class ArtDetail extends GenericAdmResource {
 
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
-        response.setContentType("text/html; charset=UTF-8");
+        //response.setContentType("text/html; charset=UTF-8");
         String mode = paramRequest.getMode();
         if (MODE_DIGITAL.equals(mode)) {
             doDigital(request, response, paramRequest);
@@ -171,9 +171,8 @@ public class ArtDetail extends GenericAdmResource {
     public void doDigital(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
         int iDigit = 0;
         String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
-        if (null == baseUri || baseUri.isEmpty()) {
+        if (null == baseUri || baseUri.isEmpty())
             baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
-        }
         String uri = baseUri + "/api/v1/search?identifier=";
         String path = "/swbadmin/jsp/rnc/digitalobj.jsp";
         try {
@@ -195,9 +194,9 @@ public class ArtDetail extends GenericAdmResource {
                         request.setAttribute("iDigit", iDigit);
                         request.setAttribute("digital", entry.getDigitalObject().get(iDigit));
                     }
-                    if (ob.getMediatype().getMime().startsWith("audio")) {
-                        request.setAttribute("iprev", iPrev(entry.getDigitalObject(), iDigit, "audio"));
-                        request.setAttribute("inext", iNext(entry.getDigitalObject(), iDigit, "audio"));
+                    if (ob.getMediatype().getMime().equalsIgnoreCase("wav") || ob.getMediatype().getMime().equalsIgnoreCase("mp3")) {
+                        request.setAttribute("iprev", iPrev(entry.getDigitalObject(), iDigit, ob.getMediatype().getMime()));
+                        request.setAttribute("inext", iNext(entry.getDigitalObject(), iDigit, ob.getMediatype().getMime()));
                     }
                     incHits(entry, baseUri, uri);
                 }
@@ -259,7 +258,7 @@ public class ArtDetail extends GenericAdmResource {
         Integer inext = 0;
         for (int i = position++; i < list.size(); i++) {
             DigitalObject o = list.get(i);
-            if (!o.getMediatype().getMime().startsWith(type)) {
+            if (!o.getMediatype().getMime().equalsIgnoreCase(type)) {
                 inext = i;
                 break;
             } 
@@ -272,7 +271,7 @@ public class ArtDetail extends GenericAdmResource {
         if (position > list.size()+1 || position < 1) return iprev;
         for (int i = position--; i > 0; i--) {
             DigitalObject o = list.get(i);
-            if (!o.getMediatype().getMime().startsWith(type)) {
+            if (!o.getMediatype().getMime().equalsIgnoreCase(type)) {
                 iprev = i;
                 break;
             }

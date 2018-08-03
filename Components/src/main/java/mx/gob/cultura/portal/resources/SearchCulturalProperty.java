@@ -275,7 +275,8 @@ public class SearchCulturalProperty extends PagerAction {
         filters.append(getFilter(request, "mediatype"));
         filters.append(getFilterDate(request, "datecreated"));
         filters.append(getFilter(request, "rights"));
-        filters.append(getFilter(request, "lang"));
+        System.out.println("languages: " + getFilter(request, "languages"));
+        filters.append(getFilter(request, "languages"));
         filters.append(getFilter(request, "holder"));
         if (filters.length() > 0) {
             filters.deleteCharAt(0);

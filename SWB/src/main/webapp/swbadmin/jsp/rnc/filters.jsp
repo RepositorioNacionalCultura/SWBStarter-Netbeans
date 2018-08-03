@@ -1,7 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="mx.gob.cultura.portal.response.Aggregation"%>
-<%@page import="mx.gob.cultura.portal.response.CountName"%>
-<%@page import="org.semanticwb.portal.api.SWBParamRequest,org.semanticwb.portal.api.SWBResourceURL,java.util.ArrayList, java.util.List"%>
+<%@page import="mx.gob.cultura.portal.response.CountName, mx.gob.cultura.portal.response.Aggregation"%>
+<%@page import="mx.gob.cultura.portal.utils.Utils, org.semanticwb.portal.api.SWBParamRequest,org.semanticwb.portal.api.SWBResourceURL,java.util.ArrayList, java.util.List"%>
 <%
     String audios = "";
     boolean showFilters = false;
@@ -137,7 +136,7 @@
 				int i = 0;
                                 for (CountName r : resourcetypes) {
                             %>
-                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="resourcetype" value="<%=r.getName()%>"><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
+                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="resourcetype" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "resourcetype", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
                             <%
                                     if (i>3) break; else i++; 
 				}
@@ -150,7 +149,7 @@
                                         if (j<i) {j++; continue;} 
 					else { 
                             %>
-                                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="resourcetype" value="<%=r.getName()%>"><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
+                                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="resourcetype" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "resourcetype", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
                             <%			
                                         }
                                     }   

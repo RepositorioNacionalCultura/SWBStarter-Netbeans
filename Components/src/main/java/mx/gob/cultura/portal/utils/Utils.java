@@ -165,6 +165,21 @@ public class Utils {
             return words;
     }
     
+    public static String replaceSpecialChars(String txt) {
+        if (null == txt || txt.isEmpty()) return "";
+        return HtmlEntities.encode(txt);
+    }
+    
+    public static boolean chdFtr(String filter, String type, String value) {
+        if (null == filter || filter.isEmpty() || null == type || type.isEmpty() || null == value || value.isEmpty()) return false;
+        String [] params = filter.split(",");
+        for (int i=0; i<params.length; i++) {
+            String [] pair = params[i].split(":");
+            if (pair[0].equalsIgnoreCase(type) && pair[1].equals(value)) return true;
+        }
+        return false;
+    }
+    
     /**
      * Genera un tag script para disponer de la funcionalidad para compartir contenido de un sitio Web.
      * Se requiere que el recurso que incluya esta funcion, se ejecute en una plantilla de SWB que

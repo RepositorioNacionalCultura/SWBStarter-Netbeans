@@ -4,7 +4,7 @@
     Author     : sergio.tellez
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="mx.gob.cultura.portal.response.DigitalObject"%>
+<%@ page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DigitalObject"%>
 <%@ page import="mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, java.util.ArrayList, java.util.List, org.semanticwb.portal.api.SWBResourceURL"%>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
@@ -33,8 +33,8 @@
             if (null != digital.getUrl())
                 divVisor.append("<iframe width=\"1280\" height=\"860\" src=\"\" id=\"api-frame\" allowfullscreen mozallowfullscreen=\"true\" webkitallowfullscreen=\"true\"></iframe>");
         }
-        creator = creators.size() > 0 ? creators.get(0) : "";
-        if (!titles.isEmpty()) title = titles.get(0).getValue();
+        creator = creators.size() > 0 ? Utils.replaceSpecialChars(creators.get(0)) : "";
+        title = titles.size() > 0 ? Utils.replaceSpecialChars(titles.get(0).getValue()) : "";
     }
 %>
 <div id="idetail" class="detalleimg">
