@@ -63,7 +63,7 @@
                         .append(ob.getMediatype().getMime())
                         .append("                   </td>")
                         .append("                   <td style=\"text-align:left;\">");
-                    if (ob.getUrl().endsWith(".zip") || ob.getUrl().endsWith(".rtf") || ob.getUrl().endsWith(".docx")) {
+                    if (ob.getUrl().endsWith(".avi") || ob.getUrl().endsWith(".zip") || ob.getUrl().endsWith(".rtf") || ob.getUrl().endsWith(".docx")) {
                         action = "Descargar";
                         divVisor.append("<a href='").append(ob.getUrl()).append("'>").append(action).append("</a>");
                     } else {

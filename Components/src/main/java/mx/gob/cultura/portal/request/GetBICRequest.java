@@ -37,7 +37,6 @@ public class GetBICRequest {
         } catch (MalformedURLException mue) {
             mue.printStackTrace();
         }
-
         if (null != url) {
             try {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();

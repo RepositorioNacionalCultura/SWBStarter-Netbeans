@@ -488,9 +488,12 @@ public class SearchCulturalProperty extends PagerAction {
     }
     
     private void setType(List<Entry> references, WebSite site) {
+        int i = 0;
         if (null != references && !references.isEmpty()) {
             for (Entry e : references) {
+                e.setPosition(i);
                 setThumbnail(e, site, 0);
+                i++;
             }
         }
     }
