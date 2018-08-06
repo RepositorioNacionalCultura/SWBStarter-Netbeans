@@ -275,7 +275,6 @@ public class SearchCulturalProperty extends PagerAction {
         filters.append(getFilter(request, "mediatype"));
         filters.append(getFilterDate(request, "datecreated"));
         filters.append(getFilter(request, "rights"));
-        System.out.println("languages: " + getFilter(request, "languages"));
         filters.append(getFilter(request, "languages"));
         filters.append(getFilter(request, "holder"));
         if (filters.length() > 0) {
@@ -291,7 +290,7 @@ public class SearchCulturalProperty extends PagerAction {
         if (null != request.getParameter(att) && !request.getParameter(att).isEmpty()) {
             String [] filters = request.getParameter(att).split("::");
             for (int i=0; i<filters.length; i++) {
-                if (att.equalsIgnoreCase("mediatype")) filters[i] = this.getMediaType(filters[i]);
+                if (att.equalsIgnoreCase("languages")) att="lang";
                 filter.append(",").append(att).append(":").append(URLEncoder.encode(filters[i], StandardCharsets.UTF_8.name()));
             }
         }else return "";
