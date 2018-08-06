@@ -32,53 +32,52 @@
     Integer t = null != request.getAttribute("t") ? (Integer)request.getAttribute("t") : 0;
     String fs = null != request.getAttribute("filter") ? "&filter="+request.getAttribute("filter") : "";
     if (null != entry) {
-		if (null != entry.getDigitalObject()) {
-			int n = 0;
-			creators = entry.getCreator();
-			titles = entry.getRecordtitle();
-			digitalobjects = entry.getDigitalObject();
-			creator = creators.size() > 0 ? creators.get(0) : "";
-			if (!titles.isEmpty()) title = titles.get(0).getValue();
-			images = null != digitalobjects ? digitalobjects.size() : 0;
-			digital = images >= iDigit ? digitalobjects.get(iDigit-1) : new DigitalObject();
-			if (null == digital.getUrl()) digital.setUrl("");
-			divVisor.append("<div class=\"tablaVisualizaCont\">")
-				.append("	<div class=\"container\">")
-				.append("		<h3 class=\"oswM\">").append(title).append("</h3>")
-				.append("		<p class=\"oswL\">").append(creator).append("</p>")
-				.append("		<div class=\"tablaVisualizaTab\">")
-				.append("			<table>")
-				.append("				<tr>")
-				.append("					<th style=\"text-align:left; width:60%;\">")
-				.append("						Nombre")
-				.append("					</th>")
-				.append("					<th style=\"text-align:left;\">")
-				.append("						Formato")
-				.append("					</th>")
-				.append("					<th style=\"text-align:left;\">")
-				.append("						Enlace")
-				.append("					</th>")
-				.append("				</tr>");
-			for (DigitalObject ob : digitalobjects)	{
-                            String mime = ob.getMediatype().getMime();
-                            String action = mime.equalsIgnoreCase("wav") || mime.equalsIgnoreCase("mp3") ? "Escuchar" : "Ver";
-				divVisor.append("		<tr>")
-				.append("					<td style=\"text-align:left; width:60%;\">")
-				.append(ob.getMediatype().getName())
-				.append("					</td>")
-				.append("					<td style=\"text-align:left;\">")
-				.append(ob.getMediatype().getMime())
-				.append("					</td>")
-				.append("					<td style=\"text-align:left;\">");
-				if (ob.getUrl().endsWith(".avi") || ob.getUrl().endsWith(".zip") || ob.getUrl().endsWith(".rtf") || ob.getUrl().endsWith(".docx") || ob.getUrl().endsWith(".aiff")) {
-					action = "Descargar";
-					divVisor.append("<a href='").append(ob.getUrl()).append("'>").append(action).append("</a>");
-				}else {
-					divVisor.append("						<a href=\"/").append(userLang).append("/")
-					.append(site.getId()).append("/").append("detalle?id=").append(entry.getId()).append("&n=").append(n).append("\">").append(action).append("</a>");
-				}
-				divVisor.append("					</td>")
-				.append("				</tr>");
+	if (null != entry.getDigitalObject()) {
+            int n = 0;
+            creators = entry.getCreator();
+            titles = entry.getRecordtitle();
+            digitalobjects = entry.getDigitalObject();
+            creator = creators.size() > 0 ? creators.get(0) : "";
+            if (!titles.isEmpty()) title = titles.get(0).getValue();
+            images = null != digitalobjects ? digitalobjects.size() : 0;
+            digital = images >= iDigit ? digitalobjects.get(iDigit-1) : new DigitalObject();
+            if (null == digital.getUrl()) digital.setUrl("");
+                divVisor.append("<div class=\"tablaVisualizaCont\">")
+                    .append("	<div class=\"container\">")
+                    .append("		<h3 class=\"oswM\">").append(title).append("</h3>")
+                    .append("		<p class=\"oswL\">").append(creator).append("</p>")
+                    .append("		<div class=\"tablaVisualizaTab\">")
+                    .append("			<table>")
+                    .append("				<tr>")
+                    .append("					<th style=\"text-align:left; width:60%;\">")
+                    .append("						Nombre")
+                    .append("					</th>")
+                    .append("					<th style=\"text-align:left;\">")
+                    .append("						Formato")
+                    .append("					</th>")
+                    .append("					<th style=\"text-align:left;\">")
+                    .append("						Enlace")
+                    .append("					</th>")
+                    .append("				</tr>");
+                for (DigitalObject ob : digitalobjects)	{
+                    String mime = ob.getMediatype().getMime();
+                    String action = mime.equalsIgnoreCase("wav") || mime.equalsIgnoreCase("mp3") ? "Escuchar" : "Ver";
+                    divVisor.append("		<tr>")
+			.append("					<td style=\"text-align:left; width:60%;\">")
+			.append(ob.getMediatype().getName())
+                        .append("					</td>")
+                	.append("					<td style=\"text-align:left;\">")
+			.append(ob.getMediatype().getMime())
+			.append("					</td>")
+			.append("					<td style=\"text-align:left;\">");
+                    if (ob.getUrl().endsWith(".avi") || ob.getUrl().endsWith(".zip") || ob.getUrl().endsWith(".rtf") || ob.getUrl().endsWith(".docx") || ob.getUrl().endsWith(".aiff")) {
+                        action = "Descargar";
+			divVisor.append("<a href='").append(ob.getUrl()).append("'>").append(action).append("</a>");
+                    }else {
+			divVisor.append("<a href=\"/").append(userLang).append("/").append(site.getId()).append("/").append("detalle?id=").append(entry.getId()).append("&n=").append(n).append("&r=").append(r).append("&word=").append(w).append("&t=").append(t).append(fs).append("\">").append(action).append("</a>");
+                    }
+                    divVisor.append("					</td>")
+			.append("				</tr>");
 				n++;
 			}
 			divVisor.append("			</table>")
@@ -90,15 +89,15 @@
 %>
 <%=scriptFB%>
 <section id="detalle">
-	<div id="idetail" class="detalleimg">
-		 <div class="explora">
-			<div class="explora2">
-				<div class="explo1">
-					© <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
+    <div id="idetail" class="detalleimg">
+        <div class="explora">
+            <div class="explora2">
+                <div class="explo1">
+                    © <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
                 </div>
-				<div class="explo2 row">
-					<div class="col-3">
-						<a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
+		<div class="explo2 row">
+                    <div class="col-3">
+                        <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
                     </div>
                     <div class="col-3">
                         <span class="ion-social-twitter"></span>
@@ -107,10 +106,10 @@
                         <a href="#" onclick="loadDoc('/swb/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
                     </div>
                 </div>
-				<div class="explo3 row">
-					<div class="col-6">
-						<%
-							if (iprev > -1) {
+		<div class="explo3 row">
+                    <div class="col-6">
+                        <%
+                            if (iprev > -1) {
 						%>
 								<span class="ion-chevron-left"></span><a href="#" onclick="nextResult('/<%=userLang%>/<%=site.getId()%>/detalle?word=<%=w%>&r=<%=iprev%>&t=<%=t%><%=fs%>');"><%=paramRequest.getLocaleString("usrmsg_view_detail_prev_record")%></a>
 						<%

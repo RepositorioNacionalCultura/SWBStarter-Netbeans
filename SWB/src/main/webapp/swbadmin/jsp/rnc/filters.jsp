@@ -35,13 +35,13 @@
     function sort(f) {
         doSort('<%=word%>',f.value);
     }
-	function reset() {
-		var inputElements = document.getElementsByClassName('form-check-input');
-		for (i=0; i<inputElements.length; i++) {
-			inputElements[i].checked = false;
-		}
-		doSort('<%=word%>','relvdes');
+    function reset() {
+        var inputElements = document.getElementsByClassName('form-check-input');
+	for (i=0; i<inputElements.length; i++) {
+            inputElements[i].checked = false;
 	}
+        doSort('<%=word%>','relvdes');
+    }
 	function filter() {
 		var filters = '&';
 		var rights = '&rights=';
@@ -133,18 +133,18 @@
                     <li>
                         <ul>
                             <%
-								int i = 0;
+				int i = 0;
                                 for (CountName r : resourcetypes) {
                             %>
-									<li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="resourcetype" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "resourcetype", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
+                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="resourcetype" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "resourcetype", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
                             <%
-									if (i>3) break; else i++; 
-								}
-								if (i<resourcetypes.size()) {
+                                    if (i>3) break; else i++; 
+				}
+				if (i<resourcetypes.size()) {
                             %>
-									<div class="collapse" id="vermas">
-							<%
-									int j=0;
+                                    <div class="collapse" id="vermas">
+					<%
+                                            int j=0;
 									for (CountName r : resourcetypes) {
 										if (j<i) {j++; continue;} 
 										else { 
@@ -192,25 +192,25 @@
         </div>
 	<% } %>
 
-	<%	if (!dates.isEmpty()) { %>
-        <div class="card card-fecha">
-            <div class="" role="tab" id="heading3">
-                <a data-toggle="collapse" href="#collapse3" aria-expanded="true" aria-controls="collapse3" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_date")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
-            </div>
-            <div id="collapse3" class="collapse show" role="tabpanel" aria-labelledby="heading3" data-parent="#accordion">
-                <div class="slider">  
-					<p class="oswM">[ <input id="bx1" type="text" class="sliderinput oswB rojo" onchange="validate(this, <%=aggs.getInterval().getLowerLimit() %>, <%=aggs.getInterval().getUpperLimit()%>);" value="<%=aggs.getInterval().getLowerLimit() %>" /> - <input id="bx2" name="bx2" type="text" class="sliderinput oswB rojo"  onchange="validate(this, <%=aggs.getInterval().getLowerLimit() %>, <%=aggs.getInterval().getUpperLimit()%>);" value="<%=aggs.getInterval().getUpperLimit()%>" /> ]</p>               
-                    <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="<%=aggs.getInterval().getLowerLimit() %>" data-slider-max="<%=aggs.getInterval().getUpperLimit() %>" data-slider-step="1" data-slider-value="[<%=aggs.getInterval().getLowerLimit() %>,<%=aggs.getInterval().getUpperLimit() %>]"/>
-                    <div class="d-flex">
-						<div class="p-2" id="ex1SliderVal"><%=aggs.getInterval().getLowerLimit() %></div>
-                        <div class="ml-auto p-2" id="ex2SliderVal"><%=aggs.getInterval().getUpperLimit() %></div>
+	<%  if (!dates.isEmpty()) { %>
+            <div class="card card-fecha">
+                <div class="" role="tab" id="heading3">
+                    <a data-toggle="collapse" href="#collapse3" aria-expanded="true" aria-controls="collapse3" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_date")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
+                </div>
+                <div id="collapse3" class="collapse show" role="tabpanel" aria-labelledby="heading3" data-parent="#accordion">
+                    <div class="slider">  
+                        <p class="oswM">[ <input id="bx1" type="text" class="sliderinput oswB rojo" onchange="validate(this, <%=aggs.getInterval().getLowerLimit() %>, <%=aggs.getInterval().getUpperLimit()%>);" value="<%=Utils.getIvl(request.getParameter("filter"), "datestart", aggs) %>" /> - <input id="bx2" name="bx2" type="text" class="sliderinput oswB rojo"  onchange="validate(this, <%=aggs.getInterval().getLowerLimit() %>, <%=aggs.getInterval().getUpperLimit()%>);" value="<%=Utils.getIvl(request.getParameter("filter"), "dateend", aggs) %>" /> ]</p>               
+                        <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="<%=aggs.getInterval().getLowerLimit() %>" data-slider-max="<%=aggs.getInterval().getUpperLimit() %>" data-slider-step="1" data-slider-value="[<%=aggs.getInterval().getLowerLimit() %>,<%=aggs.getInterval().getUpperLimit() %>]"/>
+                        <div class="d-flex">
+                            <div class="p-2" id="ex1SliderVal"><%=aggs.getInterval().getLowerLimit() %></div>
+                            <div class="ml-auto p-2" id="ex2SliderVal"><%=aggs.getInterval().getUpperLimit() %></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>		
+            </div>		
 	<% } %>
 
-	<%	if (null != rights && !rights.isEmpty()) { %>
+	<%  if (null != rights && !rights.isEmpty()) { %>
         <div class="card">
             <div class="" role="tab" id="heading4">
                 <a data-toggle="collapse" href="#collapse4" aria-expanded="true" aria-controls="collapse4" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_use")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>

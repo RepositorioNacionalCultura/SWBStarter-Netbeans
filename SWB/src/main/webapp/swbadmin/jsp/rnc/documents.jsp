@@ -84,11 +84,11 @@
                             String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
                     %>
                             <div class="pieza-res card">
-                                <a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&w=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%><%=f%>">
+                                <a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&word=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%><%=f%>">
                                     <img src="<%=reference.getResourcethumbnail()%>" />
                                 </a>
                                 <div>
-                                    <p class="tit"><a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&w=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%><%=f%>"><%=title.getValue()%></a></p>
+                                    <p class="tit"><a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&word=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%><%=f%>"><%=title.getValue()%></a></p>
                                     <p class="autor"><a href="#"><%=creator%></a><br/><i><%=holder%></i></p>
                                     <p class="tipo"><%=resource%></p>
                                 </div>

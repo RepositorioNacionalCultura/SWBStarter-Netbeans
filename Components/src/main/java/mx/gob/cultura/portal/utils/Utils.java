@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import org.semanticwb.model.WebSite;
 import org.semanticwb.model.Resource;
 import javax.servlet.http.HttpServletRequest;
+import mx.gob.cultura.portal.response.Aggregation;
 
 /**
  *
@@ -179,6 +180,21 @@ public class Utils {
             if (pair[0].equalsIgnoreCase(type) && pair[1].equals(value)) return true;
         }
         return false;
+    }
+    
+    public static String getIvl(String filter, String type, Aggregation aggs) {
+        String interval = "";
+        if (null == filter) {
+            if (type.equalsIgnoreCase("datestart")) interval =  aggs.getInterval().getLowerLimit().toString();
+            else interval =  aggs.getInterval().getUpperLimit().toString();
+        }else {
+            String [] params = filter.split(",");
+            for (int i=0; i<params.length; i++) {
+                String [] pair = params[i].split(":");
+                if (pair[0].equalsIgnoreCase(type)) interval = pair[1];
+            }
+        }
+        return interval;
     }
     
     /**

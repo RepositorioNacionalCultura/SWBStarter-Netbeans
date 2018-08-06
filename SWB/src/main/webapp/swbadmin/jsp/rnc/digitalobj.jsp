@@ -61,7 +61,7 @@
                     .append("});")
                     .append("</script>");
             }else {
-                if (digital.getUrl().endsWith(".zip") || digital.getUrl().endsWith(".rtf") || digital.getUrl().endsWith(".docx")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
+                if (digital.getUrl().endsWith(".zip") || digital.getUrl().endsWith(".rtf") || digital.getUrl().endsWith(".docx") || digital.getUrl().endsWith(".avi")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
 		else divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");
             }
         }
