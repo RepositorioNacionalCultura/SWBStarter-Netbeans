@@ -434,7 +434,7 @@ public class SessionInitializer extends GenericResource {
         
 //        StringBuilder text = new StringBuilder(128);
         String resourceUrl = paramRequest.getActionUrl()
-                .setAction(UserRegistry.REGISTER_ACTION)
+                .setAction(UserRegistry.ACTION_ASYN_REGISTER)
                 .setCallMethod(SWBParamRequest.Call_DIRECT)
                 .toString();
         String registryUrl = Utils.getResourceURL(paramRequest.getWebPage().getWebSite(),
