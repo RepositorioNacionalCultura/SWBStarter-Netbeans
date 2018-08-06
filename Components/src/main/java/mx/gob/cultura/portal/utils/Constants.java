@@ -29,6 +29,7 @@ public final class Constants {
     
     public static final String WORD = "word";
     public static final String TOTAL = "t";
+    public static final String SORT = "sort";
     public static final String NUM_RECORD = "r";
     public static final String IDENTIFIER = "id";
     public static final String FILTER = "filter";

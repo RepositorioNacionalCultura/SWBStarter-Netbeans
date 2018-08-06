@@ -18,23 +18,23 @@
     pageURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     if (null != aggs) {
         showFilters = true;
-		if (null !=  aggs.getDates()) dates = aggs.getDates();
-		if (null !=  aggs.getRights()) rights = aggs.getRights();
+	if (null !=  aggs.getDates()) dates = aggs.getDates();
+	if (null !=  aggs.getRights()) rights = aggs.getRights();
         if (null !=  aggs.getHolders()) holders = aggs.getHolders();
-		if (null !=  aggs.getLanguages()) languages = aggs.getLanguages();
-		if (null !=  aggs.getMediastype()) mediastype = aggs.getMediastype();
+        if (null !=  aggs.getLanguages()) languages = aggs.getLanguages();
+	if (null !=  aggs.getMediastype()) mediastype = aggs.getMediastype();
         if (null !=  aggs.getResourcetypes()) resourcetypes = aggs.getResourcetypes();
-		if (null != audio && !audio.isEmpty()) {
-			for (CountName c : audio) {
-				audios += "::" + c.getName();
-			}
-		}
+        if (null != audio && !audio.isEmpty()) {
+            for (CountName c : audio) {
+                audios += "::" + c.getName();
+            }
+	}
     }
 %>
 <script type="text/javascript">
-	function sort(f) {
-		doSort('<%=word%>',f.value);
-	}
+    function sort(f) {
+        doSort('<%=word%>',f.value);
+    }
 	function reset() {
 		var inputElements = document.getElementsByClassName('form-check-input');
 		for (i=0; i<inputElements.length; i++) {
@@ -276,20 +276,20 @@
             </div>
         </div>
 	<% } %>
-	<%
+    <%
         if (showFilters) {
     %>
-			<div class="card cardfecha">
-				<div class="form-group">
-					<label for="selfecha"><%=paramRequest.getLocaleString("usrmsg_view_search_order_by")%>:</label>
-					<select class="form-control" id="selfecha" onchange="sort(this)">
-						<option value="datedes"><%=paramRequest.getLocaleString("usrmsg_view_search_date")%></option>
-						<option value="relvdes"><%=paramRequest.getLocaleString("usrmsg_view_search_relevance")%></option>
-						<option value="statdes"><%=paramRequest.getLocaleString("usrmsg_view_search_popularity")%></option>
-					</select>
-				</div>
-			</div>
-			<button type="button" onclick="reset();" class="btn-cultura btn-negro"><%=paramRequest.getLocaleString("usrmsg_view_search_delete_filters")%></button>
+            <div class="card cardfecha">
+                <div class="form-group">
+                    <label for="selfecha"><%=paramRequest.getLocaleString("usrmsg_view_search_order_by")%>:</label>
+                    <select class="form-control" id="selfecha" onchange="sort(this)">
+                        <option value="datedes" <% if (Utils.chdFtr(request.getParameter("sort"), "selfecha", "datedes")) out.print("selected"); %>><%=paramRequest.getLocaleString("usrmsg_view_search_date")%></option>
+			<option value="relvdes" <% if (Utils.chdFtr(request.getParameter("sort"), "selfecha", "datedes")) out.print("selected"); %>><%=paramRequest.getLocaleString("usrmsg_view_search_relevance")%></option>
+                        <option value="statdes" <% if (Utils.chdFtr(request.getParameter("sort"), "selfecha", "datedes")) out.print("selected"); %>><%=paramRequest.getLocaleString("usrmsg_view_search_popularity")%></option>
+                    </select>
+		</div>
+            </div>
+            <button type="button" onclick="reset();" class="btn-cultura btn-negro"><%=paramRequest.getLocaleString("usrmsg_view_search_delete_filters")%></button>
     <%  } %>
     </div>
 </div>

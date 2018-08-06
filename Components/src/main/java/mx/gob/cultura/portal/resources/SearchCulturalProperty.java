@@ -34,13 +34,16 @@ import java.nio.charset.StandardCharsets;
 
 import org.semanticwb.SWBException;
 import mx.gob.cultura.portal.utils.Utils;
+
+import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Aggregation;
 import mx.gob.cultura.portal.response.CountName;
 import mx.gob.cultura.portal.response.DateRange;
-import mx.gob.cultura.portal.response.DigitalObject;
 import mx.gob.cultura.portal.response.Document;
-import mx.gob.cultura.portal.response.Entry;
+import mx.gob.cultura.portal.response.DigitalObject;
 import mx.gob.cultura.portal.request.ListBICRequest;
+import static mx.gob.cultura.portal.utils.Constants.SORT;
+import static mx.gob.cultura.portal.utils.Constants.WORD;
 
 /**
  *
@@ -166,7 +169,7 @@ public class SearchCulturalProperty extends PagerAction {
                     request.setAttribute(FULL_LIST, document.getRecords());
                     request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
                 }
-                request.setAttribute("f", request.getParameter("sort"));
+                request.setAttribute(SORT, request.getParameter("sort"));
                 request.setAttribute("word", request.getParameter("word"));
                 init(request, response, paramRequest);
             }
@@ -204,6 +207,7 @@ public class SearchCulturalProperty extends PagerAction {
             request.setAttribute("mode", "row lista");
         else request.setAttribute("mode", "card-columns");
         request.setAttribute("m",request.getParameter("m"));
+        request.setAttribute(SORT, request.getParameter("sort"));
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
             request.setAttribute("paramRequest", paramRequest);
@@ -221,7 +225,7 @@ public class SearchCulturalProperty extends PagerAction {
         if (last > total) last = total;
         request.setAttribute("LAST_RECORD", last);
         request.setAttribute("FIRST_RECORD", first);
-        request.setAttribute("word", request.getParameter("word"));
+        request.setAttribute(WORD, request.getParameter("word"));
     }
     
     private Document getReference(HttpServletRequest request, WebSite site) {
@@ -404,21 +408,6 @@ public class SearchCulturalProperty extends PagerAction {
         if (three.getCount() > 0) types.add(three);
         if (zip.getCount() > 0) types.add(zip);
         return types;
-    }
-    
-    private String getMediaType(String type) {
-        String mediaType = null;
-        switch(type) {
-            case "Imagen" : mediaType = "image/jpeg"; break;
-            case "Audio" : mediaType = "audio/x-wav"; break;
-            case "Video" : mediaType = "application/octet-stream"; break;
-            case "PDF" : mediaType = "application/pdf"; break;
-            case "EPUB" : mediaType = "application/epub+zip"; break;
-            case "3D" : mediaType = "model/x3d+binary"; break;
-            case "ZIP" : mediaType = "application/zip"; break;
-            default : mediaType = type;
-        }
-        return mediaType;
     }
 
     private String getRange(HttpServletRequest request) {

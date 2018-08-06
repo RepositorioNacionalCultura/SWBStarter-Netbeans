@@ -14,6 +14,7 @@
     String word = null != request.getAttribute("word") ? Utils.suprXSS((String)request.getAttribute("word")) : "";
     String uri = !word.isEmpty() ? "&word="+word+"&leap="+first : "";
     String fs = null != request.getAttribute("filters") ? "&fs="+request.getAttribute("filters") : "";
+    String f = null != request.getAttribute("sort") ? "&sort="+request.getAttribute("sort") : "";
 %>
 <% if (!references.isEmpty()) {  %>
     <div id="references">
@@ -43,11 +44,11 @@
 		String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
         %>
                 <div class="pieza-res card">
-                    <a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%><%=fs%><%=uri%>">
+                    <a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%><%=fs%><%=f%><%=uri%>">
                         <img src="<%=reference.getResourcethumbnail()%>" />
                     </a>
                     <div>
-                        <p class="tit"><a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%><%=fs%><%=uri%>"><%=title.getValue()%></a></p>
+                        <p class="tit"><a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%><%=fs%><%=f%><%=uri%>"><%=title.getValue()%></a></p>
                         <p class="autor"><a href="#"><%=creator%></a><br/><i><%=holder%></i></p>
                         <p class="tipo"><%=resource%></p>
                     </div>

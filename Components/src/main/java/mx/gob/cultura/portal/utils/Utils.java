@@ -172,6 +172,7 @@ public class Utils {
     
     public static boolean chdFtr(String filter, String type, String value) {
         if (null == filter || filter.isEmpty() || null == type || type.isEmpty() || null == value || value.isEmpty()) return false;
+        if (type.equalsIgnoreCase("selfecha")) return filter.equalsIgnoreCase(value);
         String [] params = filter.split(",");
         for (int i=0; i<params.length; i++) {
             String [] pair = params[i].split(":");

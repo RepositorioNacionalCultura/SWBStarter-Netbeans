@@ -28,7 +28,7 @@
     }
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     String m = null != request.getAttribute("m") ? (String)request.getAttribute("m") : "g";
-    String f = null != request.getAttribute("f") ? (String)request.getAttribute("f") : "relvdes";
+    String f = null != request.getAttribute("sort") ? (String)request.getAttribute("sort") : "relvdes";
     String fs = null != request.getAttribute("filters") ? (String)request.getAttribute("filters") : "";
 %>
 <div class="container paginacion">

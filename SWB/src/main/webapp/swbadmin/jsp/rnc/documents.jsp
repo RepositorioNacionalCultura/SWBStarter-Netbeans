@@ -15,6 +15,7 @@
     Integer t = (Integer) request.getAttribute("NUM_RECORDS_TOTAL");
     if (null != word) wxss = Utils.suprXSS(word);
     String userLang = paramRequest.getUser().getLanguage();
+    String f = null != request.getAttribute("sort") ? "&sort="+request.getAttribute("sort") : "";
     List<Entry> references = null != request.getAttribute("PAGE_LIST") ? (List<Entry>) request.getAttribute("PAGE_LIST") : new ArrayList();
 %>
 <script type="text/javascript">
@@ -83,11 +84,11 @@
                             String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
                     %>
                             <div class="pieza-res card">
-                                <a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&w=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%>">
+                                <a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&w=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%><%=f%>">
                                     <img src="<%=reference.getResourcethumbnail()%>" />
                                 </a>
                                 <div>
-                                    <p class="tit"><a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&w=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%>"><%=title.getValue()%></a></p>
+                                    <p class="tit"><a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&w=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%><%=f%>"><%=title.getValue()%></a></p>
                                     <p class="autor"><a href="#"><%=creator%></a><br/><i><%=holder%></i></p>
                                     <p class="tipo"><%=resource%></p>
                                 </div>

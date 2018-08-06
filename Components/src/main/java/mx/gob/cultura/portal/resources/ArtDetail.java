@@ -39,6 +39,7 @@ import static mx.gob.cultura.portal.utils.Constants.FILTER;
 import static mx.gob.cultura.portal.utils.Constants.IDENTIFIER;
 import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORD;
+import static mx.gob.cultura.portal.utils.Constants.SORT;
 import static mx.gob.cultura.portal.utils.Constants.TOTAL;
 
 /**
@@ -161,7 +162,8 @@ public class ArtDetail extends GenericAdmResource {
         StringBuilder params = new StringBuilder();
         int p = ((null != request.getParameter("leap") ? Utils.toInt(request.getParameter("leap")) : 0) / 8) + 1;
         params.append("/").append(paramRequest.getUser().getLanguage()).append("/").append(paramRequest.getWebPage().getWebSiteId()).append("/resultados");
-        if (null != request.getParameter("word")) params.append("?word=").append(request.getParameter("word"));
+        if (null != request.getParameter(WORD)) params.append("?word=").append(request.getParameter(WORD));
+        if (null != request.getParameter(SORT)) params.append("&sort=").append(request.getParameter(SORT));
         if (null != request.getParameter(FILTER)) params.append("&filter=").append(request.getParameter(FILTER));
         if (p > 1) params.append("&p=").append(p);
         String back = (null != request.getParameter("word")) ? "javascript:location.replace('" + params.toString() + "');" : "javascript:history.go(-1)";
