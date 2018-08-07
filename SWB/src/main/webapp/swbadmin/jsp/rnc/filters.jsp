@@ -42,43 +42,43 @@
 	}
         doSort('<%=word%>','relvdes');
     }
-	function filter() {
-		var filters = '&';
-		var rights = '&rights=';
-		var holder = '&holder=';
-		var dates = '&datecreated=';
-		var mediatype = '&mediatype=';
-		var languages = '&languages=';
-		var resourcetype='resourcetype=';
-		var inputElements = document.getElementsByClassName('form-check-input');
-		for (i=0; i<inputElements.length; i++) {
-			if (inputElements[i].checked) {
-				if (inputElements[i].name == 'resourcetype') {
-					resourcetype += '::'+inputElements[i].value;
-				}else if (inputElements[i].name == 'mediatype') {
-					if ('Audio' == inputElements[i].value) {
-						mediatype += '<%=audios%>';
-					}else {
-						mediatype += '::'+inputElements[i].value;
-					}
-				}else if (inputElements[i].name == 'rights') {
-					rights += '::'+inputElements[i].value;
-				}else if (inputElements[i].name == 'languages') {
-					languages += '::'+inputElements[i].value;
-				}else if (inputElements[i].name == 'holder') {
-					holder += '::'+inputElements[i].value;
-				}
-			}
+    function filter() {
+	var filters = '&';
+	var rights = '&rights=';
+	var holder = '&holder=';
+	var dates = '&datecreated=';
+	var mediatype = '&mediatype=';
+	var languages = '&languages=';
+	var resourcetype='resourcetype=';
+	var inputElements = document.getElementsByClassName('form-check-input');
+	for (i=0; i<inputElements.length; i++) {
+            if (inputElements[i].checked) {
+                if (inputElements[i].name == 'resourcetype') {
+                    resourcetype += '::'+inputElements[i].value;
+		}else if (inputElements[i].name == 'mediatype') {
+                    if ('Audio' == inputElements[i].value) {
+                        mediatype += '<%=audios%>';
+                    }else {
+                        mediatype += '::'+inputElements[i].value;
+                    }
+		}else if (inputElements[i].name == 'rights') {
+                    rights += '::'+inputElements[i].value;
+		}else if (inputElements[i].name == 'languages') {
+                    languages += '::'+inputElements[i].value;
+		}else if (inputElements[i].name == 'holder') {
+                    holder += '::'+inputElements[i].value;
 		}
-		if (languages.length > 11) {languages = languages.replace("=::","=");}else {languages=''}
-		if (rights.length > 8) {rights = rights.replace("=::","=");}else {rights=''}
-		if (holder.length > 8) {holder = holder.replace("=::","=");}else {holder=''}
-		if (mediatype.length > 11) {mediatype = mediatype.replace("=::","=");}else {mediatype=''}
-		if (resourcetype.length > 13) {resourcetype = resourcetype.replace("=::","=");}else {resourcetype=''}
-		dates+=document.getElementById("bx1").value+","+document.getElementById("bx2").value;
-		filters += resourcetype + mediatype + rights + languages + holder + dates;
-		doSort('<%=word%>'+filters,'relvdes');
+            }
 	}
+	if (languages.length > 11) {languages = languages.replace("=::","=");}else {languages=''}
+        if (rights.length > 8) {rights = rights.replace("=::","=");}else {rights=''}
+        if (holder.length > 8) {holder = holder.replace("=::","=");}else {holder=''}
+        if (mediatype.length > 11) {mediatype = mediatype.replace("=::","=");}else {mediatype=''}
+        if (resourcetype.length > 13) {resourcetype = resourcetype.replace("=::","=");}else {resourcetype=''}
+        dates+=document.getElementById("bx1").value+","+document.getElementById("bx2").value;
+        filters += resourcetype + mediatype + rights + languages + holder + dates;
+        doSort('<%=word%>'+filters,'relvdes');
+    }
 	function validate(ele, min, max) {
 		var val = ele.value;
 		if (!val.match(/^\d+$/)) {
@@ -122,7 +122,7 @@
     }
 </script>
 <div id="sidebar">
-    <div id="accordion" role="tablist">
+    <div id="accordionx" role="tablist">
     <%	if (null != resourcetypes && !resourcetypes.isEmpty()) { %>
         <div class="card card-temas">
             <div class="" role="tab" id="heading1">

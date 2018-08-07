@@ -12,8 +12,10 @@
     String title = "";
     String holder = "";
     String period = "";
+    String rights = "";
     String creator = "";
     Document desc = null;
+    String generator = "";
     List<Title> titles = new ArrayList<>();
     List<String> holders = new ArrayList<>();	List<String> creators = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
@@ -23,16 +25,23 @@
 	creators = entry.getCreator();
         titles = entry.getRecordtitle();
 	StringBuilder builder = new StringBuilder();
+        StringBuilder collection = new StringBuilder();
         for (String t : entry.getResourcetype()) {
             builder.append(t).append(", ");
         }
 	if (builder.length() > 0) builder.deleteCharAt(builder.length() - 2);
         type =  builder.toString();
+        for (String t : entry.getGenerator()) {
+            collection.append(t).append(", ");
+        }
+	if (collection.length() > 0) collection.deleteCharAt(collection.length() - 2);
+	generator = collection.toString();
 	holder = holders.size() > 0 ? holders.get(0) : "";
 	creator = creators.size() > 0 ? creators.get(0) : "";
         period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
 	if (!titles.isEmpty()) title = titles.get(0).getValue();
         desc = Utils.getDescription(entry.getDescription());
+        rights = Utils.getRights(entry);
     }
 %>
 <div class="col-12 col-sm-12 col-md-9 col-lg-9 order-md-2 order-sm-1 order-1 ficha ">
@@ -69,35 +78,43 @@
                 <td><%=paramRequest.getLocaleString("usrmsg_view_detail_institution")%></td>
                 <td><%=holder%></td>
             </tr>
+            <tr>
+		<td><%=paramRequest.getLocaleString("usrmsg_view_detail_collection")%></td>
+		<td><%=generator%></td>
+            </tr>
+            <tr>
+                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_rights")%></td>
+		<td><%=rights%></td>
+            </tr>
             <%
-                if (null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty()) {
+                if (null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty() && null != entry.getRights() && null != entry.getRights().getDescription()) {
                     String url = "";
                     if (entry.getDigitalObject().get(0).getRights().getUrl().startsWith("http")) url = "<a href='" + entry.getDigitalObject().get(0).getRights().getUrl() + "'>";
             %>
-            <tr>
-                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_rights")%></td>
-                <td><%=url%><%=entry.getDigitalObject().get(0).getRights().getRightstitle()%></a></td>
-            </tr>
+                        <tr>
+                            <td><%=paramRequest.getLocaleString("usrmsg_view_detail_rights")%></td>
+                            <td><%=url%><%=entry.getDigitalObject().get(0).getRights().getRightstitle()%></a></td>
+                        </tr>
             <%
                 }
                 if (null != entry.getLang() && entry.getLang().size() > 2) {
             %>
-            <tr>
-                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_lang")%></td>
-                <% if (entry.getLang().size() == 4) {%>
-                <td><%=entry.getLang().get(2)%>, <%=entry.getLang().get(3)%></td>
-                <% } else if (entry.getLang().size() == 3) {%>
-                <td><%=entry.getLang().get(1)%>, <%=entry.getLang().get(2)%></td>
-                <% } %>
-            </tr>
+                    <tr>
+                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_lang")%></td>
+                        <% if (entry.getLang().size() == 4) {%>
+                        <td><%=entry.getLang().get(2)%>, <%=entry.getLang().get(3)%></td>
+                        <% } else if (entry.getLang().size() == 3) {%>
+                        <td><%=entry.getLang().get(1)%>, <%=entry.getLang().get(2)%></td>
+                        <% } %>
+                    </tr>
             <%
                 }
                 if (null != entry.getLugar() && !entry.getLugar().isEmpty()) {
             %>
-            <tr>
-                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_place")%></td>
-                <td><%=entry.getLugar()%></td>
-            </tr>
+                    <tr>
+                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_place")%></td>
+                        <td><%=entry.getLugar()%></td>
+                    </tr>
             <% }%>
         </table>
         <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>

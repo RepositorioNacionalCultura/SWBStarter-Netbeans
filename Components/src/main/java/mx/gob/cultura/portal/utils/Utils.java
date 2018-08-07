@@ -28,6 +28,7 @@ import org.semanticwb.model.WebSite;
 import org.semanticwb.model.Resource;
 import javax.servlet.http.HttpServletRequest;
 import mx.gob.cultura.portal.response.Aggregation;
+import mx.gob.cultura.portal.response.Entry;
 
 /**
  *
@@ -147,6 +148,12 @@ public class Utils {
         else
             bson.append("short", description);
         return bson;
+    }
+    
+    public static String getRights(Entry entry) {
+        if (null == entry || null == entry.getDigitalObject() || entry.getDigitalObject().isEmpty() || null == entry.getDigitalObject().get(0) 
+                || null == entry.getDigitalObject().get(0).getRights() || null == entry.getDigitalObject().get(0).getRights().getRightstitle()) return "";
+        return entry.getDigitalObject().get(0).getRights().getRightstitle();
     }
     
     public static String getParamSearch(String words) {

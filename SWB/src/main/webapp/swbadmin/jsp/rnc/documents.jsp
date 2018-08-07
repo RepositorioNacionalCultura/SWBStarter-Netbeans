@@ -33,11 +33,11 @@
 </script>
 <div class="row resultadosbar">
     <div class="col-md-3 regresar">
+    </div>
+    <div class="col-md-9 rutatop">
         <button class="btn btn-rojo" onclick="javascript:history.go(-1)">
             <span class="ion-chevron-left"></span><%=paramRequest.getLocaleString("usrmsg_view_search_back")%>
         </button>
-    </div>
-    <div class="col-md-9 rutatop">
         <p class="oswL">
             <a href="/<%=userLang%>/<%=site.getId()%>/home"><%=paramRequest.getWebPage().getWebSite().getHomePage().getDisplayName(userLang)%></a> / <%=paramRequest.getLocaleString("usrmsg_view_search_collection")%>
         </p>
@@ -72,7 +72,6 @@
                     <%
                         for (Entry reference : references) {
                             String holder = "";
-                            reference.setPosition(0);
                             Title title = new Title();
                             List<String> holders = reference.getHolder();
                             List<Title> titles = reference.getRecordtitle();
@@ -101,7 +100,17 @@
                     <jsp:include page="footer.jsp" flush="true"/>
 		</div>
 	<%
-            }else if (null != word) { out.println(paramRequest.getLocaleString("usrmsg_view_search_no_results") + " " + word); }
+            }else{ 
+	%>
+                <div class="resultados-sin">
+                    <p class="oswB rojo">
+                    <%  if (null != word) { %>
+                            <%=paramRequest.getLocaleString("usrmsg_view_search_no_results")%> <%=word%>
+                    <%	}else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_word")); }	%>
+                    </p>
+		</div>
+	<%
+            }
         %>
     </div>
 </div>

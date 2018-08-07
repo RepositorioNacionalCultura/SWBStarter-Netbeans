@@ -44,30 +44,32 @@
             if (null == digital.getUrl()) digital.setUrl("");
                 divVisor.append("<div class=\"tablaVisualizaCont\">")
                     .append("	<div class=\"container\">")
-                    .append("		<h3 class=\"oswM\">").append(title).append("</h3>")
-                    .append("		<p class=\"oswL\">").append(creator).append("</p>")
-                    .append("		<div class=\"tablaVisualizaTab\">")
-                    .append("			<table>")
-                    .append("				<tr>")
-                    .append("					<th style=\"text-align:left; width:60%;\">")
-                    .append("						Nombre")
-                    .append("					</th>")
-                    .append("					<th style=\"text-align:left;\">")
-                    .append("						Formato")
-                    .append("					</th>")
-                    .append("					<th style=\"text-align:left;\">")
-                    .append("						Enlace")
-                    .append("					</th>")
-                    .append("				</tr>");
+                    .append("       <h3 class=\"oswM\">").append(title).append("</h3>")
+                    .append("       <p class=\"oswL\">").append(creator).append("</p>")
+                    .append("       <div class=\"tablaVisualizaTab\">")
+                    .append("		<table>")
+                    .append("               <tr>");
+                if (!entry.getDigitalObject().isEmpty()) {
+                    divVisor.append("           <th style=\"text-align:left; width:60%;\">")
+                        .append("                   Nombre")
+                        .append("		</th>")
+                        .append("		<th style=\"text-align:left;\">")
+                        .append("                   Formato")
+                        .append("               </th>")
+                        .append("               <th style=\"text-align:left;\">")
+                        .append("                   Enlace")
+                        .append("               </th>");
+                }else
+                    divVisor.append("		<th>").append(paramRequest.getLocaleString("usrmsg_view_detail_empty_object")).append("</th>");
+                divVisor.append("           </tr>");
                 for (DigitalObject ob : digitalobjects)	{
                     String mime = ob.getMediatype().getMime();
+                    String name = null != ob.getMediatype().getName() ? ob.getMediatype().getName() : paramRequest.getLocaleString("usrmsg_view_detail_file_name");
                     String action = mime.equalsIgnoreCase("wav") || mime.equalsIgnoreCase("mp3") ? "Escuchar" : "Ver";
                     divVisor.append("		<tr>")
-			.append("					<td style=\"text-align:left; width:60%;\">")
-			.append(ob.getMediatype().getName())
+			.append("					<td style=\"text-align:left; width:60%;\">").append(name)
                         .append("					</td>")
-                	.append("					<td style=\"text-align:left;\">")
-			.append(ob.getMediatype().getMime())
+                	.append("					<td style=\"text-align:left;\">").append(ob.getMediatype().getMime())
 			.append("					</td>")
 			.append("					<td style=\"text-align:left;\">");
                     if (ob.getUrl().endsWith(".avi") || ob.getUrl().endsWith(".zip") || ob.getUrl().endsWith(".rtf") || ob.getUrl().endsWith(".docx") || ob.getUrl().endsWith(".aiff")) {
