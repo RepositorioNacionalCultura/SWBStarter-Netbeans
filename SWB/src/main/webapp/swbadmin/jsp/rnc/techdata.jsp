@@ -92,8 +92,8 @@
                     if (entry.getDigitalObject().get(0).getRights().getUrl().startsWith("http")) url = "<a href='" + entry.getDigitalObject().get(0).getRights().getUrl() + "'>";
             %>
                         <tr>
-                            <td><%=paramRequest.getLocaleString("usrmsg_view_detail_rights")%></td>
-                            <td><%=url%><%=entry.getDigitalObject().get(0).getRights().getRightstitle()%></a></td>
+                            <td><%=paramRequest.getLocaleString("usrmsg_view_detail_use_statement")%></td>
+                            <td><%=url%><%=entry.getRights().getDescription()%></a></td>
                         </tr>
             <%
                 }
