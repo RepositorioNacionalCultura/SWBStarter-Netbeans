@@ -151,9 +151,8 @@ public class Utils {
     }
     
     public static String getRights(Entry entry) {
-        if (null == entry || null == entry.getDigitalObject() || entry.getDigitalObject().isEmpty() || null == entry.getDigitalObject().get(0) 
-                || null == entry.getDigitalObject().get(0).getRights() || null == entry.getDigitalObject().get(0).getRights().getRightstitle()) return "";
-        return entry.getDigitalObject().get(0).getRights().getRightstitle();
+        if (null == entry || null == entry.getRights() || null == entry.getRights().getRightstitle() || entry.getRights().getRightstitle().isEmpty()) return "";
+        return entry.getRights().getRightstitle();
     }
     
     public static String getParamSearch(String words) {
