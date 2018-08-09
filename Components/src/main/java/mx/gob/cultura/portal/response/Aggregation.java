@@ -88,6 +88,6 @@ public class Aggregation implements Serializable {
 
     @Override
     public String toString() {
-        return "Aggregation{" + "interval=" + interval + ", dates=" + dates + ", holders=" + holders + ", resourcetypes=" + resourcetypes + '}';
+        return "Aggregation{" + "mediastype=" + mediastype + '}';
     }
 }

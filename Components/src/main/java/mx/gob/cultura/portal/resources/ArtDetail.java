@@ -283,7 +283,7 @@ public class ArtDetail extends GenericAdmResource {
     
     private String getViewerPath(String type, String mode) {
         String path = "/swbadmin/jsp/rnc/preview.jsp";
-        if (null == type) return path;
+        if (null == type || type.isEmpty() || type.equalsIgnoreCase("conjunto de archivos")) return path;
         if (mode.equalsIgnoreCase(MODE_DIGITAL)) {
             if (type.equalsIgnoreCase("pdf"))
                 path = "/swbadmin/jsp/rnc/viewer/pdfdigital.jsp";

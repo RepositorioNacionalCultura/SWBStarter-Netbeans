@@ -52,7 +52,7 @@
                     .append("	panHorizontal: false,")
                     .append("	defaultZoomLevel: 1,")
                     .append("	minZoomLevel: 1,")
-                    .append("	maxZoomLevel: 2,")
+                    .append("	maxZoomLevel: 1,")
                     .append("	visibilityRatio: 1,")
                     .append("	tileSources:   {")
                     .append("		type: 'image',")

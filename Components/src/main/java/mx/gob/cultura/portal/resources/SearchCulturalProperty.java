@@ -138,6 +138,7 @@ public class SearchCulturalProperty extends PagerAction {
                 setType(document.getRecords(),  paramRequest.getWebPage().getWebSite(), 0);
                 request.setAttribute("aggs", getAggregation(document.getAggs()));
                 request.setAttribute("audio", getAgg(document.getAggs(), "audio"));
+                request.setAttribute("image", getAgg(document.getAggs(), "image"));
                 request.setAttribute(FULL_LIST, document.getRecords());
                 request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
                 cassette(request, document.getTotal(), getPage(request));
@@ -276,7 +277,7 @@ public class SearchCulturalProperty extends PagerAction {
     private String getFilters(HttpServletRequest request) throws UnsupportedEncodingException {
         StringBuilder filters = new StringBuilder();
         filters.append(getFilter(request, "resourcetype"));
-        filters.append(getFilter(request, "mediatype"));
+        filters.append(getFilter(request, "mediastype"));
         filters.append(getFilterDate(request, "datecreated"));
         filters.append(getFilter(request, "rights"));
         filters.append(getFilter(request, "languages"));
@@ -392,12 +393,12 @@ public class SearchCulturalProperty extends PagerAction {
         CountName audio = new CountName("Audio", 0);
         CountName video = new CountName("Video", 0);
         for (CountName c : media) {
-            if (c.getName().startsWith("image")) image.setCount(image.getCount() + c.getCount());
-            if (c.getName().startsWith("audio")) audio.setCount(audio.getCount() + c.getCount());
-            if (c.getName().startsWith("video") || c.getName().equalsIgnoreCase("application/octet-stream")) video.setCount(video.getCount() + c.getCount());
-            if (c.getName().equalsIgnoreCase("application/pdf")) pdf.setCount(pdf.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("jpg") || c.getName().startsWith("image")) image.setCount(image.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("aiff") || c.getName().startsWith("audio")) audio.setCount(audio.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("avi") || c.getName().startsWith("video") || c.getName().equalsIgnoreCase("application/octet-stream")) video.setCount(video.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("pdf") || c.getName().equalsIgnoreCase("application/pdf")) pdf.setCount(pdf.getCount() + c.getCount());
             if (c.getName().startsWith("model/x3d")) three.setCount(three.getCount() + c.getCount());
-            if (c.getName().equalsIgnoreCase("application/zip")) zip.setCount(zip.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("zip") || c.getName().equalsIgnoreCase("application/zip")) zip.setCount(zip.getCount() + c.getCount());
             if (c.getName().equalsIgnoreCase("application/epub+zip")) eBook.setCount(eBook.getCount() + c.getCount());
         }
         if (image.getCount() > 0) types.add(image);

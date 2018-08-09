@@ -31,8 +31,10 @@
         }
 	if (builder.length() > 0) builder.deleteCharAt(builder.length() - 2);
         type =  builder.toString();
-        for (String t : entry.getGenerator()) {
-            collection.append(t).append(", ");
+        if (null != entry.getGenerator()) {
+            for (String t : entry.getGenerator()) {
+                collection.append(t).append(", ");
+            }
         }
 	if (collection.length() > 0) collection.deleteCharAt(collection.length() - 2);
 	generator = collection.toString();

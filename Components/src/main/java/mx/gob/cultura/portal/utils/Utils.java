@@ -203,6 +203,20 @@ public class Utils {
         return interval;
     }
     
+    public static String getRowData(List<String> list, boolean all) {
+        StringBuilder builder = new StringBuilder();
+        if (null == list || list.isEmpty()) return "";
+        if (all) {
+            for (String s : list) {
+                if (null != s) builder.append(s.trim()).append(", ");
+            }
+            if (builder.length() > 0) builder.deleteCharAt(builder.length() - 2);
+        }else {
+            if (null != list.get(0)) builder.append(list.get(0).trim());
+        }
+        return builder.toString();
+    }
+    
     /**
      * Genera un tag script para disponer de la funcionalidad para compartir contenido de un sitio Web.
      * Se requiere que el recurso que incluya esta funcion, se ejecute en una plantilla de SWB que
