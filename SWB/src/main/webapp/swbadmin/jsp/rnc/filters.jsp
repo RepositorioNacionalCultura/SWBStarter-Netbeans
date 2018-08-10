@@ -181,7 +181,7 @@
                             <%
                                 for (CountName r : mediastype) {
                             %>
-									<li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="mediatype" value="<%=r.getName()%>"><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
+                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="mediatype" value="<%=r.getName()%>"><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
                             <%
 								}
                             %>

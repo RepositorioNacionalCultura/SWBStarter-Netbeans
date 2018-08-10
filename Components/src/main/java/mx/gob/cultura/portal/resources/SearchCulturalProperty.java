@@ -238,8 +238,8 @@ public class SearchCulturalProperty extends PagerAction {
         String uri = baseUri + "/api/v1/search?q=";
         try {
             filters = null != request.getParameter("filter") ? getPageFilter(request) : getFilters(request);
-            //uri += URLEncoder.encode(Utils.getParamSearch(words), StandardCharsets.UTF_8.name());
-            uri += Utils.getParamSearch(words);
+            uri += URLEncoder.encode(Utils.getParamSearch(words), StandardCharsets.UTF_8.name());
+            //uri += Utils.getParamSearch(words);
             uri += filters;
         } catch (UnsupportedEncodingException uex) {
             LOG.error(uex);
