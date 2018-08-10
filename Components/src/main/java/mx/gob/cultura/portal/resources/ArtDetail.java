@@ -285,9 +285,9 @@ public class ArtDetail extends GenericAdmResource {
         String path = "/swbadmin/jsp/rnc/preview.jsp";
         if (null == type || type.isEmpty() || type.equalsIgnoreCase("conjunto de archivos")) return path;
         if (mode.equalsIgnoreCase(MODE_DIGITAL)) {
-            if (type.equalsIgnoreCase("pdf"))
+            if (type.equalsIgnoreCase("pdf") || type.equalsIgnoreCase("application/pdf")) {
                 path = "/swbadmin/jsp/rnc/viewer/pdfdigital.jsp";
-            else if (type.equalsIgnoreCase("video"))
+            }else if (type.equalsIgnoreCase("video"))
                 path = "/swbadmin/jsp/rnc/viewer/videodigital.jsp";
             else if (type.equalsIgnoreCase("epub"))
                 path = "/swbadmin/jsp/rnc/viewer/epubdigital.jsp";
@@ -298,7 +298,7 @@ public class ArtDetail extends GenericAdmResource {
         } else {
             if (type.equalsIgnoreCase("imagen"))
                 path = "/swbadmin/jsp/rnc/artdetail.jsp";
-            else if (type.equalsIgnoreCase("pdf"))
+            else if (type.equalsIgnoreCase("pdf") || type.equalsIgnoreCase("application/pdf"))
                 path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
             else if (type.equalsIgnoreCase("video"))
                 path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";

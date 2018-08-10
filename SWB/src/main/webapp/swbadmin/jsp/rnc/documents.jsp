@@ -72,12 +72,10 @@
                     <%
                         for (Entry reference : references) {
                             String holder = "";
-                            Title title = new Title();
                             List<String> holders = reference.getHolder();
-                            List<Title> titles = reference.getRecordtitle();
-                            if (!titles.isEmpty()) title = titles.get(0);
                             List<String> creators = reference.getCreator();
                             List<String> resourcetype = reference.getResourcetype();
+                            String title =  Utils.getTitle(reference.getRecordtitle(), 50);
                             holder = null != holders && holders.size() > 0 ? holders.get(0) : "";
                             String resource = resourcetype.size() > 0 ? resourcetype.get(0) : "";
                             String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
@@ -87,9 +85,9 @@
                                     <img src="<%=reference.getResourcethumbnail()%>" />
                                 </a>
                                 <div>
-                                    <p class="tit"><a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&word=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%><%=f%>"><%=title.getValue()%></a></p>
-                                    <p class="autor"><a href="#"><%=creator%></a><br/><i><%=holder%></i></p>
-                                    <p class="tipo"><%=resource%></p>
+                                    <p class="tit"><a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&word=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%><%=f%>"><%=title%></a></p>
+                                    <p class="autor"><a href="#"><%=creator%></a></p>
+                                    <p class="tipo"><i><%=holder%></i></p>
                                 </div>
                             </div>
                     <%

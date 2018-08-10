@@ -29,6 +29,7 @@ import org.semanticwb.model.Resource;
 import javax.servlet.http.HttpServletRequest;
 import mx.gob.cultura.portal.response.Aggregation;
 import mx.gob.cultura.portal.response.Entry;
+import mx.gob.cultura.portal.response.Title;
 
 /**
  *
@@ -203,7 +204,7 @@ public class Utils {
         return interval;
     }
     
-    public static String getRowData(List<String> list, boolean all) {
+    public static String getRowData(List<String> list, int size, boolean all) {
         StringBuilder builder = new StringBuilder();
         if (null == list || list.isEmpty()) return "";
         if (all) {
@@ -212,9 +213,63 @@ public class Utils {
             }
             if (builder.length() > 0) builder.deleteCharAt(builder.length() - 2);
         }else {
-            if (null != list.get(0)) builder.append(list.get(0).trim());
+            if (null != list.get(0) && !list.get(0).trim().isEmpty()) {
+                String data = list.get(0).trim();
+                if (size > 0 && data.length() > size) data = data.substring(0, size)+"...";
+                builder.append(data);
+            }
         }
         return builder.toString();
+    }
+    
+    public static String getTitle(List<Title> titles, int size) {
+        List<String> list = new ArrayList<>();
+        if (null == titles || titles.isEmpty()) return "";
+        for (Title t : titles) {
+            if (null != t && null != t.getValue() && !t.getValue().isEmpty()) {
+                list.add(t.getValue());
+            }
+        }
+        return getRowData(list, size, false);
+    }
+    
+    public static String getClientBrowser(HttpServletRequest request) {
+        String browser = "";
+        final String browserDetails = request.getHeader("User-Agent");
+        final String user = browserDetails.toLowerCase();
+        if (user.contains("msie")) {
+            String substring = browserDetails.substring(browserDetails.indexOf("MSIE")).split(";")[0];
+            browser = substring.split(" ")[0].replace("MSIE", "IE") + "-" + substring.split(" ")[1];
+        } else if (user.contains("safari") && user.contains("version")) {
+            browser = (browserDetails.substring(browserDetails.indexOf("Safari")).split(" ")[0]).split(
+                    "/")[0] + "-" + (browserDetails.substring(
+                            browserDetails.indexOf("Version")).split(" ")[0]).split("/")[1];
+        } else if (user.contains("opr") || user.contains("opera")) {
+            if (user.contains("opera")) {
+                browser = (browserDetails.substring(browserDetails.indexOf("Opera")).split(" ")[0]).split(
+                        "/")[0] + "-" + (browserDetails.substring(
+                                browserDetails.indexOf("Version")).split(" ")[0]).split("/")[1];
+            } else if (user.contains("opr")) {
+                browser = ((browserDetails.substring(browserDetails.indexOf("OPR")).split(" ")[0]).replace("/",
+                        "-")).replace(
+                                "OPR", "Opera");
+            }
+        } else if (user.contains("chrome")) {
+            browser = (browserDetails.substring(browserDetails.indexOf("Chrome")).split(" ")[0]).replace("/", "-");
+        } else if ((user.indexOf("mozilla/7.0") > -1) || (user.indexOf("netscape6") != -1) || (user.indexOf(
+                "mozilla/4.7") != -1) || (user.indexOf("mozilla/4.78") != -1) || (user.indexOf(
+                "mozilla/4.08") != -1) || (user.indexOf("mozilla/3") != -1)) {
+            //browser=(userAgent.substring(userAgent.indexOf("MSIE")).split(" ")[0]).replace("/", "-");
+            browser = "Netscape-?";
+
+        } else if (user.contains("firefox")) {
+            browser = (browserDetails.substring(browserDetails.indexOf("Firefox")).split(" ")[0]).replace("/", "-");
+        } else if (user.contains("rv")) {
+            browser = "IE";
+        } else {
+            browser = "UnKnown, More-Info: " + browserDetails;
+        }
+        return browser;
     }
     
     /**

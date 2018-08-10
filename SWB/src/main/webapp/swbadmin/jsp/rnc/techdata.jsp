@@ -37,7 +37,8 @@
             }
         }
 	if (collection.length() > 0) collection.deleteCharAt(collection.length() - 2);
-	generator = collection.toString();
+	//generator = collection.toString();
+        generator = Utils.getRowData(entry.getGenerator(), 0, true);
 	holder = holders.size() > 0 ? holders.get(0) : "";
 	creator = creators.size() > 0 ? creators.get(0) : "";
         period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";

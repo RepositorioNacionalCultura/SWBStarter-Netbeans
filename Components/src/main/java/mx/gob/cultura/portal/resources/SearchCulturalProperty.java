@@ -238,7 +238,8 @@ public class SearchCulturalProperty extends PagerAction {
         String uri = baseUri + "/api/v1/search?q=";
         try {
             filters = null != request.getParameter("filter") ? getPageFilter(request) : getFilters(request);
-            uri += URLEncoder.encode(Utils.getParamSearch(words), StandardCharsets.UTF_8.name());
+            //uri += URLEncoder.encode(Utils.getParamSearch(words), StandardCharsets.UTF_8.name());
+            uri += Utils.getParamSearch(words);
             uri += filters;
         } catch (UnsupportedEncodingException uex) {
             LOG.error(uex);
@@ -443,7 +444,7 @@ public class SearchCulturalProperty extends PagerAction {
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-video.png");
                             else if (type.equalsIgnoreCase("pdf"))
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-pdf.png");
-                            else if (type.equalsIgnoreCase("aiff"))
+                            else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("aiff"))
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-audio.png");
                             else if (type.equalsIgnoreCase("conjunto de archivos") || type.equalsIgnoreCase("multimedia"))
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-multimedia.png");
