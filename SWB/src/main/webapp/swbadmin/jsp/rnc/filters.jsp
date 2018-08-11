@@ -85,7 +85,7 @@
         if (mediastype.length > 11) {mediastype = mediastype.replace("=::","=");}else {mediastype=''}
         if (resourcetype.length > 13) {resourcetype = resourcetype.replace("=::","=");}else {resourcetype=''}
         dates+=document.getElementById("bx1").value+","+document.getElementById("bx2").value;
-        filters += resourcetype + mediatype + rights + languages + holder + dates;
+        filters += resourcetype + mediastype + rights + languages + holder + dates;
         doSort('<%=word%>'+filters,'relvdes');
     }
 	function validate(ele, min, max) {
