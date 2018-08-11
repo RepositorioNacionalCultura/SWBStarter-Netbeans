@@ -287,24 +287,24 @@ public class ArtDetail extends GenericAdmResource {
         if (mode.equalsIgnoreCase(MODE_DIGITAL)) {
             if (type.equalsIgnoreCase("pdf") || type.equalsIgnoreCase("application/pdf")) {
                 path = "/swbadmin/jsp/rnc/viewer/pdfdigital.jsp";
-            }else if (type.equalsIgnoreCase("video"))
+            }else if (type.equalsIgnoreCase("video") || type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("mov"))
                 path = "/swbadmin/jsp/rnc/viewer/videodigital.jsp";
             else if (type.equalsIgnoreCase("epub"))
                 path = "/swbadmin/jsp/rnc/viewer/epubdigital.jsp";
-            else if (type.equalsIgnoreCase("audio"))
+            else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
                 path = "/swbadmin/jsp/rnc/viewer/audiodigital.jsp";
             else
                 path = "/swbadmin/jsp/rnc/digitalobj.jsp";
         } else {
-            if (type.equalsIgnoreCase("imagen"))
+            if (type.equalsIgnoreCase("imagen") || type.startsWith("image") || type.equalsIgnoreCase("jpg") || type.equalsIgnoreCase("png"))
                 path = "/swbadmin/jsp/rnc/artdetail.jsp";
             else if (type.equalsIgnoreCase("pdf") || type.equalsIgnoreCase("application/pdf"))
                 path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
-            else if (type.equalsIgnoreCase("video"))
+            else if (type.equalsIgnoreCase("video") || type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("mov"))
                 path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
             else if (type.equalsIgnoreCase("epub"))
                 path = "/swbadmin/jsp/rnc/viewer/epubdetail.jsp";
-            else if (type.equalsIgnoreCase("audio"))
+            else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
                 path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
         }
         return path;
@@ -324,26 +324,26 @@ public class ArtDetail extends GenericAdmResource {
         String type = getMimeType(digital);
         if (null == type || type.isEmpty()) return path;
         if (mode.equalsIgnoreCase(MODE_DIGITAL)) {
-            if (type.equalsIgnoreCase("pdf"))
+            if (type.equalsIgnoreCase("pdf") || type.equalsIgnoreCase("application/pdf"))
                 path = "/swbadmin/jsp/rnc/viewer/pdfdigital.jsp";
             else if (type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("mov"))
                 path = "/swbadmin/jsp/rnc/viewer/videodigital.jsp";
             else if (type.equalsIgnoreCase("epub"))
                 path = "/swbadmin/jsp/rnc/viewer/epubdigital.jsp";
-            else if (type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
+            else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
                 path = "/swbadmin/jsp/rnc/viewer/audiodigital.jsp";
             else
                 path = "/swbadmin/jsp/rnc/digitalobj.jsp";
         } else {
-            if (type.equalsIgnoreCase("jpg") || type.equalsIgnoreCase("png"))
+            if (type.equalsIgnoreCase("imagen") || type.startsWith("image") || type.equalsIgnoreCase("jpg") || type.equalsIgnoreCase("png"))
                 path = "/swbadmin/jsp/rnc/artdetail.jsp";
-            else if (type.equalsIgnoreCase("pdf"))
+            else if (type.equalsIgnoreCase("pdf") || type.equalsIgnoreCase("application/pdf"))
                 path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
-            else if (type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("mov"))
+            else if (type.equalsIgnoreCase("video") || type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("mov"))
                 path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
             else if (type.equalsIgnoreCase("epub"))
                 path = "/swbadmin/jsp/rnc/viewer/epubdetail.jsp";
-            else if (type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
+            else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
                 path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
         }
         return path;
