@@ -2,6 +2,7 @@
 <%@page import="mx.gob.cultura.portal.response.Aggregation, mx.gob.cultura.portal.response.CountName"%>
 <%@page import="mx.gob.cultura.portal.utils.Utils, org.semanticwb.portal.api.SWBParamRequest,org.semanticwb.portal.api.SWBResourceURL,java.util.ArrayList, java.util.List"%>
 <%
+    String pdfs = "";
     String audios = "";
     boolean showFilters = false;
     List<CountName> dates = new ArrayList<>();
@@ -11,6 +12,7 @@
     List<CountName> mediastype = new ArrayList<>();
     List<CountName> resourcetypes = new ArrayList<>();
     String word = (String)request.getAttribute("word");
+    List<CountName> pdf = (List<CountName>)request.getAttribute("pdf");
     List<CountName> audio = (List<CountName>)request.getAttribute("audio");
     Aggregation aggs = (Aggregation)request.getAttribute("aggs");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
@@ -29,6 +31,11 @@
                 audios += "::" + c.getName();
             }
 	}
+        if (null != pdf && !pdf.isEmpty()) {
+            for (CountName c : pdf) {
+                pdfs += "::" + c.getName();
+            }
+        }
     }
 %>
 <script type="text/javascript">
@@ -47,7 +54,7 @@
 	var rights = '&rights=';
 	var holder = '&holder=';
 	var dates = '&datecreated=';
-	var mediatype = '&mediatype=';
+	var mediastype = '&mediatype=';
 	var languages = '&languages=';
 	var resourcetype='resourcetype=';
 	var inputElements = document.getElementsByClassName('form-check-input');
@@ -57,9 +64,11 @@
                     resourcetype += '::'+inputElements[i].value;
 		}else if (inputElements[i].name == 'mediatype') {
                     if ('Audio' == inputElements[i].value) {
-                        mediatype += '<%=audios%>';
+                        mediastype += '<%=audios%>';
+                    }else if ('PDF' == inputElements[i].value) {
+			mediastype += '<%=pdfs%>';
                     }else {
-                        mediatype += '::'+inputElements[i].value;
+			mediastype += '::'+inputElements[i].value;
                     }
 		}else if (inputElements[i].name == 'rights') {
                     rights += '::'+inputElements[i].value;
@@ -73,7 +82,7 @@
 	if (languages.length > 11) {languages = languages.replace("=::","=");}else {languages=''}
         if (rights.length > 8) {rights = rights.replace("=::","=");}else {rights=''}
         if (holder.length > 8) {holder = holder.replace("=::","=");}else {holder=''}
-        if (mediatype.length > 11) {mediatype = mediatype.replace("=::","=");}else {mediatype=''}
+        if (mediastype.length > 11) {mediastype = mediastype.replace("=::","=");}else {mediastype=''}
         if (resourcetype.length > 13) {resourcetype = resourcetype.replace("=::","=");}else {resourcetype=''}
         dates+=document.getElementById("bx1").value+","+document.getElementById("bx2").value;
         filters += resourcetype + mediatype + rights + languages + holder + dates;

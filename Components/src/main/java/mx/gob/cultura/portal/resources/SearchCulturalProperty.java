@@ -138,7 +138,7 @@ public class SearchCulturalProperty extends PagerAction {
                 setType(document.getRecords(),  paramRequest.getWebPage().getWebSite(), 0);
                 request.setAttribute("aggs", getAggregation(document.getAggs()));
                 request.setAttribute("audio", getAgg(document.getAggs(), "audio"));
-                request.setAttribute("image", getAgg(document.getAggs(), "image"));
+                request.setAttribute("pdf", getAgg(document.getAggs(), "pdf"));
                 request.setAttribute(FULL_LIST, document.getRecords());
                 request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
                 cassette(request, document.getTotal(), getPage(request));
@@ -238,7 +238,7 @@ public class SearchCulturalProperty extends PagerAction {
         String uri = baseUri + "/api/v1/search?q=";
         try {
             filters = null != request.getParameter("filter") ? getPageFilter(request) : getFilters(request);
-            uri += URLEncoder.encode(Utils.getParamSearch(words), StandardCharsets.UTF_8.name());
+            uri += URLEncoder.encode(words, StandardCharsets.UTF_8.name());
             //uri += Utils.getParamSearch(words);
             uri += filters;
         } catch (UnsupportedEncodingException uex) {
@@ -278,7 +278,7 @@ public class SearchCulturalProperty extends PagerAction {
     private String getFilters(HttpServletRequest request) throws UnsupportedEncodingException {
         StringBuilder filters = new StringBuilder();
         filters.append(getFilter(request, "resourcetype"));
-        filters.append(getFilter(request, "mediastype"));
+        filters.append(getFilter(request, "mediatype"));
         filters.append(getFilterDate(request, "datecreated"));
         filters.append(getFilter(request, "rights"));
         filters.append(getFilter(request, "languages"));
