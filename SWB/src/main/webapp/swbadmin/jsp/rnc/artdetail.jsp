@@ -39,40 +39,39 @@
             digital = images >= iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
             if (null == digital.getUrl()) digital.setUrl("");
             if (digital.getUrl().endsWith(".dzi")) {
-                    scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
-                    scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
-                    divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
-                    scriptCallVisor.append("<script type=\"text/javascript\">")
-                            .append("OpenSeadragon({")
-                            .append("	id:\"pyramid\",")
-                            .append("	showHomeControl: false,")
-                            .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
-                            .append("	tileSources:   [")
-                            .append("		\"https://openseadragon.github.io/example-images/highsmith/highsmith.dzi\"")
-                            .append("	]")
-                            .append("});")
-                            .append("</script>");
+                scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
+                scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
+                divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
+                scriptCallVisor.append("<script type=\"text/javascript\">")
+                    .append("OpenSeadragon({")
+                    .append("	id:\"pyramid\",")
+                    .append("	showHomeControl: false,")
+                    .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
+                    .append("	tileSources:   [")
+                    .append("		\"https://openseadragon.github.io/example-images/highsmith/highsmith.dzi\"")
+                    .append("	]")
+                    .append("});")
+                    .append("</script>");
             }else if (digital.getUrl().endsWith("view") || digital.getUrl().endsWith(".png") || digital.getUrl().endsWith(".jpg") || digital.getUrl().endsWith(".JPG")) {
-                    scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
-                    scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
-                    divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
-                    scriptCallVisor.append("<script type=\"text/javascript\">")
-                            .append("OpenSeadragon({")
-                            .append("	id:\"pyramid\",")
-                            .append("	showHomeControl: false,")
-                            .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
-                            .append("	showNavigator: true,")
-                            .append("	panHorizontal: false,")
-                            .append("	defaultZoomLevel: 1,")
-                            .append("	minZoomLevel: 1,")
-                            .append("	maxZoomLevel: 1,")
-                            .append("	visibilityRatio: 1,")
-                            .append("	tileSources:   {")
-                            .append("		type: 'image',")
-                            .append("		url: '").append(digital.getUrl()).append("'")
-                            .append("	}")
-                            .append("});")
-                            .append("</script>");
+                scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
+                scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
+                divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
+                scriptCallVisor.append("<script type=\"text/javascript\">")
+                    .append("var vw = OpenSeadragon({")
+                    .append("	id:\"pyramid\",")
+                    .append("	showHomeControl: false,")
+                    .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
+                    .append("	showNavigator: true,")
+                    .append("	defaultZoomLevel: 0.8,")
+                    .append("	maxZoomLevel: 1.5,")
+                    .append("	minZoomLevel: 0.4,")
+                    .append("	tileSources:   {")
+                    .append("       type: 'image',")
+                    .append("       url: '").append(digital.getUrl()).append("'")
+                    .append("	}")
+                    .append("});")
+                    .append("vw.gestureSettingsMouse.scrollToZoom = false;")
+                    .append("</script>");
             } else {
                 if (digital.getUrl().endsWith(".zip") || digital.getUrl().endsWith(".rtf") || digital.getUrl().endsWith(".docx")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
                 else divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");

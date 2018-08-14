@@ -3,6 +3,14 @@
 <%@page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DigitalObject"%>
 <%@page import="mx.gob.cultura.portal.response.Title,org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.List, java.util.ArrayList"%>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
+<style>
+    a.ion {
+        display: none;
+    }
+    p.tipo:hover + a {
+        display: block;
+    }
+</style>
 <%
     String wxss = "";
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
@@ -88,6 +96,7 @@
                                     <p class="tit"><a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&word=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%><%=f%>"><%=title%></a></p>
                                     <p class="autor"><a href="#"><%=creator%></a></p>
                                     <p class="tipo"><i><%=holder%></i></p>
+                                    <a class="ion" href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=reference.getId()%>');"><span class="ion-heart"></span></a>
                                 </div>
                             </div>
                     <%
@@ -112,3 +121,4 @@
         %>
     </div>
 </div>
+<jsp:include page="addtree.jsp" flush="true"/>

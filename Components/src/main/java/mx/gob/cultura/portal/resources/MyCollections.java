@@ -366,7 +366,8 @@ public class MyCollections extends GenericResource {
                 Entry entry = req.makeRequest();
                 if (null != entry && null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty()
                         && null != entry.getDigitalObject().get(0).getUrl() && !entry.getDigitalObject().get(0).getUrl().isEmpty() && null != entry.getDigitalObject().get(0).getMediatype()
-                        && null != entry.getDigitalObject().get(0).getMediatype().getMime() && entry.getDigitalObject().get(0).getMediatype().getMime().startsWith("image")) {
+                        && null != entry.getDigitalObject().get(0).getMediatype().getMime() && (entry.getDigitalObject().get(0).getMediatype().getMime().startsWith("image") 
+                        || entry.getDigitalObject().get(0).getMediatype().getMime().equalsIgnoreCase("jpg") || entry.getDigitalObject().get(0).getMediatype().getMime().equalsIgnoreCase("png"))) {
                     covers.add(entry.getDigitalObject().get(0).getUrl());
                 }
             }catch (Exception e) {

@@ -135,10 +135,7 @@ public class SearchCulturalProperty extends PagerAction {
             Document document = getReference(request, paramRequest.getWebPage().getWebSite());
             if (null != document) {
                 publicationList = document.getRecords();
-                setType(document.getRecords(),  paramRequest.getWebPage().getWebSite(), 0);
-                request.setAttribute("aggs", getAggregation(document.getAggs()));
-                request.setAttribute("audio", getAgg(document.getAggs(), "audio"));
-                request.setAttribute("pdf", getAgg(document.getAggs(), "pdf"));
+                setType(request, document,  paramRequest.getWebPage().getWebSite(), 0);
                 request.setAttribute(FULL_LIST, document.getRecords());
                 request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
                 cassette(request, document.getTotal(), getPage(request));
@@ -166,7 +163,7 @@ public class SearchCulturalProperty extends PagerAction {
                 if (null != document) {
                     publicationList = document.getRecords();
                     cassette(request, document.getTotal(), 1);
-                    setType(document.getRecords(),  paramRequest.getWebPage().getWebSite(), 0);
+                    setType(request, document,  paramRequest.getWebPage().getWebSite(), 0);
                     request.setAttribute(FULL_LIST, document.getRecords());
                     request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
                 }
@@ -196,7 +193,7 @@ public class SearchCulturalProperty extends PagerAction {
         document = getReference(request, paramRequest.getWebPage().getWebSite());
         if (null != document) {
             publicationList = document.getRecords();
-            setType(document.getRecords(),  paramRequest.getWebPage().getWebSite(), pagenum);
+            setType(request, document,  paramRequest.getWebPage().getWebSite(), pagenum);
             request.setAttribute(FULL_LIST, publicationList);
             request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
             page(pagenum, request);
@@ -216,6 +213,24 @@ public class SearchCulturalProperty extends PagerAction {
         }catch (ServletException se) {
             LOG.info(se.getMessage());
         }
+    }
+    
+    private void setType(HttpServletRequest request, Document document, WebSite site, int page) {
+        int i = 0;
+        int p = page > 0 ? page-1 : 0;
+        if (null != document.getRecords() && !document.getRecords().isEmpty()) {
+            for (Entry e : document.getRecords()) {
+                e.setPosition(i + (p)*SEGMENT);
+                setThumbnail(e, site, 0);
+                i++;
+            }
+        }
+        request.setAttribute("aggs", getAggregation(document.getAggs()));
+        request.setAttribute("pdf", getAgg(document.getAggs(), "pdf"));
+        request.setAttribute("zip", getAgg(document.getAggs(), "zip"));
+        request.setAttribute("image", getAgg(document.getAggs(), "image"));
+        request.setAttribute("audio", getAgg(document.getAggs(), "audio"));
+        request.setAttribute("video", getAgg(document.getAggs(), "video"));
     }
 
     private void cassette(HttpServletRequest request, int total, int pagenum) {
@@ -370,13 +385,16 @@ public class SearchCulturalProperty extends PagerAction {
         return aggregation;
     }
     
-    private List<CountName> getAgg(List<Aggregation> aggs, String type) {
+     private List<CountName> getAgg(List<Aggregation> aggs, String type) {
         List<CountName> list= new ArrayList<>();
         if (null != aggs && !aggs.isEmpty()) {
             for (Aggregation a : aggs) {
                 if (null !=  a.getMediastype()) {
                     for (CountName c : a.getMediastype()) {
-                        if (c.getName().startsWith(type)) list.add(c);
+                        if (type.equals("image") && (c.getName().startsWith("image") || c.getName().equalsIgnoreCase("jpg") || c.getName().equalsIgnoreCase("png"))) list.add(c);
+                        else if (type.equals("audio") && (c.getName().startsWith("audio") || c.getName().equalsIgnoreCase("aiff") || c.getName().equalsIgnoreCase("wav")) || c.getName().equalsIgnoreCase("mp3")) list.add(c);
+                        else if (type.equals("video") && (c.getName().startsWith("video") || c.getName().equalsIgnoreCase("avi") || c.getName().equalsIgnoreCase("mp4") || c.getName().equalsIgnoreCase("mov"))) list.add(c);
+                        else if (c.getName().startsWith(type)) list.add(c);
                     }
                 }
             }
@@ -394,9 +412,9 @@ public class SearchCulturalProperty extends PagerAction {
         CountName audio = new CountName("Audio", 0);
         CountName video = new CountName("Video", 0);
         for (CountName c : media) {
-            if (c.getName().equalsIgnoreCase("jpg") || c.getName().startsWith("image")) image.setCount(image.getCount() + c.getCount());
-            if (c.getName().equalsIgnoreCase("aiff") || c.getName().startsWith("audio")) audio.setCount(audio.getCount() + c.getCount());
-            if (c.getName().equalsIgnoreCase("avi") || c.getName().startsWith("video") || c.getName().equalsIgnoreCase("application/octet-stream")) video.setCount(video.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("jpg") || c.getName().equalsIgnoreCase("png") || c.getName().startsWith("image")) image.setCount(image.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("aiff") || c.getName().equalsIgnoreCase("wav") || c.getName().equalsIgnoreCase("mp3") || c.getName().startsWith("audio")) audio.setCount(audio.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("avi") || c.getName().startsWith("video") || c.getName().equalsIgnoreCase("mp4") || c.getName().equalsIgnoreCase("mov")) video.setCount(video.getCount() + c.getCount());
             if (c.getName().equalsIgnoreCase("pdf") || c.getName().equalsIgnoreCase("application/pdf")) pdf.setCount(pdf.getCount() + c.getCount());
             if (c.getName().startsWith("model/x3d")) three.setCount(three.getCount() + c.getCount());
             if (c.getName().equalsIgnoreCase("zip") || c.getName().equalsIgnoreCase("application/zip")) zip.setCount(zip.getCount() + c.getCount());
@@ -453,18 +471,6 @@ public class SearchCulturalProperty extends PagerAction {
                         }
                     }
                 }
-            }
-        }
-    }
-    
-    private void setType(List<Entry> references, WebSite site, int page) {
-        int i = 0;
-        int p = page > 0 ? page-1 : 0;
-        if (null != references && !references.isEmpty()) {
-            for (Entry e : references) {
-                e.setPosition(i + (p)*SEGMENT);
-                setThumbnail(e, site, 0);
-                i++;
             }
         }
     }

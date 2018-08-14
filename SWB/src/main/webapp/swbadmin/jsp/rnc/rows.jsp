@@ -2,10 +2,19 @@
 <%@page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DigitalObject,mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Identifier, mx.gob.cultura.portal.response.Title, org.semanticwb.portal.api.SWBParamRequest"%>
 <%@ page import="java.util.List" %>
 <%@ page import="org.semanticwb.model.WebSite" %>
+<style>
+    a.ion {
+        display: none;
+    }
+    p.tipo:hover + a {
+        display: block;
+    }
+</style>
 <%
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
     String mode = "card-columns";
+    String userLang = paramRequest.getUser().getLanguage();
     List<Entry> references = (List<Entry>)request.getAttribute("PAGE_LIST");
     if (null != request.getAttribute("mode")) mode = (String)request.getAttribute("mode");
     Integer last = (Integer)request.getAttribute("LAST_RECORD");
@@ -47,6 +56,7 @@
                         <p class="tit"><a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%><%=fs%><%=f%><%=uri%>"><%=title%></a></p>
                         <p class="autor"><a href="#"><%=creator%></a></p>
                         <p class="tipo"><i><%=holder%></i></p>
+                        <a class="ion" href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=reference.getId()%>');"><span class="ion-heart"></span></a>
                     </div>
                 </div>
         <%

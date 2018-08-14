@@ -28,6 +28,7 @@ import org.semanticwb.model.WebSite;
 import org.semanticwb.model.Resource;
 import javax.servlet.http.HttpServletRequest;
 import mx.gob.cultura.portal.response.Aggregation;
+import mx.gob.cultura.portal.response.CountName;
 import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Title;
 
@@ -270,6 +271,17 @@ public class Utils {
             browser = "UnKnown, More-Info: " + browserDetails;
         }
         return browser;
+    }
+    
+    public static String getFilterTypes(HttpServletRequest request, String filter) {
+        StringBuilder types = new StringBuilder();
+        List<CountName> filters = (List<CountName>)request.getAttribute(filter);
+        if (null != filters && !filters.isEmpty()) {
+            for (CountName c : filters) {
+                types.append("::").append(c.getName());
+            }
+        }
+        return types.toString();
     }
     
     /**

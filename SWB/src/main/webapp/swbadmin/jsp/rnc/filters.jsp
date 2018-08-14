@@ -2,8 +2,6 @@
 <%@page import="mx.gob.cultura.portal.response.Aggregation, mx.gob.cultura.portal.response.CountName"%>
 <%@page import="mx.gob.cultura.portal.utils.Utils, org.semanticwb.portal.api.SWBParamRequest,org.semanticwb.portal.api.SWBResourceURL,java.util.ArrayList, java.util.List"%>
 <%
-    String pdfs = "";
-    String audios = "";
     boolean showFilters = false;
     List<CountName> dates = new ArrayList<>();
     List<CountName> rights = new ArrayList<>();
@@ -12,12 +10,13 @@
     List<CountName> mediastype = new ArrayList<>();
     List<CountName> resourcetypes = new ArrayList<>();
     String word = (String)request.getAttribute("word");
-    List<CountName> pdf = (List<CountName>)request.getAttribute("pdf");
-    List<CountName> audio = (List<CountName>)request.getAttribute("audio");
+    String pdfs = Utils.getFilterTypes(request, "pdf");
+    String zips = Utils.getFilterTypes(request, "zip");
+    String images = Utils.getFilterTypes(request, "image");
+    String audios = Utils.getFilterTypes(request, "audio");
+    String videos = Utils.getFilterTypes(request, "video");
     Aggregation aggs = (Aggregation)request.getAttribute("aggs");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
-    SWBResourceURL pageURL = paramRequest.getRenderUrl().setMode("SORT");
-    pageURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     if (null != aggs) {
         showFilters = true;
 	if (null !=  aggs.getDates()) dates = aggs.getDates();
@@ -26,17 +25,9 @@
         if (null !=  aggs.getLanguages()) languages = aggs.getLanguages();
 	if (null !=  aggs.getMediastype()) mediastype = aggs.getMediastype();
         if (null !=  aggs.getResourcetypes()) resourcetypes = aggs.getResourcetypes();
-        if (null != audio && !audio.isEmpty()) {
-            for (CountName c : audio) {
-                audios += "::" + c.getName();
-            }
-	}
-        if (null != pdf && !pdf.isEmpty()) {
-            for (CountName c : pdf) {
-                pdfs += "::" + c.getName();
-            }
-        }
     }
+    SWBResourceURL pageURL = paramRequest.getRenderUrl().setMode("SORT");
+    pageURL.setCallMethod(SWBParamRequest.Call_DIRECT);
 %>
 <script type="text/javascript">
     function sort(f) {
@@ -62,13 +53,19 @@
             if (inputElements[i].checked) {
                 if (inputElements[i].name == 'resourcetype') {
                     resourcetype += '::'+inputElements[i].value;
-		}else if (inputElements[i].name == 'mediatype') {
+		}else if (inputElements[i].name == 'mediastype') {
                     if ('Audio' == inputElements[i].value) {
                         mediastype += '<%=audios%>';
                     }else if ('PDF' == inputElements[i].value) {
 			mediastype += '<%=pdfs%>';
+                    }else if ('Imagen' == inputElements[i].value) {
+			mediastype += '<%=images%>';
+                    }else if ('Video' == inputElements[i].value) {
+			mediastype += '<%=videos%>';
+                    }else if ('ZIP' == inputElements[i].value) {
+                        mediastype += '<%=zips%>';
                     }else {
-			mediastype += '::'+inputElements[i].value;
+                        mediastype += '::'+inputElements[i].value;
                     }
 		}else if (inputElements[i].name == 'rights') {
                     rights += '::'+inputElements[i].value;
@@ -88,28 +85,28 @@
         filters += resourcetype + mediastype + rights + languages + holder + dates;
         doSort('<%=word%>'+filters,'relvdes');
     }
-	function validate(ele, min, max) {
-		var val = ele.value;
-		if (!val.match(/^\d+$/)) {
-			document.getElementById("bx1").value = min
-			document.getElementById("bx2").value = max
-			alert('<%=paramRequest.getLocaleString("usrmsg_view_search_year_digit_error")%>');
-		}
-		if (val < min) {
-			ele.focus();
-			alert('<%=paramRequest.getLocaleString("usrmsg_view_search_year_min_error")%> ' + min);
-		}
-		if (val > max) {
-			ele.focus();
-			alert('<%=paramRequest.getLocaleString("usrmsg_view_search_year_max_error")%> ' + max);
-		}
-		if (ele.name == 'bx1' && validateRange(document.getElementById("bx1").value, document.getElementById("bx2").value)) {
-			filter();
-		}
-		if (ele.name == 'bx2' && validateRange(document.getElementById("bx1").value, document.getElementById("bx2").value)) {
-			filter();
-		}
+    function validate(ele, min, max) {
+        var val = ele.value;
+	if (!val.match(/^\d+$/)) {
+            document.getElementById("bx1").value = min
+            document.getElementById("bx2").value = max
+            alert('<%=paramRequest.getLocaleString("usrmsg_view_search_year_digit_error")%>');
 	}
+        if (val < min) {
+            ele.focus();
+            alert('<%=paramRequest.getLocaleString("usrmsg_view_search_year_min_error")%> ' + min);
+	}
+        if (val > max) {
+            ele.focus();
+            alert('<%=paramRequest.getLocaleString("usrmsg_view_search_year_max_error")%> ' + max);
+	}
+        if (ele.name == 'bx1' && validateRange(document.getElementById("bx1").value, document.getElementById("bx2").value)) {
+            filter();
+	}
+	if (ele.name == 'bx2' && validateRange(document.getElementById("bx1").value, document.getElementById("bx2").value)) {
+            filter();
+	}
+    }
 	function validateRange(min, max) {
 		if (min > max) {
 			alert('<%=paramRequest.getLocaleString("usrmsg_view_search_range_min_error")%>');

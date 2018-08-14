@@ -37,8 +37,8 @@
             title = titles.size() > 0 ? Utils.replaceSpecialChars(titles.get(0).getValue()) : "";
             scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
             scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-pdf.css'/>");
-            if (Utils.getClientBrowser(request).contains("Firefox")) {
-		scriptCallVisor.append("<iframe src=\"").append(digital.getUrl()).append("\" width=\"1200px\" height=\"900px\" />");
+            if (Utils.getClientBrowser(request).contains("Firefox") || Utils.getClientBrowser(request).contains("Safari")) {
+		scriptCallVisor.append("<iframe src=\"").append(digital.getUrl()).append("\" width=\"1200px\" height=\"900px\"></iframe>");
             }else {
 		scriptCallVisor.append("<script type=\"text/javascript\">")
                     .append("   $(document).ready(function() {")

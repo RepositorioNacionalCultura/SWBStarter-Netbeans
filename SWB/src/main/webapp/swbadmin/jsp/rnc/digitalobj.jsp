@@ -44,21 +44,20 @@
             else if (digital.getUrl().endsWith("view") || digital.getUrl().endsWith(".png") || digital.getUrl().endsWith(".jpg") || digital.getUrl().endsWith(".JPG")) {
 		divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
 		scriptCallVisor.append("<script type=\"text/javascript\">")
-                    .append("OpenSeadragon({")
+                    .append("var vw = OpenSeadragon({")
                     .append("	id:\"pyramid\",")
                     .append("	showHomeControl: false,")
                     .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
                     .append("	showNavigator: true,")
-                    .append("	panHorizontal: false,")
-                    .append("	defaultZoomLevel: 1,")
-                    .append("	minZoomLevel: 1,")
-                    .append("	maxZoomLevel: 1,")
-                    .append("	visibilityRatio: 1,")
+                    .append("	defaultZoomLevel: 0.8,")
+                    .append("	maxZoomLevel: 1.5,")
+                    .append("	minZoomLevel: 0.4,")
                     .append("	tileSources:   {")
-                    .append("		type: 'image',")
-                    .append("		url: '").append(digital.getUrl()).append("'")
+                    .append("       type: 'image',")
+                    .append("       url: '").append(digital.getUrl()).append("'")
                     .append("	}")
                     .append("});")
+                    .append("vw.gestureSettingsMouse.scrollToZoom = false;")
                     .append("</script>");
             }else {
                 if (digital.getUrl().endsWith(".zip") || digital.getUrl().endsWith(".rtf") || digital.getUrl().endsWith(".docx") || digital.getUrl().endsWith(".avi")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
