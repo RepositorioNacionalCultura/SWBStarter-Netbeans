@@ -220,7 +220,9 @@ public class ArtDetail extends GenericAdmResource {
         List<String> collection = entry.getCollection();
         if (null != collection && !collection.isEmpty()) {
             for (String rack : collection) {
-                bookCase.addAll(bookCase(endPoint, rack));
+                List<Entry> qrack = bookCase(endPoint, rack);
+                if (null != qrack && !qrack.isEmpty())
+                    bookCase.addAll(qrack);
                 if (!bookCase.isEmpty() && bookCase.size() > NUM_ROW) {
                     break;
                 }
