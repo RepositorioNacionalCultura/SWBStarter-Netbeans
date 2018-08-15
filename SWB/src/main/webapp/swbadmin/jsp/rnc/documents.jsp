@@ -68,16 +68,16 @@
         </span>
     </div>
     <jsp:include page="filters.jsp" flush="true"/>
-    <div class="ruta-resultado row">
-        <% if (null != wxss) {%>
-            <p class="oswL"><%=t%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
-        <% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
-    </div>
-    <div id="contenido">
-	<a name="showPage"></a>
-	<% if (!references.isEmpty()) {  %>
-                <div id="references">
-                    <div id="resultados" class="card-columns">
+    <a name="showPage"></a>
+    <div id="references">
+        <div class="ruta-resultado row">
+            <% if (null != wxss) {%>
+                <p class="oswL"><%=t%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
+            <% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
+        </div>
+        <div id="contenido">
+            <% if (!references.isEmpty()) {  %>
+                <div id="resultados" class="card-columns">
                     <%
                         for (Entry reference : references) {
                             String holder = "";
@@ -101,10 +101,9 @@
                     <%
                         }
                     %>
-                    </div>
-                    <jsp:include page="pager.jsp" flush="true"/>
-                    <jsp:include page="footer.jsp" flush="true"/>
-		</div>
+                </div>
+                <jsp:include page="pager.jsp" flush="true"/>
+                <jsp:include page="footer.jsp" flush="true"/>
 	<%
             }else{ 
 	%>
@@ -118,6 +117,7 @@
 	<%
             }
         %>
+        </div>
     </div>
 </div>
 <jsp:include page="addtree.jsp" flush="true"/>

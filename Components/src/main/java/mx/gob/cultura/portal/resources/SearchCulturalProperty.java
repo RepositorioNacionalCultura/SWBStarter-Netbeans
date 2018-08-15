@@ -392,6 +392,7 @@ public class SearchCulturalProperty extends PagerAction {
                 if (null !=  a.getMediastype()) {
                     for (CountName c : a.getMediastype()) {
                         if (type.equals("image") && (c.getName().startsWith("image") || c.getName().equalsIgnoreCase("jpg") || c.getName().equalsIgnoreCase("png"))) list.add(c);
+                        else if (type.equals("pdf") && (c.getName().startsWith("pdf") || c.getName().equalsIgnoreCase("application/pdf"))) list.add(c);
                         else if (type.equals("audio") && (c.getName().startsWith("audio") || c.getName().equalsIgnoreCase("aiff") || c.getName().equalsIgnoreCase("wav")) || c.getName().equalsIgnoreCase("mp3")) list.add(c);
                         else if (type.equals("video") && (c.getName().startsWith("video") || c.getName().equalsIgnoreCase("avi") || c.getName().equalsIgnoreCase("mp4") || c.getName().equalsIgnoreCase("mov"))) list.add(c);
                         else if (c.getName().startsWith(type)) list.add(c);
