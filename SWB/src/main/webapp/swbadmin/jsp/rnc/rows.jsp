@@ -27,17 +27,6 @@
 %>
 <% if (!references.isEmpty()) {  %>
     <div id="references">
-        <div class="ruta-resultado row">
-            <div class="col-12 col-sm-8 col-md-8">
-		<% if (null != word) { %>
-                    <p class="oswL rojo"><%=first%>-<%=last%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=t%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=word%></span></p>
-		<% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 ordenar">
-                <a href="#" onclick="setGrid();"><i class="fa fa-th select" aria-hidden="true"></i></a>
-                <a href="#" onclick="setList();"><i class="fa fa-th-list" aria-hidden="true"></i></a>
-            </div>
-        </div>
         <div id="resultados" class="<%=mode%>">
         <%  
             for (Entry reference : references) {

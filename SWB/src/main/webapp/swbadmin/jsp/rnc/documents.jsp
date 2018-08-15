@@ -40,16 +40,23 @@
     }
 </script>
 <div class="row resultadosbar">
-    <div class="col-md-3 regresar">
+    <div class="resultadosbar-cont">
+        <div class="regresar">
+            <button class="btn btn-rojo" onclick="javascript:history.go(-1)">
+                <span class="ion-chevron-left"></span><%=paramRequest.getLocaleString("usrmsg_view_search_back")%>
+            </button>
+        </div>
+        <div class="rutatop">
+            <p class="">
+                <a href="/<%=userLang%>/<%=site.getId()%>/home"><%=paramRequest.getWebPage().getWebSite().getHomePage().getDisplayName(userLang)%></a> / <%=paramRequest.getLocaleString("usrmsg_view_search_collection")%>
+            </p>
+        </div>
+        <div class="ordenar">
+            <a href="#" onclick="setGrid();"><i class="fa fa-th select" aria-hidden="true"></i></a>
+            <a href="#" onclick="setList();"><i class="fa fa-th-list" aria-hidden="true"></i></a>
+        </div>
     </div>
-    <div class="col-md-9 rutatop">
-        <button class="btn btn-rojo" onclick="javascript:history.go(-1)">
-            <span class="ion-chevron-left"></span><%=paramRequest.getLocaleString("usrmsg_view_search_back")%>
-        </button>
-        <p class="oswL">
-            <a href="/<%=userLang%>/<%=site.getId()%>/home"><%=paramRequest.getWebPage().getWebSite().getHomePage().getDisplayName(userLang)%></a> / <%=paramRequest.getLocaleString("usrmsg_view_search_collection")%>
-        </p>
-    </div>
+    <div class="resultadosbar-inf"></div>
 </div>
 <div class="row offcanvascont">
     <div class="offcanvas rojo-bg">
@@ -61,31 +68,23 @@
         </span>
     </div>
     <jsp:include page="filters.jsp" flush="true"/>
+    <div class="ruta-resultado row">
+        <% if (null != wxss) {%>
+            <p class="oswL"><%=t%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
+        <% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
+    </div>
     <div id="contenido">
 	<a name="showPage"></a>
 	<% if (!references.isEmpty()) {  %>
                 <div id="references">
-                    <div class="ruta-resultado row">
-			<div class="col-12 col-sm-8 col-md-8">
-                            <% if (null != wxss) { %>
-				<p class="oswL rojo"><%=t%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
-                            <% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
-			</div>
-                        <div class="col-12 col-sm-4 col-md-4 ordenar">
-                            <a href="#" onclick="setGrid();"><i class="fa fa-th select" aria-hidden="true"></i></a>
-                            <a href="#" onclick="setList();"><i class="fa fa-th-list" aria-hidden="true"></i></a>
-			</div>
-                    </div>
                     <div id="resultados" class="card-columns">
                     <%
                         for (Entry reference : references) {
                             String holder = "";
                             List<String> holders = reference.getHolder();
                             List<String> creators = reference.getCreator();
-                            List<String> resourcetype = reference.getResourcetype();
                             String title =  Utils.getTitle(reference.getRecordtitle(), 50);
                             holder = null != holders && holders.size() > 0 ? holders.get(0) : "";
-                            String resource = resourcetype.size() > 0 ? resourcetype.get(0) : "";
                             String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
                     %>
                             <div class="pieza-res card">
