@@ -31,7 +31,7 @@
     String f = null != request.getAttribute("sort") ? (String)request.getAttribute("sort") : "relvdes";
     String fs = null != request.getAttribute("filters") ? (String)request.getAttribute("filters") : "";
 %>
-<div class="container paginacion">
+<div class="paginacion">
     <p><%=first%>-<%=last%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=totalRegistros%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%></p>
     <ul class="azul">
     <!-- liga para saltar al bloque anterior -->

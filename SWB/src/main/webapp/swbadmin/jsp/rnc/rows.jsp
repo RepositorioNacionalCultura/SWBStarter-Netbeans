@@ -1,15 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DigitalObject,mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Identifier, mx.gob.cultura.portal.response.Title, org.semanticwb.portal.api.SWBParamRequest"%>
-<%@ page import="java.util.List" %>
+<%@ page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DigitalObject,mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Identifier, mx.gob.cultura.portal.response.Title, org.semanticwb.portal.api.SWBParamRequest"%>
+<%@ page import="java.util.List, org.bson.Document" %>
 <%@ page import="org.semanticwb.model.WebSite" %>
-<style>
-    a.ion {
-        display: none;
-    }
-    p.tipo:hover + a {
-        display: block;
-    }
-</style>
 <%
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
@@ -38,19 +30,34 @@
                     String holder = "";
                     List<String> holders = reference.getHolder();
                     List<String> creators = reference.getCreator();
+                    Document desc = Utils.getDescription(reference.getDescription());
+                    holder = null != holders && holders.size() > 0 ? holders.get(0) : "";
                     String title =  Utils.getTitle(reference.getRecordtitle(), 50);
                     holder = null != holders && holders.size() > 0 ? holders.get(0) : "";
                     String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
             %>
                     <div class="pieza-res card">
-                        <a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%><%=fs%><%=f%><%=uri%>">
+                        <a class="pieza-res-img" href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%><%=fs%><%=f%><%=uri%>">
                             <img src="<%=reference.getResourcethumbnail()%>" />
                         </a>
-                        <div>
+                        <div  class="pieza-res-inf">
                             <p class="tit"><a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%><%=fs%><%=f%><%=uri%>"><%=title%></a></p>
                             <p class="autor"><a href="#"><%=creator%></a></p>
-                            <p class="tipo"><i><%=holder%></i></p>
-                            <a class="ion" href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=reference.getId()%>');"><span class="ion-heart"></span></a>
+                            <p class="desc"><% if (null != desc) desc.get("short");%></p>
+                            <p class="palabras">
+                                <%
+                                    int i = 0;
+                                    for (String key : reference.getKeywords()) {
+                                        if (i < reference.getKeywords().size()) key += ", ";
+                                        out.println("<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word=" + key + "\">" + key + "</a>");
+                                        i++;
+                                    }
+                                %>
+                            </p>
+                            <div>
+                                <p class="tipo"><a href="#"><%=holder%></a></p>
+                                <a href="#" class="pieza-res-like" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=reference.getId()%>');"><span class="ion-heart"></span></a>
+                            </div>
                         </div>
                     </div>
             <%

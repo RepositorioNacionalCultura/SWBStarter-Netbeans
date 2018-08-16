@@ -1,16 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="mx.gob.cultura.portal.response.Entry"%>
+<%@page import="mx.gob.cultura.portal.response.Title, mx.gob.cultura.portal.response.Entry"%>
 <%@page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DigitalObject"%>
-<%@page import="mx.gob.cultura.portal.response.Title,org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.List, java.util.ArrayList"%>
+<%@page import="org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.List, java.util.ArrayList, org.bson.Document"%>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
-<style>
-    a.ion {
-        display: none;
-    }
-    p.tipo:hover + a {
-        display: block;
-    }
-</style>
 <%
     String wxss = "";
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
@@ -52,14 +44,14 @@
             </p>
         </div>
         <div class="ordenar">
-            <a href="#" onclick="setGrid();"><i class="fa fa-th select" aria-hidden="true"></i></a>
-            <a href="#" onclick="setList();"><i class="fa fa-th-list" aria-hidden="true"></i></a>
+            <i class="fa fa-th select" aria-hidden="true" id="vistaMosaico" onclick="vistaMosaico();"></i>
+            <i class="fa fa-th-list " aria-hidden="true" id="vistaLista" onclick="vistaLista();"></i>
         </div>
     </div>
     <div class="resultadosbar-inf"></div>
 </div>
 <div class="row offcanvascont">
-    <div class="offcanvas rojo-bg">
+    <div class="offcanvas rojo-bg" id="offcanvas">
 	<span onclick="openNav()" id="offcanvasAbre">
             <em class="fa fa-sliders" aria-hidden="true"></em> <%=paramRequest.getLocaleString("usrmsg_view_search_filters")%> <i class="ion-chevron-right " aria-hidden="true"></i>
         </span>
@@ -70,7 +62,7 @@
     <jsp:include page="filters.jsp" flush="true"/>
     <a name="showPage"></a>
     <div id="references">
-        <div class="ruta-resultado row">
+        <div class="ruta-resultado row" id="ruta-resultado">
             <% if (null != wxss) {%>
                 <p class="oswL"><%=t%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
             <% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
@@ -84,18 +76,32 @@
                             List<String> holders = reference.getHolder();
                             List<String> creators = reference.getCreator();
                             String title =  Utils.getTitle(reference.getRecordtitle(), 50);
+                            Document desc = Utils.getDescription(reference.getDescription());
                             holder = null != holders && holders.size() > 0 ? holders.get(0) : "";
                             String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
                     %>
                             <div class="pieza-res card">
-                                <a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&word=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%><%=f%>">
+                                <a class="pieza-res-img" href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&word=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%><%=f%>">
                                     <img src="<%=reference.getResourcethumbnail()%>" />
                                 </a>
-                                <div>
+                                <div class="pieza-res-inf">
                                     <p class="tit"><a href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&word=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%><%=f%>"><%=title%></a></p>
                                     <p class="autor"><a href="#"><%=creator%></a></p>
-                                    <p class="tipo"><i><%=holder%></i></p>
-                                    <a class="ion" href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=reference.getId()%>');"><span class="ion-heart"></span></a>
+                                    <p class="desc"><% if (null != desc) desc.get("short");%></p>
+                                    <p class="palabras">
+                                        <%
+                                            int i = 0;
+                                            for (String key : reference.getKeywords()) {
+                                                if (i < reference.getKeywords().size()) key += ", ";
+                                                out.println("<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word=" + key + "\">" + key + "</a>");
+                                                i++;
+                                            }
+                                        %>
+                                    </p>
+                                    <div>
+                                        <p class="tipo"><a href="#"><%=holder%></a></p>
+                                        <a href="#" class="pieza-res-like" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=reference.getId()%>');"><span class="ion-heart"></span></a>
+                                    </div>
                                 </div>
                             </div>
                     <%
@@ -104,6 +110,7 @@
                 </div>
                 <jsp:include page="pager.jsp" flush="true"/>
                 <jsp:include page="footer.jsp" flush="true"/>
+        
 	<%
             }else{ 
 	%>

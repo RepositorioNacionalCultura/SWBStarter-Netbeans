@@ -17,12 +17,11 @@
     Document desc = null;
     String generator = "";
     List<Title> titles = new ArrayList<>();
-    List<String> holders = new ArrayList<>();	List<String> creators = new ArrayList<>();
+    List<String> holders = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     if (null != entry) {
         holders = entry.getHolder();
-	creators = entry.getCreator();
         titles = entry.getRecordtitle();
 	StringBuilder builder = new StringBuilder();
         StringBuilder collection = new StringBuilder();
@@ -37,10 +36,9 @@
             }
         }
 	if (collection.length() > 0) collection.deleteCharAt(collection.length() - 2);
-	//generator = collection.toString();
         generator = Utils.getRowData(entry.getGenerator(), 0, true);
 	holder = holders.size() > 0 ? holders.get(0) : "";
-	creator = creators.size() > 0 ? creators.get(0) : "";
+	creator = Utils.getRowData(entry.getCreator(), 0, true);
         period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
 	if (!titles.isEmpty()) title = titles.get(0).getValue();
         desc = Utils.getDescription(entry.getDescription());
