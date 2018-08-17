@@ -9,6 +9,7 @@
          org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.ArrayList, java.util.List, org.bson.Document"%>
 <%
     String type = "";
+    String fdesc = "";
     String title = "";
     String holder = "";
     String period = "";
@@ -41,8 +42,9 @@
 	creator = Utils.getRowData(entry.getCreator(), 0, true);
         period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
 	if (!titles.isEmpty()) title = titles.get(0).getValue();
-        desc = Utils.getDescription(entry.getDescription());
         rights = Utils.getRights(entry);
+        desc = Utils.getDescription(entry.getDescription());
+        fdesc = null != desc.get("full") ? (String)desc.get("full") : "";
     }
 %>
 <div class="col-12 col-sm-12 col-md-9 col-lg-9 order-md-2 order-sm-1 order-1 ficha ">
@@ -50,8 +52,10 @@
     <%  if (null != desc) { %>
             <p id="shortdesc"><%=desc.get("short")%></p>
             <a name="showPage"></a>
-            <p id="moredesc" style="display:none;"><%=desc.get("full")%></p>
+            <p id="moredesc" style="display:none;"><%=fdesc%></p>
             <hr>
+    <% } if (!fdesc.isEmpty()) { %>
+	<p class="vermas"><a href="#showPage" onclick="moreDesc()"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
     <% } %>
     <p class="vermas"><a href="#showPage" onclick="moreDesc()"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
     <div class="tabla">
@@ -118,7 +122,7 @@
                     </tr>
             <% }%>
         </table>
-        <p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
+        <!--p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p-->
     </div>
 </div>
 <script>

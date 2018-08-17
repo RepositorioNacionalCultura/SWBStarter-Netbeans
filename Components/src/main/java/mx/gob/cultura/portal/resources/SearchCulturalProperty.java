@@ -277,13 +277,13 @@ public class SearchCulturalProperty extends PagerAction {
     
     private String getPageFilter(HttpServletRequest request) throws UnsupportedEncodingException { 
         StringBuilder filters = new StringBuilder();
-        String [] params = request.getParameter("filter").split(",");
+        String [] params = request.getParameter("filter").split(";;");
         for (int i=0; i<params.length; i++) {
             String [] pair = params[i].split(":");
-            filters.append(",").append(pair[0]).append(":").append(URLEncoder.encode(pair[1], StandardCharsets.UTF_8.name()));
+            filters.append(";;").append(pair[0]).append(":").append(URLEncoder.encode(pair[1], StandardCharsets.UTF_8.name()));
         }
         if (filters.length() > 0) {
-            filters.deleteCharAt(0);
+            filters.delete(0, 2);
             filters.insert(0, "&filter=");
             request.setAttribute("filters", URLDecoder.decode(filters.toString(), StandardCharsets.UTF_8.name()));
         }
@@ -299,7 +299,7 @@ public class SearchCulturalProperty extends PagerAction {
         filters.append(getFilter(request, "languages"));
         filters.append(getFilter(request, "holder"));
         if (filters.length() > 0) {
-            filters.deleteCharAt(0);
+            filters.delete(0, 2);
             filters.insert(0, "&filter=");
             request.setAttribute("filters", URLDecoder.decode(filters.toString(), StandardCharsets.UTF_8.name()));
         }
@@ -312,7 +312,7 @@ public class SearchCulturalProperty extends PagerAction {
             String [] filters = request.getParameter(att).split("::");
             for (int i=0; i<filters.length; i++) {
                 if (att.equalsIgnoreCase("languages")) att="lang";
-                filter.append(",").append(att).append(":").append(URLEncoder.encode(filters[i], StandardCharsets.UTF_8.name()));
+                filter.append(";;").append(att).append(":").append(URLEncoder.encode(filters[i], StandardCharsets.UTF_8.name()));
             }
         }else return "";
         return filter.toString();
@@ -323,7 +323,7 @@ public class SearchCulturalProperty extends PagerAction {
         if (null != request.getParameter(att) && !request.getParameter(att).isEmpty()) {
             String [] filters = request.getParameter(att).split(",");
             if (filters.length == 2)
-                filter.append(",").append("datestart:").append(filters[0]).append(",dateend:").append(filters[1]);
+                filter.append(";;").append("datestart:").append(filters[0]).append(";;dateend:").append(filters[1]);
         }
         return filter.toString();
     }
@@ -395,7 +395,7 @@ public class SearchCulturalProperty extends PagerAction {
                         else if (type.equals("pdf") && (c.getName().startsWith("pdf") || c.getName().equalsIgnoreCase("application/pdf"))) list.add(c);
                         else if (type.equals("audio") && (c.getName().startsWith("audio") || c.getName().equalsIgnoreCase("aiff") || c.getName().equalsIgnoreCase("wav")) || c.getName().equalsIgnoreCase("mp3")) list.add(c);
                         else if (type.equals("video") && (c.getName().startsWith("video") || c.getName().equalsIgnoreCase("avi") || c.getName().equalsIgnoreCase("mp4") || c.getName().equalsIgnoreCase("mov"))) list.add(c);
-                        else if (c.getName().startsWith(type)) list.add(c);
+                        else if (type.equals("zip") && (c.getName().startsWith("zip") || c.getName().equalsIgnoreCase("application/zip"))) list.add(c);
                     }
                 }
             }

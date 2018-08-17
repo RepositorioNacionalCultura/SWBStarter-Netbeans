@@ -144,10 +144,11 @@ public class Utils {
         if (null == descriptions || descriptions.isEmpty()) return null;
         String description = descriptions.get(0);
         if (null == description || description.isEmpty()) return null;
-        org.bson.Document bson = new org.bson.Document("full", description);
-        if (description.length() > 240)
+        org.bson.Document bson = new org.bson.Document("size", description.length());
+        if (description.length() > 240) {
             bson.append("short", description.substring(0, 240)+"...");
-        else
+            bson.append("full", description);
+        }else
             bson.append("short", description);
         return bson;
     }
