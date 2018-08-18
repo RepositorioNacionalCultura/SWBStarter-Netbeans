@@ -43,8 +43,9 @@
         period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
 	if (!titles.isEmpty()) title = titles.get(0).getValue();
         rights = Utils.getRights(entry);
+        title = Utils.getTitle(titles, 0);
         desc = Utils.getDescription(entry.getDescription());
-        fdesc = null != desc.get("full") ? (String)desc.get("full") : "";
+        fdesc = (null != desc && null !=desc.get("full")) ? (String)desc.get("full") : "";
     }
 %>
 <div class="col-12 col-sm-12 col-md-9 col-lg-9 order-md-2 order-sm-1 order-1 ficha ">

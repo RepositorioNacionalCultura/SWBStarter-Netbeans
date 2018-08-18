@@ -46,3 +46,33 @@ function addnew(uri) {
         }
     });
 }
+
+function nextResult(url) {
+    window.location.replace(url);
+}
+
+function vistaMosaico() {
+    document.getElementById("resultados").classList.remove("lista");
+    document.getElementById("vistaMosaico").classList.add("select");
+    document.getElementById("vistaLista").classList.remove("select");
+    var x = document.getElementsByClassName("pieza-res-img");
+    var y = document.getElementsByClassName("pieza-res-inf");
+    var i;
+    for (i = 0; i < x.length; i++) {
+        x[i].classList.remove("lista");
+        y[i].classList.remove("lista");
+        y[i].style.width = "";
+    }
+}
+function vistaLista() {
+    document.getElementById("resultados").classList.add("lista");
+    document.getElementById("vistaLista").classList.add("select");
+    document.getElementById("vistaMosaico").classList.remove("select");
+    var x = document.getElementsByClassName("pieza-res-img");
+    var y = document.getElementsByClassName("pieza-res-inf");
+    var i;
+    for (i = 0; i < x.length; i++) {
+        x[i].classList.add("lista");
+        y[i].classList.add("lista");
+    }
+}

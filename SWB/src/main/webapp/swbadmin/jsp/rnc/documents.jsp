@@ -2,6 +2,7 @@
 <%@page import="mx.gob.cultura.portal.response.Title, mx.gob.cultura.portal.response.Entry"%>
 <%@page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DigitalObject"%>
 <%@page import="org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.List, java.util.ArrayList, org.bson.Document"%>
+<script type="text/javascript" src="/swbadmin/js/rnc/detail.js"></script>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
     String wxss = "";
