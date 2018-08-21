@@ -15,12 +15,15 @@
     String twitConsumerKey;
     String twitConsumerSecret;
     String gpCliendId;
+    String passMgr_sectionId;
+    String urlPassRec="";
     java.security.KeyPair key = SWBPortal.getUserMgr().getSessionKey(request);
     
     boolean isSocialNetUser = false;
     boolean showFB = false;
     boolean showTwitter = false;
     boolean showGPlus = false;
+    boolean showPassRecovery = false;
     String source = "";
 
     try {
@@ -43,6 +46,18 @@
     if (null != twitConsumerKey && !twitConsumerKey.isEmpty() && null != twitConsumerSecret && !twitConsumerSecret.isEmpty()) {
         showTwitter = true;
     }
+    
+    passMgr_sectionId = paramsRequest.getWebPage().getWebSite().getModelProperty("passmgr_sectionid");
+    if (null != passMgr_sectionId && !passMgr_sectionId.isEmpty()) {
+        showPassRecovery = true;
+        WebPage wp = paramsRequest.getWebPage().getWebSite().getWebPage(passMgr_sectionId);
+        if(null!=wp){
+            urlPassRec = wp.getUrl();
+        } else {
+            showPassRecovery = false;
+        }
+    }
+    
     
     gpCliendId = paramsRequest.getWebPage().getWebSite().getModelProperty("google_clientid");
     if (null != gpCliendId && !gpCliendId.isEmpty()) {
@@ -425,7 +440,13 @@
                                     </div>
                                     <div class="form-ses-03">
                                         <button type="submit" class="btn-cultura btn-rojo"><%=submitBtn%></button>
-                                        <%--a href="#" class="modal-olvidaste">¿Olvidaste tu contraseña?</a--%>
+<%
+            if (showPassRecovery) {            
+%>                                        
+                                        <a href="<%=urlPassRec%>" class="modal-olvidaste">¿Olvidaste tu contraseña?</a>
+<%
+            }
+%>                                        
                                     </div>
                                 </form>
                             </div>
