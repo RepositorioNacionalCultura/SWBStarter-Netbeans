@@ -204,6 +204,7 @@ public class ArtDetail extends GenericAdmResource {
                 }
                 request.setAttribute("entry", entry);
             }
+            setParams(request, paramRequest);
             request.setAttribute("paramRequest", paramRequest);
             RequestDispatcher rd = request.getRequestDispatcher(path);
             rd.include(request, response);

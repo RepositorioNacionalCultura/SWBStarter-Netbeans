@@ -64,9 +64,9 @@
     <a name="showPage"></a>
     <div id="references">
         <div class="ruta-resultado row" id="ruta-resultado">
-            <% if (null != wxss) {%>
+            <% if (null != wxss && !wxss.isEmpty()) {%>
                 <p class="oswL"><%=t%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
-            <% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
+            <% } %>
         </div>
         <div id="contenido">
             <% if (!references.isEmpty()) {  %>

@@ -130,7 +130,6 @@ public class SearchCulturalProperty extends PagerAction {
         String url = "/swbadmin/jsp/rnc/documents.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(url);
         String q = request.getParameter("word");
-
         if (null != q && !q.isEmpty()) {
             Document document = getReference(request, paramRequest.getWebPage().getWebSite());
             if (null != document) {

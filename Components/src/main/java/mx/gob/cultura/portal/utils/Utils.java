@@ -235,6 +235,34 @@ public class Utils {
         return getRowData(list, size, false);
     }
     
+    public static String chdFtrList(List<CountName> resourcetypes, String resourcetype, HttpServletRequest request) {
+        int i = 0;
+        StringBuilder cde = new StringBuilder();
+        for (CountName r : resourcetypes) {
+            cde.append("<li><label class=\"form-check-label\"><input class=\"form-check-input\" type=\"checkbox\" onclick=\"filter()\" name=\"resourcetype\" value=\"").append(r.getName()).append("\"");
+            if (chdFtr(request.getParameter("filter"), "resourcetype", r.getName())) 
+                cde.append("checked");
+            cde.append("><span>").append(r.getName()).append("</span><span> ").append(r.getCount()).append("</span></label></li>");
+            if (i>3) break; 
+            else i++; 
+        }
+	if (i<resourcetypes.size()) {
+            cde.append("<div class=\"collapse\" id=\"vermas\">");
+            int j=0;
+            for (CountName r : resourcetypes) {
+		if (j<i) j++;
+		else { 
+                    cde.append("<li><label class=\"form-check-label\"><input class=\"form-check-input\" type=\"checkbox\" onclick=\"filter()\" name=\"resourcetype\" value=\"").append(r.getName()).append("\"");
+                    if (chdFtr(request.getParameter("filter"), "resourcetype", r.getName()))
+                        cde.append("checked");
+                    cde.append("><span>").append(r.getName()).append("</span><span> ").append(r.getCount()).append("</span></label></li>");
+                }
+            }
+            cde.append("</div>");
+	}
+        return cde.toString();
+    }
+    
     public static String getClientBrowser(HttpServletRequest request) {
         String browser = "";
         final String browserDetails = request.getHeader("User-Agent");

@@ -15,11 +15,11 @@
     String period = "";
     String rights = "";
     String creator = "";
-    Document desc = null;
     String generator = "";
     List<Title> titles = new ArrayList<>();
     List<String> holders = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
+    Document desc = null;
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     if (null != entry) {
         holders = entry.getHolder();
@@ -45,20 +45,19 @@
         rights = Utils.getRights(entry);
         title = Utils.getTitle(titles, 0);
         desc = Utils.getDescription(entry.getDescription());
-        fdesc = (null != desc && null !=desc.get("full")) ? (String)desc.get("full") : "";
+        fdesc = (null != desc && null != desc.get("full")) ? (String)desc.get("full") : "";
     }
 %>
 <div class="col-12 col-sm-12 col-md-9 col-lg-9 order-md-2 order-sm-1 order-1 ficha ">
     <h3 class="oswM"><%=title%></h3>
     <%  if (null != desc) { %>
-            <p id="shortdesc"><%=desc.get("short")%></p>
             <a name="showPage"></a>
+            <p id="shortdesc"><%=desc.get("short")%></p>
             <p id="moredesc" style="display:none;"><%=fdesc%></p>
             <hr>
     <% } if (!fdesc.isEmpty()) { %>
 	<p class="vermas"><a href="#showPage" onclick="moreDesc()"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
     <% } %>
-    <p class="vermas"><a href="#showPage" onclick="moreDesc()"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
     <div class="tabla">
         <table>
             <tr>
