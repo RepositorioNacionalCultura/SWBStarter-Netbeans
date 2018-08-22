@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/SWB" />
   </component>
+=======
+>>>>>>> 142c0e9f13c8eb35989b4638b389cc705f406079
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
