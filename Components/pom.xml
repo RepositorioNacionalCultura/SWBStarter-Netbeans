@@ -43,11 +43,6 @@
             </exclusions-->
         </dependency>
         <dependency>
-            <groupId>com.github.RepositorioNacionalCultura</groupId>
-            <artifactId>Commons</artifactId>
-            <version>master-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
             <version>3.5.0</version>
@@ -76,6 +71,11 @@
             <groupId>org.semanticwb</groupId>
             <artifactId>SWBPortal</artifactId>
             <version>5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>commons</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
