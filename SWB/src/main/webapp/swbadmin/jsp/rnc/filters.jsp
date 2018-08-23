@@ -85,6 +85,13 @@
         filters += resourcetype + mediastype + rights + languages + holder + dates;
         doSort('<%=word%>'+filters,'relvdes');
     }
+    function selectAll(type) {
+	var inputElements = document.getElementsByName(type.value);
+	for (i=0; i<inputElements.length; i++) {
+            inputElements[i].checked = type.checked;
+	}
+        filter();
+    }
     function validate(ele, min, max) {
         var val = ele.value;
 	if (!val.match(/^\d+$/)) {
@@ -138,44 +145,24 @@
                 <ul>
                     <li>
                         <ul>
-                            <%
-				int i = 0;
-                                for (CountName r : resourcetypes) {
-                            %>
-                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="resourcetype" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "resourcetype", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
-                            <%
-                                    if (i>3) break; else i++; 
-				}
-				if (i<resourcetypes.size()) {
-                            %>
-                                    <div class="collapse" id="vermas">
-					<%
-                                            int j=0;
-									for (CountName r : resourcetypes) {
-										if (j<i) {j++; continue;} 
-										else { 
-							%>
-											<li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="resourcetype" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "resourcetype", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
-							<%			
-										}
-									}
-							%>
-									</div>
-							<% } %>
+                            <%=Utils.chdFtrList(resourcetypes, request.getParameter("filter"), "resourcetype", "vermas")%>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="alltype" value="resourcetype" ><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span></label></li>
                         </ul>
                     </li>
                 </ul>
-				<p class="vermas vermas-filtros">
-					<button class="btn-vermas" type="button" data-toggle="collapse" data-target="#vermas" aria-expanded="false" aria-controls="vermas">
-						<span class="ion-plus-circled"></span>
-                        <%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%>
-                    </button>
-				</p>
+		<% if (resourcetypes.size() > 5) { %>
+                    <p class="vermas-filtros">
+                        <button class="btn-vermas" type="button" data-toggle="collapse" data-target="#vermas" aria-expanded="false" aria-controls="vermas">
+                            <span class="ion-plus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span>
+                            <span class="ion-minus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span> 
+			</button>
+                    </p>
+		<%  } %>
             </div>
         </div>
-	<% } %>
+    <% } %>
 
-	<%	if (null != mediastype && !mediastype.isEmpty()) { %>
+    <%  if (null != mediastype && !mediastype.isEmpty()) { %>
         <div class="card card-media">
             <div class="" role="tab" id="heading2">
                 <a data-toggle="collapse" href="#collapse2" aria-expanded="true" aria-controls="collapseOne" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_media")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
@@ -196,9 +183,9 @@
                 </ul>
             </div>
         </div>
-	<% } %>
+   <% } %>
 
-	<%  if (!dates.isEmpty()) { %>
+    <%  if (!dates.isEmpty()) { %>
             <div class="card card-fecha">
                 <div class="" role="tab" id="heading3">
                     <a data-toggle="collapse" href="#collapse3" aria-expanded="true" aria-controls="collapse3" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_date")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
@@ -214,9 +201,9 @@
                     </div>
                 </div>
             </div>		
-	<% } %>
+    <%  } %>
 
-	<%  if (null != rights && !rights.isEmpty()) { %>
+    <%  if (null != rights && !rights.isEmpty()) { %>
         <div class="card">
             <div class="" role="tab" id="heading4">
                 <a data-toggle="collapse" href="#collapse4" aria-expanded="true" aria-controls="collapse4" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_use")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
@@ -224,22 +211,25 @@
             <div id="collapse4" class="collapse" role="tabpanel" aria-labelledby="heading4" data-parent="#accordion">
                 <ul>
                     <li>
-                        <ul>
-                            <%
-                                for (CountName r : rights) {
-                            %>
-									<li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="rights" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "rights", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span><%=r.getCount()%></span></label></li>
-                            <%
-								}
-                            %>
+			<ul>
+                            <%=Utils.chdFtrList(rights, request.getParameter("filter"), "rights", "morerights")%>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allrights" value="rights"><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span></label></li>
                         </ul>
+			<% if (rights.size() > 5) { %>
+                            <p class="vermas-filtros">
+				<button class="btn-vermas" type="button" data-toggle="collapse" data-target="#morerights" aria-expanded="false" aria-controls="morerights">
+                                    <span class="ion-plus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span>
+                                    <span class="ion-minus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span>
+				</button>
+                            </p>
+			<%  } %>
                     </li>
                 </ul>
             </div>
         </div>
-	<% } %>
+    <%  } %>
 
-	<%	if (null != languages && !languages.isEmpty()) { %>
+    <%	if (null != languages && !languages.isEmpty()) { %>
         <div class="card">
             <div class="" role="tab" id="heading5">
                 <a data-toggle="collapse" href="#collapse5" aria-expanded="true" aria-controls="collapse5" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_languages")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
@@ -249,20 +239,48 @@
                     <li>
                         <ul>
                             <%
+                                int i = 0;
                                 for (CountName r : languages) {
-									if (null != r.getName() && !r.getName().equalsIgnoreCase("es")) {
+                                    if (null != r.getName() && !r.getName().equalsIgnoreCase("es")) {
                             %>
-										<li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="languages" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "lang", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
+					<li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="languages" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "lang", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
+                            <%      
+                                        if (i>3) break; else i++; 
+                                    }
+				}
+                                if (i<languages.size()) {
+                            %>
+                                    <div class="collapse" id="morelangs">
                             <%
-									}
-								}
+                                        int j=0;
+                                        for (CountName r : languages) {
+                                            if (null != r.getName() && !r.getName().equalsIgnoreCase("es")) {
+                                                if (j<i) {j++; continue;} 
+                                                else { 
                             %>
+                                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="languages" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "lang", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
+                            <%			
+                                                }
+                                            }
+                                        }
+                            %>
+                                    </div>
+                            <%  }  %>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allanguages" value="languages"><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span></label></li>
                         </ul>
+                        <%  if (languages.size() > 5) { %>
+                                <p class="vermas-filtros">
+                                    <button class="btn-vermas" type="button" data-toggle="collapse" data-target="#morelangs" aria-expanded="false" aria-controls="morelangs">
+                                        <span class="ion-plus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span>
+					<span class="ion-minus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span> 
+                                    </button>
+				</p>
+			<%  } %>
                     </li>
                 </ul>
             </div>
         </div>
-	<% } %>
+    <%  } %>
 
     <% if (!holders.isEmpty()) { %>
         <div class="card">
@@ -271,13 +289,20 @@
             </div>
             <div id="collapse6" class="collapse" role="tabpanel" aria-labelledby="heading5" data-parent="#accordion">
                 <ul>
-					<%
-						for (CountName r : holders) {
-                    %>
-							<li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="holder" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "holder", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
-                    <%
-						}
-                    %>
+                    <li>
+			<ul>
+                            <%=Utils.chdFtrList(holders, request.getParameter("filter"), "holder", "moreholders")%>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allholder" value="holder"><span>Seleccionar todos</span><span> </span></label></li>
+			</ul>			
+                        <% if (holders.size() > 5) { %>
+                            <p class="vermas-filtros">
+                                <button class="btn-vermas" type="button" data-toggle="collapse" data-target="#moreholders" aria-expanded="false" aria-controls="moreholders">
+                                    <span class="ion-plus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span>
+                                    <span class="ion-minus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span> 
+                                </button>
+                            </p>
+			<% } %>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -295,7 +320,7 @@
                     </select>
 		</div>
             </div>
-            <button type="button" onclick="reset();" class="btn-cultura btn-negro"><%=paramRequest.getLocaleString("usrmsg_view_search_delete_filters")%></button>
+            <button type="button" onclick="reset();" class="btn-cultura btn-rojo"><%=paramRequest.getLocaleString("usrmsg_view_search_delete_filters")%></button>
     <%  } %>
     </div>
 </div>

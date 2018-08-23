@@ -346,7 +346,7 @@ public class ArtDetail extends GenericAdmResource {
                 path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
             else if (type.equalsIgnoreCase("epub"))
                 path = "/swbadmin/jsp/rnc/viewer/epubdetail.jsp";
-            else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
+            else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3") || type.startsWith("audio"))
                 path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
         }
         return path;

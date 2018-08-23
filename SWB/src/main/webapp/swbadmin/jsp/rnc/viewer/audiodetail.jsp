@@ -6,8 +6,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="mx.gob.cultura.portal.utils.Utils, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBResourceURL, org.semanticwb.portal.api.SWBParamRequest"%>
 <%@ page import="java.util.List, java.util.ArrayList, mx.gob.cultura.portal.response.Title, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.DateDocument, mx.gob.cultura.portal.response.DigitalObject"%>
-<script type="text/javascript" src="/swbadmin/js/rnc/detail.js"></script>
-<script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
+
 <%
     int audios = 0;
     String title = "";
@@ -21,6 +20,7 @@
     Entry entry = (Entry)request.getAttribute("entry");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
+    String userLang = paramRequest.getUser().getLanguage();
     if (null != entry) {
 	if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
@@ -67,6 +67,7 @@
 <%=scriptHeader%>
 <%=divVisor%>
 <section id="detalle">
+    <jsp:include page="../flow.jsp" flush="true"/>
     <div id="idetail" class="detallelist">
         <div class="explora">
             <div class="explora2">
@@ -81,14 +82,11 @@
                         <span class="ion-social-twitter"></span>
                     </div>
                     <div class="col-6">
-                        <a href="#" onclick="loadDoc('/swb/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
+                        <a href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
                     </div>
                 </div>
                 <div class="explo3 row">
-                    <div class="col-6">
-                    </div>
-                    <div class="col-6">
-                    </div>
+                    <jsp:include page="../nav.jsp" flush="true"/>
                 </div>
             </div>
         </div>

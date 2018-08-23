@@ -61,6 +61,7 @@
 <%=scriptFB%>
 <section id="detalle">
     <div id="idetail" class="detalleimg">
+        <jsp:include page="../flow.jsp" flush="true"/>
 	<div class="obranombre">
             <h3 class="oswB"><%=title%></h3>
             <p class="oswL"><%=creator%></p>
@@ -82,24 +83,7 @@
                     </div>
                 </div>
 		<div class="explo3 row">
-                    <div class="col-6">
-                        <%
-                            if (iPrev >= 0) {
-			%>
-                                <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iPrev%>);"><span class="ion-chevron-left"></span> <%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%></a>
-			<%
-                            }
-			%>
-                    </div>
-                    <div class="col-6">
-                        <%
-                            if (iNext < pdfs) {
-			%>
-                                <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iNext%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
-			<%
-                            }
-			%>
-                    </div>
+                    <jsp:include page="../nav.jsp" flush="true"/>
                 </div>
             </div>
 	</div>

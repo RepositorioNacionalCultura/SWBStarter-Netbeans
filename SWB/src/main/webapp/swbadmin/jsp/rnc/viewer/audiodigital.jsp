@@ -7,7 +7,6 @@
 <%@ page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DigitalObject"%>
 <%@ page import="mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, 
          java.util.ArrayList, java.util.List, org.semanticwb.portal.api.SWBResourceURL"%>
-<script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
     int audios = 0;
     String title = "";
@@ -25,6 +24,7 @@
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     WebSite site = paramRequest.getWebPage().getWebSite();
+    String userLang = paramRequest.getUser().getLanguage();
     if (null != entry) {
 	if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
@@ -64,7 +64,7 @@
         }
     }
 %>
-    <div id="idetail" class="detallelist">
+    <jsp:include page="../flow.jsp" flush="true"/>
 	<div class="explora">
             <div class="explora2">
                 <div class="explo1">
@@ -82,24 +82,7 @@
                     </div>
                 </div>
                 <div class="explo3 row">
-                    <div class="col-6">
-                        <%
-                            if (iPrev >= 0) {
-			%>
-                                <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iPrev%>);"><span class="ion-chevron-left"></span> <%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%></a>
-			<%						
-                            }
-			%>
-                    </div>
-                    <div class="col-6">
-                        <%
-                            if (iNext > 0) {
-			%>
-				<a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iNext%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
-			<%
-                            }
-			%>
-                    </div>
+                    <jsp:include page="../nav.jsp" flush="true"/>
                 </div>
             </div>
 	</div>
@@ -251,4 +234,3 @@
     <%=scriptHeader%>
     <%=divVisor%>
     <%=scriptCallVisor%>
-</div>

@@ -65,8 +65,8 @@
                 for (DigitalObject ob : digitalobjects)	{
                     String mime = ob.getMediatype().getMime();
                     String name = null != ob.getMediatype().getName() ? ob.getMediatype().getName() : paramRequest.getLocaleString("usrmsg_view_detail_file_name");
-                    String action = mime.equalsIgnoreCase("wav") || mime.equalsIgnoreCase("mp3") ? "Escuchar" : "Ver";
-                    divVisor.append("		<tr>")
+                    String action = mime.equalsIgnoreCase("wav") || mime.equalsIgnoreCase("mp3") || mime.startsWith("audio/mpeg") ? "Escuchar" : "Ver";
+                    divVisor.append("       <tr>")
 			.append("					<td style=\"text-align:left; width:60%;\">").append(name)
                         .append("					</td>")
                 	.append("					<td style=\"text-align:left;\">").append(ob.getMediatype().getMime())

@@ -9,13 +9,9 @@
 <script type="text/javascript" src="/swbadmin/js/rnc/detail.js"></script>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
-    int iPrev = 0;
-    int iNext = 0;
     int iDigit = 0;
     int images = 0;
-    String type = "";
     String title = "";
-    String period = "";
     String creator = "";
     DigitalObject digital = null;
     List<Title> titles = new ArrayList<>();
@@ -29,8 +25,6 @@
     WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
         iDigit = entry.getPosition();
-	iPrev = iDigit-1;
-	iNext = iDigit+1;
         if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
             titles = entry.getRecordtitle();
@@ -40,17 +34,20 @@
             if (null == digital.getUrl()) digital.setUrl("");
             if (digital.getUrl().endsWith(".dzi")) {
                 scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
-                scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
+                scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/openseadragon.css'/>");
                 divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
                 scriptCallVisor.append("<script type=\"text/javascript\">")
-                    .append("OpenSeadragon({")
+                    .append("var dz = OpenSeadragon({")
                     .append("	id:\"pyramid\",")
+                    .append("	showNavigator: true,")
                     .append("	showHomeControl: false,")
+                    .append("	navigatorId:   \"navigatorDiv\",")
                     .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
                     .append("	tileSources:   [")
-                    .append("		\"https://openseadragon.github.io/example-images/highsmith/highsmith.dzi\"")
+                    .append("		\"").append(digital.getUrl()).append("\"")
                     .append("	]")
                     .append("});")
+                    .append("dz.gestureSettingsMouse.scrollToZoom = false;")
                     .append("</script>");
             }else if (digital.getUrl().endsWith("view") || digital.getUrl().endsWith(".png") || digital.getUrl().endsWith(".jpg") || digital.getUrl().endsWith(".JPG")) {
                 scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
@@ -76,26 +73,27 @@
                 if (digital.getUrl().endsWith(".zip") || digital.getUrl().endsWith(".rtf") || digital.getUrl().endsWith(".docx")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
                 else divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");
             }
-            type = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
             creator = creators.size() > 0 ? creators.get(0) : "";
             if (!titles.isEmpty()) title = titles.get(0).getValue();
-            period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
         }
     }
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     //llamada a la generacion del script para compartir con Facebook: funcion fbShare()
     String scriptFB = Utils.getScriptFBShare(request);
+    String userLang = paramRequest.getUser().getLanguage();
 %>
 <%=scriptFB%>
 
 <section id="detalle">
     <div id="idetail" class="detalleimg">
+        <jsp:include page="flow.jsp" flush="true"/>
         <div class="obranombre">
             <h3 class="oswB"><%=title%></h3>
             <p class="oswL"><%=creator%></p>
         </div>
         <div class="explora">
+            <div id="navigatorDiv" class="explora1"></div>
             <div class="explora2">
                 <div class="explo1">
                     © <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
@@ -109,28 +107,11 @@
                         <span class="ion-social-twitter"></span>
                     </div>
                     <div class="col-6">
-                        <a href="#" onclick="loadDoc('/swb/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
+                        <a href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
                     </div>
                 </div>
                 <div class="explo3 row">
-                    <div class="col-6">
-                        <%
-                            if (iPrev >= 0) {
-                        %>
-                                <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iPrev%>);"><span class="ion-chevron-left"></span> <%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%></a>
-                        <%
-                            }
-                        %>
-                    </div>
-                    <div class="col-6">
-                        <%
-                            if (iNext < images) {
-                        %>
-                                <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iDigit%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
-                        <%
-                            }
-                        %>
-                    </div>
+                    <jsp:include page="nav.jsp" flush="true"/>
                 </div>
             </div>
         </div>
@@ -155,23 +136,4 @@
     </div>
 </section>
 
-<div id="dialog-message-tree" title="error">
-    <p>
-        <div id="dialog-text-tree"></div>
-    </p>
-</div>
-
-<div id="dialog-success-tree" title="éxito">
-    <p>
-        <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
-        <div id="dialog-msg-tree"></div>
-    </p>
-</div>
-
-<div id="addCollection" title="Agregar a colección">
-    <p>
-        <div id="addCollection-tree"></div>
-    </p>
-</div>
-                    
-<div class="modal fade" id="newCollection" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true"></div>
+<jsp:include page="addtree.jsp" flush="true"/>

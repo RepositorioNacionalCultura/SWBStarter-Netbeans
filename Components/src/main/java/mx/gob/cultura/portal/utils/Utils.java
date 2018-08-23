@@ -235,25 +235,25 @@ public class Utils {
         return getRowData(list, size, false);
     }
     
-    public static String chdFtrList(List<CountName> resourcetypes, String resourcetype, HttpServletRequest request) {
+    public static String chdFtrList(List<CountName> resourcetypes, String filter, String resourcetype, String moretypes) {
         int i = 0;
         StringBuilder cde = new StringBuilder();
         for (CountName r : resourcetypes) {
-            cde.append("<li><label class=\"form-check-label\"><input class=\"form-check-input\" type=\"checkbox\" onclick=\"filter()\" name=\"resourcetype\" value=\"").append(r.getName()).append("\"");
-            if (chdFtr(request.getParameter("filter"), "resourcetype", r.getName())) 
+            cde.append("<li><label class=\"form-check-label\"><input class=\"form-check-input\" type=\"checkbox\" onclick=\"filter()\" name=\"").append(resourcetype).append("\" value=\"").append(r.getName()).append("\"");
+            if (chdFtr(filter, resourcetype, r.getName())) 
                 cde.append("checked");
             cde.append("><span>").append(r.getName()).append("</span><span> ").append(r.getCount()).append("</span></label></li>");
             if (i>3) break; 
             else i++; 
         }
 	if (i<resourcetypes.size()) {
-            cde.append("<div class=\"collapse\" id=\"vermas\">");
+            cde.append("<div class=\"collapse\" id=\"").append(moretypes).append("\">");
             int j=0;
             for (CountName r : resourcetypes) {
 		if (j<i) j++;
 		else { 
-                    cde.append("<li><label class=\"form-check-label\"><input class=\"form-check-input\" type=\"checkbox\" onclick=\"filter()\" name=\"resourcetype\" value=\"").append(r.getName()).append("\"");
-                    if (chdFtr(request.getParameter("filter"), "resourcetype", r.getName()))
+                    cde.append("<li><label class=\"form-check-label\"><input class=\"form-check-input\" type=\"checkbox\" onclick=\"filter()\" name=\"").append(resourcetype).append("\" value=\"").append(r.getName()).append("\"");
+                    if (chdFtr(filter, resourcetype, r.getName()))
                         cde.append("checked");
                     cde.append("><span>").append(r.getName()).append("</span><span> ").append(r.getCount()).append("</span></label></li>");
                 }
