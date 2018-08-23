@@ -582,6 +582,13 @@
                             "</div>" +
                             "<div class=\"form-ses-03\">" +
                             "<button type=\"submit\" class=\"btn-cultura btn-rojo\"><%=submitBtn%></button>" +
+<%
+            if (showPassRecovery) {            
+%>                                        
+                                        "<a href=\"<%=urlPassRec%>\" class=\"modal-olvidaste\">¿Olvidaste tu contraseña?</a>" +
+<%
+            }
+%>          
                             "</div>" +
                             "</form>";
                 var otherContent2 = "<p class=\"oswM\"><%=userAccountTxt%> <a href=\"#\" onclick=\"javascript:changeModal(1);\" class=\"rojo\"><%=createAccountTxt%></a></p>";
