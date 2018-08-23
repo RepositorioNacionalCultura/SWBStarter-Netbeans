@@ -16,8 +16,6 @@
     List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
     int iDigit = (Integer) request.getAttribute("iDigit");
-    int iPrev = iDigit - 1;
-    int iNext = iDigit + 1;
     StringBuilder scriptHeader = new StringBuilder();
     StringBuilder scriptCallVisor = new StringBuilder();
     List<DigitalObject> digitalobjects = new ArrayList<>();
@@ -26,6 +24,7 @@
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     WebSite site = paramRequest.getWebPage().getWebSite();
+    String userLang = paramRequest.getUser().getLanguage();
     if (null != entry) {
         if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
@@ -69,7 +68,7 @@
                     <span class="ion-social-twitter"></span>
                 </div>
                 <div class="col-6">
-                    <a href="#" onclick="loadDoc('<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
+                    <a href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', <%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
                 </div>
             </div>
             <div class="explo3 row">
