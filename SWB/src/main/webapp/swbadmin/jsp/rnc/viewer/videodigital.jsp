@@ -26,6 +26,7 @@
     WebSite site = paramRequest.getWebPage().getWebSite();
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
+    String userLang = paramRequest.getUser().getLanguage();
     if (null != entry) {
 	if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
@@ -91,7 +92,7 @@
     }
 %>
 <%=scriptHeader%>
-<div id="idetail" class="detalleimg">
+    <jsp:include page="../flow.jsp" flush="true"/>
     <div class="obranombre">
         <h3 class="oswB"><%=title%></h3>
         <p class="oswL"><%=creator%></p>
@@ -109,18 +110,14 @@
                     <span class="ion-social-twitter"></span>
                 </div>
                 <div class="col-6">
-                    <a href="#" onclick="loadDoc('<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
+                    <a href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
                 </div>
             </div>
             <div class="explo3 row">
-                <div class="col-6">
-                </div>
-                <div class="col-6">
-                </div>
+                <jsp:include page="../nav.jsp" flush="true"/>
             </div>
         </div>
     </div>
     <%=scriptHeader%>
     <%=scriptCallVisor%>
     <%=divVisor%>
-</div>

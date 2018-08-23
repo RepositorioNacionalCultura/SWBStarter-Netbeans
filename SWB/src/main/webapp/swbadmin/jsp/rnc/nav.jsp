@@ -25,7 +25,7 @@
     <%
 	if (iprev > -1) {
     %>
-            <a href="#" onclick="nextResult('/<%=userLang%>/<%=site.getId()%>/detalle?word=<%=w%>&r=<%=iprev%>&t=<%=t%><%=l%><%=fs%><%=f%>');"><%=paramRequest.getLocaleString("usrmsg_view_detail_prev_record")%></a>
+            <span class="ion-arrow-left-a"></span><a href="#" onclick="nextResult('/<%=userLang%>/<%=site.getId()%>/detalle?word=<%=w%>&r=<%=iprev%>&t=<%=t%><%=l%><%=fs%><%=f%>');"><%=paramRequest.getLocaleString("usrmsg_view_detail_prev_record")%></a>
     <%  } %>
 </div>
 <div class="col-4">
@@ -35,6 +35,6 @@
     <%
 	if (inext < t) {
     %>
-            <a href="#" onclick="nextResult('/<%=userLang%>/<%=site.getId()%>/detalle?word=<%=w%>&r=<%=inext%>&t=<%=t%><%=l%><%=fs%><%=f%>');"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_record")%> <span class="ion-chevron-right"></span></a>
+            <a href="#" onclick="nextResult('/<%=userLang%>/<%=site.getId()%>/detalle?word=<%=w%>&r=<%=inext%>&t=<%=t%><%=l%><%=fs%><%=f%>');"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_record")%> <span class="ion-arrow-right-a"></span></a>
     <%  } %>
 </div>

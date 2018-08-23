@@ -6,8 +6,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DateDocument, mx.gob.cultura.portal.response.DigitalObject"%>
 <%@ page import="mx.gob.cultura.portal.resources.ArtDetail, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.ArrayList, java.util.List"%>
-<script type="text/javascript" src="/swbadmin/js/rnc/detail.js"></script>
-<script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
+
 <%
     int books = 0;
     int iPrev = 0;
@@ -68,10 +67,12 @@
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     
     String scriptFB = Utils.getScriptFBShare(request);
+    String userLang = paramRequest.getUser().getLanguage();
 %>
 <%=scriptFB%>
 <section id="detalle">
     <div id="idetail" class="detalleimg">
+        <jsp:include page="../flow.jsp" flush="true"/>
         <div class="obranombre">
             <h3 class="oswB"><%=title%></h3>
             <p class="oswL"><%=creator%></p>
@@ -89,28 +90,11 @@
                         <span class="ion-social-twitter"></span>
                     </div>
                     <div class="col-6">
-                        <a href="#" onclick="loadDoc('/swb/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
+                        <a href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
                     </div>
                 </div>
                 <div class="explo3 row">
-                    <div class="col-6">
-                        <%
-                            if (iPrev >= 0) {
-                        %>
-                                <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iPrev%>);"><span class="ion-chevron-left"></span> <%=paramRequest.getLocaleString("usrmsg_view_detail_prev_object")%></a>
-                        <%
-                            }
-                        %>
-                    </div>
-                    <div class="col-6">
-                        <%
-                            if (iNext < books) {
-                        %>
-                                <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>', <%=iNext%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_object")%> <span class="ion-chevron-right"></span></a>
-                        <%
-                            }
-                        %>
-                    </div>
+                    <jsp:include page="../nav.jsp" flush="true"/>
                 </div>
             </div>
         </div>
@@ -134,23 +118,4 @@
     </div>
 </section>
 <%=scriptCallVisor%>
-<div id="dialog-message-tree" title="error">
-	<p>
-		<div id="dialog-text-tree"></div>
-	</p>
-</div>
-
-<div id="dialog-success-tree" title="éxito">
-	<p>
-		<span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
-		<div id="dialog-msg-tree"></div>
-	</p>
-</div>
-
-<div id="addCollection">
-	<p>
-		<div id="addCollection-tree"></div>
-	</p>
-</div>
-
-<div class="modal fade" id="newCollection" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true"></div>
+<jsp:include page="addtree.jsp" flush="true"/>

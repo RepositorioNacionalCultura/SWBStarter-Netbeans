@@ -72,7 +72,7 @@
                 	.append("					<td style=\"text-align:left;\">").append(ob.getMediatype().getMime())
 			.append("					</td>")
 			.append("					<td style=\"text-align:left;\">");
-                    if (ob.getUrl().endsWith(".avi") || ob.getUrl().endsWith(".zip") || ob.getUrl().endsWith(".rtf") || ob.getUrl().endsWith(".docx") || ob.getUrl().endsWith(".aiff")) {
+                    if (ob.getUrl().endsWith(".avi") || ob.getUrl().endsWith(".avi") || ob.getUrl().endsWith(".zip") || ob.getUrl().endsWith(".rtf") || ob.getUrl().endsWith(".docx") || ob.getUrl().endsWith(".aiff")) {
                         action = "Descargar";
 			divVisor.append("<a href='").append(ob.getUrl()).append("'>").append(action).append("</a>");
                     }else {
@@ -109,62 +109,26 @@
                     </div>
                 </div>
 		<div class="explo3 row">
-                    <div class="col-6">
-                        <%
-                            if (iprev > -1) {
-						%>
-								<span class="ion-chevron-left"></span><a href="#" onclick="nextResult('/<%=userLang%>/<%=site.getId()%>/detalle?word=<%=w%>&r=<%=iprev%>&t=<%=t%><%=fs%>');"><%=paramRequest.getLocaleString("usrmsg_view_detail_prev_record")%></a>
-						<%
-							}
-						%>
-					</div>
-                    <div class="col-6">
-						<%
-							if (inext < t) {
-						%>
-								<a href="#" onclick="nextResult('/<%=userLang%>/<%=site.getId()%>/detalle?word=<%=w%>&r=<%=inext%>&t=<%=t%><%=fs%>');"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_record")%> <span class="ion-chevron-right"></span></a>
-						<%
-							}
-						%>
-                    </div>
-                </div>
-			</div>
+                    <jsp:include page="nav.jsp" flush="true"/>
 		 </div>
-		 <%=divVisor%>
-	</div>
+            </div>
+        </div>
+	<%=divVisor%>
+    </div>
 </section>
 <section id="detalleinfo">
-	<div class="container">
-		<div class="row">              
-			<jsp:include page="rack.jsp" flush="true"/>
+    <div class="container">
+        <div class="row">              
+            <jsp:include page="rack.jsp" flush="true"/>
             <jsp:include page="techdata.jsp" flush="true"/>
         </div>
     </div>
 </section>
 <section id="palabras">
-	<div class="container">
-		<div class="row">
-			<jsp:include page="keywords.jsp" flush="true"/>
-		</div>
+    <div class="container">
+        <div class="row">
+            <jsp:include page="keywords.jsp" flush="true"/>
+	</div>
     </div>
 </section>
-<div id="dialog-message-tree" title="error">
-	<p>
-		<div id="dialog-text-tree"></div>
-	</p>
-</div>
-
-<div id="dialog-success-tree" title="éxito">
-	<p>
-		<span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
-		<div id="dialog-msg-tree"></div>
-	</p>
-</div>
-
-<div id="addCollection">
-	<p>
-		<div id="addCollection-tree"></div>
-	</p>
-</div>
-
-<div class="modal fade" id="newCollection" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true"></div>
+<jsp:include page="addtree.jsp" flush="true"/>
