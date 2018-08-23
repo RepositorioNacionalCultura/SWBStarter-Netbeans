@@ -2,9 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/Components/Components.iml" filepath="$PROJECT_DIR$/Components/Components.iml" />
       <module fileurl="file://$PROJECT_DIR$/SWB/SWBFront.iml" filepath="$PROJECT_DIR$/SWB/SWBFront.iml" />
       <module fileurl="file://$PROJECT_DIR$/front.iml" filepath="$PROJECT_DIR$/front.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/commons.iml" filepath="$PROJECT_DIR$/commons.iml" />
+>>>>>>> 142c0e9f13c8eb35989b4638b389cc705f406079
     </modules>
   </component>
 </project>

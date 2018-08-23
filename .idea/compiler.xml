@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+<<<<<<< HEAD
         <module name="Components" />
         <module name="SWBFront" />
       </profile>
@@ -14,6 +15,13 @@
       <module name="Components" target="1.8" />
       <module name="front" target="1.5" />
       <module name="SWBFront" target="1.8" />
+=======
+        <module name="commons" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="1.8">
+      <module name="commons" target="1.8" />
+>>>>>>> 142c0e9f13c8eb35989b4638b389cc705f406079
     </bytecodeTargetLevel>
   </component>
 </project>
