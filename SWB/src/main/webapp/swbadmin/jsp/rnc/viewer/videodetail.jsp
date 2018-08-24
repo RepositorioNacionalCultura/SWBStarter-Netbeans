@@ -97,7 +97,7 @@
     String userLang = paramRequest.getUser().getLanguage();
 %>
 <%=scriptFB%>
-<section id="detalle">
+<section id="detalle" class="vis-video">
     <div id="idetail" class="detalleimg">
         <jsp:include page="../flow.jsp" flush="true"/>
         <div class="obranombre">

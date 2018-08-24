@@ -64,7 +64,7 @@
 <%=scriptFB%>
 <%=scriptHeader%>
 <%=divVisor%>
-<section id="detalle">
+<section id="detalle" class="vis-audio">
     <jsp:include page="../flow.jsp" flush="true"/>
     <div id="idetail" class="detallelist">
         <div class="explora">

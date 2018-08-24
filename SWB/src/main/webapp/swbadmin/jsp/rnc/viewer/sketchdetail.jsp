@@ -9,8 +9,6 @@
 
 <%
     int books = 0;
-    int iPrev = 0;
-    int iNext = 0;
     int iDigit = 0;
     String title = "";
     String creator = "";
@@ -26,8 +24,6 @@
     WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
         iDigit = entry.getPosition();
-	iPrev = iDigit-1;
-	iNext = iDigit+1;
         if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
             titles = entry.getRecordtitle();
@@ -70,7 +66,7 @@
     String userLang = paramRequest.getUser().getLanguage();
 %>
 <%=scriptFB%>
-<section id="detalle">
+<section id="detalle" class="vis-sketch">
     <div id="idetail" class="detalleimg">
         <jsp:include page="../flow.jsp" flush="true"/>
         <div class="obranombre">

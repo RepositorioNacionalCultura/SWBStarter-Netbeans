@@ -61,7 +61,7 @@
     String scriptFB = Utils.getScriptFBShare(request);
 %>
 <%=scriptFB%>
-<section id="detalle">
+<section id="detalle" class="vis-book">
     <jsp:include page="../flow.jsp" flush="true"/>
     <div id="idetail" class="detalleimg">
         <div class="obranombre">
