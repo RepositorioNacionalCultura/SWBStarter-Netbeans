@@ -18,8 +18,6 @@
     StringBuilder scriptCallVisor = new StringBuilder();
     List<DigitalObject> digitalobjects = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
-    Integer iPrev = (Integer)request.getAttribute("iprev");
-    Integer iNext = (Integer)request.getAttribute("inext");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
@@ -78,7 +76,7 @@
                         <span class="ion-social-twitter"></span>
                     </div>
                     <div class="col-6">
-                        <a href="#" onclick="loadDoc('<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
+                        <a href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
                     </div>
                 </div>
                 <div class="explo3 row">

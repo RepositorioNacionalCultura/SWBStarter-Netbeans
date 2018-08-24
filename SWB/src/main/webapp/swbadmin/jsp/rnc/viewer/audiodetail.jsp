@@ -28,7 +28,7 @@
             digitalobjects = entry.getDigitalObject();
             creator = creators.size() > 0 ? creators.get(0) : "";
             audios = null != digitalobjects ? digitalobjects.size() : 0;
-            if (!titles.isEmpty()) title = titles.get(0).getValue();
+            if (!titles.isEmpty()) title = Utils.replaceSpecialChars(titles.get(0).getValue());
             if (audios > 0) {
                 scriptHeader.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/work/models/").append(site.getId()).append("/audio/css/audio.css\"/>");
 		divVisor.append("<script>")
@@ -56,8 +56,6 @@
                     scriptCallVisor.append("       ]")
 			.append("	});")
 			.append("</script>");
-                    //resource = entry.getResourcetype().size() > 0 ? entry.getResourcetype().get(0) : "";
-                    //period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
             }
         }
     }
