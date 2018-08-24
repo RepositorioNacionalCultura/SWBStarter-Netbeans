@@ -23,6 +23,7 @@ function loadDoc(url, id) {
 }
 function nextObj(url, iEntry, iDigit) {
     var xhttp = new XMLHttpRequest();
+    Amplitude.pause();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             jQuery("#idetail").html(this.responseText);
