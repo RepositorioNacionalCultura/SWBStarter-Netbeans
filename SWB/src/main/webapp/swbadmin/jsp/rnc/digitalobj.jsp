@@ -24,6 +24,7 @@
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     WebSite site = paramRequest.getWebPage().getWebSite();
     String userLang = paramRequest.getUser().getLanguage();
+    StringBuilder divNavigator = new StringBuilder("<div id=\"navigatorDiv\" class=\"explora1\"></div>");
     if (null != entry) {
         if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
@@ -72,6 +73,7 @@
                     .append("vw.gestureSettingsMouse.scrollToZoom = false;")
                     .append("</script>");
             }else {
+                divNavigator = new StringBuilder();
                 if (digital.getUrl().endsWith(".zip") || digital.getUrl().endsWith(".rtf") || digital.getUrl().endsWith(".docx") || digital.getUrl().endsWith(".avi")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
 		else divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");
             }
@@ -85,9 +87,10 @@
         <p class="oswL"><%=creator%></p>
     </div>
     <div class="explora">
+        <%=divNavigator%>
         <div class="explora2">
             <div class="explo1">
-                © <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
+                &reg; <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
             </div>
             <div class="explo2 row">
                 <div class="col-3">
