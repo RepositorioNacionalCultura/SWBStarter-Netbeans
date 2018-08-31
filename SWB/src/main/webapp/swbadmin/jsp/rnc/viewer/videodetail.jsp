@@ -97,7 +97,7 @@
     String userLang = paramRequest.getUser().getLanguage();
 %>
 <%=scriptFB%>
-<section id="detalle">
+<section id="detalle" class="vis-video">
     <div id="idetail" class="detalleimg">
         <jsp:include page="../flow.jsp" flush="true"/>
         <div class="obranombre">
@@ -107,7 +107,7 @@
         <div class="explora">
             <div class="explora2">
                 <div class="explo1">
-                    © <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
+                    &reg; <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
                 </div>
                 <div class="explo2 row">
                     <div class="col-3">
@@ -145,4 +145,4 @@
         </div>
     </div>
 </section>
-<jsp:include page="addtree.jsp" flush="true"/>
+<jsp:include page="../addtree.jsp" flush="true"/>

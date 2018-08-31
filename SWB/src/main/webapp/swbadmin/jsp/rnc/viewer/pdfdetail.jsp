@@ -55,7 +55,7 @@
     String userLang = paramRequest.getUser().getLanguage();
 %>
 <%=scriptFB%>
-<section id="detalle">
+<section id="detalle" class="vis-pdf">
     <div id="idetail" class="detalleimg">
         <jsp:include page="../flow.jsp" flush="true"/>
 	<div class="obranombre">
@@ -103,4 +103,4 @@
         </div>
     </div>
 </section>
-<jsp:include page="addtree.jsp" flush="true"/>
+<jsp:include page="../addtree.jsp" flush="true"/>
