@@ -153,8 +153,8 @@
 		<% if (resourcetypes.size() > 5) { %>
                     <p class="vermas-filtros">
                         <button class="btn-vermas" type="button" data-toggle="collapse" data-target="#vermas" aria-expanded="false" aria-controls="vermas">
-                            <span class="ion-plus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span>
-                            <span class="ion-minus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span> 
+                            <span class="ion-plus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span></span>
+                            <span class="ion-minus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span></span> 
 			</button>
                     </p>
 		<%  } %>
@@ -218,8 +218,8 @@
 			<% if (rights.size() > 5) { %>
                             <p class="vermas-filtros">
 				<button class="btn-vermas" type="button" data-toggle="collapse" data-target="#morerights" aria-expanded="false" aria-controls="morerights">
-                                    <span class="ion-plus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span>
-                                    <span class="ion-minus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span>
+                                    <span class="ion-plus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span></span>
+                                    <span class="ion-minus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span></span>
 				</button>
                             </p>
 			<%  } %>
@@ -255,7 +255,7 @@
                                         int j=0;
                                         for (CountName r : languages) {
                                             if (null != r.getName() && !r.getName().equalsIgnoreCase("es")) {
-                                                if (j<i) {j++; continue;} 
+                                                if (j<=i) {j++;} 
                                                 else { 
                             %>
                                                     <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="languages" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "lang", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
@@ -271,8 +271,8 @@
                         <%  if (languages.size() > 5) { %>
                                 <p class="vermas-filtros">
                                     <button class="btn-vermas" type="button" data-toggle="collapse" data-target="#morelangs" aria-expanded="false" aria-controls="morelangs">
-                                        <span class="ion-plus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span>
-					<span class="ion-minus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span> 
+                                        <span class="ion-plus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span></span>
+                                        <span class="ion-minus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span></span> 
                                     </button>
 				</p>
 			<%  } %>
@@ -297,8 +297,8 @@
                         <% if (holders.size() > 5) { %>
                             <p class="vermas-filtros">
                                 <button class="btn-vermas" type="button" data-toggle="collapse" data-target="#moreholders" aria-expanded="false" aria-controls="moreholders">
-                                    <span class="ion-plus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span>
-                                    <span class="ion-minus-circled"><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span> 
+                                    <span class="ion-plus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span></span>
+                                    <span class="ion-minus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span></span> 
                                 </button>
                             </p>
 			<% } %>

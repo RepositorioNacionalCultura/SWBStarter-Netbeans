@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
 
 import java.text.Format;
 import java.text.ParseException;
@@ -27,10 +28,11 @@ import java.util.logging.Logger;
 import org.semanticwb.model.WebSite;
 import org.semanticwb.model.Resource;
 import javax.servlet.http.HttpServletRequest;
-import mx.gob.cultura.portal.response.Aggregation;
-import mx.gob.cultura.portal.response.CountName;
+
 import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Title;
+import mx.gob.cultura.portal.response.CountName;
+import mx.gob.cultura.portal.response.Aggregation;
 
 /**
  *
@@ -94,6 +96,12 @@ public class Utils {
             LOG.info(e.getMessage());
             return new Date();
         }
+    }
+    
+    public static String decimalFormat(String format, int value) {
+        if (null == format || format.isEmpty()) return "";
+        DecimalFormat  formatter = new DecimalFormat (format);
+        return formatter.format(value);
     }
     
     public static String esDate(String sDate) {
@@ -250,7 +258,7 @@ public class Utils {
             cde.append("<div class=\"collapse\" id=\"").append(moretypes).append("\">");
             int j=0;
             for (CountName r : resourcetypes) {
-		if (j<i) j++;
+		if (j<=i) {j++;} 
 		else { 
                     cde.append("<li><label class=\"form-check-label\"><input class=\"form-check-input\" type=\"checkbox\" onclick=\"filter()\" name=\"").append(resourcetype).append("\" value=\"").append(r.getName()).append("\"");
                     if (chdFtr(filter, resourcetype, r.getName()))
