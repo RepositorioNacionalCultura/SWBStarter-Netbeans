@@ -92,6 +92,7 @@
 <%=scriptFB%>
 <section id="detalle">
     <div id="idetail" class="detalleimg">
+        <jsp:include page="flow.jsp" flush="true"/>
         <div class="explora">
             <div class="explora2">
                 <div class="explo1">
@@ -109,8 +110,8 @@
                     </div>
                 </div>
 		<div class="explo3 row">
-                    <jsp:include page="nav.jsp" flush="true"/>
-		 </div>
+                    
+		</div>
             </div>
         </div>
 	<%=divVisor%>
