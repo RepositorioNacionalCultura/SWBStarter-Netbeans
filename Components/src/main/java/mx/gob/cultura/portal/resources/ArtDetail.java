@@ -78,8 +78,8 @@ public class ArtDetail extends GenericAdmResource {
                     int position = null != request.getParameter(POSITION) ? Utils.toInt(request.getParameter(POSITION)) : 0;
                     entry.setPosition(position);
                     DigitalObject ob = getDigitalObject(entry.getDigitalObject(), position);
-                    if (null != ob && ob.getMediatype().getMime().startsWith("audio"))
-                        request.setAttribute("inext", iNext(entry.getDigitalObject(), position, "audio"));
+                    /**if (null != ob && ob.getMediatype().getMime().startsWith("audio"))
+                        request.setAttribute("inext", iNext(entry.getDigitalObject(), position, "audio"));**/
                     SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), position);
                     if (null != request.getParameter(POSITION))
                         path = this.getViewerPath(ob, SWBParamRequest.Mode_VIEW);
