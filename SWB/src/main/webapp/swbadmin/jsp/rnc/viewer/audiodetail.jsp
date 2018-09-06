@@ -47,7 +47,7 @@
                             scriptCallVisor.append("    {")
                                 .append("	\"name\": \"").append(title).append("\",")
 				.append("	\"artist\": \"").append(creator).append("\",")
-				.append("	\"album\": \"").append(null != digital.getMediatype() ? digital.getMediatype().getName() : "").append("\",")
+				//.append("	\"album\": \"").append(null != digital.getMediatype() ? digital.getMediatype().getName() : "").append("\",")
 				.append("	\"url\": \"").append(digital.getUrl()).append("\",")
 				.append("	\"cover_art_url\": \"/work/models/").append(site.getId()).append("/audio/img/waves.png\"")
 				.append("   },");

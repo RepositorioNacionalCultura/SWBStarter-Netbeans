@@ -97,7 +97,7 @@ public class ArtDetail extends GenericAdmResource {
         }
     }
     
-    private Entry getEntry(HttpServletRequest request, String uri) {
+    public static Entry getEntry(HttpServletRequest request, String uri) {
         Entry entry = null;
         Document document = null;
         if (null != request.getParameter(IDENTIFIER)) {
@@ -215,9 +215,7 @@ public class ArtDetail extends GenericAdmResource {
 
     private List<Entry> explore(Entry entry, String endPoint) {
         List<Entry> bookCase = new ArrayList<>();
-        if (null == entry) {
-            return bookCase;
-        }
+        if (null == entry) return bookCase;
         List<String> collection = entry.getCollection();
         if (null != collection && !collection.isEmpty()) {
             for (String rack : collection) {

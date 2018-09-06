@@ -232,6 +232,16 @@ public class Utils {
         return builder.toString();
     }
     
+    public static String getTechData(String key, String locale) {
+        if (null == key || key.isEmpty()) return "";
+        StringBuilder data = new StringBuilder();
+        data.append("<tr>")
+            .append("   <td>").append(locale).append("</td>")
+            .append("   <td>").append(key).append("</td>")
+            .append("</tr>");
+        return data.toString();
+    }
+    
     public static String getTitle(List<Title> titles, int size) {
         List<String> list = new ArrayList<>();
         if (null == titles || titles.isEmpty()) return "";

@@ -14,6 +14,7 @@ public final class Constants {
     private Constants() {}
     
     public static final int NUM_ROW = 8;
+    public static final int NUM_REL = 12;
     public static final int PAGE_JUMP_SIZE = 5;
     public static final String PAGE_LIST = "PAGE_LIST";
     public static final String FULL_LIST = "FULL_LIST";
