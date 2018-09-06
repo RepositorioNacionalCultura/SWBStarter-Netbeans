@@ -24,7 +24,7 @@
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     WebSite site = paramRequest.getWebPage().getWebSite();
     String userLang = paramRequest.getUser().getLanguage();
-    StringBuilder divNavigator = new StringBuilder("<div id=\"navigatorDiv\" class=\"explora1\"></div>");
+    StringBuilder divNavigator = new StringBuilder("<div id=\"navigatorDiv\" class=\"explora1\"><div id=\"toolbarDiv\" class=\"exploratl\"></div></div>");
     if (null != entry) {
         if (null != entry.getDigitalObject()) {
             creators = entry.getCreator();
@@ -59,7 +59,8 @@
                     .append("var vw = OpenSeadragon({")
                     .append("	id:\"pyramid\",")
                     .append("	showHomeControl: false,")
-                    .append("	navigatorId:   \"navigatorDiv\",")
+                    .append("	toolbar:        \"toolbarDiv\",")
+                    .append("	navigatorId:    \"navigatorDiv\",")
                     .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
                     .append("	showNavigator: true,")
                     .append("	defaultZoomLevel: 0.8,")

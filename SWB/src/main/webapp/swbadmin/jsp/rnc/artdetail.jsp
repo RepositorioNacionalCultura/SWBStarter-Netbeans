@@ -54,6 +54,8 @@
                 scriptCallVisor.append("<script type=\"text/javascript\">")
                     .append("var vw = OpenSeadragon({")
                     .append("	id:\"pyramid\",")
+                    .append("	toolbar:     \"toolbarDiv\",")
+                    .append("	navigatorId: \"navigatorDiv\",")
                     .append("	showHomeControl: false,")
                     .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
                     .append("	showNavigator: true,")
