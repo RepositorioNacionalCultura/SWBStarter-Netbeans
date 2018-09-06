@@ -27,8 +27,8 @@
     <%
 	if (iPrev >= 0) {
     %>
-            <span class="ion-arrow-left-a"></span>
-            <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>&word=<%=w%>&r=<%=r%>&t=<%=t%><%=l%><%=fs%><%=f%>', <%=iPrev%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_prev_record")%></a>
+            <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
+            <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>&word=<%=w%>&r=<%=r%>&t=<%=t%><%=l%><%=fs%><%=f%>', <%=iPrev%>);"></a>
     <%  } %>
 </div>
 <div class="col-4">
@@ -38,6 +38,6 @@
     <%
 	if (iNext < objects) {
     %>
-            <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>&word=<%=w%>&r=<%=r%>&t=<%=t%><%=l%><%=fs%><%=f%>', <%=iNext%>);"><%=paramRequest.getLocaleString("usrmsg_view_detail_next_record")%> <span class="ion-arrow-right-a"></span></a>
+            <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>&word=<%=w%>&r=<%=r%>&t=<%=t%><%=l%><%=fs%><%=f%>', <%=iNext%>);"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
     <%  } %>
 </div>
