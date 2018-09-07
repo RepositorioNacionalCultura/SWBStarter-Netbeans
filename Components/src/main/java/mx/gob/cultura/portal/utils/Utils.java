@@ -331,6 +331,17 @@ public class Utils {
         return types.toString();
     }
     
+    public static String urlEmbedYT(String urlwatch) {
+        StringBuilder watch = new StringBuilder();
+        if (null == urlwatch || urlwatch.isEmpty()) return "";
+        if (!urlwatch.startsWith("https://www.youtube.com/watch?v=") || urlwatch.length() < 40) return urlwatch;
+        int index = urlwatch.indexOf("&", 32);
+        String id = urlwatch.substring(32, index);
+        watch.append("https://www.youtube.com/embed/")
+             .append(id);
+        return watch.toString();
+    }
+    
     /**
      * Genera un tag script para disponer de la funcionalidad para compartir contenido de un sitio Web.
      * Se requiere que el recurso que incluya esta funcion, se ejecute en una plantilla de SWB que

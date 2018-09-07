@@ -67,6 +67,7 @@
         <div class="obranombre">
             <h3 class="oswB"><%=title%></h3>
             <p class="oswL"><%=creator%></p>
+            <a href="#detalleinfo"><%=paramRequest.getLocaleString("usrmsg_view_detail_see_data")%><span class="ion-chevron-down"></span></a>
         </div>
         <div class="explora">
             <div class="explora2">

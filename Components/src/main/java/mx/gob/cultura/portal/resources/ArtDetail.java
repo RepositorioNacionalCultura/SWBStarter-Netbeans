@@ -106,7 +106,7 @@ public class ArtDetail extends GenericAdmResource {
         }else {
             ListBICRequest list = new ListBICRequest(uri);
             document = list.makeRequest();
-            if (null != document && !document.getRecords().isEmpty()) {
+            if (null != document && null != document.getRecords() && !document.getRecords().isEmpty()) {
                 entry = document.getRecords().get(0);
                 request.setAttribute(TOTAL, document.getTotal());
             }

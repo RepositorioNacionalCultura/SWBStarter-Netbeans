@@ -40,53 +40,56 @@
                 String mime = null != digital.getMediatype() ? digital.getMediatype().getMime() : "";
                 if (digital.getUrl().endsWith(".mp4")) mime = "video/mp4";
                 scriptHeader.append("<script src=\"https://cdn.plyr.io/2.0.18/plyr.js\"></script>");
-		//scriptHeader.append("<script>plyr.setup();</script>");
-                //scriptHeader.append("<script type=\"text/javascript\" src=\"/work/models/").append(site.getId()).append("/js/viewer-video.js\"></script>");
                 scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-video-2.css'/>");
-                divVisor.append("<video id=\"video\" width=\"97%\" poster=\"").append(entry.getResourcethumbnail()).append("\" controls controlsList=\"nodownload\">");
-                divVisor.append("	<source src=\"").append(digital.getUrl()).append("\" type=\"").append(mime).append("\">");
-		divVisor.append("	<p>Tu navegador no soporta video en HTML5</p>");
-                divVisor.append("</video>");
-		divVisor.append("<div id=\"video-controls\" class=\"row\">")
-                .append("   <div class=\"col-11 col-md-7 video-players\">")
-                .append("       <div class=\"col-12 video-botones\">");
-		if (iPrev >= 0) {
-                    String prev = "onclick=\"nextObj('"+digitURL+"?id=','"+entry.getId()+"',"+iPrev+");\"";
-                    divVisor.append("           <button type=\"button\" id=\"prev\" class=\"prev\"").append(prev).append("><span class=\"ion-ios-skipbackward\"></span></button>");
+                if (digital.getUrl().contains("youtube")) {
+                    divVisor.append("<iframe src=\"")
+                        .append(Utils.urlEmbedYT(digital.getUrl())).append("\" frameborder=\"0\" allowfullscreen></iframe>");
+                }else {
+                    divVisor.append("<video id=\"video\" width=\"97%\" poster=\"").append(entry.getResourcethumbnail()).append("\" controls controlsList=\"nodownload\">");
+                    divVisor.append("	<source src=\"").append(digital.getUrl()).append("\" type=\"").append(mime).append("\">");
+                    divVisor.append("	<p>Tu navegador no soporta video en HTML5</p>");
+                    divVisor.append("</video>");
+                    divVisor.append("<div id=\"video-controls\" class=\"row\">")
+                    .append("   <div class=\"col-11 col-md-7 video-players\">")
+                    .append("       <div class=\"col-12 video-botones\">");
+                    if (iPrev >= 0) {
+                        String prev = "onclick=\"nextObj('"+digitURL+"?id=','"+entry.getId()+"',"+iPrev+");\"";
+                        divVisor.append("           <button type=\"button\" id=\"prev\" class=\"prev\"").append(prev).append("><span class=\"ion-ios-skipbackward\"></span></button>");
+                    }
+                    divVisor.append("           <button type=\"button\" id=\"play-pause\" class=\"play\"><span class=\"ion-ios-play\"></span></button>");
+                    if (iNext < vids) {
+                        String next = "onclick=\"nextObj('"+digitURL+"?id=','"+entry.getId()+"',"+iNext+");\"";
+                        divVisor.append("           <button type=\"button\" id=\"next\" class=\"next\"").append(next).append("><span class=\"ion-ios-skipforward\"></span></button>");
+                    }
+                    divVisor.append("       </div>")
+                    .append("       <div class=\"col-12 video-range\">")
+                    .append("           <span class=\"video-time oswM\">0:00:00</span>")
+                    .append("               <input type=\"range\" id=\"seek-bar\" value=\"0\">")
+                    .append("           <span class=\"video-duration oswM\">0:00:00</span>")
+                    .append("       </div>")
+                    .append("   </div>")
+                    .append("   <div class=\"col-4 video-volumen\">")
+                    .append("       <div class=\"row\">")
+                    .append("           <div class=\"col-3 col-sm-3 col-md-2 video-volbtn\">")
+                    .append("               <button type=\"button\" id=\"mute\"><span class=\"ion-ios-volume-high\"></span></button>")
+                    .append("           </div>")
+                    .append("           <div class=\"col-8 col-sm-9 col-md-10 video-volrange\">")
+                    .append("               <input type=\"range\" id=\"volume-bar\" min=\"0\" max=\"1\" step=\"0.1\" value=\"1\">")
+                    .append("           </div>")
+                    .append("       </div>")
+                    .append("   </div>")
+                    .append("   <div class=\"col-1 video-screen\">")
+                    .append("       <button type=\"button\" id=\"full-screen\"><span class=\"ion-android-expand\"></span></button>")
+                    .append("   </div>")
+                    .append("</div>");
+                    scriptCallVisor.append("<script>")
+                        .append("   $(document).ready(function() {")
+                        .append("       $(\"#play-pause\").click(function() {")
+                        .append("		$(\".obranombre\").toggleClass(\"opaco\");")
+                        .append("       });")
+                        .append("	});")
+                        .append("</script>");
                 }
-                divVisor.append("           <button type=\"button\" id=\"play-pause\" class=\"play\"><span class=\"ion-ios-play\"></span></button>");
-		if (iNext < vids) {
-                    String next = "onclick=\"nextObj('"+digitURL+"?id=','"+entry.getId()+"',"+iNext+");\"";
-                    divVisor.append("           <button type=\"button\" id=\"next\" class=\"next\"").append(next).append("><span class=\"ion-ios-skipforward\"></span></button>");
-                }
-                divVisor.append("       </div>")
-                .append("       <div class=\"col-12 video-range\">")
-                .append("           <span class=\"video-time oswM\">0:00:00</span>")
-                .append("               <input type=\"range\" id=\"seek-bar\" value=\"0\">")
-                .append("           <span class=\"video-duration oswM\">0:00:00</span>")
-                .append("       </div>")
-                .append("   </div>")
-                .append("   <div class=\"col-4 video-volumen\">")
-                .append("       <div class=\"row\">")
-                .append("           <div class=\"col-3 col-sm-3 col-md-2 video-volbtn\">")
-                .append("               <button type=\"button\" id=\"mute\"><span class=\"ion-ios-volume-high\"></span></button>")
-                .append("           </div>")
-                .append("           <div class=\"col-8 col-sm-9 col-md-10 video-volrange\">")
-                .append("               <input type=\"range\" id=\"volume-bar\" min=\"0\" max=\"1\" step=\"0.1\" value=\"1\">")
-                .append("           </div>")
-                .append("       </div>")
-                .append("   </div>")
-                .append("   <div class=\"col-1 video-screen\">")
-                .append("       <button type=\"button\" id=\"full-screen\"><span class=\"ion-android-expand\"></span></button>")
-                .append("   </div>")
-                .append("</div>");
-                scriptCallVisor.append("<script>")
-                    .append("   $(document).ready(function() {")
-                    .append("       $(\"#play-pause\").click(function() {")
-                    .append("		$(\".obranombre\").toggleClass(\"opaco\");")
-                    .append("       });")
-                    .append("	});")
-                    .append("</script>");
             }
 	}
     }
