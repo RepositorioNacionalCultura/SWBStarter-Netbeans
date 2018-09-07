@@ -142,7 +142,6 @@ public class SearchCulturalProperty extends PagerAction {
             request.setAttribute("word", q);
             init(request, response, paramRequest);
         }
-
         try {
             request.setAttribute("references", publicationList);
             request.setAttribute("paramRequest", paramRequest);
@@ -392,7 +391,7 @@ public class SearchCulturalProperty extends PagerAction {
                     for (CountName c : a.getMediastype()) {
                         if (type.equals("image") && (c.getName().startsWith("image") || c.getName().equalsIgnoreCase("jpg") || c.getName().equalsIgnoreCase("png"))) list.add(c);
                         else if (type.equals("pdf") && (c.getName().startsWith("pdf") || c.getName().equalsIgnoreCase("application/pdf"))) list.add(c);
-                        else if (type.equals("audio") && (c.getName().startsWith("audio") || c.getName().equalsIgnoreCase("aiff") || c.getName().equalsIgnoreCase("wav")) || c.getName().equalsIgnoreCase("mp3")) list.add(c);
+                        else if (type.equals("audio") && (c.getName().startsWith("audio") || c.getName().equalsIgnoreCase("aiff") || c.getName().equalsIgnoreCase("wav") || c.getName().equalsIgnoreCase("mp3"))) list.add(c);
                         else if (type.equals("video") && (c.getName().startsWith("video") || c.getName().equalsIgnoreCase("avi") || c.getName().equalsIgnoreCase("mp4") || c.getName().equalsIgnoreCase("mov"))) list.add(c);
                         else if (type.equals("zip") && (c.getName().startsWith("zip") || c.getName().equalsIgnoreCase("application/zip"))) list.add(c);
                     }
