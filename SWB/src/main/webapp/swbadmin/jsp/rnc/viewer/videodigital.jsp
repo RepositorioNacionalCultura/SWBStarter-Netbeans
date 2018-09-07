@@ -42,8 +42,7 @@
                 scriptHeader.append("<script src=\"https://cdn.plyr.io/2.0.18/plyr.js\"></script>");
                 scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-video-2.css'/>");
                 if (digital.getUrl().contains("youtube")) {
-                    divVisor.append("<iframe src=\"")
-                        .append(Utils.urlEmbedYT(digital.getUrl())).append("\" frameborder=\"0\" allowfullscreen></iframe>");
+                    divVisor.append("<iframe width=\"800\" height=\"600\" src=\"").append(Utils.urlEmbedYT(digital.getUrl())).append("\" frameborder=\"0\" allowfullscreen></iframe>");
                 }else {
                     divVisor.append("<video id=\"video\" width=\"97%\" poster=\"").append(entry.getResourcethumbnail()).append("\" controls controlsList=\"nodownload\">");
                     divVisor.append("	<source src=\"").append(digital.getUrl()).append("\" type=\"").append(mime).append("\">");

@@ -27,8 +27,7 @@
     <%
 	if (iPrev >= 0) {
     %>
-            <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
-            <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>&word=<%=w%>&r=<%=r%>&t=<%=t%><%=l%><%=fs%><%=f%>', <%=iPrev%>);"></a>
+            <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>&word=<%=w%>&r=<%=r%>&t=<%=t%><%=l%><%=fs%><%=f%>', <%=iPrev%>);"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></a>
     <%  } %>
 </div>
 <div class="col-4">

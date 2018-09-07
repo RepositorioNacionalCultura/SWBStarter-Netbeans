@@ -114,17 +114,17 @@
             filter();
 	}
     }
-	function validateRange(min, max) {
-		if (min > max) {
-			alert('<%=paramRequest.getLocaleString("usrmsg_view_search_range_min_error")%>');
-			return false;
-		}
-		if (max < min) {
-			alert('<%=paramRequest.getLocaleString("usrmsg_view_search_range_max_error")%>');
-			return false;
-		}
-		return true;
-	}
+    function validateRange(min, max) {
+        if (min > max) {
+            alert('<%=paramRequest.getLocaleString("usrmsg_view_search_range_min_error")%>');
+		return false;
+            }
+            if (max < min) {
+		alert('<%=paramRequest.getLocaleString("usrmsg_view_search_range_max_error")%>');
+                return false;
+            }
+	return true;
+    }
     function doSort(w, f) {
         dojo.xhrPost({
             url: '<%=pageURL%>?word='+w+'&sort='+f,
@@ -174,7 +174,7 @@
                             <%
                                 for (CountName r : mediastype) {
                             %>
-                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="mediatype" value="<%=r.getName()%>"><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
+                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="mediastype" value="<%=r.getName()%>"><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
                             <%
 								}
                             %>
