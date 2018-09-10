@@ -40,6 +40,8 @@ public class Entry implements Serializable {
     private Rights rights;
     private List<String> generator;
     private String resourcethumbnail;
+    
+    
 
     public Stats getResourcestats() {
         return resourcestats;

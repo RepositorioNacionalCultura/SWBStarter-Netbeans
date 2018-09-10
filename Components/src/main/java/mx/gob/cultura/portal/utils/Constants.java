@@ -40,4 +40,7 @@ public final class Constants {
     
     public static final Boolean COLLECTION_PUBLIC = true;
     public static final Boolean COLLECTION_PRIVATE = false;
+    
+    public static final Integer REQUIRED = 1;
+    public static final Integer COMPLEMENTARY = 2;
 }

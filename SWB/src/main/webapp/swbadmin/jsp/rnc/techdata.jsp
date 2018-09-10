@@ -6,23 +6,23 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DateDocument, mx.gob.cultura.portal.response.DigitalObject"%>
 <%@ page import="mx.gob.cultura.portal.resources.ArtDetail, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, 
-         org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.ArrayList, java.util.List, org.bson.Document"%>
+    org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.ArrayList, java.util.List, org.bson.Document"%>
 <%
-    String type = "";
+    //String type = "";
     String fdesc = "";
     String title = "";
     String holder = "";
-    String period = "";
-    String rights = "";
-    String creator = "";
-    String generator = "";
+    //String period = "";
+    //String rights = "";
+    //String creator = "";
+    //String generator = "";
     List<Title> titles = new ArrayList<>();
-    List<String> holders = new ArrayList<>();
+    //List<String> holders = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
     Document desc = null;
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     if (null != entry) {
-        holders = entry.getHolder();
+        //holders = entry.getHolder();
         titles = entry.getRecordtitle();
 	StringBuilder builder = new StringBuilder();
         StringBuilder collection = new StringBuilder();
@@ -30,22 +30,23 @@
             builder.append(t).append(", ");
         }
 	if (builder.length() > 0) builder.deleteCharAt(builder.length() - 2);
-        type =  builder.toString();
+        //type =  builder.toString();
         if (null != entry.getGenerator()) {
             for (String t : entry.getGenerator()) {
                 collection.append(t).append(", ");
             }
         }
 	if (collection.length() > 0) collection.deleteCharAt(collection.length() - 2);
-        generator = Utils.getRowData(entry.getGenerator(), 0, true);
-	holder = holders.size() > 0 ? holders.get(0) : "";
-	creator = Utils.getRowData(entry.getCreator(), 0, true);
-        period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
+        //generator = Utils.getRowData(entry.getGenerator(), 0, true);
+	//creator = Utils.getRowData(entry.getCreator(), 0, true);
+        //period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
 	if (!titles.isEmpty()) title = titles.get(0).getValue();
-        rights = Utils.getRights(entry);
+        //rights = Utils.getRights(entry);
         title = Utils.getTitle(titles, 0);
         desc = Utils.getDescription(entry.getDescription());
         fdesc = (null != desc && null != desc.get("full")) ? (String)desc.get("full") : "";
+        
+        holder = Utils.getRowData(entry.getHolder(), 0, false);
     }
 %>
 <div class="col-12 col-sm-12 col-md-9 col-lg-9 order-md-2 order-sm-1 order-1 ficha ">
@@ -63,34 +64,13 @@
             <tr>
                 <th colspan="2"><%=paramRequest.getLocaleString("usrmsg_view_detail_data_sheet")%></th>
             </tr>
-            <tr>
-                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_artist")%></td>
-                <td><%=creator%></td>
-            </tr>
-            <tr>
-                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_date")%></td>
-                <td><%=period%></td>
-            </tr>
-            <tr>
-                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_type_object")%></td>
-                <td><%=type%></td>
-            </tr>
-            <tr>
-                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_identifier")%></td>
-                <td><%=entry.getIdentifiers()%></td>
-            </tr>
-            <tr>
-                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_institution")%></td>
-                <td><%=holder%></td>
-            </tr>
-            <tr>
-		<td><%=paramRequest.getLocaleString("usrmsg_view_detail_collection")%></td>
-		<td><%=generator%></td>
-            </tr>
-            <tr>
-                <td><%=paramRequest.getLocaleString("usrmsg_view_detail_rights")%></td>
-		<td><%=rights%></td>
-            </tr>
+            <%=Utils.getTechData("creator", holder, Utils.getRowData(entry.getCreator(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_artist"))%>
+            <%=Utils.getTechData("datecreated", holder, null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "", paramRequest.getLocaleString("usrmsg_view_detail_date"))%>
+            <%=Utils.getTechData("resourcetype", holder, Utils.getRowData(entry.getResourcetype(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_type_object"))%>
+            <%=Utils.getTechData("oaiid/identifier", holder, entry.getIdentifiers(), paramRequest.getLocaleString("usrmsg_view_detail_identifier"))%>
+            <%=Utils.getTechData("holder", holder, holder, paramRequest.getLocaleString("usrmsg_view_detail_institution"))%>
+            <%=Utils.getTechData("reccollection", holder, Utils.getRowData(entry.getGenerator(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_collection"))%>
+            <%=Utils.getTechData("rights.rightstitle", holder, entry.getRights().getRightstitle(), paramRequest.getLocaleString("usrmsg_view_detail_rights"))%>
             <%
                 if (null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty() && null != entry.getRights() && null != entry.getRights().getDescription()) {
                     String url = "";
@@ -114,15 +94,22 @@
                     </tr>
             <%
                 }
-                if (null != entry.getLugar() && !entry.getLugar().isEmpty()) {
             %>
-                    <tr>
-                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_place")%></td>
-                        <td><%=entry.getLugar()%></td>
-                    </tr>
-            <% }%>
         </table>
-        <!--p class="vermas"><a href="#"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p-->
+        <a name="complementary"></a>
+        <p id="morecompl" style="display:none;">
+            <table>
+                <%
+                    if (null != entry.getLugar() && !entry.getLugar().isEmpty()) {
+                %>
+                        <tr>
+                            <td><%=paramRequest.getLocaleString("usrmsg_view_detail_place")%></td>
+                            <td><%=entry.getLugar()%></td>
+                        </tr>
+                <% }%>
+            </table>
+        </p>
+        <p class="vermas"><a href="#complementary"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
     </div>
 </div>
 <script>
@@ -136,5 +123,13 @@
             x.style.display = "none";
             s.style.display = "block";
 	}
+    }
+    function moreCompl() {
+        var y = document.getElementById("morecompl");
+        if (y.style.display === "none") {
+            y.style.display = "block";
+        }else {
+            y.style.display = "none";
+        }
     }
 </script>

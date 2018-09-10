@@ -33,6 +33,8 @@ import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Title;
 import mx.gob.cultura.portal.response.CountName;
 import mx.gob.cultura.portal.response.Aggregation;
+import static mx.gob.cultura.portal.utils.Constants.COMPLEMENTARY;
+import static mx.gob.cultura.portal.utils.Constants.REQUIRED;
 
 /**
  *
@@ -41,6 +43,9 @@ import mx.gob.cultura.portal.response.Aggregation;
 public class Utils {
     
     protected static final Map m = new HashMap();
+    
+    protected static final Map inba = new HashMap();
+    protected static final Map inali = new HashMap();
     
     private static final Logger LOG = Logger.getLogger(Utils.class.getName());
 	
@@ -54,6 +59,38 @@ public class Utils {
 	m.put(62, "");   // >
         m.put(123, "");  // {
         m.put(125, "");  // }
+    }
+    
+    static {
+        inali.put("creator", REQUIRED);
+        inali.put("lugar", COMPLEMENTARY);
+        inali.put("datecreated", REQUIRED);
+	inali.put("recordtitle", REQUIRED);
+	inali.put("resourcetype", REQUIRED);
+	inali.put("lang", COMPLEMENTARY);
+        inali.put("reccollection", COMPLEMENTARY);
+        inali.put("keywords", COMPLEMENTARY);
+        inali.put("description", COMPLEMENTARY);
+        inali.put("oaiid/identifier", REQUIRED);
+        inali.put("holder", REQUIRED);
+        inali.put("rights.rightstitle", REQUIRED);
+        inali.put("rights.description+rights.url", REQUIRED);
+    }
+    
+    static {
+        inba.put("recordtitle", REQUIRED);
+        inba.put("description", COMPLEMENTARY);
+        inba.put("creator", REQUIRED);
+        inba.put("resourcetype", REQUIRED);
+        inba.put("datecreated", REQUIRED);
+        inba.put("reccollection", COMPLEMENTARY);
+        inba.put("keywords", COMPLEMENTARY);
+        inba.put("oaiid/identifier", REQUIRED);
+        inba.put("holder", REQUIRED);
+        inba.put("rights.rightstitle", REQUIRED);
+        inba.put("rights.description+rights.url", REQUIRED);
+        inba.put("reference", COMPLEMENTARY);
+	inba.put("lang", COMPLEMENTARY);
     }
     
     public static String suprXSS(String str) {
@@ -232,14 +269,22 @@ public class Utils {
         return builder.toString();
     }
     
-    public static String getTechData(String key, String locale) {
+    public static String getTechData(String property, String holder, String key, String locale) {
         if (null == key || key.isEmpty()) return "";
+        if (!isRequired(property, holder)) return "";
         StringBuilder data = new StringBuilder();
         data.append("<tr>")
             .append("   <td>").append(locale).append("</td>")
             .append("   <td>").append(key).append("</td>")
             .append("</tr>");
         return data.toString();
+    }
+    
+    private static boolean isRequired(String property, String holder) {
+        if (null == holder || null == property) return false;
+        if (holder.equals("Instituto Nacional de Bellas Artes")) return inba.containsKey(property);
+        if (holder.equals("Instituto Nacional de Lenguas Indígenas")) return inali.containsKey(property);
+        return true;
     }
     
     public static String getTitle(List<Title> titles, int size) {
