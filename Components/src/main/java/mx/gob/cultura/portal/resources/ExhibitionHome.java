@@ -106,7 +106,6 @@ public class ExhibitionHome extends GenericAdmResource {
     
     private List<org.bson.Document> getExhibitions(SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         WebPage pageBase = paramRequest.getWebPage();
-        List<String> elements = new ArrayList<>();
         List<org.bson.Document> exhibitionList = new ArrayList<>();
         if (null != getResourceBase().getAttribute("pageBase"))
             pageBase = paramRequest.getWebPage().getWebSite().getWebPage(getResourceBase().getAttribute("pageBase"));
@@ -114,13 +113,14 @@ public class ExhibitionHome extends GenericAdmResource {
         Iterator<WebPage> exhibitions = pageBase.listChilds(usrlanguage, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, null);
         while (exhibitions.hasNext()) {
             boolean add = false;
+            List<String> elements = new ArrayList<>();
             WebPage exhibition = (WebPage) exhibitions.next();
             org.bson.Document bson = new org.bson.Document("url", exhibition.getUrl(usrlanguage, false)).append("path", this.path).append("id", exhibition.getId())
                 .append("target", null != exhibition.getTarget() && !"".equalsIgnoreCase(exhibition.getTarget()) ? exhibition.getTarget() : "_self")
                 .append("desc", exhibition.getDisplayDescription(usrlanguage) == null ? "" : exhibition.getDisplayDescription(usrlanguage))
                 .append("title", exhibition.getDisplayName(usrlanguage)).append("author", exhibition.getCreator().getFullName());
             if (null != exhibition.getProperty("posters") && !exhibition.getProperty("posters").isEmpty()) {
-                if (exhibition.getProperty("posters").indexOf("#") >0) {
+                if (exhibition.getProperty("posters").indexOf("#") > 0) {
                     String [] posters = exhibition.getProperty("posters").split("#");
                     for (int i=0; i<posters.length; i++) {
                         elements.add(posters[i]);

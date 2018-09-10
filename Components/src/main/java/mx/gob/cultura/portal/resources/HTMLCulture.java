@@ -464,10 +464,8 @@ public class HTMLCulture extends GenericResource {
                 }
                 if (textSaved) {
                     WebPage wp = paramRequest.getWebPage();
-                    System.out.println("wp: " + wp);
                     StringBuilder poster = new StringBuilder();
                     String resourcePath = resource.getWorkPath() + "/" + (versionNumber) + "/" + FOLDER;
-                    System.out.println("resourcePath: " + resourcePath);
                     File imagesDirectory = new File(directoryToCreate);
                     if (imagesDirectory.exists() && SWBUtils.IO.createDirectory(directoryToCreate)) {
                         for (String strFile : imagesDirectory.list()) {
@@ -520,18 +518,18 @@ public class HTMLCulture extends GenericResource {
         try {
             response.setContentType("text/html;charset=ISO-8859-1");//Forced because of encoding problems
             request.setAttribute("paramRequest", paramRequest);
-            request.setAttribute(ATTR_FILES, getFileList(request, version, types));
+            request.setAttribute(ATTR_FILES, getFileList(request, paramRequest.getWebPage().getWebSite(), version, types));
             rd.include(request, response);
         } catch (ServletException ex) {
             log.error(ex);
         }
     }
     
-    private Map<String, Long> getFileList(HttpServletRequest hsr, String version, ArrayList<String> allowedTypes) {
+    private Map<String, Long> getFileList(HttpServletRequest hsr, WebSite site, String version, ArrayList<String> allowedTypes) {
         Resource base = getResourceBase();
         Map<String, Long> files = new TreeMap<>();
         String resPath = SWBPlatform.getContextPath()+SWBPortal.getWorkPath()+base.getWorkPath()+"/"+version+"/images/";
-        if (HTMLCultureUtils.isEnabledForFileBrowsing(hsr)) {
+        if (HTMLCultureUtils.isEnabledForFileBrowsing(hsr, site)) {
             final File resourcePath = new File(resPath);
             if (resourcePath.exists() && resourcePath.isDirectory()) {
                 for (final File fileEntry : resourcePath.listFiles(new ExtFilter(allowedTypes))) {
@@ -664,8 +662,8 @@ public class HTMLCulture extends GenericResource {
          * @param hsr The request.
          * @return true si el usuario tiene permisos para navegar por la estructura de archivos, false en otro caso.
          */
-        public static boolean isEnabledForFileBrowsing(HttpServletRequest hsr) {
-            WebSite site = SWBContext.getAdminWebSite();
+        public static boolean isEnabledForFileBrowsing(HttpServletRequest hsr, WebSite site) {
+            //WebSite site = SWBContext.getAdminWebSite();
             User user = SWBPortal.getUserMgr().getUser(hsr, site);
             SWBContext.setSessionUser(user);
             return user.haveAccess(site.getHomePage());
