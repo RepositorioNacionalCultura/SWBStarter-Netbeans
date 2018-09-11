@@ -14,31 +14,31 @@
     if (related != null && !related.isEmpty()) {
 %>
         <section id="recientes">
-			<div class="rosa-bg">
-				<h3 class="oswB vino"><span class="h3linea"></span>REGISTROS RELACIONADOS<span class="h3linea"></span></h3>
-				<div class="container">
-					<div class="row">
-						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 car-img3">
-							<div id="owl-3" class="card-deck owl-carousel owl-theme col rel">
-							<%
-								for (Entry item : related) {
-							%>
-								<div class="item">
-									<div class="pieza">
-										<div>
-											<a href="<%=uri%>?id=<%=item.getId()%>">
-                                                <img src="<%=item.getResourcethumbnail()%>"/>
-                                            </a>
-										</div>
-										<p class="oswB azul tit"><a href="<%=uri%>?id=<%=item.getId()%>"><%=Utils.getTitle(item.getRecordtitle(), 0)%></a></p>
-										<p class="azul autor"><a href="#"><%=Utils.getRowData(item.getCreator(), 0, true)%></a></p>
-									</div>
-								</div>
-							<%
-								}
-							%>
-							</div>
+            <div class="rosa-bg">
+		<h3 class="oswB vino"><span class="h3linea"></span>REGISTROS RELACIONADOS<span class="h3linea"></span></h3>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 car-img3">
+				<div id="owl-3" class="card-deck owl-carousel owl-theme col rel">
+				<%
+                                    for (Entry item : related) {
+				%>
+                                        <div class="item">
+                                            <div class="pieza">
+                                                <div>
+                                                    <a href="<%=uri%>?id=<%=item.getId()%>">
+                                                        <img src="<%=item.getResourcethumbnail()%>"/>
+                                                    </a>
 						</div>
+						<p class="oswB azul tit"><a href="<%=uri%>?id=<%=item.getId()%>"><%=Utils.getTitle(item.getRecordtitle(), 50)%></a></p>
+						<p class="azul autor"><a href="#"><%=Utils.getRowData(item.getCreator(), 0, true)%></a></p>
+                                            </div>
+					</div>
+				<%
+                                    }
+				%>
+				</div>
+                            </div>
 						<div class="owl-nav col">
 							<div class="rel customPrevBtn"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
 							<div class="rel customNextBtn"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
