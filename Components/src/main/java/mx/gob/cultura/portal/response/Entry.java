@@ -41,7 +41,33 @@ public class Entry implements Serializable {
     private List<String> generator;
     private String resourcethumbnail;
     
-    
+    private String state;
+    private String reference;
+    private String holdernote;
+    private String dimension;
+    private String unidad;
+    private String serie;
+    private String chapter;
+    private String episode;
+    private String credits;
+    private String availableformats;
+    private String documentalfund;
+    private String direction;
+    private String production;
+    private String music;
+    private String libreto;
+    private String musicaldirection;
+    private String number;
+    private String subtile;
+    private String editorial;
+    private String press;
+    private String director;
+    private String producer;
+    private String screenplay;
+    private String distribution;
+    private String tipo_de_identificador;
+    private String tipo_de_unidad;
+    private String tipo_de_dimension;
 
     public Stats getResourcestats() {
         return resourcestats;
@@ -243,6 +269,222 @@ public class Entry implements Serializable {
         }
 	if (builder.length() > 0) builder.deleteCharAt(builder.length() - 2);
         return builder.toString();
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
+
+    public String getHoldernote() {
+        return holdernote;
+    }
+
+    public void setHoldernote(String holdernote) {
+        this.holdernote = holdernote;
+    }
+
+    public String getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(String dimension) {
+        this.dimension = dimension;
+    }
+
+    public String getUnidad() {
+        return unidad;
+    }
+
+    public void setUnidad(String unidad) {
+        this.unidad = unidad;
+    }
+
+    public String getSerie() {
+        return serie;
+    }
+
+    public void setSerie(String serie) {
+        this.serie = serie;
+    }
+
+    public String getChapter() {
+        return chapter;
+    }
+
+    public void setChapter(String chapter) {
+        this.chapter = chapter;
+    }
+
+    public String getEpisode() {
+        return episode;
+    }
+
+    public void setEpisode(String episode) {
+        this.episode = episode;
+    }
+
+    public String getCredits() {
+        return credits;
+    }
+
+    public void setCredits(String credits) {
+        this.credits = credits;
+    }
+
+    public String getAvailableformats() {
+        return availableformats;
+    }
+
+    public void setAvailableformats(String availableformats) {
+        this.availableformats = availableformats;
+    }
+
+    public String getDocumentalfund() {
+        return documentalfund;
+    }
+
+    public void setDocumentalfund(String documentalfund) {
+        this.documentalfund = documentalfund;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+
+    public String getProduction() {
+        return production;
+    }
+
+    public void setProduction(String production) {
+        this.production = production;
+    }
+
+    public String getMusic() {
+        return music;
+    }
+
+    public void setMusic(String music) {
+        this.music = music;
+    }
+
+    public String getLibreto() {
+        return libreto;
+    }
+
+    public void setLibreto(String libreto) {
+        this.libreto = libreto;
+    }
+
+    public String getMusicaldirection() {
+        return musicaldirection;
+    }
+
+    public void setMusicaldirection(String musicaldirection) {
+        this.musicaldirection = musicaldirection;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getSubtile() {
+        return subtile;
+    }
+
+    public void setSubtile(String subtile) {
+        this.subtile = subtile;
+    }
+
+    public String getEditorial() {
+        return editorial;
+    }
+
+    public void setEditorial(String editorial) {
+        this.editorial = editorial;
+    }
+
+    public String getPress() {
+        return press;
+    }
+
+    public void setPress(String press) {
+        this.press = press;
+    }
+
+    public String getDirector() {
+        return director;
+    }
+
+    public void setDirector(String director) {
+        this.director = director;
+    }
+
+    public String getProducer() {
+        return producer;
+    }
+
+    public void setProducer(String producer) {
+        this.producer = producer;
+    }
+
+    public String getScreenplay() {
+        return screenplay;
+    }
+
+    public void setScreenplay(String screenplay) {
+        this.screenplay = screenplay;
+    }
+
+    public String getDistribution() {
+        return distribution;
+    }
+
+    public void setDistribution(String distribution) {
+        this.distribution = distribution;
+    }
+
+    public String getTipo_de_identificador() {
+        return tipo_de_identificador;
+    }
+
+    public void setTipo_de_identificador(String tipo_de_identificador) {
+        this.tipo_de_identificador = tipo_de_identificador;
+    }
+
+    public String getTipo_de_unidad() {
+        return tipo_de_unidad;
+    }
+
+    public void setTipo_de_unidad(String tipo_de_unidad) {
+        this.tipo_de_unidad = tipo_de_unidad;
+    }
+
+    public String getTipo_de_dimension() {
+        return tipo_de_dimension;
+    }
+
+    public void setTipo_de_dimension(String tipo_de_dimension) {
+        this.tipo_de_dimension = tipo_de_dimension;
     }
 
     @Override

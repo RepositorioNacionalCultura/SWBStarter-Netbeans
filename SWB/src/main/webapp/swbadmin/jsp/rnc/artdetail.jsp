@@ -12,8 +12,6 @@
     String title = "";
     String creator = "";
     DigitalObject digital = null;
-    List<Title> titles = new ArrayList<>();
-    List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
     StringBuilder scriptHeader = new StringBuilder();
     StringBuilder scriptCallVisor = new StringBuilder();
@@ -24,8 +22,6 @@
     if (null != entry) {
         iDigit = entry.getPosition();
         if (null != entry.getDigitalObject()) {
-            creators = entry.getCreator();
-            titles = entry.getRecordtitle();
             digitalobjects = entry.getDigitalObject();
             images = null != digitalobjects ? digitalobjects.size() : 0;
             digital = images >= iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
@@ -73,8 +69,8 @@
                 if (digital.getUrl().endsWith(".zip") || digital.getUrl().endsWith(".rtf") || digital.getUrl().endsWith(".docx")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
                 else divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");
             }
-            creator = creators.size() > 0 ? creators.get(0) : "";
-            if (!titles.isEmpty()) title = titles.get(0).getValue();
+            title = Utils.getTitle(entry.getRecordtitle(), 0);
+            creator = Utils.getRowData(entry.getCreator(), 0, false);
         }
     }
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
@@ -121,9 +117,9 @@
     </div>
 </section>
 <section id="detalleinfo">
-	<div class="container">
-		<div class="row">              
-			<jsp:include page="rack.jsp" flush="true"/>
+    <div class="container">
+        <div class="row">              
+            <jsp:include page="rack.jsp" flush="true"/>
             <jsp:include page="techdata.jsp" flush="true"/>
         </div>
     </div>

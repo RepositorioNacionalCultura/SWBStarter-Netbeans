@@ -10,14 +10,10 @@
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
     int books = 0;
-    int iPrev = 0;
-    int iNext = 0;
     int iDigit = 0;
     String title = "";
     String creator = "";
     DigitalObject digital = null;
-    List<Title> titles = new ArrayList<>();
-    List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
     StringBuilder scriptHeader = new StringBuilder();
     StringBuilder scriptCallVisor = new StringBuilder();
@@ -28,11 +24,7 @@
     String userLang = paramRequest.getUser().getLanguage();
     if (null != entry) {
         iDigit = entry.getPosition();
-	iPrev = iDigit-1;
-	iNext = iDigit+1;
 	if (null != entry.getDigitalObject()) {
-            creators = entry.getCreator();
-            titles = entry.getRecordtitle();
             digitalobjects = entry.getDigitalObject();
             books = null != digitalobjects ? digitalobjects.size() : 0;
             digital = books >= iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
@@ -51,8 +43,8 @@
                     .append("<script>")
                     .append("   Book.renderTo(\"area\");")
                     .append("</script>");
-                    creator = creators.size() > 0 ? creators.get(0) : "";
-                    if (!titles.isEmpty()) title = titles.get(0).getValue();
+                    title = Utils.getTitle(entry.getRecordtitle(), 0);
+                    creator = Utils.getRowData(entry.getCreator(), 0, false);
             }
 	}
     }

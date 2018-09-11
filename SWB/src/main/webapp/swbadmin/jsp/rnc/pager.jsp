@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>    
-<%@page import="mx.gob.cultura.portal.response.Entry,java.util.List, org.semanticwb.portal.api.SWBParamRequest"%>
+<%@page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.Entry,java.util.List, org.semanticwb.portal.api.SWBParamRequest"%>
 <%
     int numBloque = 0;
     int ultimoBloque = 0;
@@ -32,7 +32,7 @@
     String fs = null != request.getAttribute("filters") ? (String)request.getAttribute("filters") : "";
 %>
 <div class="paginacion">
-    <p><%=first%>-<%=last%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=totalRegistros%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%></p>
+    <p><%=first%>-<%=last%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=Utils.decimalFormat("###,###", totalRegistros)%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%></p>
     <ul class="azul">
     <!-- liga para saltar al bloque anterior -->
     <%

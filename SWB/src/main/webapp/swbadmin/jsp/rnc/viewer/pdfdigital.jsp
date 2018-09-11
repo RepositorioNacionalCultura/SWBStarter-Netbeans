@@ -12,8 +12,6 @@
     String title = "";
     String creator = "";
     DigitalObject digital = null;
-    List<Title> titles = new ArrayList<>();
-    List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
     int iDigit = (Integer) request.getAttribute("iDigit");
     StringBuilder scriptHeader = new StringBuilder();
@@ -27,13 +25,11 @@
     String userLang = paramRequest.getUser().getLanguage();
     if (null != entry) {
         if (null != entry.getDigitalObject()) {
-            creators = entry.getCreator();
-            titles = entry.getRecordtitle();
             digitalobjects = entry.getDigitalObject();
             pdfs = null != digitalobjects ? digitalobjects.size() : 0;
             digital = pdfs > iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
-            creator = creators.size() > 0 ? Utils.replaceSpecialChars(creators.get(0)) : "";
-            title = titles.size() > 0 ? Utils.replaceSpecialChars(titles.get(0).getValue()) : "";
+            title =  Utils.replaceSpecialChars(Utils.getTitle(entry.getRecordtitle(), 0));
+            creator = Utils.replaceSpecialChars(Utils.getRowData(entry.getCreator(), 0, false));
             scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
             scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-pdf.css'/>");
             if (Utils.getClientBrowser(request).contains("Firefox") || Utils.getClientBrowser(request).contains("Safari")) {

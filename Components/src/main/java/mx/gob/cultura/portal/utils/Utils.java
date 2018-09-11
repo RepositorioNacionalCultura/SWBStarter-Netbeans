@@ -305,7 +305,7 @@ public class Utils {
             cde.append("<li><label class=\"form-check-label\"><input class=\"form-check-input\" type=\"checkbox\" onclick=\"filter()\" name=\"").append(resourcetype).append("\" value=\"").append(r.getName()).append("\"");
             if (chdFtr(filter, resourcetype, r.getName())) 
                 cde.append("checked");
-            cde.append("><span>").append(r.getName()).append("</span><span> ").append(r.getCount()).append("</span></label></li>");
+            cde.append("><span>").append(r.getName()).append("</span><span> ").append(Utils.decimalFormat("###,###", r.getCount())).append("</span></label></li>");
             if (i>3) break; 
             else i++; 
         }
@@ -318,7 +318,7 @@ public class Utils {
                     cde.append("<li><label class=\"form-check-label\"><input class=\"form-check-input\" type=\"checkbox\" onclick=\"filter()\" name=\"").append(resourcetype).append("\" value=\"").append(r.getName()).append("\"");
                     if (chdFtr(filter, resourcetype, r.getName()))
                         cde.append("checked");
-                    cde.append("><span>").append(r.getName()).append("</span><span> ").append(r.getCount()).append("</span></label></li>");
+                    cde.append("><span>").append(r.getName()).append("</span><span> ").append(Utils.decimalFormat("###,###", r.getCount())).append("</span></label></li>");
                 }
             }
             cde.append("</div>");

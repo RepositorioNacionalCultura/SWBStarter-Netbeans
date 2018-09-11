@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="mx.gob.cultura.portal.response.DigitalObject, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Identifier, java.util.List"%>
-<%@ page import="org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceException, org.semanticwb.model.WebPage" %>
+<%@ page import="mx.gob.cultura.portal.utils.Utils, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceException, org.semanticwb.model.WebPage" %>
 <%
     List<Entry> relevants = (List<Entry>) request.getAttribute("relevants");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
@@ -24,10 +24,10 @@
                                             <a href="<%=uri%>?id=<%=item.getId()%>">
                                                 <img src="<%=item.getResourcethumbnail()%>"/>
                                             </a>
-                                            <% String creator = !item.getCreator().isEmpty() ? item.getCreator().get(0) : "&nbsp;";%>
+                                            <% String creator = null != item.getCreator() && !item.getCreator().isEmpty() ? item.getCreator().get(0) : "&nbsp;";%>
                                         </div>
                                         <p class="tit">
-                                            <a href="<%=uri%>?id=<%=item.getId()%>"><%=item.getRecordtitle().get(0).getValue()%></a>
+                                            <a href="<%=uri%>?id=<%=item.getId()%>"><%=Utils.getTitle(item.getRecordtitle(),0)%></a>
                                         </p>
                                         <p class="azul autor">
                                             <a href="#"><%=creator%></a>

@@ -174,9 +174,9 @@
                             <%
                                 for (CountName r : mediastype) {
                             %>
-                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="mediastype" value="<%=r.getName()%>"><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
+                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="mediastype" value="<%=r.getName()%>"><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span></label></li>
                             <%
-								}
+				}
                             %>
                         </ul>
                     </li>
@@ -243,7 +243,7 @@
                                 for (CountName r : languages) {
                                     if (null != r.getName() && !r.getName().equalsIgnoreCase("es")) {
                             %>
-					<li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="languages" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "lang", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
+					<li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="languages" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "lang", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span></label></li>
                             <%      
                                         if (i>3) break; else i++; 
                                     }
@@ -258,7 +258,7 @@
                                                 if (j<=i) {j++;} 
                                                 else { 
                             %>
-                                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="languages" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "lang", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=r.getCount()%></span></label></li>
+                                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="languages" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "lang", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span></label></li>
                             <%			
                                                 }
                                             }

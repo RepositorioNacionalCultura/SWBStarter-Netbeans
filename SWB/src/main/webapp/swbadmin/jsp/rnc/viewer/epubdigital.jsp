@@ -12,8 +12,6 @@
     String title = "";
     String creator = "";
     DigitalObject digital = null;
-    List<Title> titles = new ArrayList<>();
-    List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
     StringBuilder scriptHeader = new StringBuilder();
     StringBuilder scriptCallVisor = new StringBuilder();
@@ -27,14 +25,12 @@
     String userLang = paramRequest.getUser().getLanguage();
     if (null != entry) {
         if (null != entry.getDigitalObject()) {
-            creators = entry.getCreator();
-            titles = entry.getRecordtitle();
             digitalobjects = entry.getDigitalObject();
             books = null != digitalobjects ? digitalobjects.size() : 0;
             digital = books >= iDigit ? digitalobjects.get(iDigit - 1) : new DigitalObject();
             url = null != digital.getUrl() ? digital.getUrl() : "";
-            creator = creators.size() > 0 ? Utils.replaceSpecialChars(creators.get(0)) : "";
-            title = titles.size() > 0 ? Utils.replaceSpecialChars(titles.get(0).getValue()) : "";
+            title =  Utils.replaceSpecialChars(Utils.getTitle(entry.getRecordtitle(), 0));
+            creator = Utils.replaceSpecialChars(Utils.getRowData(entry.getCreator(), 0, false));
             if (null != url && url.endsWith(".epub")) {
                 scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>")
                     .append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-epub.css'/>");
@@ -50,7 +46,7 @@
                     .append("<script>")
                     .append("   Book.renderTo(\"area\");{")
                     .append("</script>");
-                creator = creators.size() > 0 ? creators.get(0) : "";
+
             }
         }
     }

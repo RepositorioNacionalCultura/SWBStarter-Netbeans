@@ -17,25 +17,20 @@
 %>
 <% if (!references.isEmpty()) {  %>
 	<div id="references">
-		<div class="ruta-resultado row">
-			<% if (null != wxss) { %>
-				<p class="oswL"><%=t%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
-			<% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
-		</div>
-		<div id="contenido">
-			<div id="resultados" class="<%=mode%>">
-			<%  
-				for (Entry reference : references) {
-					String holder = "";
-					List<String> holders = reference.getHolder();
-					List<String> creators = reference.getCreator();
-					String title =  Utils.getTitle(reference.getRecordtitle(), 50);
-					List<String> resourcetype = reference.getResourcetype();
-					Document desc = Utils.getDescription(reference.getDescription());
-					holder = null != holders && holders.size() > 0 ? holders.get(0) : "";
-					String resource = null != resourcetype && resourcetype.size() > 0 ? resourcetype.get(0) : "";
-					String creator = null != creators && creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
-			%>
+            <div class="ruta-resultado row">
+		<% if (null != wxss) { %>
+			<p class="oswL"><%=Utils.decimalFormat("###,###", t)%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
+		<% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
+            </div>
+            <div id="contenido">
+		<div id="resultados" class="<%=mode%>">
+		<%  
+                    for (Entry reference : references) {
+			String title =  Utils.getTitle(reference.getRecordtitle(), 50);
+			Document desc = Utils.getDescription(reference.getDescription());
+                        String holder = Utils.getRowData(reference.getHolder(), 0, false);
+			String creator = Utils.getRowData(reference.getCreator(), 0, false);
+		%>
 					<div class="pieza-res card">
 						<a class="pieza-res-img" href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%>&t=<%=t%><%=fs%><%=f%><%=uri%>">
 							<img src="<%=reference.getResourcethumbnail()%>" />

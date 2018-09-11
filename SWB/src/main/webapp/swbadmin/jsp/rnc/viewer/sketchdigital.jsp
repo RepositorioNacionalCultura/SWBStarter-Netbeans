@@ -12,8 +12,6 @@
     String title = "";
     String creator = "";
     DigitalObject digital = null;
-    List<Title> titles = new ArrayList<>();
-    List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
     int iDigit = (Integer)request.getAttribute("iDigit");
     List<DigitalObject> digitalobjects = new ArrayList<>();
@@ -25,16 +23,14 @@
     WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
 	if (null != entry.getDigitalObject()) {
-            creators = entry.getCreator();
-            titles = entry.getRecordtitle();
             digitalobjects = entry.getDigitalObject();
             books = null != digitalobjects ? digitalobjects.size() : 0;
             digital = books > iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
             if (null != digital.getUrl())
                 divVisor.append("<iframe width=\"1280\" height=\"860\" src=\"\" id=\"api-frame\" allowfullscreen mozallowfullscreen=\"true\" webkitallowfullscreen=\"true\"></iframe>");
         }
-        creator = creators.size() > 0 ? Utils.replaceSpecialChars(creators.get(0)) : "";
-        title = titles.size() > 0 ? Utils.replaceSpecialChars(titles.get(0).getValue()) : "";
+        title =  Utils.replaceSpecialChars(Utils.getTitle(entry.getRecordtitle(), 0));
+        creator = Utils.replaceSpecialChars(Utils.getRowData(entry.getCreator(), 0, false));
     }
 %>
     <jsp:include page="../flow.jsp" flush="true"/>

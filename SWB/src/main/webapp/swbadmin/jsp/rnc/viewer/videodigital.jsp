@@ -12,8 +12,6 @@
     String title = "";
     String creator = "";
     DigitalObject digital = null;
-    List<Title> titles = new ArrayList<>();
-    List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
     StringBuilder scriptHeader = new StringBuilder();
     StringBuilder scriptCallVisor = new StringBuilder();
@@ -29,13 +27,11 @@
     String userLang = paramRequest.getUser().getLanguage();
     if (null != entry) {
 	if (null != entry.getDigitalObject()) {
-            creators = entry.getCreator();
-            titles = entry.getRecordtitle();
             digitalobjects = entry.getDigitalObject();
             vids = null != digitalobjects ? digitalobjects.size() : 0;
             digital = vids > iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
-            creator = creators.size() > 0 ? Utils.replaceSpecialChars(creators.get(0)) : "";
-            title = titles.size() > 0 ? Utils.replaceSpecialChars(titles.get(0).getValue()) : "";
+            title =  Utils.replaceSpecialChars(Utils.getTitle(entry.getRecordtitle(), 0));
+            creator = Utils.replaceSpecialChars(Utils.getRowData(entry.getCreator(), 0, false));
             if (null != digital.getUrl()) {
                 String mime = null != digital.getMediatype() ? digital.getMediatype().getMime() : "";
                 if (digital.getUrl().endsWith(".mp4")) mime = "video/mp4";

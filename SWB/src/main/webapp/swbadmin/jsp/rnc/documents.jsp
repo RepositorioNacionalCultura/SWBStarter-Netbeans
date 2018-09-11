@@ -73,13 +73,10 @@
                 <div id="resultados" class="card-columns">
                     <%
                         for (Entry reference : references) {
-                            String holder = "";
-                            List<String> holders = reference.getHolder();
-                            List<String> creators = reference.getCreator();
                             String title =  Utils.getTitle(reference.getRecordtitle(), 50);
                             Document desc = Utils.getDescription(reference.getDescription());
-                            holder = null != holders && holders.size() > 0 ? holders.get(0) : "";
-                            String creator = creators.size() > 0 && null != creators.get(0) ? creators.get(0) : "";
+                            String holder = Utils.getRowData(reference.getHolder(), 0, false);
+                            String creator = Utils.getRowData(reference.getCreator(), 0, false);
                     %>
                             <div class="pieza-res card">
                                 <a class="pieza-res-img" href="/<%=userLang%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&word=<%=word%>&r=<%=reference.getPosition()%>&t=<%=t%><%=f%>">

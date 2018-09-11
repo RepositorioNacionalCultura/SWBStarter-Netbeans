@@ -11,8 +11,6 @@
     int audios = 0;
     String title = "";
     String creator = "";
-    List<Title> titles = new ArrayList<>();
-    List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
     StringBuilder scriptHeader = new StringBuilder();
     StringBuilder scriptCallVisor = new StringBuilder();
@@ -25,12 +23,10 @@
     String userLang = paramRequest.getUser().getLanguage();
     if (null != entry) {
 	if (null != entry.getDigitalObject()) {
-            creators = entry.getCreator();
-            titles = entry.getRecordtitle();
             digitalobjects = entry.getDigitalObject();
             audios = null != digitalobjects ? digitalobjects.size() : 0;
-            creator = creators.size() > 0 ? Utils.replaceSpecialChars(creators.get(0)) : "";
-            title = titles.size() > 0 ? Utils.replaceSpecialChars(titles.get(0).getValue()) : "";
+            title =  Utils.replaceSpecialChars(Utils.getTitle(entry.getRecordtitle(), 0));
+            creator = Utils.replaceSpecialChars(Utils.getRowData(entry.getCreator(), 0, false));
             if (audios > 0) {
                 scriptHeader.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/work/models/").append(site.getId()).append("/audio/css/audio.css\" />");
                 divVisor.append("<script>")

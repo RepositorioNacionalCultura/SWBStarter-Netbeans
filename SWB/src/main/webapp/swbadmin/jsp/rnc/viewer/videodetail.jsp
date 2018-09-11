@@ -15,8 +15,6 @@
     String title = "";
     String creator = "";
     DigitalObject digital = null;
-    List<Title> titles = new ArrayList<>();
-    List<String> creators = new ArrayList<>();
     StringBuilder divVisor = new StringBuilder();
     StringBuilder scriptHeader = new StringBuilder();
     StringBuilder scriptCallVisor = new StringBuilder();
@@ -31,8 +29,6 @@
 	iPrev = iDigit-1;
 	iNext = iDigit+1;
 	if (null != entry.getDigitalObject()) {
-            creators = entry.getCreator();
-            titles = entry.getRecordtitle();
             digitalobjects = entry.getDigitalObject();
             vids = null != digitalobjects ? digitalobjects.size() : 0;
             digital = vids >= iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
@@ -93,8 +89,8 @@
                         .append("	});")
                         .append("</script>");
                 }
-                creator = creators.size() > 0 ? creators.get(0) : "";
-                if (!titles.isEmpty()) title = titles.get(0).getValue();
+                title = Utils.getTitle(entry.getRecordtitle(), 0);
+                creator = Utils.getRowData(entry.getCreator(), 0, false);
             }
         }
     }
