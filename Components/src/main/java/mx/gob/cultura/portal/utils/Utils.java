@@ -54,6 +54,8 @@ public class Utils {
     protected static final Map cenart = new HashMap();
     protected static final Map dgp = new HashMap();
     protected static final Map dgb = new HashMap();
+    protected static final Map bv = new HashMap();
+    protected static final Map imcine = new HashMap();
     
     private static final Logger LOG = Logger.getLogger(Utils.class.getName());
 	
@@ -239,6 +241,39 @@ public class Utils {
         dgb.put("rights.description+rights.url", REQUIRED);
         dgb.put("lugar+state", COMPLEMENTARY);
         dgb.put("press", COMPLEMENTARY);
+    }
+    
+    static {
+        bv.put("oaiid/identifier", REQUIRED);
+        bv.put("recordtitle", REQUIRED);
+        bv.put("holder", REQUIRED);
+        bv.put("dimension", REQUIRED);
+        bv.put("unidad", REQUIRED);
+        bv.put("datecreated", REQUIRED);
+        bv.put("resourcetype", REQUIRED);
+        bv.put("keywords", COMPLEMENTARY);
+        bv.put("rights.rightstitle", REQUIRED);
+        bv.put("rights.description+rights.url", REQUIRED);
+        bv.put("lugar", COMPLEMENTARY);
+    }
+    
+    static {
+        imcine.put("oaiid/identifier", REQUIRED);
+        imcine.put("recordtitle", REQUIRED);
+        imcine.put("creator", REQUIRED);
+        imcine.put("holder", REQUIRED);
+        imcine.put("datecreated", REQUIRED);
+        imcine.put("resourcetype", REQUIRED);
+        imcine.put("keywords", COMPLEMENTARY);
+        imcine.put("rights.rightstitle", REQUIRED);
+        imcine.put("rights.description+rights.url", REQUIRED);
+        imcine.put("dimension+tipo_de_dimension", REQUIRED);
+        imcine.put("unidad+tipo_de_unidad", REQUIRED);
+        imcine.put("director", COMPLEMENTARY);
+        imcine.put("producer", COMPLEMENTARY);
+        imcine.put("screenplay", COMPLEMENTARY);
+        imcine.put("credits", COMPLEMENTARY);
+        imcine.put("distribution", COMPLEMENTARY);
     }
     
     public static String suprXSS(String str) {
@@ -440,6 +475,8 @@ public class Utils {
         if (holder.equals("Biblioteca de las Artes del Centro Nacional de las Artes")) return bcna.containsKey(property);
         if (holder.equals("Dirección General de Publicaciones")) return dgp.containsKey(property);
         if (holder.equals("Dirección General de Bibliotecas")) return dgb.containsKey(property);
+        if (holder.equals("Biblioteca Vasconcelos")) return bv.containsKey(property);
+        if (holder.equals("Instituto Mexicano de Cinematografía")) return imcine.containsKey(property);
         return true;
     }
     
@@ -541,6 +578,11 @@ public class Utils {
         watch.append("https://www.youtube.com/embed/")
              .append(id);
         return watch.toString();
+    }
+    
+    public static String c(String value) {
+        if (null == value) return "";
+        return value.trim();
     }
     
     /**
