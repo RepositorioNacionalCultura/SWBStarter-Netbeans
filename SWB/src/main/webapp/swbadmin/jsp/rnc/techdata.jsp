@@ -8,29 +8,29 @@
 <%@ page import="mx.gob.cultura.portal.resources.ArtDetail, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, 
     org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.ArrayList, java.util.List, org.bson.Document"%>
 <%
-    //String type = "";
+    String type = "";
     String fdesc = "";
     String title = "";
+    String place = "";
     String holder = "";
-    //String period = "";
-    //String rights = "";
-    //String creator = "";
-    //String generator = "";
-    List<Title> titles = new ArrayList<>();
-    //List<String> holders = new ArrayList<>();
-    Entry entry = (Entry)request.getAttribute("entry");
     Document desc = null;
+    String rights = "";
+    String urlholder = "";
+    List<Title> titles = new ArrayList<>();
+    Entry entry = (Entry)request.getAttribute("entry");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
+    WebSite site = paramRequest.getWebPage().getWebSite();
+    String userLang = paramRequest.getUser().getLanguage();
     if (null != entry) {
         //holders = entry.getHolder();
         titles = entry.getRecordtitle();
 	StringBuilder builder = new StringBuilder();
         StringBuilder collection = new StringBuilder();
         for (String t : entry.getResourcetype()) {
-            builder.append(t).append(", ");
+            builder.append("<a href=\"/").append(userLang).append("/").append(site.getId()).append("/resultados?word=").append(t).append("\">").append(t).append("</a>").append(", ");
         }
 	if (builder.length() > 0) builder.deleteCharAt(builder.length() - 2);
-        //type =  builder.toString();
+        type =  builder.toString();
         if (null != entry.getGenerator()) {
             for (String t : entry.getGenerator()) {
                 collection.append(t).append(", ");
@@ -47,6 +47,12 @@
         fdesc = (null != desc && null != desc.get("full")) ? (String)desc.get("full") : "";
         
         holder = Utils.getRowData(entry.getHolder(), 0, false);
+        String holdernote = (null != entry.getHoldernote()) ? entry.getHoldernote() : "";
+        urlholder = !holder.isEmpty() ? "<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ holder + "\">"+holder+holdernote+"</a>" : "";
+        String rht = Utils.getRights(entry);
+        rights = !rht.isEmpty() ? "<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ rht + "\">"+rht+"</a>" : "";
+        String state = (null != entry.getState()) ? (" " + entry.getState()) : "";
+        place = (null != entry.getLugar()) ? "<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ entry.getLugar() + "\">"+entry.getLugar()+state+"</a>" : "";
     }
 %>
 <div class="col-12 col-sm-12 col-md-9 col-lg-9 order-md-2 order-sm-1 order-1 ficha ">
@@ -66,11 +72,11 @@
             </tr>
             <%=Utils.getTechData("creator", holder, Utils.getRowData(entry.getCreator(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_artist"))%>
             <%=Utils.getTechData("datecreated", holder, null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "", paramRequest.getLocaleString("usrmsg_view_detail_date"))%>
-            <%=Utils.getTechData("resourcetype", holder, Utils.getRowData(entry.getResourcetype(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_type_object"))%>
+            <%=Utils.getTechData("resourcetype", holder, type, paramRequest.getLocaleString("usrmsg_view_detail_type_object"))%>
             <%=Utils.getTechData("oaiid/identifier", holder, entry.getIdentifiers(), paramRequest.getLocaleString("usrmsg_view_detail_identifier"))%>
-            <%=Utils.getTechData("holder", holder, holder, paramRequest.getLocaleString("usrmsg_view_detail_institution"))%>
+            <%=Utils.getTechData("holder", holder, urlholder, paramRequest.getLocaleString("usrmsg_view_detail_institution"))%>
             <%=Utils.getTechData("reccollection", holder, Utils.getRowData(entry.getGenerator(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_collection"))%>
-            <%=Utils.getTechData("rights.rightstitle", holder, entry.getRights().getRightstitle(), paramRequest.getLocaleString("usrmsg_view_detail_rights"))%>
+            <%=Utils.getTechData("rights.rightstitle", holder, rights, paramRequest.getLocaleString("usrmsg_view_detail_rights"))%>
             <%
                 if (null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty() && null != entry.getRights() && null != entry.getRights().getDescription()) {
                     String url = "";
@@ -99,14 +105,24 @@
         <a name="complementary"></a>
         <p id="morecompl" style="display:none;">
             <table>
-                <%
-                    if (null != entry.getLugar() && !entry.getLugar().isEmpty()) {
-                %>
-                        <tr>
-                            <td><%=paramRequest.getLocaleString("usrmsg_view_detail_place")%></td>
-                            <td><%=entry.getLugar()%></td>
-                        </tr>
-                <% }%>
+                <%=Utils.getTechData("lugar", holder, entry.getLugar(), paramRequest.getLocaleString("usrmsg_view_detail_place"))%>
+		<%=Utils.getTechData("dimension", holder, entry.getDimension(), paramRequest.getLocaleString("usrmsg_view_detail_dimension"))%>
+		<%=Utils.getTechData("unidad", holder, entry.getUnidad(), paramRequest.getLocaleString("usrmsg_view_detail_unit"))%>
+                <%=Utils.getTechData("serie", holder, Utils.getRowData(entry.getSerie(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_serie"))%>
+                <%=Utils.getTechData("chapter", holder, entry.getChapter(), paramRequest.getLocaleString("usrmsg_view_detail_chapter"))%>
+                <%=Utils.getTechData("credits", holder, Utils.getRowData(entry.getCredits(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_credits"))%>
+                <%=Utils.getTechData("availableformats", holder, entry.getAvailableformats(), paramRequest.getLocaleString("usrmsg_view_detail_availableformats"))%>
+                <%=Utils.getTechData("documentalfund", holder, entry.getDocumentalfund(), paramRequest.getLocaleString("usrmsg_view_detail_documentalfund"))%>
+                <%=Utils.getTechData("episode", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_episode"))%>
+                <%=Utils.getTechData("direction", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_direction"))%>
+                <%=Utils.getTechData("production", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_production"))%>
+                <%=Utils.getTechData("music", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_music"))%>
+                <%=Utils.getTechData("libreto", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_libretto"))%>
+                <%=Utils.getTechData("musicaldirection", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_musicaldirection"))%>
+                <%=Utils.getTechData("number", holder, entry.getNumber(), paramRequest.getLocaleString("usrmsg_view_detail_number"))%>
+                <%=Utils.getTechData("subtile", holder, entry.getSubtile(), paramRequest.getLocaleString("usrmsg_view_detail_subtile"))%>
+                <%=Utils.getTechData("editorial", holder, entry.getEditorial(), paramRequest.getLocaleString("usrmsg_view_detail_editorial"))%>
+                <%=Utils.getTechData("lugar+state", holder, place, paramRequest.getLocaleString("usrmsg_view_detail_place"))%>
             </table>
         </p>
         <p class="vermas"><a href="#complementary"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>

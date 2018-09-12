@@ -46,6 +46,14 @@ public class Utils {
     
     protected static final Map inba = new HashMap();
     protected static final Map inali = new HashMap();
+    protected static final Map redu = new HashMap();
+    protected static final Map fona = new HashMap();
+    protected static final Map ceim = new HashMap();
+    protected static final Map cl22 = new HashMap();
+    protected static final Map bcna = new HashMap();
+    protected static final Map cenart = new HashMap();
+    protected static final Map dgp = new HashMap();
+    protected static final Map dgb = new HashMap();
     
     private static final Logger LOG = Logger.getLogger(Utils.class.getName());
 	
@@ -91,6 +99,146 @@ public class Utils {
         inba.put("rights.description+rights.url", REQUIRED);
         inba.put("reference", COMPLEMENTARY);
 	inba.put("lang", COMPLEMENTARY);
+    }
+    
+    static {
+        redu.put("oaiid/identifier", REQUIRED);
+        redu.put("recordtitle", REQUIRED);
+        redu.put("creator", REQUIRED);
+        redu.put("dimension", REQUIRED);
+        redu.put("unidad", REQUIRED);
+        redu.put("datecreated", REQUIRED);
+        redu.put("holder", REQUIRED);
+        redu.put("resourcetype", REQUIRED);
+        redu.put("rights.rightstitle", REQUIRED);
+        redu.put("rights.description+rights.url", REQUIRED);
+        redu.put("keywords", COMPLEMENTARY);
+        redu.put("serie", COMPLEMENTARY);
+        redu.put("chapter", COMPLEMENTARY);
+        redu.put("credits", COMPLEMENTARY);
+        redu.put("description", COMPLEMENTARY);
+        redu.put("availableformats", COMPLEMENTARY);
+    }
+    
+    static {
+        fona.put("oaiid/identifier", REQUIRED);
+        fona.put("recordtitle", REQUIRED);
+        fona.put("creator", REQUIRED);
+        fona.put("holder", REQUIRED);
+        fona.put("dimension", REQUIRED);
+        fona.put("unidad", REQUIRED);
+        fona.put("datecreated", REQUIRED);
+        fona.put("resourcetype", REQUIRED);
+        fona.put("reccollection", COMPLEMENTARY);
+        fona.put("keywords", COMPLEMENTARY);
+        fona.put("rights.rightstitle", REQUIRED);
+        fona.put("rights.description+rights.url", REQUIRED);
+        fona.put("credits", COMPLEMENTARY);
+    }
+    
+    static {
+        ceim.put("oaiid/identifier", REQUIRED);
+        ceim.put("recordtitle", REQUIRED);
+        ceim.put("creator", REQUIRED);
+        ceim.put("holder", REQUIRED);
+        ceim.put("dimension", REQUIRED);
+        ceim.put("unidad", REQUIRED);
+        ceim.put("datecreated", REQUIRED);
+        ceim.put("resourcetype", REQUIRED);
+        ceim.put("keywords", COMPLEMENTARY);
+        ceim.put("rights.rightstitle", REQUIRED);
+        ceim.put("rights.description+rights.url", REQUIRED);
+        ceim.put("documentalfund", COMPLEMENTARY);
+    }
+    
+    static {
+        cl22.put("oaiid/identifier", REQUIRED);
+        cl22.put("recordtitle", REQUIRED);
+        cl22.put("creator", REQUIRED);
+        cl22.put("holder", REQUIRED);
+        cl22.put("dimension", REQUIRED);
+        cl22.put("unidad", REQUIRED);
+        cl22.put("datecreated", REQUIRED);
+        cl22.put("resourcetype", REQUIRED);
+        cl22.put("holdernote", REQUIRED);
+        cl22.put("keywords", COMPLEMENTARY);
+        cl22.put("rights.rightstitle", REQUIRED);
+        cl22.put("rights.description+rights.url", REQUIRED);
+        cl22.put("episode", COMPLEMENTARY);
+    }
+    
+    static {
+        cenart.put("oaiid/identifier", REQUIRED);
+        cenart.put("recordtitle", REQUIRED);
+        cenart.put("creator", REQUIRED);
+        cenart.put("holder", REQUIRED);
+        cenart.put("dimension", REQUIRED);
+        cenart.put("unidad", REQUIRED);
+        cenart.put("datecreated", REQUIRED);
+        cenart.put("resourcetype", REQUIRED);
+        cenart.put("holdernote", REQUIRED);
+        cenart.put("keywords", COMPLEMENTARY);
+        cenart.put("rights.rightstitle", REQUIRED);
+        cenart.put("rights.description+rights.url", REQUIRED);
+        cenart.put("serie", COMPLEMENTARY);
+        cenart.put("credits", COMPLEMENTARY);
+        cenart.put("direction", COMPLEMENTARY);
+        cenart.put("production", COMPLEMENTARY);
+        cenart.put("music", COMPLEMENTARY);
+        cenart.put("libreto", COMPLEMENTARY);
+        cenart.put("musicaldirection", COMPLEMENTARY);
+    }
+    
+    static {
+        bcna.put("oaiid/identifier", REQUIRED);
+        bcna.put("recordtitle", REQUIRED);
+        bcna.put("chapter", REQUIRED);
+        bcna.put("creator", REQUIRED);
+        bcna.put("holder", REQUIRED);
+        bcna.put("dimension", REQUIRED);
+        bcna.put("unidad", REQUIRED);
+        bcna.put("datecreated", REQUIRED);
+        bcna.put("resourcetype", REQUIRED);
+        bcna.put("keywords", COMPLEMENTARY);
+        bcna.put("rights.rightstitle", REQUIRED);
+        bcna.put("rights.description+rights.url", REQUIRED);
+        bcna.put("credits", COMPLEMENTARY);
+    }
+    
+    static {
+        dgp.put("oaiid/identifier", REQUIRED);
+        dgp.put("recordtitle", REQUIRED);
+        dgp.put("number", REQUIRED);
+        dgp.put("subtile", COMPLEMENTARY);
+        dgp.put("creator", REQUIRED);
+        dgp.put("holder", REQUIRED);
+        dgp.put("dimension", REQUIRED);
+        dgp.put("unidad", REQUIRED);
+        dgp.put("datecreated", REQUIRED);
+        dgp.put("resourcetype", REQUIRED);
+        dgp.put("reccollection", COMPLEMENTARY);
+        dgp.put("keywords", COMPLEMENTARY);
+        dgp.put("rights.rightstitle", REQUIRED);
+        dgp.put("rights.description+rights.url", REQUIRED);
+        dgp.put("editorial", COMPLEMENTARY);
+        dgp.put("serie", COMPLEMENTARY);
+        dgp.put("credits", COMPLEMENTARY);
+    }
+    
+    static {
+        dgb.put("oaiid/identifier", REQUIRED);
+        dgb.put("recordtitle", REQUIRED);
+        dgb.put("creator", REQUIRED);
+        dgb.put("holder", REQUIRED);
+        dgb.put("dimension", REQUIRED);
+        dgb.put("unidad", REQUIRED);
+        dgb.put("datecreated", REQUIRED);
+        dgb.put("resourcetype", REQUIRED);
+        dgb.put("keywords", COMPLEMENTARY);
+        dgb.put("rights.rightstitle", REQUIRED);
+        dgb.put("rights.description+rights.url", REQUIRED);
+        dgb.put("lugar+state", COMPLEMENTARY);
+        dgb.put("press", COMPLEMENTARY);
     }
     
     public static String suprXSS(String str) {
@@ -256,7 +404,7 @@ public class Utils {
         if (null == list || list.isEmpty()) return "";
         if (all) {
             for (String s : list) {
-                if (null != s) builder.append(s.trim()).append(", ");
+                if (null != s && !s.trim().isEmpty()) builder.append(s.trim()).append(", ");
             }
             if (builder.length() > 0) builder.deleteCharAt(builder.length() - 2);
         }else {
@@ -270,7 +418,7 @@ public class Utils {
     }
     
     public static String getTechData(String property, String holder, String key, String locale) {
-        if (null == key || key.isEmpty()) return "";
+        if (null == key || key.trim().isEmpty()) return "";
         if (!isRequired(property, holder)) return "";
         StringBuilder data = new StringBuilder();
         data.append("<tr>")
@@ -284,6 +432,14 @@ public class Utils {
         if (null == holder || null == property) return false;
         if (holder.equals("Instituto Nacional de Bellas Artes")) return inba.containsKey(property);
         if (holder.equals("Instituto Nacional de Lenguas Indígenas")) return inali.containsKey(property);
+        if (holder.equals("Radio Educación")) return redu.containsKey(property);
+        if (holder.equals("Fonoteca Nacional")) return fona.containsKey(property);
+        if (holder.equals("Centro de la Imagen")) return ceim.containsKey(property);
+        if (holder.equals("Televisión Metropolitana S.A. de C.V.")) return cl22.containsKey(property);
+        if (holder.equals("Centro Nacional de las Artes")) return cenart.containsKey(property);
+        if (holder.equals("Biblioteca de las Artes del Centro Nacional de las Artes")) return bcna.containsKey(property);
+        if (holder.equals("Dirección General de Publicaciones")) return dgp.containsKey(property);
+        if (holder.equals("Dirección General de Bibliotecas")) return dgb.containsKey(property);
         return true;
     }
     

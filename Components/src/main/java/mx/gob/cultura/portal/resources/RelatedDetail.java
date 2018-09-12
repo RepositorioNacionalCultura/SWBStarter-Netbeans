@@ -75,8 +75,11 @@ public class RelatedDetail extends GenericResource {
         ListBICRequest req = new ListBICRequest(endpoint.toString());
         try {
             document = req.makeRequest();
-            for (Entry related : document.getRecords()) {
-                SearchCulturalProperty.setThumbnail(related, paramRequest.getWebPage().getWebSite(), 0);
+            List<Entry> records = document.getRecords();
+            if (null != records) {
+                for (Entry related : records) {
+                    SearchCulturalProperty.setThumbnail(related, paramRequest.getWebPage().getWebSite(), 0);
+                }
             }
         } catch (Exception se) {
             LOG.error(se);
