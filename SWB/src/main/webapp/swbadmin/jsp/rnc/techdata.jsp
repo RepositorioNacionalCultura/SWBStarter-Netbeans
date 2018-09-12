@@ -103,7 +103,7 @@
             %>
         </table>
         <a name="complementary"></a>
-        <p id="morecompl" style="display:none;">
+        <div id="morecompl" style="display:none;">
             <table>
                 <%=Utils.getTechData("lugar", holder, entry.getLugar(), paramRequest.getLocaleString("usrmsg_view_detail_place"))%>
 		<%=Utils.getTechData("dimension", holder, entry.getDimension(), paramRequest.getLocaleString("usrmsg_view_detail_dimension"))%>
@@ -130,7 +130,7 @@
                 <%=Utils.getTechData("screenplay", holder, entry.getScreenplay(), paramRequest.getLocaleString("usrmsg_view_detail_screenplay"))%>
                 <%=Utils.getTechData("distribution", holder, entry.getDistribution(), paramRequest.getLocaleString("usrmsg_view_detail_distribution"))%>
             </table>
-        </p>
+        </div>
         <p class="vermas"><a href="#complementary"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
     </div>
 </div>

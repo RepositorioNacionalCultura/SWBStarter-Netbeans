@@ -574,6 +574,7 @@ public class Utils {
         if (null == urlwatch || urlwatch.isEmpty()) return "";
         if (!urlwatch.startsWith("https://www.youtube.com/watch?v=") || urlwatch.length() < 40) return urlwatch;
         int index = urlwatch.indexOf("&", 32);
+        if (index == -1) return urlwatch.replaceFirst("watch", "embed");
         String id = urlwatch.substring(32, index);
         watch.append("https://www.youtube.com/embed/")
              .append(id);
