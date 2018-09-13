@@ -69,6 +69,7 @@ public class Entry implements Serializable {
     
     private List<String> serie;
     private List<String> credits;
+    private List<String> reccollection;
 
     public Stats getResourcestats() {
         return resourcestats;
@@ -486,7 +487,15 @@ public class Entry implements Serializable {
 
     public void setSerie(List<String> serie) {
         this.serie = serie;
-    }    
+    }
+
+    public List<String> getReccollection() {
+        return reccollection;
+    }
+
+    public void setReccollection(List<String> reccollection) {
+        this.reccollection = reccollection;
+    }
 
     @Override
     public String toString() {

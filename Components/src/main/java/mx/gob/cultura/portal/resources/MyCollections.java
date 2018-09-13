@@ -356,6 +356,7 @@ public class MyCollections extends GenericResource {
     }
     
     public static List<String> getCovers(SWBParamRequest paramRequest, List<String> elements, String baseUri, int size) {
+        Entry entry = null;
         List<String> covers = new ArrayList<>();
         if (elements.isEmpty()) return covers;
         Iterator it = elements.iterator();
@@ -363,15 +364,16 @@ public class MyCollections extends GenericResource {
             String uri = baseUri + "/api/v1/search?identifier=" + it.next();
             GetBICRequest req = new GetBICRequest(uri);
             try {
-                Entry entry = req.makeRequest();
-                if (null != entry && null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty()
-                        && null != entry.getDigitalObject().get(0).getUrl() && !entry.getDigitalObject().get(0).getUrl().isEmpty() && null != entry.getDigitalObject().get(0).getMediatype()
-                        && null != entry.getDigitalObject().get(0).getMediatype().getMime() && (entry.getDigitalObject().get(0).getMediatype().getMime().startsWith("image") 
-                        || entry.getDigitalObject().get(0).getMediatype().getMime().equalsIgnoreCase("jpg") || entry.getDigitalObject().get(0).getMediatype().getMime().equalsIgnoreCase("png"))) {
-                    covers.add(entry.getDigitalObject().get(0).getUrl());
-                }
+                entry = req.makeRequest();
             }catch (Exception e) {
+                entry = null;
                 LOG.info(e.getMessage());
+            }
+            if (null != entry && null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty()
+                && null != entry.getDigitalObject().get(0).getUrl() && !entry.getDigitalObject().get(0).getUrl().isEmpty() && null != entry.getDigitalObject().get(0).getMediatype()
+                && null != entry.getDigitalObject().get(0).getMediatype().getMime() && (entry.getDigitalObject().get(0).getMediatype().getMime().startsWith("image") 
+                || entry.getDigitalObject().get(0).getMediatype().getMime().equalsIgnoreCase("jpg") || entry.getDigitalObject().get(0).getMediatype().getMime().equalsIgnoreCase("png"))) {
+                covers.add(entry.getDigitalObject().get(0).getUrl());
             }
             if (covers.size() >= size) break;
         }

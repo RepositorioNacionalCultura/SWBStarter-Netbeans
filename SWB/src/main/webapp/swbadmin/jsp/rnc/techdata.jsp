@@ -106,6 +106,7 @@
         <div id="morecompl" style="display:none;">
             <table>
                 <%=Utils.getTechData("lugar", holder, entry.getLugar(), paramRequest.getLocaleString("usrmsg_view_detail_place"))%>
+                <%=Utils.getTechData("reccollection", holder, Utils.getRowData(entry.getReccollection(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_collection"))%>
 		<%=Utils.getTechData("dimension", holder, entry.getDimension(), paramRequest.getLocaleString("usrmsg_view_detail_dimension"))%>
 		<%=Utils.getTechData("unidad", holder, entry.getUnidad(), paramRequest.getLocaleString("usrmsg_view_detail_unit"))%>
                 <%=Utils.getTechData("serie", holder, Utils.getRowData(entry.getSerie(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_serie"))%>
@@ -118,7 +119,7 @@
                 <%=Utils.getTechData("production", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_production"))%>
                 <%=Utils.getTechData("music", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_music"))%>
                 <%=Utils.getTechData("libreto", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_libretto"))%>
-                <%=Utils.getTechData("musicaldirection", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_musicaldirection"))%>
+                <%=Utils.getTechData("musicaldirection", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_music_direction"))%>
                 <%=Utils.getTechData("number", holder, entry.getNumber(), paramRequest.getLocaleString("usrmsg_view_detail_number"))%>
                 <%=Utils.getTechData("subtile", holder, entry.getSubtile(), paramRequest.getLocaleString("usrmsg_view_detail_subtile"))%>
                 <%=Utils.getTechData("editorial", holder, entry.getEditorial(), paramRequest.getLocaleString("usrmsg_view_detail_editorial"))%>

@@ -211,7 +211,7 @@
     </div>
 </div>
 <div class="menuColecciones">
-    <a href="'<%=wall%>" class="selected">Mis colecciones (<%=cusr%>)</a>
+    <a href="<%=wall%>" class="selected">Mis colecciones (<%=cusr%>)</a>
     <a href="#" class="">Mis favoritos (0)</a>
     <a href="#" class="">Recomendados (20)</a>
     <a href="<%=uall%>" class="">Todos (<%=allc%>)</a>

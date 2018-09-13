@@ -145,7 +145,7 @@
                 <ul>
                     <li>
                         <ul>
-                            <%=Utils.chdFtrList(resourcetypes, request.getParameter("filter"), "resourcetype", "vermas")%>
+                            <%=Utils.chdFtrList(resourcetypes, request.getParameter("filter"), "resourcetype", "vermas", true)%>
                             <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="alltype" value="resourcetype" ><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span></label></li>
                         </ul>
                     </li>
@@ -184,6 +184,32 @@
             </div>
         </div>
    <% } %>
+   
+   <% if (!holders.isEmpty()) { %>
+        <div class="card">
+            <div class="" role="tab" id="heading6">
+                <a data-toggle="collapse" href="#collapse6" aria-expanded="true" aria-controls="collapse6" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_holder")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
+            </div>
+            <div id="collapse6" class="collapse" role="tabpanel" aria-labelledby="heading5" data-parent="#accordion">
+                <ul>
+                    <li>
+			<ul>
+                            <%=Utils.chdFtrList(holders, request.getParameter("filter"), "holder", "moreholders", false)%>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allholder" value="holder"><span>Seleccionar todos</span><span> </span></label></li>
+			</ul>			
+                        <% if (holders.size() > 5) { %>
+                            <p class="vermas-filtros">
+                                <button class="btn-vermas" type="button" data-toggle="collapse" data-target="#moreholders" aria-expanded="false" aria-controls="moreholders">
+                                    <span class="ion-plus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span></span>
+                                    <span class="ion-minus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span></span> 
+                                </button>
+                            </p>
+			<% } %>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    <% } %>
 
     <%  if (!dates.isEmpty()) { %>
             <div class="card card-fecha">
@@ -212,7 +238,7 @@
                 <ul>
                     <li>
 			<ul>
-                            <%=Utils.chdFtrList(rights, request.getParameter("filter"), "rights", "morerights")%>
+                            <%=Utils.chdFtrList(rights, request.getParameter("filter"), "rights", "morerights", true)%>
                             <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allrights" value="rights"><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span></label></li>
                         </ul>
 			<% if (rights.size() > 5) { %>
@@ -282,31 +308,6 @@
         </div>
     <%  } %>
 
-    <% if (!holders.isEmpty()) { %>
-        <div class="card">
-            <div class="" role="tab" id="heading6">
-                <a data-toggle="collapse" href="#collapse6" aria-expanded="true" aria-controls="collapse6" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_holder")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
-            </div>
-            <div id="collapse6" class="collapse" role="tabpanel" aria-labelledby="heading5" data-parent="#accordion">
-                <ul>
-                    <li>
-			<ul>
-                            <%=Utils.chdFtrList(holders, request.getParameter("filter"), "holder", "moreholders")%>
-                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allholder" value="holder"><span>Seleccionar todos</span><span> </span></label></li>
-			</ul>			
-                        <% if (holders.size() > 5) { %>
-                            <p class="vermas-filtros">
-                                <button class="btn-vermas" type="button" data-toggle="collapse" data-target="#moreholders" aria-expanded="false" aria-controls="moreholders">
-                                    <span class="ion-plus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span></span>
-                                    <span class="ion-minus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span></span> 
-                                </button>
-                            </p>
-			<% } %>
-                    </li>
-                </ul>
-            </div>
-        </div>
-	<% } %>
     <%
         if (showFilters) {
     %>

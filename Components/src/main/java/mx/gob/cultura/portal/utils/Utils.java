@@ -56,6 +56,9 @@ public class Utils {
     protected static final Map dgb = new HashMap();
     protected static final Map bv = new HashMap();
     protected static final Map imcine = new HashMap();
+    protected static final Map dgcp = new HashMap();
+    protected static final Map inehrm = new HashMap();
+    protected static final Map munal = new HashMap();
     
     private static final Logger LOG = Logger.getLogger(Utils.class.getName());
 	
@@ -276,6 +279,72 @@ public class Utils {
         imcine.put("distribution", COMPLEMENTARY);
     }
     
+    static {
+        dgcp.put("oaiid/identifier", REQUIRED);
+        dgcp.put("recordtitle", REQUIRED);
+        dgcp.put("serie", COMPLEMENTARY);
+        dgcp.put("creator", REQUIRED);
+        dgcp.put("unidad", REQUIRED);
+        dgcp.put("datecreated", REQUIRED);
+        dgcp.put("resourcetype", REQUIRED);
+        dgcp.put("holder", REQUIRED);
+        dgcp.put("keywords", COMPLEMENTARY);
+        dgcp.put("rights.rightstitle", REQUIRED);
+        dgcp.put("rights.description+rights.url", REQUIRED);
+        dgcp.put("lugar+state", COMPLEMENTARY);
+    }
+    
+    static {
+        inehrm.put("oaiid/identifier", REQUIRED);
+        inehrm.put("recordtitle", REQUIRED);
+        inehrm.put("reccollection", COMPLEMENTARY);
+        inehrm.put("creator", REQUIRED);
+        inehrm.put("resourcetype", REQUIRED);
+        inehrm.put("datecreated", REQUIRED);
+        inehrm.put("lang", REQUIRED);
+        imcine.put("dimension+tipo_de_dimension", REQUIRED);
+        imcine.put("unidad+tipo_de_unidad", REQUIRED);
+        inehrm.put("holder", REQUIRED);
+        inehrm.put("keywords", COMPLEMENTARY);
+        inehrm.put("rights.rightstitle", REQUIRED);
+        inehrm.put("rights.description+rights.url", REQUIRED);
+    }
+    
+    static {
+        munal.put("oaiid/identifier", REQUIRED);
+        munal.put("resourcetype", REQUIRED);
+        munal.put("recordtitle", REQUIRED);
+        munal.put("creator", REQUIRED);
+        munal.put("lang", REQUIRED);
+        munal.put("dimension+tipo_de_dimension", REQUIRED);
+        munal.put("unidad+tipo_de_unidad", REQUIRED);
+        munal.put("holder", REQUIRED);
+        munal.put("keywords", COMPLEMENTARY);
+        munal.put("rights.rightstitle", REQUIRED);
+        munal.put("rights.description+rights.url", REQUIRED);
+    }
+    
+    private static boolean isRequired(String property, String holder) {
+        if (null == holder || null == property) return false;
+        if (holder.equals("Instituto Nacional de Bellas Artes")) return inba.containsKey(property);
+        if (holder.equals("Instituto Nacional de Lenguas Indígenas")) return inali.containsKey(property);
+        if (holder.equals("Radio Educación")) return redu.containsKey(property);
+        if (holder.equals("Fonoteca Nacional")) return fona.containsKey(property);
+        if (holder.equals("Centro de la Imagen")) return ceim.containsKey(property);
+        if (holder.equals("Televisión Metropolitana S.A. de C.V.")) return cl22.containsKey(property);
+        if (holder.equals("Centro Nacional de las Artes")) return cenart.containsKey(property);
+        if (holder.equals("Biblioteca de las Artes del Centro Nacional de las Artes")) return bcna.containsKey(property);
+        if (holder.equals("Dirección General de Publicaciones")) return dgp.containsKey(property);
+        if (holder.equals("Dirección General de Bibliotecas")) return dgb.containsKey(property);
+        if (holder.equals("Biblioteca Vasconcelos")) return bv.containsKey(property);
+        if (holder.equals("Instituto Mexicano de Cinematografía")) return imcine.containsKey(property);
+        
+        if (holder.equals("Dirección General de Culturas Populares e Indígenas")) return dgcp.containsKey(property);
+        if (holder.equals("Instituto Nacional de Estudios Históricos de las Revoluciones de México")) return inehrm.containsKey(property);
+        if (holder.equals("Museo Nacional de Arte")) return munal.containsKey(property);
+        return true;
+    }
+    
     public static String suprXSS(String str) {
 	try {
             StringWriter writer = new StringWriter((int)(str.length() * 1.5));
@@ -463,23 +532,6 @@ public class Utils {
         return data.toString();
     }
     
-    private static boolean isRequired(String property, String holder) {
-        if (null == holder || null == property) return false;
-        if (holder.equals("Instituto Nacional de Bellas Artes")) return inba.containsKey(property);
-        if (holder.equals("Instituto Nacional de Lenguas Indígenas")) return inali.containsKey(property);
-        if (holder.equals("Radio Educación")) return redu.containsKey(property);
-        if (holder.equals("Fonoteca Nacional")) return fona.containsKey(property);
-        if (holder.equals("Centro de la Imagen")) return ceim.containsKey(property);
-        if (holder.equals("Televisión Metropolitana S.A. de C.V.")) return cl22.containsKey(property);
-        if (holder.equals("Centro Nacional de las Artes")) return cenart.containsKey(property);
-        if (holder.equals("Biblioteca de las Artes del Centro Nacional de las Artes")) return bcna.containsKey(property);
-        if (holder.equals("Dirección General de Publicaciones")) return dgp.containsKey(property);
-        if (holder.equals("Dirección General de Bibliotecas")) return dgb.containsKey(property);
-        if (holder.equals("Biblioteca Vasconcelos")) return bv.containsKey(property);
-        if (holder.equals("Instituto Mexicano de Cinematografía")) return imcine.containsKey(property);
-        return true;
-    }
-    
     public static String getTitle(List<Title> titles, int size) {
         List<String> list = new ArrayList<>();
         if (null == titles || titles.isEmpty()) return "";
@@ -491,14 +543,16 @@ public class Utils {
         return getRowData(list, size, false);
     }
     
-    public static String chdFtrList(List<CountName> resourcetypes, String filter, String resourcetype, String moretypes) {
+    public static String chdFtrList(List<CountName> resourcetypes, String filter, String resourcetype, String moretypes, boolean showcount) {
         int i = 0;
         StringBuilder cde = new StringBuilder();
         for (CountName r : resourcetypes) {
             cde.append("<li><label class=\"form-check-label\"><input class=\"form-check-input\" type=\"checkbox\" onclick=\"filter()\" name=\"").append(resourcetype).append("\" value=\"").append(r.getName()).append("\"");
             if (chdFtr(filter, resourcetype, r.getName())) 
                 cde.append("checked");
-            cde.append("><span>").append(r.getName()).append("</span><span> ").append(Utils.decimalFormat("###,###", r.getCount())).append("</span></label></li>");
+            cde.append("><span>").append(r.getName()).append("</span><span> ");
+            if (showcount) cde.append(Utils.decimalFormat("###,###", r.getCount()));
+            cde.append("</span></label></li>");
             if (i>3) break; 
             else i++; 
         }
