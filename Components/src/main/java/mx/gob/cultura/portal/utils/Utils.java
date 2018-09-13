@@ -572,13 +572,15 @@ public class Utils {
     public static String urlEmbedYT(String urlwatch) {
         StringBuilder watch = new StringBuilder();
         if (null == urlwatch || urlwatch.isEmpty()) return "";
-        if (!urlwatch.startsWith("https://youtu.be/") || !urlwatch.startsWith("https://www.youtube.com/watch?v=") || urlwatch.length() < 40) return urlwatch;
         if (urlwatch.startsWith("https://youtu.be/")) return "https://www.youtube.com/embed/" + urlwatch.substring(17, urlwatch.length());
-        int index = urlwatch.indexOf("&", 32);
-        if (index == -1) return urlwatch.replaceFirst("watch", "embed");
-        String id = urlwatch.substring(32, index);
-        watch.append("https://www.youtube.com/embed/")
-             .append(id);
+        if (urlwatch.startsWith("https://www.youtube.com/watch?v=")) {
+            int index = urlwatch.indexOf("&", 32);
+            if (index == -1) return urlwatch.replaceFirst("watch", "embed");
+            if (urlwatch.length() < 40) return urlwatch;
+            String id = urlwatch.substring(32, index);
+            watch.append("https://www.youtube.com/embed/")
+                .append(id);
+        }else return urlwatch;
         return watch.toString();
     }
     
