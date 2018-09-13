@@ -83,7 +83,7 @@ public class ArtDetail extends GenericAdmResource {
                         path = this.getViewerPath(ob, SWBParamRequest.Mode_VIEW);
                     }else {
                         String mime = null != entry.getRights() ? entry.getRights().getMedia().getMime() : "";
-                        if (mime.toLowerCase().startsWith("text")) mime = getMimeType(ob);
+                        if (mime.isEmpty() || mime.toLowerCase().startsWith("text")) mime = getMimeType(ob);
                         path = getViewerPath(mime, SWBParamRequest.Mode_VIEW);
                     }
                     incHits(entry, baseUri, uri);
@@ -92,6 +92,7 @@ public class ArtDetail extends GenericAdmResource {
                 request.setAttribute("collection", explore(entry, baseUri));
             }
             setParams(request, paramRequest);
+            System.out.println("PATH: " + path);
             RequestDispatcher rd = request.getRequestDispatcher(path);
             rd.include(request, response);
         } catch (ServletException se) {

@@ -42,8 +42,8 @@ public class RelevanceMgr extends GenericAdmResource {
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         response.setContentType("text/html; charset=UTF-8");
         String path = "/swbadmin/jsp/rnc/collections/homecollection.jsp";
-        /**if (SWBParamRequest.Call_CONTENT == paramRequest.getCallMethod())
-            path = "/swbadmin/jsp/rnc/collections/pagecollection.jsp";**/
+        if (!this.getResourceBase().getAttribute("jspresponse", "").isEmpty())
+            path = this.getResourceBase().getAttribute("jspresponse");
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
             List<Entry> collectionList = collectionById(this.getResourceBase().getAttribute("collectionID", ""), paramRequest.getWebPage().getWebSite());
@@ -83,7 +83,14 @@ public class RelevanceMgr extends GenericAdmResource {
     }
     
     private Entry getEntry(String uri) {
+        Entry e = null;
         GetBICRequest req = new GetBICRequest(uri);
-        return req.makeRequest();
+        try {
+            e = req.makeRequest();
+        }catch (Exception se) {
+            e = null;
+            LOG.info(se.getMessage());
+        }
+        return e;
     }
 }
