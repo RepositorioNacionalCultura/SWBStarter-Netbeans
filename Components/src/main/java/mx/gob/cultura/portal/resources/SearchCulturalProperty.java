@@ -44,6 +44,7 @@ import mx.gob.cultura.portal.response.DigitalObject;
 import mx.gob.cultura.portal.request.ListBICRequest;
 import static mx.gob.cultura.portal.utils.Constants.SORT;
 import static mx.gob.cultura.portal.utils.Constants.WORD;
+import static mx.gob.cultura.portal.utils.Constants.THEME;
 
 /**
  *
@@ -239,7 +240,8 @@ public class SearchCulturalProperty extends PagerAction {
         if (last > total) last = total;
         request.setAttribute("LAST_RECORD", last);
         request.setAttribute("FIRST_RECORD", first);
-        request.setAttribute(WORD, request.getParameter("word"));
+        request.setAttribute(WORD, request.getParameter(WORD));
+        if (null != request.getParameter(THEME)) request.setAttribute(THEME, request.getParameter(THEME));
     }
     
     private Document getReference(HttpServletRequest request, WebSite site) {

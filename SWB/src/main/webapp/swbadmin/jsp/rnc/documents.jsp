@@ -5,6 +5,7 @@
 <script type="text/javascript" src="/swbadmin/js/rnc/detail.js"></script>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
+    String th = "";
     String wxss = "";
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     SWBResourceURL pageURL = paramRequest.getRenderUrl().setMode("PAGE");
@@ -14,7 +15,11 @@
     WebSite site = paramRequest.getWebPage().getWebSite();
     String word = (String) request.getAttribute("word");
     Integer t = (Integer) request.getAttribute("NUM_RECORDS_TOTAL");
-    if (null != word) wxss = Utils.suprXSS(word);
+    if (null != request.getAttribute("theme")) {
+	th = (String)request.getAttribute("theme");
+	wxss = Utils.suprXSS(th);
+        th = "&theme="+th;
+    }else if (null != word) wxss = Utils.suprXSS(word);
     String userLang = paramRequest.getUser().getLanguage();
     String f = null != request.getAttribute("sort") ? "&sort="+request.getAttribute("sort") : "";
     List<Entry> references = null != request.getAttribute("PAGE_LIST") ? (List<Entry>) request.getAttribute("PAGE_LIST") : new ArrayList();
@@ -24,7 +29,7 @@
     function setGrid() { doPage(1, 'g', 'relvdes', ''); }
     function doPage(p, m, f, fs) {
         dojo.xhrPost({
-            url: '<%=pageURL%>?p='+p+'&m='+m+'&sort='+f+'&word=<%=word%>'+fs,
+            url: '<%=pageURL%>?p='+p+'&m='+m+'&sort='+f+'&word=<%=word%>'+fs+'<%=th%>',
             load: function(data) {
                 dojo.byId('references').innerHTML=data;
 		location.href = '#showPage';
@@ -115,7 +120,7 @@
                 <div class="resultados-sin">
                     <p class="oswB rojo">
                     <%  if (null != word) { %>
-                            <%=paramRequest.getLocaleString("usrmsg_view_search_no_results")%> <%=word%>
+                            <%=paramRequest.getLocaleString("usrmsg_view_search_no_results")%> <%=wxss%>
                     <%	}else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_word")); }	%>
                     </p>
 		</div>
