@@ -175,7 +175,7 @@
         <%	if (null != resourcetypes && !resourcetypes.isEmpty()) {%>
         <div class="card card-temas">
             <div class="" role="tab" id="heading1">
-                <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapse1" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_themes")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
+                <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapse1" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_type")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
             </div>
             <div id="collapse1" class="collapse show" role="tabpanel" aria-labelledby="heading1" data-parent="#accordion">
                 <ul>

@@ -43,7 +43,7 @@
         <div id="references">
             <div class="row">
                 <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned()) { %>
-                        <div class="col-6 col-md-4">
+                        <div class="col-6 col-md-4 exhibi-pza">
                             <div class="mosaico radius-overflow">
                                 <a href="#" data-toggle="modal" data-target="#modalExh">
                                     <span class="ion-ios-plus rojo"/>

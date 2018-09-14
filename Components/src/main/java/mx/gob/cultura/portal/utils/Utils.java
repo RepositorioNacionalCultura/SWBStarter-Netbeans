@@ -338,7 +338,6 @@ public class Utils {
         if (holder.equals("Dirección General de Bibliotecas")) return dgb.containsKey(property);
         if (holder.equals("Biblioteca Vasconcelos")) return bv.containsKey(property);
         if (holder.equals("Instituto Mexicano de Cinematografía")) return imcine.containsKey(property);
-        
         if (holder.equals("Dirección General de Culturas Populares e Indígenas")) return dgcp.containsKey(property);
         if (holder.equals("Instituto Nacional de Estudios Históricos de las Revoluciones de México")) return inehrm.containsKey(property);
         if (holder.equals("Museo Nacional de Arte")) return munal.containsKey(property);
@@ -395,6 +394,7 @@ public class Utils {
     
     public static String esDate(String sDate) {
         if (null == sDate || sDate.isEmpty()) return "";
+        if (sDate.length() == 4 && toInt(sDate) > -1) return sDate;
         Date date2format = convert(sDate, "yyyy-MM-dd");
         Locale local = new Locale("es");
         Format formatter = new SimpleDateFormat("d' de 'MMMM' de 'yyyy", local);
