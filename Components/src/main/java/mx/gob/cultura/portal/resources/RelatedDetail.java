@@ -60,31 +60,35 @@ public class RelatedDetail extends GenericResource {
     
     private List<Entry> getRelated(Entry entry, StringBuilder endpoint, SWBParamRequest paramRequest) {
         endpoint.append("q=");
-        String keywords = "";
+        List<Entry> related = new ArrayList<>();
         Document document = null;
         if (null == entry || entry.getKeywords().isEmpty()) return new ArrayList<>();
         for (String key : entry.getKeywords()) {
-            keywords += key;
-        }
-        try {
-            endpoint.append(URLEncoder.encode(keywords.trim(), StandardCharsets.UTF_8.name()));
-            endpoint.append("&from=0&size=").append(NUM_REL);
-        } catch (UnsupportedEncodingException ex) {
-            LOG.info(ex.getMessage());
-        }
-        ListBICRequest req = new ListBICRequest(endpoint.toString());
-        try {
-            document = req.makeRequest();
-            List<Entry> records = document.getRecords();
-            if (null != records) {
-                for (Entry related : records) {
-                    SearchCulturalProperty.setThumbnail(related, paramRequest.getWebPage().getWebSite(), 0);
+            StringBuilder search = new StringBuilder(endpoint.toString());
+            if (null != key && !key.trim().isEmpty()) {
+                try {
+                    search.append(URLEncoder.encode(key.trim(), StandardCharsets.UTF_8.name()));
+                    search.append("&from=0&size=").append(NUM_REL);
+                } catch (UnsupportedEncodingException ex) {
+                    LOG.info(ex.getMessage());
+                }
+                ListBICRequest req = new ListBICRequest(search.toString());
+                try {
+                    document = req.makeRequest();
+                    List<Entry> records = document.getRecords();
+                    if (null != records) {
+                        for (Entry item : records) {
+                            SearchCulturalProperty.setThumbnail(item, paramRequest.getWebPage().getWebSite(), 0);
+                            related.add(item);
+                            if (related.size() >= NUM_REL) break;
+                        }
+                    }
+                } catch (Exception se) {
+                    LOG.error(se);
                 }
             }
-        } catch (Exception se) {
-            LOG.error(se);
         }
-        return null != document ? document.getRecords() : new ArrayList<>();
+        return related;
     }
     
     private String endpoint(SWBParamRequest paramRequest) {

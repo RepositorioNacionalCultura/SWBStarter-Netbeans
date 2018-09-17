@@ -267,6 +267,7 @@
                             <%
                                 int i = 0;
                                 for (CountName r : languages) {
+                                    if (r.getName().equalsIgnoreCase("es")) continue;
                                     if (null != r.getName() && !r.getName().equalsIgnoreCase("es")) {
                             %>
 					<li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="languages" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "lang", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span></label></li>

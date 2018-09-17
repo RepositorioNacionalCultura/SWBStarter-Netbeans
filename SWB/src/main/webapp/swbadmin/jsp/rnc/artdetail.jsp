@@ -81,7 +81,7 @@
 %>
 <%=scriptFB%>
 
-<section id="detalle">
+<section id="detalle" class="vis-osd">
     <div id="idetail" class="detalleimg">
         <jsp:include page="flow.jsp" flush="true"/>
         <div class="obranombre">

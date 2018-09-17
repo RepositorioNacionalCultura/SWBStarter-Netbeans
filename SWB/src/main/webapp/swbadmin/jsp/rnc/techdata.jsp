@@ -47,11 +47,11 @@
         fdesc = (null != desc && null != desc.get("full")) ? (String)desc.get("full") : "";
         
         holder = Utils.getRowData(entry.getHolder(), 0, false);
-        String holdernote = (null != entry.getHoldernote()) ? entry.getHoldernote() : "";
+        String holdernote = (null != entry.getHoldernote() && !entry.getHoldernote().isEmpty()) ? (" " + entry.getHoldernote()) : "";
         urlholder = !holder.isEmpty() ? "<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ holder + "\">"+holder+holdernote+"</a>" : "";
         String rht = Utils.getRights(entry);
         rights = !rht.isEmpty() ? "<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ rht + "\">"+rht+"</a>" : "";
-        String state = (null != entry.getState()) ? (" " + entry.getState()) : "";
+        String state = (null != entry.getState() && !entry.getState().isEmpty()) ? (" " + entry.getState()) : "";
         place = (null != entry.getLugar()) ? "<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ entry.getLugar() + "\">"+entry.getLugar()+state+"</a>" : "";
     }
 %>
@@ -92,8 +92,10 @@
             %>
                     <tr>
                         <td><%=paramRequest.getLocaleString("usrmsg_view_detail_lang")%></td>
-                        <% if (entry.getLang().size() == 4) {%>
-                        <td><%=entry.getLang().get(2)%>, <%=entry.getLang().get(3)%></td>
+                        <% if (entry.getLang().size() == 4) {
+                            out.println("<td><a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ entry.getLang().get(2) + "\">"+entry.getLang().get(2)+"</a>, ");
+                            out.println("<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ entry.getLang().get(3) + "\">"+entry.getLang().get(3)+"</a></td>");
+                        %>
                         <% } else if (entry.getLang().size() == 3) {%>
                         <td><%=entry.getLang().get(1)%>, <%=entry.getLang().get(2)%></td>
                         <% } %>
@@ -106,6 +108,7 @@
         <div id="morecompl" style="display:none;">
             <table>
                 <%=Utils.getTechData("lugar", holder, entry.getLugar(), paramRequest.getLocaleString("usrmsg_view_detail_place"))%>
+                <%=Utils.getTechData("reference", holder, entry.getReference(), paramRequest.getLocaleString("usrmsg_view_detail_reference"))%>
                 <%=Utils.getTechData("reccollection", holder, Utils.getRowData(entry.getReccollection(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_collection"))%>
 		<%=Utils.getTechData("dimension", holder, entry.getDimension(), paramRequest.getLocaleString("usrmsg_view_detail_dimension"))%>
 		<%=Utils.getTechData("unidad", holder, entry.getUnidad(), paramRequest.getLocaleString("usrmsg_view_detail_unit"))%>
@@ -126,6 +129,7 @@
                 <%=Utils.getTechData("lugar+state", holder, place, paramRequest.getLocaleString("usrmsg_view_detail_place"))%>
                 <%=Utils.getTechData("dimension+tipo_de_dimension", holder, Utils.c(entry.getDimension()) + " " + Utils.c(entry.getTipo_de_dimension()), paramRequest.getLocaleString("usrmsg_view_detail_dimension"))%>
                 <%=Utils.getTechData("unidad+tipo_de_unidad", holder, Utils.c(entry.getUnidad()) + " " + Utils.c(entry.getTipo_de_unidad()), paramRequest.getLocaleString("usrmsg_view_detail_unit"))%>
+                <%=Utils.getTechData("dimension+unidad", holder, Utils.concatLink(userLang, site.getId(), entry.getDimension(), entry.getUnidad()), paramRequest.getLocaleString("usrmsg_view_detail_dimension"))%>
                 <%=Utils.getTechData("director", holder, entry.getDirector(), paramRequest.getLocaleString("usrmsg_view_detail_director"))%>
                 <%=Utils.getTechData("producer", holder, entry.getProducer(), paramRequest.getLocaleString("usrmsg_view_detail_producer"))%>
                 <%=Utils.getTechData("screenplay", holder, entry.getScreenplay(), paramRequest.getLocaleString("usrmsg_view_detail_screenplay"))%>
