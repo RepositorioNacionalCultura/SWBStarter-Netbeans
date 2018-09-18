@@ -34,9 +34,6 @@ import mx.gob.cultura.portal.response.Title;
 import mx.gob.cultura.portal.response.CountName;
 import mx.gob.cultura.portal.response.Aggregation;
 
-import static mx.gob.cultura.portal.utils.Constants.REQUIRED;
-import static mx.gob.cultura.portal.utils.Constants.COMPLEMENTARY;
-
 /**
  *
  * @author sergio.tellez
@@ -72,7 +69,7 @@ public class Utils {
     
     public static String concatLink(String userLang, String site, String... args) {
         StringBuilder link = new StringBuilder();
-        if (null != args && args.length > 0 && !args[1].trim().isEmpty()) {
+        if (null != args && args.length > 0 && null != args[0] && !args[0].trim().isEmpty()) {
             link.append("<a href=\"/").append(userLang).append("/").append(site).append("/resultados?word=").append(args[0]).append("\">").append(args[0]);
             if (args.length > 1 && !args[1].trim().isEmpty()) link.append(" ").append(args[1]).append("</a>");
         }
@@ -325,14 +322,16 @@ public class Utils {
                 "mozilla/4.08") != -1) || (user.indexOf("mozilla/3") != -1)) {
             //browser=(userAgent.substring(userAgent.indexOf("MSIE")).split(" ")[0]).replace("/", "-");
             browser = "Netscape-?";
-
         } else if (user.contains("firefox")) {
             browser = (browserDetails.substring(browserDetails.indexOf("Firefox")).split(" ")[0]).replace("/", "-");
         } else if (user.contains("rv")) {
             browser = "IE";
+        } else if(user.contains("Mobile")) {
+            browser = "Android";
         } else {
             browser = "UnKnown, More-Info: " + browserDetails;
         }
+        System.out.println("browser: " + browser);
         return browser;
     }
     

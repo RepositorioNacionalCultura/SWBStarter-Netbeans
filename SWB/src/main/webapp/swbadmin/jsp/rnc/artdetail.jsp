@@ -35,7 +35,11 @@
                     .append("	id:\"pyramid\",")
                     .append("	showNavigator: true,")
                     .append("	showHomeControl: false,")
+                    .append("	toolbar:     \"toolbarDiv\",")
                     .append("	navigatorId:   \"navigatorDiv\",")
+                    .append("	defaultZoomLevel: 0.8,")
+                    .append("	maxZoomLevel: 1.5,")
+                    .append("	minZoomLevel: 0.4,")
                     .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
                     .append("	tileSources:   [")
                     .append("		\"").append(digital.getUrl()).append("\"")
@@ -89,7 +93,7 @@
             <p class="oswL"><%=creator%></p>
         </div>
         <div class="explora">
-            <div id="navigatorDiv" class="explora1"></div>
+            <div id="navigatorDiv" class="explora1"><div id="toolbarDiv" class="exploratl"></div></div>
             <div class="explora2">
                 <div class="explo1">
                     © <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>

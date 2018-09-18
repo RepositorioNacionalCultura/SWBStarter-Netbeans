@@ -30,6 +30,12 @@ public class Biblio {
     public static final Map mnsc  = new HashMap();
     public static final Map cidab  = new HashMap();
     public static final Map inbal = new HashMap();
+    public static final Map inah = new HashMap();
+    public static final Map munae = new HashMap();
+    public static final Map mnh = new HashMap();
+    public static final Map mnv = new HashMap();
+    public static final Map mncp = new HashMap();
+    public static final Map mam = new HashMap();
     
     static {
         inba.put("recordtitle", REQUIRED);
@@ -115,8 +121,7 @@ public class Biblio {
         cl22.put("recordtitle", REQUIRED);
         cl22.put("creator", REQUIRED);
         cl22.put("holder", REQUIRED);
-        cl22.put("dimension", REQUIRED);
-        cl22.put("unidad", REQUIRED);
+        cl22.put("dimension+unidad", REQUIRED);
         cl22.put("datecreated", REQUIRED);
         cl22.put("resourcetype", REQUIRED);
         cl22.put("holdernote", REQUIRED);
@@ -283,20 +288,6 @@ public class Biblio {
     }
     
     static {
-        mnsc.put("recordtitle", REQUIRED);
-        mnsc.put("creator", REQUIRED);
-        mnsc.put("datecreated", REQUIRED);
-        mnsc.put("reccollection", COMPLEMENTARY);
-        mnsc.put("holder", REQUIRED);
-        mnsc.put("resourcetype", REQUIRED);
-        mnsc.put("oaiid/identifier", REQUIRED);
-        mnsc.put("rights.rightstitle", REQUIRED);
-        mnsc.put("rights.description+rights.url", REQUIRED);
-        mnsc.put("description", COMPLEMENTARY);
-        mnsc.put("keywords", COMPLEMENTARY);
-    }
-    
-    static {
         cidab.put("recordtitle", REQUIRED);
         cidab.put("creator", REQUIRED);
         cidab.put("datecreated", REQUIRED);
@@ -324,6 +315,135 @@ public class Biblio {
         inbal.put("keywords", COMPLEMENTARY);
     }
     
+    static {
+        inah.put("recordtitle", REQUIRED);
+        inah.put("creator", REQUIRED);
+        inah.put("datecreated", REQUIRED);
+        inah.put("reccollection", COMPLEMENTARY);
+        inah.put("holder", REQUIRED);
+        inah.put("resourcetype", REQUIRED);
+        inah.put("oaiid/identifier", REQUIRED);
+        inah.put("rights.rightstitle", REQUIRED);
+        inah.put("rights.description+rights.url", REQUIRED);
+        inah.put("description", COMPLEMENTARY);
+        inah.put("keywords", COMPLEMENTARY);
+    }
+    
+    static {
+        mnv.put("oaiid/identifier", REQUIRED);
+        mnv.put("recordtitle", REQUIRED);
+        mnv.put("creator", REQUIRED);
+        mnv.put("dimension+tipo_de_dimension", REQUIRED);
+        mnv.put("unidad+tipo_de_unidad", REQUIRED);
+        mnv.put("period", COMPLEMENTARY);
+        mnv.put("datecreated", REQUIRED);
+        mnv.put("reccollection", COMPLEMENTARY);
+        mnv.put("holder", REQUIRED);
+        mnv.put("resourcetype", REQUIRED);
+        mnv.put("rights.rightstitle", REQUIRED);
+        mnv.put("rights.description+rights.url", REQUIRED);
+        mnv.put("description", COMPLEMENTARY);
+        mnv.put("techmaterial", COMPLEMENTARY);
+        mnv.put("keywords", COMPLEMENTARY);
+        mnv.put("lugar", COMPLEMENTARY);
+    }
+    
+    static {
+        munae.put("oaiid/identifier", REQUIRED);
+        munae.put("recordtitle", REQUIRED);
+        munae.put("creator", REQUIRED);
+        munae.put("dimension+tipo_de_dimension", REQUIRED);
+        munae.put("unidad+tipo_de_unidad", REQUIRED);
+        munae.put("period", COMPLEMENTARY);
+        munae.put("datecreated", REQUIRED);
+        munae.put("reccollection", COMPLEMENTARY);
+        munae.put("holder", REQUIRED);
+        munae.put("resourcetype", REQUIRED);
+        munae.put("rights.rightstitle", REQUIRED);
+        munae.put("rights.description+rights.url", REQUIRED);
+        munae.put("description", COMPLEMENTARY);
+        munae.put("keywords", COMPLEMENTARY);
+    }
+    
+    static {
+        mnsc.put("oaiid/identifier", REQUIRED);
+        mnsc.put("recordtitle", REQUIRED);
+        mnsc.put("creator", REQUIRED);
+        mnsc.put("dimension+tipo_de_dimension", REQUIRED);
+        mnsc.put("unidad+tipo_de_unidad", REQUIRED);
+        mnsc.put("period", COMPLEMENTARY);
+        mnsc.put("datecreated", REQUIRED);
+        mnsc.put("techmaterial", COMPLEMENTARY);
+        mnsc.put("reccollection", COMPLEMENTARY);
+        mnsc.put("holder", REQUIRED);
+        mnsc.put("hiperonimo", REQUIRED);
+        mnsc.put("resourcetype", REQUIRED);
+        mnsc.put("rights.rightstitle", REQUIRED);
+        mnsc.put("rights.description+rights.url", REQUIRED);
+        mnsc.put("description", COMPLEMENTARY);
+        mnsc.put("keywords", COMPLEMENTARY);
+    }
+    
+    static {
+        mncp.put("oaiid/identifier", REQUIRED);
+        mncp.put("recordtitle", REQUIRED);
+        mncp.put("creator", REQUIRED);
+        mncp.put("dimension", REQUIRED);
+        mncp.put("resourcetype", REQUIRED);
+        mncp.put("reccollection", COMPLEMENTARY);
+        mncp.put("period", COMPLEMENTARY);
+        mncp.put("datecreated", REQUIRED);
+        mncp.put("holder", REQUIRED);
+        mncp.put("rights.rightstitle", REQUIRED);
+        mncp.put("rights.description+rights.url", REQUIRED);
+        mncp.put("description", COMPLEMENTARY);
+        mncp.put("keywords", COMPLEMENTARY);
+    }
+    
+    static {
+        mam.put("oaiid/identifier", REQUIRED);
+        mam.put("recordtitle", REQUIRED);
+        mam.put("creator", REQUIRED);
+        mam.put("dimension+tipo_de_dimension", REQUIRED);
+        mam.put("unidad+tipo_de_unidad", REQUIRED);
+        mam.put("datecreated", REQUIRED);
+        mam.put("disciplina", COMPLEMENTARY);
+        mam.put("reccollection", COMPLEMENTARY);
+        mam.put("holder", REQUIRED);
+        mam.put("hiperonimo", COMPLEMENTARY);
+        mam.put("resourcetype", REQUIRED);
+        mam.put("rights.rightstitle", REQUIRED);
+        mam.put("rights.description+rights.url", REQUIRED);
+        mam.put("techmaterial", COMPLEMENTARY);
+        mam.put("description", COMPLEMENTARY);
+        mam.put("keywords", COMPLEMENTARY);
+    }
+    
+    static {
+        mnh.put("oaiid/identifier", REQUIRED);
+        mnh.put("recordtitle", REQUIRED);
+        mnh.put("creator", REQUIRED);
+        mnh.put("dimension+tipo_de_dimension", REQUIRED);
+        mnh.put("unidad+tipo_de_unidad", REQUIRED);
+        mnh.put("period", COMPLEMENTARY);
+        mnh.put("resourcetype", REQUIRED);
+        mnh.put("holder", REQUIRED);
+        mnh.put("hiperonimo", COMPLEMENTARY);
+        mnh.put("datecreated", REQUIRED);
+        mnh.put("curaduria", COMPLEMENTARY);
+        mnh.put("reccollection", COMPLEMENTARY);
+        mnh.put("rights.rightstitle", REQUIRED);
+        mnh.put("rights.description+rights.url", REQUIRED);
+        mnh.put("techmaterial", COMPLEMENTARY);
+        mnh.put("inscripcionobra", COMPLEMENTARY);
+        mnh.put("cultura", COMPLEMENTARY);
+        mnh.put("origin", COMPLEMENTARY);
+        mnh.put("lugar", COMPLEMENTARY);
+        mnh.put("acervo", COMPLEMENTARY);
+        mnh.put("description", COMPLEMENTARY);
+        mnh.put("keywords", COMPLEMENTARY);
+    }
+    
     public static boolean isRequired(String property, String holder) {
         boolean isRequired;
         if (null == holder || null == property) return false;
@@ -343,9 +463,15 @@ public class Biblio {
             case  "Instituto Mexicano de Cinematografía" : isRequired = imcine.containsKey(property); break;
             case  "Dirección General de Culturas Populares e Indígenas": isRequired = dgcp.containsKey(property); break;
             case  "Instituto Nacional de Estudios Históricos de las Revoluciones de México" : isRequired = inehrm.containsKey(property); break;
+            case  "Centro de Información y Documentación Alberto Beltrán" : isRequired = cidab.containsKey(property); break;
+            case  "Instituto Nacional de Antropología e Historia" : isRequired = inah.containsKey(property); break;
             case  "Museo Nacional de Arte" : isRequired = munal.containsKey(property); break;
             case  "Museo Nacional de San Carlos" : isRequired = mnsc.containsKey(property); break;
-            case  "Centro de Información y Documentación Alberto Beltrán" : isRequired = cidab.containsKey(property); break;
+            case  "Museo Nacional de Historia" : isRequired = mnh.containsKey(property); break;
+            case  "Museo Nacional de la Estampa" : isRequired = munae.containsKey(property); break;
+            case  "Museo Nacional del Virreinato" : isRequired = mnv.containsKey(property); break;
+            case  "Museo Nacional de Culturas Populares" : isRequired = mncp.containsKey(property); break;
+            case  "Museo de Arte Moderno" : isRequired = mam.containsKey(property); break;
             default: isRequired = false;
         }
         return isRequired;

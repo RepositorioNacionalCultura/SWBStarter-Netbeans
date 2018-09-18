@@ -66,6 +66,15 @@ public class Entry implements Serializable {
     private String tipo_de_identificador;
     private String tipo_de_unidad;
     private String tipo_de_dimension;
+    private String period;
+    private String techmaterial;
+    private String hiperonimo;
+    private String acervo;
+    private String incripcion;
+    private String inscripcionobra;
+    private String origin; 
+    private String cultura;
+    private String curaduria;
     
     private List<String> serie;
     private List<String> credits;
@@ -495,6 +504,78 @@ public class Entry implements Serializable {
 
     public void setReccollection(List<String> reccollection) {
         this.reccollection = reccollection;
+    }
+
+    public String getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
+    }
+
+    public String getTechmaterial() {
+        return techmaterial;
+    }
+
+    public void setTechmaterial(String techmaterial) {
+        this.techmaterial = techmaterial;
+    }
+
+    public String getHiperonimo() {
+        return hiperonimo;
+    }
+
+    public void setHiperonimo(String hiperonimo) {
+        this.hiperonimo = hiperonimo;
+    }
+
+    public String getAcervo() {
+        return acervo;
+    }
+
+    public void setAcervo(String acervo) {
+        this.acervo = acervo;
+    }
+
+    public String getIncripcion() {
+        return incripcion;
+    }
+
+    public void setIncripcion(String incripcion) {
+        this.incripcion = incripcion;
+    }
+
+    public String getInscripcionobra() {
+        return inscripcionobra;
+    }
+
+    public void setInscripcionobra(String inscripcionobra) {
+        this.inscripcionobra = inscripcionobra;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
+    public String getCultura() {
+        return cultura;
+    }
+
+    public void setCultura(String cultura) {
+        this.cultura = cultura;
+    }
+
+    public String getCuraduria() {
+        return curaduria;
+    }
+
+    public void setCuraduria(String curaduria) {
+        this.curaduria = curaduria;
     }
 
     @Override
