@@ -56,9 +56,9 @@ public class Utils {
         m.put(125, "");  // }
     }
     
-    public static String getTechData(String property, String holder, String key, String locale) {
+    public static String getTechData(String property, String holder, String key, String locale, boolean basic) {
         if (null == key || key.trim().isEmpty()) return "";
-        if (!Biblio.isRequired(property, holder)) return "";
+        if (!basic && !Biblio.isRequired(property, holder)) return "";
         StringBuilder data = new StringBuilder();
         data.append("<tr>")
             .append("   <td>").append(locale).append("</td>")
