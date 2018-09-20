@@ -116,11 +116,11 @@
                 <%=Utils.getTechData("availableformats", holder, entry.getAvailableformats(), paramRequest.getLocaleString("usrmsg_view_detail_availableformats"), false)%>
                 <%=Utils.getTechData("documentalfund", holder, entry.getDocumentalfund(), paramRequest.getLocaleString("usrmsg_view_detail_documentalfund"), false)%>
                 <%=Utils.getTechData("episode", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_episode"), false)%>
-                <%=Utils.getTechData("direction", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_direction"), false)%>
-                <%=Utils.getTechData("production", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_production"), false)%>
-                <%=Utils.getTechData("music", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_music"), false)%>
-                <%=Utils.getTechData("libreto", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_libretto"), false)%>
-                <%=Utils.getTechData("musicaldirection", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_music_direction"), false)%>
+                <%=Utils.getTechData("direction", holder, entry.getDirection(), paramRequest.getLocaleString("usrmsg_view_detail_direction"), false)%>
+                <%=Utils.getTechData("production", holder, entry.getProduction(), paramRequest.getLocaleString("usrmsg_view_detail_production"), false)%>
+                <%=Utils.getTechData("music", holder, entry.getMusic(), paramRequest.getLocaleString("usrmsg_view_detail_music"), false)%>
+                <%=Utils.getTechData("libreto", holder, entry.getLibreto(), paramRequest.getLocaleString("usrmsg_view_detail_libretto"), false)%>
+                <%=Utils.getTechData("musicaldirection", holder, entry.getMusicaldirection(), paramRequest.getLocaleString("usrmsg_view_detail_music_direction"), false)%>
                 <%=Utils.getTechData("number", holder, entry.getNumber(), paramRequest.getLocaleString("usrmsg_view_detail_number"), false)%>
                 <%=Utils.getTechData("subtile", holder, entry.getSubtile(), paramRequest.getLocaleString("usrmsg_view_detail_subtile"), false)%>
                 <%=Utils.getTechData("editorial", holder, entry.getEditorial(), paramRequest.getLocaleString("usrmsg_view_detail_editorial"), false)%>
@@ -141,6 +141,10 @@
                 <%=Utils.getTechData("cultura", holder, entry.getCultura(), paramRequest.getLocaleString("usrmsg_view_detail_cultura"), false)%>
                 <%=Utils.getTechData("origin", holder, entry.getOrigin(), paramRequest.getLocaleString("usrmsg_view_detail_origin"), false)%>
                 <%=Utils.getTechData("acervo", holder, entry.getAcervo(), paramRequest.getLocaleString("usrmsg_view_detail_acervo"), false)%>
+                <%=Utils.getTechData("discipline", holder, entry.getDiscipline(), paramRequest.getLocaleString("usrmsg_view_detail_discipline"), false)%>
+                <%=Utils.getTechData("creatorgroup", holder, entry.getCreatorgroup(), paramRequest.getLocaleString("usrmsg_view_detail_creator_group"), false)%>
+                <%=Utils.getTechData("material", holder, entry.getMaterial(), paramRequest.getLocaleString("usrmsg_view_detail_material"), false)%>
+                <%=Utils.getTechData("collectionnote", holder, entry.getCollectionnote(), paramRequest.getLocaleString("usrmsg_view_detail_collection_note"), false)%>
         </table>
         <p class="vermas-filtros">
             <button class="btn-vermas" type="button" data-toggle="collapse" data-target="#vermas-ficha" aria-expanded="false" aria-controls="vermas">

@@ -27,31 +27,77 @@
         if (null != entry.getDigitalObject()) {
             digitalobjects = entry.getDigitalObject();
             books = null != digitalobjects ? digitalobjects.size() : 0;
-            digital = books >= iDigit ? digitalobjects.get(iDigit - 1) : new DigitalObject();
+            digital = books > iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
             url = null != digital.getUrl() ? digital.getUrl() : "";
             title =  Utils.replaceSpecialChars(Utils.getTitle(entry.getRecordtitle(), 0));
             creator = Utils.replaceSpecialChars(Utils.getRowData(entry.getCreator(), 0, false));
             if (null != url && url.endsWith(".epub")) {
-                scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>")
-                    .append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-epub.css'/>");
-                divVisor.append("<div id=\"main\">")
-                    .append("   <div id=\"prev\" onclick=\"Book.prevPage();\" class=\"arrow\"><span class=\"ion-chevron-left\"></span></div>")
-                    .append("   <div id=\"area\"></div>")
-                    .append("   <div id=\"next\" onclick=\"Book.nextPage();\" class=\"arrow\"><span class=\"ion-chevron-right\"></span></div>")
-                    .append("</div>");
+                divVisor.append("<div id=\"sidebar\">")
+                    .append("	<div id=\"panels\">")
+                    .append("       <a id=\"show-Toc\" class=\"show_view icon-list-1 active\" data-view=\"Toc\">TOC</a>")
+                    .append("	</div>")
+                    .append("	<div id=\"tocView\" class=\"view\">")
+                    .append("	</div>")
+                    .append("	<div id=\"searchView\" class=\"view\">")
+                    .append("       <ul id=\"searchResults\"></ul>")
+                    .append("	</div>")
+                    .append("	<div id=\"bookmarksView\" class=\"view\">")
+                    .append("       <ul id=\"bookmarks\"></ul>")
+                    .append("	</div>")
+                    .append("	<div id=\"notesView\" class=\"view\">")
+                    .append("       <div id=\"new-note\">")
+                    .append("		<textarea id=\"note-text\"></textarea>")
+                    .append("		<button id=\"note-anchor\">Anchor</button>")
+                    .append("       </div>")
+                    .append("       <ol id=\"notes\"></ol>")
+                    .append("	</div>")
+                    .append("</div>")
+                    .append("<div id=\"main\">")
+                    .append("	<div id=\"titlebar\">")
+                    .append("       <div id=\"opener\">")
+                    .append("		<a id=\"slider\" class=\"icon-menu\">Menu</a>")
+                    .append("       </div>")
+                    .append("       <div id=\"metainfo\">")
+                    .append("		<span id=\"book-title\"></span>")
+                    .append("           <span id=\"title-seperator\">&nbsp;&nbsp;-&nbsp;&nbsp;</span>")
+                    .append("		<span id=\"chapter-title\"></span>")
+                    .append("       </div>")
+                    .append("       <div id=\"title-controls\">")
+                    .append("		<a id=\"fullscreen\" class=\"icon-resize-full\">Fullscreen</a>")
+                    .append("       </div>")
+                    .append("   </div>")
+                    .append("	<div id=\"divider\"></div>")
+                    .append("	<div id=\"prev\" class=\"arrow\"><span class=\"ion-android-arrow-dropleft-circle\"></span></div>")
+                    .append("	<div id=\"viewer\"></div>")
+                    .append("	<div id=\"next\" class=\"arrow\"><span class=\"ion-android-arrow-dropright-circle\"></span></div>")
+                    .append("	<div id=\"loader\"><img src=\"/work/models/repositorio/img/loader.gif\"></div>")
+                    .append("</div>")
+                    .append("<div class=\"modal md-effect-1\" id=\"settings-modal\">")
+                    .append("	<div class=\"md-content\">")
+                    .append("       <h3>Settings</h3>")
+                    .append("       <div>")
+                    .append("		<p>")
+                    .append("               <input type=\"checkbox\" id=\"sidebarReflow\" name=\"sidebarReflow\">Reflow text when sidebars are open.")
+                    .append("		</p>")
+                    .append("       </div>")
+                    .append("       <div class=\"closer icon-cancel-circled\"></div>")
+                    .append("	</div>")
+                    .append("</div>")
+                    .append("<div class=\"overlay\"></div>");
                 scriptCallVisor.append("<script>")
                     .append("	\"use strict\";")
-                    .append("	var Book = ePub(\"").append(digital.getUrl()).append("\");")
-                    .append("</script>")
-                    .append("<script>")
-                    .append("   Book.renderTo(\"area\");{")
+                    .append("	document.onreadystatechange = function () {")
+                    .append("       if (document.readyState == \"complete\") {")
+                    .append("           window.reader = ePubReader(\"").append(digital.getUrl()).append("\", {")
+                    .append("               restore: true")
+                    .append("           });")
+                    .append("       }")
+                    .append("   };")
                     .append("</script>");
-
             }
         }
     }
 %>
-
     <jsp:include page="../flow.jsp" flush="true"/>
     <div class="obranombre">
         <h3 class="oswB"><%=title%></h3>

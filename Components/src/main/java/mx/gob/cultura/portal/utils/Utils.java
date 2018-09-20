@@ -71,7 +71,7 @@ public class Utils {
         StringBuilder link = new StringBuilder();
         if (null != args && args.length > 0 && null != args[0] && !args[0].trim().isEmpty()) {
             link.append("<a href=\"/").append(userLang).append("/").append(site).append("/resultados?word=").append(args[0]).append("\">").append(args[0]);
-            if (args.length > 1 && !args[1].trim().isEmpty()) link.append(" ").append(args[1]).append("</a>");
+            if (args.length > 1 && null != args[1] && !args[1].trim().isEmpty()) link.append(" ").append(args[1]).append("</a>");
         }
         return link.toString();
     }

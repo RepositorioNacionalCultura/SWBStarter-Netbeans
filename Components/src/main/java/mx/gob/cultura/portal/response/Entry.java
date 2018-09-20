@@ -75,6 +75,10 @@ public class Entry implements Serializable {
     private String origin; 
     private String cultura;
     private String curaduria;
+    private String discipline;
+    private String creatorgroup;
+    private String collectionnote;
+    private String material;
     
     private List<String> serie;
     private List<String> credits;
@@ -576,6 +580,38 @@ public class Entry implements Serializable {
 
     public void setCuraduria(String curaduria) {
         this.curaduria = curaduria;
+    }
+
+    public String getDiscipline() {
+        return discipline;
+    }
+
+    public void setDiscipline(String discipline) {
+        this.discipline = discipline;
+    }
+
+    public String getCreatorgroup() {
+        return creatorgroup;
+    }
+
+    public void setCreatorgroup(String creatorgroup) {
+        this.creatorgroup = creatorgroup;
+    }
+
+    public String getCollectionnote() {
+        return collectionnote;
+    }
+
+    public void setCollectionnote(String collectionnote) {
+        this.collectionnote = collectionnote;
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material = material;
     }
 
     @Override

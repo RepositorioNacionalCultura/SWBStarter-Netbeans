@@ -382,6 +382,7 @@ public class Biblio {
         mnsc.put("rights.description+rights.url", REQUIRED);
         mnsc.put("description", COMPLEMENTARY);
         mnsc.put("keywords", COMPLEMENTARY);
+        mnsc.put("discipline", COMPLEMENTARY);
     }
     
     static {
@@ -398,6 +399,7 @@ public class Biblio {
         mncp.put("rights.description+rights.url", REQUIRED);
         mncp.put("description", COMPLEMENTARY);
         mncp.put("keywords", COMPLEMENTARY);
+        mncp.put("creatorgroup", COMPLEMENTARY);
     }
     
     static {
@@ -407,7 +409,7 @@ public class Biblio {
         mam.put("dimension+tipo_de_dimension", REQUIRED);
         mam.put("unidad+tipo_de_unidad", REQUIRED);
         mam.put("datecreated", REQUIRED);
-        mam.put("disciplina", COMPLEMENTARY);
+        mam.put("discipline", COMPLEMENTARY);
         mam.put("reccollection", COMPLEMENTARY);
         mam.put("holder", REQUIRED);
         mam.put("hiperonimo", COMPLEMENTARY);
@@ -417,6 +419,7 @@ public class Biblio {
         mam.put("techmaterial", COMPLEMENTARY);
         mam.put("description", COMPLEMENTARY);
         mam.put("keywords", COMPLEMENTARY);
+        mam.put("collectionnote", COMPLEMENTARY);
     }
     
     static {
@@ -434,6 +437,7 @@ public class Biblio {
         mnh.put("reccollection", COMPLEMENTARY);
         mnh.put("rights.rightstitle", REQUIRED);
         mnh.put("rights.description+rights.url", REQUIRED);
+        mnh.put("material", COMPLEMENTARY);
         mnh.put("techmaterial", COMPLEMENTARY);
         mnh.put("inscripcionobra", COMPLEMENTARY);
         mnh.put("cultura", COMPLEMENTARY);
