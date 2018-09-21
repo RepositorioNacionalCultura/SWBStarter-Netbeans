@@ -388,8 +388,7 @@ public class Biblio {
     static {
         mncp.put("oaiid/identifier", REQUIRED);
         mncp.put("recordtitle", REQUIRED);
-        mncp.put("creator", REQUIRED);
-        mncp.put("dimension", REQUIRED);
+        mncp.put("creator+creatorgroup+dimension", REQUIRED);
         mncp.put("resourcetype", REQUIRED);
         mncp.put("reccollection", COMPLEMENTARY);
         mncp.put("period", COMPLEMENTARY);
@@ -399,7 +398,6 @@ public class Biblio {
         mncp.put("rights.description+rights.url", REQUIRED);
         mncp.put("description", COMPLEMENTARY);
         mncp.put("keywords", COMPLEMENTARY);
-        mncp.put("creatorgroup", COMPLEMENTARY);
     }
     
     static {

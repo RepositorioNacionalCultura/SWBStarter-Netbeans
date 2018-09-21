@@ -12,7 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mx.gob.cultura.portal.request.ListBICRequest;
-import static mx.gob.cultura.portal.resources.SearchCulturalProperty.setThumbnail;
 import mx.gob.cultura.portal.response.Aggregation;
 import mx.gob.cultura.portal.response.CountName;
 import mx.gob.cultura.portal.response.DateRange;
@@ -24,11 +23,12 @@ import org.semanticwb.SWBUtils;
 import org.semanticwb.portal.api.GenericResource;
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceException;
-import static mx.gob.cultura.portal.utils.Constants.PARAM_REQUEST;
 import mx.gob.cultura.portal.utils.Utils;
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.model.WebSite;
 
+import static mx.gob.cultura.portal.utils.Constants.PARAM_REQUEST;
+import static mx.gob.cultura.portal.resources.SearchCulturalProperty.setThumbnail;
 /**
  *
  * @author sergio.tellez
