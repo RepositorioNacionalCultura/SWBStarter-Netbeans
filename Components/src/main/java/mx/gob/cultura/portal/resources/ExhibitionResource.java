@@ -81,7 +81,7 @@ public class ExhibitionResource extends GenericResource {
                     Resource html = createResource(response.getWebPage().getWebSite(), "HTMLCulture", "Editor HTML");
                     Resource exhn = createResource(response.getWebPage().getWebSite(), "Exhibition", "Galería");
                     if (null != html) {
-                        html.setPriority(2);
+                        html.setIndex(2);
                         html.setAttribute("template", request.getParameter("id"));
                         html.setAttribute("idGroupTemplate", getResourceBase().getAttribute("idGroupTemplate",""));
                         html.updateAttributesToDB();

@@ -440,7 +440,6 @@ public class Exhibition extends GenericResource {
     	uri += getParamSearch(words);
         if (null != getResourceBase().getAttribute("sort") && null != getResourceBase().getAttribute("order")) {
             String sorted = getResourceBase().getAttribute("sort") + getResourceBase().getAttribute("order");
-            System.out.println("sorted: " + sorted);
             if (sorted.equalsIgnoreCase("datedes")) uri += "&sort=-datecreated.value";
             if (sorted.equalsIgnoreCase("dateasc")) uri += "&sort=datecreated.value";
             if (sorted.equalsIgnoreCase("statdes")) uri += "&sort=-resourcestats.views";

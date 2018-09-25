@@ -26,19 +26,6 @@
     }
 </script>
     <div class="content container exhibiciones-main">
-	<div class="row">
-            <div class="col-4 exhibi-rojo1">
-                <img src="/work/models/repositorio/img/rojo-exhibiciones-01.png" class="img-responsive" />
-            </div>
-            <div class="col-8">
-                <p>¡Conoce las exposiciones que curadores especializados han creado para ti!</p>
-                <p>Estas exposiciones te permitirán conocer los fondos de Memoria Digital Mexicana  dentro de un panorama más amplio de contenidos digitales, múltiples y especializados que se interrelacionan uno a uno.</p>
-                <p>Con las exposiciones se pretende extender el conocimiento de todo el contenido arqueológico, histórico, antropológico, artístico, audiovisual y sonoro que se puede explorar dentro de esta plataforma, fomentando así diversos procesos creativos que permitan la interacción con los objetos digitales a partir de una selección específica.</p>
-            </div>
-            <div class="col-8 exhibi-rojo2">
-                <img src="/work/models/repositorio/img/rojo-exhibiciones-03.png" class="img-responsive" />
-            </div>
-        </div>
         <a name="showPage"></a>
         <div id="references">
             <div class="row">

@@ -18,8 +18,8 @@
     String f = null != request.getAttribute("sort") ? "&sort="+request.getAttribute("sort") : "";
 %>
 <%  if (!references.isEmpty()) {  %>
-	<div id="references">
-            <div class="ruta-resultado row">
+	<!--div id="references"-->
+            <div class="ruta-resultado row" id="ruta-resultado">
 		<%  if (null != wxss) { %>
 			<p class="oswL"><%=Utils.decimalFormat("###,###", t)%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
 		<%  }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
@@ -45,7 +45,7 @@
                                     <%
                                         int i = 0;
                                         for (String key : reference.getKeywords()) {
-                                                                                if (i < reference.getKeywords().size()) key += ", ";
+                                            if (i < reference.getKeywords().size()) key += ", ";
                                             out.println("<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word=" + key + "\">" + key + "</a>");
                                             i++;
                                                                         }
@@ -63,13 +63,13 @@
 		</div>
 		<jsp:include page="pager.jsp" flush="true"/>
 		<jsp:include page="footer.jsp" flush="true"/>
-            </div>
+            <!--/div-->
         </div>
 <%
     }else if (null != word) { 
 %>	
 	<div id="references">
-            <div class="ruta-resultado row">
+            <div class="ruta-resultado row" id="ruta-resultado">
 		<div class="col-12 col-sm-8 col-md-8">
                     <p class="oswL rojo"><%=paramRequest.getLocaleString("usrmsg_view_search_no_results")%> <span class="oswB rojo"><%=word%></span></p>
 		</div>

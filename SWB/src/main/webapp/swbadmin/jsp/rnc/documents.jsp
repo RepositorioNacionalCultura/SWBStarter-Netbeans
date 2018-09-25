@@ -121,7 +121,7 @@
                     <p class="oswB rojo">
                     <%  if (null != word) { %>
                             <%=paramRequest.getLocaleString("usrmsg_view_search_no_results")%> <%=wxss%>
-                    <%	}else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_word")); }	%>
+                    <%	}else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); }	%>
                     </p>
 		</div>
 	<%

@@ -146,7 +146,7 @@
                     <li>
                         <ul>
                             <%=Utils.chdFtrList(resourcetypes, request.getParameter("filter"), "resourcetype", "vermas", true)%>
-                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="alltype" value="resourcetype" ><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span></label></li>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="alltype" value="resourcetype" ><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span><span class="checkmark"></span></label></li>
                         </ul>
                     </li>
                 </ul>
@@ -174,7 +174,7 @@
                             <%
                                 for (CountName r : mediastype) {
                             %>
-                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="mediastype" value="<%=r.getName()%>"><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span></label></li>
+                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="mediastype" value="<%=r.getName()%>"><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span><span class="checkmark"></span></label></li>
                             <%
 				}
                             %>
@@ -195,7 +195,7 @@
                     <li>
 			<ul>
                             <%=Utils.chdFtrList(holders, request.getParameter("filter"), "holder", "moreholders", false)%>
-                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allholder" value="holder"><span>Seleccionar todos</span><span> </span></label></li>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allholder" value="holder"><span>Seleccionar todos</span><span> </span><span class="checkmark"></span></label></li>
 			</ul>			
                         <% if (holders.size() > 5) { %>
                             <p class="vermas-filtros">
@@ -239,7 +239,7 @@
                     <li>
 			<ul>
                             <%=Utils.chdFtrList(rights, request.getParameter("filter"), "rights", "morerights", true)%>
-                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allrights" value="rights"><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span></label></li>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allrights" value="rights"><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span><span class="checkmark"></span></label></li>
                         </ul>
 			<% if (rights.size() > 5) { %>
                             <p class="vermas-filtros">
@@ -270,7 +270,7 @@
                                     if (r.getName().equalsIgnoreCase("es")) continue;
                                     if (null != r.getName() && !r.getName().equalsIgnoreCase("es")) {
                             %>
-					<li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="languages" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "lang", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span></label></li>
+					<li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="languages" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "lang", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span><span class="checkmark"></span></label></li>
                             <%      
                                         if (i>3) break; else i++; 
                                     }
@@ -285,7 +285,7 @@
                                                 if (j<=i) {j++;} 
                                                 else { 
                             %>
-                                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="languages" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "lang", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span></label></li>
+                                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="languages" value="<%=r.getName()%>" <% if (Utils.chdFtr(request.getParameter("filter"), "lang", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span><span class="checkmark"></span></label></li>
                             <%			
                                                 }
                                             }
@@ -293,7 +293,7 @@
                             %>
                                     </div>
                             <%  }  %>
-                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allanguages" value="languages"><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span></label></li>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allanguages" value="languages"><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span><span class="checkmark"></span></label></li>
                         </ul>
                         <%  if (languages.size() > 5) { %>
                                 <p class="vermas-filtros">

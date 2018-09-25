@@ -142,7 +142,7 @@
                 <%=Utils.getTechData("origin", holder, entry.getOrigin(), paramRequest.getLocaleString("usrmsg_view_detail_origin"), false)%>
                 <%=Utils.getTechData("acervo", holder, entry.getAcervo(), paramRequest.getLocaleString("usrmsg_view_detail_acervo"), false)%>
                 <%=Utils.getTechData("discipline", holder, entry.getDiscipline(), paramRequest.getLocaleString("usrmsg_view_detail_discipline"), false)%>
-                <%=Utils.getTechData("creator+creatorgroup+dimension", holder, entry.getCreatorgroup(), paramRequest.getLocaleString("usrmsg_view_detail_creator_group"), false)%>
+                <%=Utils.getTechData("creator+creatorgroup+dimension", holder, Utils.getRowData(entry.getCreatorgroup(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_creator_group"), false)%>
                 <%=Utils.getTechData("material", holder, entry.getMaterial(), paramRequest.getLocaleString("usrmsg_view_detail_material"), false)%>
                 <%=Utils.getTechData("collectionnote", holder, entry.getCollectionnote(), paramRequest.getLocaleString("usrmsg_view_detail_collection_note"), false)%>
         </table>
