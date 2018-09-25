@@ -13,33 +13,28 @@
     String uri = detail.getRealUrl(paramRequest.getUser().getLanguage());
     if (relevants != null && !relevants.isEmpty()) {
 %>
-		<div class="content container exhibiciones-main">
-			<div class="row">
-				<div class="col-12">
-					<p><%=paramRequest.getLocaleString("usrmsg_view_relevants")%></p>
-				</div>
-			</div>
-			<div class="row">
-				<%
-                                    for (Entry item : relevants) {
-				%>	
-					<div class="col-6 col-md-4 exhibi-pza">
-                                            <div class="borde-CCC">
-						<div class="exhibi-pza-img">
-                                                    <a href="<%=uri%>?id=<%=item.getId()%>">
-							<img src="<%=item.getResourcethumbnail()%>"/>
-                                                    </a>
-						</div>
-						<p class="oswB rojo uppercase"><%=item.getRecordtitle().get(0).getValue()%></p>
-						<p><%=Utils.getRowData(item.getCreator(), 0, false)%></p>
-						<p><%=Utils.getRowData(item.getHolder(), 0, false)%></p>
-					</div>
-					</div>
-				<%
-                                    }
-				%>
-			</div>
-		</div>
+	<div class="content container exhibiciones-main">
+            <div class="row">
+                <%
+                    for (Entry item : relevants) {
+                %>	
+                <div class="col-6 col-md-4 exhibi-pza">
+                    <div class="borde-CCC">
+                        <div class="exhibi-pza-img">
+                            <a href="<%=uri%>?id=<%=item.getId()%>">
+                                <img src="<%=item.getResourcethumbnail()%>"/>
+                            </a>
+                        </div>
+                        <p class="oswB rojo uppercase"><%=item.getRecordtitle().get(0).getValue()%></p>
+                        <p><%=Utils.getRowData(item.getCreator(), 0, false)%></p>
+                        <p><%=Utils.getRowData(item.getHolder(), 0, false)%></p>
+                    </div>
+                </div>
+                <%
+                    }
+                %>
+            </div>
+	</div>
 <%
 	}
 %>

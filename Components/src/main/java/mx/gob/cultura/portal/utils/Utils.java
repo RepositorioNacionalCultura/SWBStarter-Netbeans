@@ -273,7 +273,7 @@ public class Utils {
                 cde.append("checked");
             cde.append("><span>").append(r.getName()).append("</span><span> ");
             if (showcount) cde.append(Utils.decimalFormat("###,###", r.getCount()));
-            cde.append("</span></label></li>");
+            cde.append("</span><span class=\"checkmark\"></span></label></li>");
             if (i>3) break; 
             else i++; 
         }
@@ -288,7 +288,7 @@ public class Utils {
                         cde.append("checked");
                     cde.append("><span>").append(r.getName()).append("</span><span> ");
                     if (showcount) cde.append(Utils.decimalFormat("###,###", r.getCount()));
-                    cde.append("</span></label></li>");
+                    cde.append("</span><span class=\"checkmark\"></span></label></li>");
                 }
             }
             cde.append("</div>");

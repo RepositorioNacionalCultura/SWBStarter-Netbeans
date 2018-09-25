@@ -79,7 +79,7 @@
                                 <p class="oswB rojo uppercase"><%=exhibition.getString("title")%></p>
                                 <p><%=exhibition.getString("author")%></p>
                                 <%  if (null != paramRequest.getUser() && paramRequest.getUser().isSigned()) { %>
-                                        <a href="#" onclick="del('<%=exhibition.getString("url")%>')">Eliminar</a>
+                                        <a href="#" onclick="del('<%=exhibition.getString("url")%>')"><span class="ion-trash-a"></span></a>
                                         <a href="<%=exhibition.getString("url")%>?act=vEdit"><span class="ion-edit"></span></a>
                                 <% }else { %>
                                         <p><a href="<%=exhibition.getString("url")%>" class="vermas-1topexh uppercase">Visitar exhibición</a></p>

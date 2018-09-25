@@ -76,12 +76,12 @@ public class Entry implements Serializable {
     private String cultura;
     private String curaduria;
     private String discipline;
-    private String creatorgroup;
     private String collectionnote;
     private String material;
     
     private List<String> serie;
     private List<String> credits;
+    private List<String> creatorgroup;
     private List<String> reccollection;
 
     public Stats getResourcestats() {
@@ -590,14 +590,6 @@ public class Entry implements Serializable {
         this.discipline = discipline;
     }
 
-    public String getCreatorgroup() {
-        return creatorgroup;
-    }
-
-    public void setCreatorgroup(String creatorgroup) {
-        this.creatorgroup = creatorgroup;
-    }
-
     public String getCollectionnote() {
         return collectionnote;
     }
@@ -612,6 +604,14 @@ public class Entry implements Serializable {
 
     public void setMaterial(String material) {
         this.material = material;
+    }
+
+    public List<String> getCreatorgroup() {
+        return creatorgroup;
+    }
+
+    public void setCreatorgroup(List<String> creatorgroup) {
+        this.creatorgroup = creatorgroup;
     }
 
     @Override

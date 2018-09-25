@@ -88,7 +88,7 @@
                     <a href="#"><span class="ion-social-facebook"/></a>
                     <a href="#"><span class="ion-social-twitter"/></a>
                     <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned()) { %>
-                            <a href="#" onclick="del('<%=exhibition.getString("url")%>')">Eliminar</a>
+                            <a href="#" onclick="del('<%=exhibition.getString("url")%>')"><span class="ion-trash-a"></span></a>
                             <a href="<%=exhibition.getString("url")%>?act=vEdit"><span class="ion-edit"></span></a>
                     <% } %>
                 </div>

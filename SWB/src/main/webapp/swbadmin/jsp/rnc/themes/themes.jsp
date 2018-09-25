@@ -25,7 +25,7 @@
     <div class="col-md-9 rutatop"><p><a href="/<%=userLang%>/<%=site.getId()%>/home"><%=paramRequest.getWebPage().getWebSite().getHomePage().getDisplayName(userLang)%></a> / <%=paramRequest.getLocaleString("usrmsg_view_search_explore")%></p></div>
 </div>
 <div class="row offcanvascont">
-    <div class="offcanvas rojo-bg">
+    <!--div class="offcanvas rojo-bg">
         <span onclick="openNav()" id="offcanvasAbre">
             <em class="fa fa-sliders" aria-hidden="true"></em> Filtros 
             <i class="ion-chevron-right " aria-hidden="true"></i>
@@ -34,8 +34,8 @@
             <em class="fa fa-sliders" aria-hidden="true"></em> Filtros 
             <i class="ion-close " aria-hidden="true"></i>
         </span>
-    </div>
-    <jsp:include page="filters.jsp" flush="true"/>
+    </div-->
+    <!--jjsp:include page="filters.jsp" flush="true"/-->
     <div id="contenido">
         <div class="ruta-resultado row">
             <div class="col-12 col-sm-8 col-md-8">
@@ -48,9 +48,9 @@
         </div>
         <a name="showPage"></a>
         <div id="references">
-            <div id="resultados">
+            <div id="explorar">
                 <div class="row">
-                    <div class="sel-temas col-6 col-sm-4">
+                    <div class="sel-temas col-6">
                         <button>
                             <span class="ion-android-checkbox-outline-blank"></span>
                             <span class="ion-android-checkbox-outline"></span>
@@ -60,7 +60,7 @@
                             </a>
                         </button>
                     </div>
-                    <div class="sel-temas col-6 col-sm-4">
+                    <div class="sel-temas col-6">
                         <button>
                             <span class="ion-android-checkbox-outline-blank"></span>
                             <span class="ion-android-checkbox-outline"></span>
@@ -70,7 +70,7 @@
                             </a>
                         </button>
                     </div>
-                    <div class="sel-temas col-6 col-sm-4">
+                    <div class="sel-temas col-6">
                         <button>
                             <span class="ion-android-checkbox-outline-blank"></span>
                             <span class="ion-android-checkbox-outline"></span>
@@ -80,7 +80,7 @@
                             </a>
                         </button>
                     </div>
-                    <div class="sel-temas col-6 col-sm-4">
+                    <div class="sel-temas col-6">
                         <button>
                             <span class="ion-android-checkbox-outline-blank"></span>
                             <span class="ion-android-checkbox-outline"></span>
@@ -90,7 +90,7 @@
                             </a>
                         </button>
                     </div>
-                    <div class="sel-temas col-6 col-sm-4">
+                    <div class="sel-temas col-6">
                         <button>
                             <span class="ion-android-checkbox-outline-blank"></span>
                             <span class="ion-android-checkbox-outline"></span>
@@ -100,7 +100,7 @@
                             </a>
                         </button>
                     </div>
-                    <div class="sel-temas col-6 col-sm-4">
+                    <div class="sel-temas col-6">
                         <button>
                             <span class="ion-android-checkbox-outline-blank"></span>
                             <span class="ion-android-checkbox-outline"></span>
@@ -110,7 +110,7 @@
                             </a>
                         </button>
                     </div>
-                    <div class="sel-temas col-6 col-sm-4">
+                    <div class="sel-temas col-6">
                         <button>
                             <span class="ion-android-checkbox-outline-blank"></span>
                             <span class="ion-android-checkbox-outline"></span>
@@ -120,7 +120,7 @@
                             </a>
                         </button>
                     </div>
-                    <div class="sel-temas col-6 col-sm-4">
+                    <div class="sel-temas col-6">
                         <button>
                             <span class="ion-android-checkbox-outline-blank"></span>
                             <span class="ion-android-checkbox-outline"></span>
