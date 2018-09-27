@@ -218,8 +218,8 @@
     <a href="#" class="">Temas (1)</a>
 </div>
 <a name="showPage"></a>
-<div id="references">
-    <div class="container">
+<div class="container">
+    <div id="references">
         <div class="row mosaico-contenedor">
         <%
             if (MyCollections.MODE_VIEW_MYALL.equalsIgnoreCase(paramRequest.getMode())) {
@@ -277,19 +277,17 @@
                                 <p>Curada por: <%=paramRequest.getUser().getFullName()%></p>
                                 <a href="#"><span class="ion-social-facebook"></span></a>
                                 <a href="#"><span class="ion-social-twitter"></span></a>
-                                <a href="#" onclick="messageConfirm('¿Está usted seguro de eliminar la colección?', '<%=c.getId()%>');">Eliminar</a>
+                                <a href="#" onclick="messageConfirm('¿Está usted seguro de eliminar la colección?', '<%=c.getId()%>');"><span class="ion-trash-a"></span></a>
                                 <a href="#" onclick="editByForm('<%=c.getId()%>');"><span class="ion-edit"></span></a>
                             </div>
                         </div>
-                <%
-                    }
-                %>
-                    <jsp:include page="pager.jsp" flush="true"/>
             <%
+                    }
                 }
             %>
         </div>
     </div>
+    <jsp:include page="pager.jsp" flush="true"/>
 </div>
 <div class="coleccionSecc-03 col-12 col-md-8 col-lg-6">
     <div class="agregarColecc ">

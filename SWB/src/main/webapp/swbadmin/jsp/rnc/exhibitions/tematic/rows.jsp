@@ -51,7 +51,7 @@
 				<a href="#" onclick="del('<%=exhibition.getString("url")%>')"><span class="ion-trash-a"></span></a>
                                 <a href="<%=exhibition.getString("url")%>?act=vEdit"><span class="ion-edit"></span></a>
                         <% }else { %>
-                                <p><a href="<%=exhibition.getString("url")%>" class="vermas-1topexh uppercase">Visitar exhibición</a></p>
+                                <p><a href="<%=exhibition.getString("url")%>" class="vermas-1topexh uppercase">Visitar exposición</a></p>
                         <% } %>
                    </div>
                 </div>

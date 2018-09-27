@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
+import java.util.Random;
 import mx.gob.cultura.portal.request.ListBICRequest;
 import mx.gob.cultura.portal.response.DigitalObject;
 import mx.gob.cultura.portal.response.Document;
@@ -216,21 +217,29 @@ public class ArtDetail extends GenericAdmResource {
     }
 
     private List<Entry> explore(Entry entry, String endPoint) {
+        Random rand = new Random();
         List<Entry> bookCase = new ArrayList<>();
         if (null == entry) return bookCase;
         List<String> collection = entry.getCollection();
+        int elements = Utils.toInt(getResourceBase().getAttribute("moreincollection", String.valueOf(NUM_ROW)));
         if (null != collection && !collection.isEmpty()) {
             for (String rack : collection) {
                 List<Entry> qrack = bookCase(endPoint, rack);
                 if (null != qrack && !qrack.isEmpty())
                     bookCase.addAll(qrack);
-                if (!bookCase.isEmpty() && bookCase.size() > NUM_ROW) {
+                /**if (!bookCase.isEmpty() && bookCase.size() > NUM_ROW) {
                     break;
-                }
+                }**/
             }
         }
-        if (bookCase.size() >= NUM_ROW) {
-            return bookCase.subList(0, NUM_ROW);
+        if (bookCase.size() > elements) {
+            int randitem = rand.nextInt(bookCase.size()-elements);
+            System.out.println("randitem: " + randitem);
+            List<Entry> randomCase = new ArrayList<>();
+            for (int i = 0; i<elements; i++){
+                randomCase.add(bookCase.get(randitem+i));
+            }
+            return randomCase;
         } else {
             return bookCase;
         }
