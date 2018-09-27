@@ -20,118 +20,87 @@
     String archeology = "&resourcetype=Ceremonia::Pieza arqueológica::Fósil::Resto geológico::Resto óseo::Herramienta::Arqueología&holder=Instituto Nacional de Lenguas Indígenas::INALI::Instituto Nacional de Antropología e Historia::Mediateca::Museo Nacional de Historia::Museo Nacional de Antropología&theme=Arqueología";
 
 %>
-<div class="row resultadosbar">
-    <div class="col-md-3 regresar"><a class="rojo" href="javascript:history.go(-1)"><span class="ion-arrow-left-c"></span> 			<%=paramRequest.getLocaleString("usrmsg_view_search_back")%></a></div>
-    <div class="col-md-9 rutatop"><p><a href="/<%=userLang%>/<%=site.getId()%>/home"><%=paramRequest.getWebPage().getWebSite().getHomePage().getDisplayName(userLang)%></a> / <%=paramRequest.getLocaleString("usrmsg_view_search_explore")%></p></div>
-</div>
-<div class="row offcanvascont">
-    <!--div class="offcanvas rojo-bg">
-        <span onclick="openNav()" id="offcanvasAbre">
-            <em class="fa fa-sliders" aria-hidden="true"></em> Filtros 
-            <i class="ion-chevron-right " aria-hidden="true"></i>
-        </span>
-        <span onclick="closeNav()" id="offcanvasCierra">
-            <em class="fa fa-sliders" aria-hidden="true"></em> Filtros 
-            <i class="ion-close " aria-hidden="true"></i>
-        </span>
-    </div-->
-    <!--jjsp:include page="filters.jsp" flush="true"/-->
-    <div id="contenido">
-        <div class="ruta-resultado row">
-            <div class="col-12 col-sm-8 col-md-8">
-                <p class="oswL rojo"><%=paramRequest.getLocaleString("usrmsg_view_search_explore")%><span class="oswB rojo"> 500 000 </span> <%=paramRequest.getLocaleString("usrmsg_view_search_records")%></p>
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 ordenar">
-                <i class="fa fa-th select" aria-hidden="true"></i>
-                <i class="fa fa-th-list " aria-hidden="true"></i>
-            </div>
+<div id="explorar">
+    <div class="row">
+        <div class="sel-temas col-6">
+            <button>
+                <span class="ion-android-checkbox-outline-blank"></span>
+                <span class="ion-android-checkbox-outline"></span>
+                <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_memory_sound")%></p>
+                <a href="<%=url%><%=memorysound%>">
+                    <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
+                </a>
+            </button>
         </div>
-        <a name="showPage"></a>
-        <div id="references">
-            <div id="explorar">
-                <div class="row">
-                    <div class="sel-temas col-6">
-                        <button>
-                            <span class="ion-android-checkbox-outline-blank"></span>
-                            <span class="ion-android-checkbox-outline"></span>
-                            <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_memory_sound")%></p>
-                            <a href="<%=url%><%=memorysound%>">
-                                <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
-                            </a>
-                        </button>
-                    </div>
-                    <div class="sel-temas col-6">
-                        <button>
-                            <span class="ion-android-checkbox-outline-blank"></span>
-                            <span class="ion-android-checkbox-outline"></span>
-                            <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_memory_visual")%></p>
-                            <a href="<%=url%><%=memoryvisual%>">
-                                <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
-                            </a>
-                        </button>
-                    </div>
-                    <div class="sel-temas col-6">
-                        <button>
-                            <span class="ion-android-checkbox-outline-blank"></span>
-                            <span class="ion-android-checkbox-outline"></span>
-                            <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_divulgation")%></p>
-                            <a href="<%=url%><%=release%>">
-                                <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
-                            </a>
-                        </button>
-                    </div>
-                    <div class="sel-temas col-6">
-                        <button>
-                            <span class="ion-android-checkbox-outline-blank"></span>
-                            <span class="ion-android-checkbox-outline"></span>
-                            <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_art")%></p>
-                            <a href="<%=url%><%=art%>">
-                                <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
-                            </a>
-                        </button>
-                    </div>
-                    <div class="sel-temas col-6">
-                        <button>
-                            <span class="ion-android-checkbox-outline-blank"></span>
-                            <span class="ion-android-checkbox-outline"></span>
-                            <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_documents")%></p>
-                            <a href="<%=url%><%=documents%>">
-                                <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
-                            </a>
-                        </button>
-                    </div>
-                    <div class="sel-temas col-6">
-                        <button>
-                            <span class="ion-android-checkbox-outline-blank"></span>
-                            <span class="ion-android-checkbox-outline"></span>
-                            <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_history")%></p>
-                            <a href="<%=url%><%=history%>">
-                                <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
-                            </a>
-                        </button>
-                    </div>
-                    <div class="sel-temas col-6">
-                        <button>
-                            <span class="ion-android-checkbox-outline-blank"></span>
-                            <span class="ion-android-checkbox-outline"></span>
-                            <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_anthropology")%></p>
-                            <a href="<%=url%><%=anthropology%>">
-                                <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
-                            </a>
-                        </button>
-                    </div>
-                    <div class="sel-temas col-6">
-                        <button>
-                            <span class="ion-android-checkbox-outline-blank"></span>
-                            <span class="ion-android-checkbox-outline"></span>
-                            <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_archeology")%></p>
-                            <a href="<%=url%><%=archeology%>">
-                                <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
-                            </a>
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div class="sel-temas col-6">
+            <button>
+                <span class="ion-android-checkbox-outline-blank"></span>
+                <span class="ion-android-checkbox-outline"></span>
+                <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_memory_visual")%></p>
+                <a href="<%=url%><%=memoryvisual%>">
+                    <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
+                </a>
+            </button>
+        </div>
+        <div class="sel-temas col-6">
+            <button>
+                <span class="ion-android-checkbox-outline-blank"></span>
+                <span class="ion-android-checkbox-outline"></span>
+                <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_divulgation")%></p>
+                <a href="<%=url%><%=release%>">
+                    <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
+                </a>
+            </button>
+        </div>
+        <div class="sel-temas col-6">
+            <button>
+                <span class="ion-android-checkbox-outline-blank"></span>
+                <span class="ion-android-checkbox-outline"></span>
+                <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_art")%></p>
+                <a href="<%=url%><%=art%>">
+                    <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
+                </a>
+            </button>
+        </div>
+        <div class="sel-temas col-6">
+            <button>
+                <span class="ion-android-checkbox-outline-blank"></span>
+                <span class="ion-android-checkbox-outline"></span>
+                <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_documents")%></p>
+                <a href="<%=url%><%=documents%>">
+                    <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
+                </a>
+            </button>
+        </div>
+        <div class="sel-temas col-6">
+            <button>
+                <span class="ion-android-checkbox-outline-blank"></span>
+                <span class="ion-android-checkbox-outline"></span>
+                <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_history")%></p>
+                <a href="<%=url%><%=history%>">
+                    <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
+                </a>
+            </button>
+        </div>
+        <div class="sel-temas col-6">
+            <button>
+                <span class="ion-android-checkbox-outline-blank"></span>
+                <span class="ion-android-checkbox-outline"></span>
+                <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_anthropology")%></p>
+                <a href="<%=url%><%=anthropology%>">
+                    <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
+                </a>
+            </button>
+        </div>
+        <div class="sel-temas col-6">
+            <button>
+                <span class="ion-android-checkbox-outline-blank"></span>
+                <span class="ion-android-checkbox-outline"></span>
+                <p class="oswL"><%=paramRequest.getLocaleString("usrmsg_view_search_archeology")%></p>
+                <a href="<%=url%><%=archeology%>">
+                    <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
+                </a>
+            </button>
         </div>
     </div>
 </div>

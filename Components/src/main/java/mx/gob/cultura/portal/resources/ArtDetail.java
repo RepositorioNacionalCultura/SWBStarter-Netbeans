@@ -92,7 +92,6 @@ public class ArtDetail extends GenericAdmResource {
                 request.setAttribute("collection", explore(entry, baseUri));
             }
             setParams(request, paramRequest);
-            response.addHeader("Access-Control-Allow-Origin", "*"); 
             RequestDispatcher rd = request.getRequestDispatcher(path);
             rd.include(request, response);
         } catch (ServletException se) {

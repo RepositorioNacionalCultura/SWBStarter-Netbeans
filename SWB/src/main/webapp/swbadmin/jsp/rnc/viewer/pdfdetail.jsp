@@ -29,16 +29,19 @@
             if (null != digital.getUrl() && (digital.getUrl().endsWith(".pdf") || digital.getUrl().endsWith("view"))) {
 		scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
                 scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-pdf.css'/>");
-		if (Utils.getClientBrowser(request).contains("Firefox") || Utils.getClientBrowser(request).contains("Safari")) {
+		if (Utils.getClientBrowser(request).contains("Firefox")) {
                     scriptCallVisor.append("<iframe src=\"").append(digital.getUrl()).append("\" width=\"1200px\" height=\"900px\"></iframe>");
-		}else {
+		}else if (Utils.getClientBrowser(request).contains("edge")) {
                     scriptCallVisor.append("<script type=\"text/javascript\">")
-			.append("   $(document).ready(function() {")
-                        .append("       PDFObject.embed(\"").append(digital.getUrl()).append("\", \"#pdfdetail\");")
-			.append("   });")
-                        .append("</script>");
+                    .append("   $(document).ready(function() {")
+                    .append("       PDFObject.embed(\"").append(digital.getUrl()).append("\", \"#pdfdetail\");")
+                    .append("   });")
+                    .append("</script>");
                     divVisor.append("<div id=\"pdfdetail\"></div>");
-		}
+		}else {
+                    String url = digital.getUrl().contains("/multimedia") ? digital.getUrl().replaceFirst("/multimedia", "..") : digital.getUrl();
+                    scriptCallVisor.append("<iframe src=\"").append("/multimedia/ViewerJS/#").append(url).append("\" width=\"1200px\" height=\"900px\" allowfullscreen webkitallowfullscreen></iframe>");
+                }
 		title = Utils.getTitle(entry.getRecordtitle(), 0);
                 creator = Utils.getRowData(entry.getCreator(), 0, false);
             }
@@ -64,15 +67,7 @@
                     © <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
                 </div>
 		<div class="explo2 row">
-                    <div class="col-3">
-                        <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
-                    </div>
-                    <div class="col-3">
-                        <span class="ion-social-twitter"></span>
-                    </div>
-                    <div class="col-6">
-                        <a href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
-                    </div>
+                    <jsp:include page="../share.jsp" flush="true"/>
                 </div>
 		<div class="explo3 row">
                     <jsp:include page="../nav.jsp" flush="true"/>

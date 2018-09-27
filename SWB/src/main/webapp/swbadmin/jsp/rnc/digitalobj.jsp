@@ -39,14 +39,15 @@
                 scriptCallVisor.append("<script type=\"text/javascript\">")
                     .append("var dz = OpenSeadragon({")
                     .append("	id:\"pyramid\",")
-                    .append("	showNavigator: true,")
-                    .append("	showHomeControl: false,")
                     .append("	toolbar:       \"toolbarDiv\",")
                     .append("	navigatorId:   \"navigatorDiv\",")
-                    .append("	defaultZoomLevel: 0.8,")
+                    .append("	showHomeControl: false,")
+                    .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
+                    .append("	showNavigator: true,")
+                    .append("	immediateRender: true,")
+                    .append("	defaultZoomLevel: 0.6,")
                     .append("	maxZoomLevel: 1.5,")
                     .append("	minZoomLevel: 0.4,")
-                    .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
                     .append("	tileSources:   [")
                     .append("		\"").append(digital.getUrl()).append("\"")
                     .append("	]")
@@ -58,12 +59,13 @@
 		scriptCallVisor.append("<script type=\"text/javascript\">")
                     .append("var vw = OpenSeadragon({")
                     .append("	id:\"pyramid\",")
-                    .append("	showHomeControl: false,")
                     .append("	toolbar:        \"toolbarDiv\",")
                     .append("	navigatorId:    \"navigatorDiv\",")
+                    .append("	showHomeControl: false,")
                     .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
                     .append("	showNavigator: true,")
-                    .append("	defaultZoomLevel: 0.8,")
+                    .append("	immediateRender: true,")
+                    .append("	defaultZoomLevel: 0.6,")
                     .append("	maxZoomLevel: 1.5,")
                     .append("	minZoomLevel: 0.4,")
                     .append("	tileSources:   {")
@@ -94,15 +96,7 @@
                 &reg; <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
             </div>
             <div class="explo2 row">
-                <div class="col-3">
-                    <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
-                </div>
-                <div class="col-3">
-                    <span class="ion-social-twitter"></span>
-                </div>
-                <div class="col-6">
-                    <a href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
-                </div>
+                <jsp:include page="share.jsp" flush="true"/>
             </div>
             <div class="explo3 row">
                 <jsp:include page="nav.jsp" flush="true"/>

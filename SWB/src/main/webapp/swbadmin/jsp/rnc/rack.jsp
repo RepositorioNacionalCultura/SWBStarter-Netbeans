@@ -35,7 +35,7 @@
 			<p class="tipo"><%=holder%></p>
                     </div><hr>
 	<% 
-                    if (i>1) break;
+                    if (i>0) break;
                         i++;
 		}
             }

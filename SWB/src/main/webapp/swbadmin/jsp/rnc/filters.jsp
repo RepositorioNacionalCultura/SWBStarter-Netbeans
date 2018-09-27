@@ -30,14 +30,20 @@
     pageURL.setCallMethod(SWBParamRequest.Call_DIRECT);
 %>
 <script type="text/javascript">
+    var filterDate = false;
     function sort(f) {
         doSort('<%=word%>',f.value);
     }
     function reset() {
+        filterDate = false;
         var inputElements = document.getElementsByClassName('form-check-input');
 	for (i=0; i<inputElements.length; i++) {
             inputElements[i].checked = false;
 	}
+        document.getElementById("bx1").value = <%=aggs.getInterval().getLowerLimit()%>;
+	document.getElementById("bx2").value = <%=aggs.getInterval().getUpperLimit()%>;
+	document.getElementById("ex1SliderVal").textContent = document.getElementById("bx1").value;
+        document.getElementById("ex2SliderVal").textContent = document.getElementById("bx2").value;
         doSort('<%=word%>','relvdes');
     }
     function filter() {
@@ -81,7 +87,7 @@
         if (holder.length > 8) {holder = holder.replace("=::","=");}else {holder=''}
         if (mediastype.length > 11) {mediastype = mediastype.replace("=::","=");}else {mediastype=''}
         if (resourcetype.length > 13) {resourcetype = resourcetype.replace("=::","=");}else {resourcetype=''}
-        dates+=document.getElementById("bx1").value+","+document.getElementById("bx2").value;
+        if (filterDate) dates+=document.getElementById("bx1").value+","+document.getElementById("bx2").value; else {dates=""}
         filters += resourcetype + mediastype + rights + languages + holder + dates;
         doSort('<%=word%>'+filters,'relvdes');
     }
@@ -108,9 +114,13 @@
             alert('<%=paramRequest.getLocaleString("usrmsg_view_search_year_max_error")%> ' + max);
 	}
         if (ele.name == 'bx1' && validateRange(document.getElementById("bx1").value, document.getElementById("bx2").value)) {
+            document.getElementById("ex1SliderVal").textContent = document.getElementById("bx1").value;
+            filterDate = true;
             filter();
 	}
 	if (ele.name == 'bx2' && validateRange(document.getElementById("bx1").value, document.getElementById("bx2").value)) {
+            filterDate = true;
+            document.getElementById("ex2SliderVal").textContent = document.getElementById("bx2").value;
             filter();
 	}
     }
