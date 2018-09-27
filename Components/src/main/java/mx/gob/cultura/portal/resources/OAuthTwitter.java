@@ -282,7 +282,7 @@ public class OAuthTwitter extends GenericResource {
             if (indexColon != -1) {
                 pathBegining = reqHost.substring(0, reqHost.indexOf("/", indexColon));
             } else {
-                pathBegining = reqHost.substring(0, reqHost.indexOf("/", 7));
+                pathBegining = reqHost.substring(0, reqHost.indexOf("/", 10));
             }
             String callbackTmp = pathBegining + paramRequest.getRenderUrl().setCallMethod(
                     SWBParamRequest.Call_DIRECT).setMode("authenticateToken").toString();
@@ -290,6 +290,11 @@ public class OAuthTwitter extends GenericResource {
             String callback = callbackTmp.substring(0, indexSection) +
                      "home" + callbackTmp.substring(callbackTmp.indexOf("/", indexSection + 1));
             
+            OAuthTwitter.LOG.debug("Callback: " + callback);
+            OAuthTwitter.LOG.debug("oauth_consumer_key: " + consumerKey);
+            OAuthTwitter.LOG.debug("oauth_nonce: " + nonce);
+            OAuthTwitter.LOG.debug("oauth_signature_method: " + this.SIGN_METHOD);
+            OAuthTwitter.LOG.debug("oauth_timestamp: " + timestamp);
             request.getSession().setAttribute("returnPoint", reqHost);
             //Se recaban los datos para la firma de la peticion
             TreeMap<String, String> params2Sign = new TreeMap();
