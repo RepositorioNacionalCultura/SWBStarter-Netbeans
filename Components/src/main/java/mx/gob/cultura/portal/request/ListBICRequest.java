@@ -1,7 +1,9 @@
 package mx.gob.cultura.portal.request;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import java.io.IOException;
 import mx.gob.cultura.portal.response.Document;
 import org.semanticwb.SWBUtils;
 
@@ -34,7 +36,6 @@ public class ListBICRequest {
     public Document makeRequest() {
         URL url = null;
         Document doc = null;
-
         try {
             url = new URL(uri);
         } catch (MalformedURLException mue) {
@@ -47,12 +48,14 @@ public class ListBICRequest {
                 HttpURLConnection connection = (HttpURLConnection)url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("Accept", "application/json");
-                InputStream is = connection.getInputStream();
-                String jsonText = SWBUtils.IO.readInputStream(is, "UTF-8");
-                Gson gson = new Gson();
-                Type documentType = new TypeToken<Document>(){}.getType();
-                doc = gson.fromJson(jsonText, documentType);
-            }catch (Exception e) {
+                if (connection.getResponseCode() == 200) {
+                    InputStream is = connection.getInputStream();
+                    String jsonText = SWBUtils.IO.readInputStream(is, "UTF-8");
+                    Gson gson = new Gson();
+                    Type documentType = new TypeToken<Document>(){}.getType();
+                    doc = gson.fromJson(jsonText, documentType);
+                }
+            }catch (JsonSyntaxException | IOException e) {
                 e.printStackTrace();
             }
         }

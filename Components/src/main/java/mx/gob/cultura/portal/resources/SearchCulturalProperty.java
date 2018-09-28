@@ -139,6 +139,9 @@ public class SearchCulturalProperty extends PagerAction {
                 request.setAttribute(FULL_LIST, document.getRecords());
                 request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
                 cassette(request, document.getTotal(), getPage(request));
+            }else {
+                request.setAttribute(FULL_LIST, publicationList);
+                request.setAttribute("NUM_RECORDS_TOTAL", 0);
             }
             request.setAttribute("word", q);
             init(request, response, paramRequest);

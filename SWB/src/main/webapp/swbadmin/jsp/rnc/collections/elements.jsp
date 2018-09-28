@@ -142,7 +142,7 @@
                                 <p class="azul autor"><a href="#"><%=creator%></a></p>
                                 <p class="tipo"><%=type%></p>
                                 <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned()) {%>
-                                    <a href="#" onclick="del('<%=c.getId()%>', '<%=item.getId()%>')">Quitar de la colección</a>
+                                    <a href="#" onclick="del('<%=c.getId()%>', '<%=item.getId()%>')"><span class="ion-trash-a"></span></a>
                                 <% } %>
                             </div>
                         </div>

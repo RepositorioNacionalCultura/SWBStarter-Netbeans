@@ -33,6 +33,7 @@
             load: function(data) {
                 dojo.byId('references').innerHTML=data;
 		location.href = '#showPage';
+                openNav();
             }
         });
     }

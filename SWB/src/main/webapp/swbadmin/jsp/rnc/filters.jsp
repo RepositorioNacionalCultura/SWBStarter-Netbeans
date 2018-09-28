@@ -28,6 +28,8 @@
     }
     SWBResourceURL pageURL = paramRequest.getRenderUrl().setMode("SORT");
     pageURL.setCallMethod(SWBParamRequest.Call_DIRECT);
+    int lower = null != aggs ? aggs.getInterval().getLowerLimit() : 0;
+    int upper = null != aggs ? aggs.getInterval().getUpperLimit() : 0;
 %>
 <script type="text/javascript">
     var filterDate = false;
@@ -40,8 +42,8 @@
 	for (i=0; i<inputElements.length; i++) {
             inputElements[i].checked = false;
 	}
-        document.getElementById("bx1").value = <%=aggs.getInterval().getLowerLimit()%>;
-	document.getElementById("bx2").value = <%=aggs.getInterval().getUpperLimit()%>;
+        document.getElementById("bx1").value = <%=lower%>;
+	document.getElementById("bx2").value = <%=upper%>;
 	document.getElementById("ex1SliderVal").textContent = document.getElementById("bx1").value;
         document.getElementById("ex2SliderVal").textContent = document.getElementById("bx2").value;
         doSort('<%=word%>','relvdes');
