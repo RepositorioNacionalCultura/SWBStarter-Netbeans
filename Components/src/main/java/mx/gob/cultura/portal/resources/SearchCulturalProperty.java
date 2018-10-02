@@ -456,7 +456,7 @@ public class SearchCulturalProperty extends PagerAction {
                 if (position < list.size()) {
                     DigitalObject dObj = list.get(position);
                     if (null != dObj && null != dObj.getMediatype() && null != dObj.getMediatype().getMime()) {
-                        String type = position == 0 ? e.getRights().getMedia().getMime() : dObj.getMediatype().getMime();
+                        String type = dObj.getMediatype().getMime();
                         if (!existImg(e.getResourcethumbnail())) {
                             if (type.equalsIgnoreCase("zip"))
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-zip.png");

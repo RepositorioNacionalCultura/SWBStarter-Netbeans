@@ -56,10 +56,11 @@ public class Utils {
         m.put(125, "");  // }
     }
     
-    public static String getTechData(String property, String holder, String key, String locale, boolean basic) {
-        if (null == key || key.trim().isEmpty()) return "";
+    public static String getTechData(String property, String holder, String key, String locale, boolean basic, boolean notNull) {
+        if (notNull && (null == key || key.trim().isEmpty())) return "";
         if (!basic && !Biblio.isRequired(property, holder)) return "";
         StringBuilder data = new StringBuilder();
+        key = null != key ? key.trim() : "";
         data.append("<tr>")
             .append("   <td>").append(locale).append("</td>")
             .append("   <td>").append(key).append("</td>")
@@ -67,13 +68,38 @@ public class Utils {
         return data.toString();
     }
     
-    public static String concatLink(String userLang, String site, String... args) {
+    public static String concatLink(String userLang, String site, boolean all, String... args) {
         StringBuilder link = new StringBuilder();
-        if (null != args && args.length > 0 && null != args[0] && !args[0].trim().isEmpty()) {
-            link.append("<a href=\"/").append(userLang).append("/").append(site).append("/resultados?word=").append(args[0]).append("\">").append(args[0]);
-            if (args.length > 1 && null != args[1] && !args[1].trim().isEmpty()) link.append(" ").append(args[1]).append("</a>");
+        if (null != args && null != args[0] && !args[0].trim().isEmpty()) {
+            String url = "<a href=\"/" + userLang + "/" + site + "/resultados?word=";
+            if (all) {
+                for (int i=0; i<args.length; i++) {
+                    if (null != args[i] && !args[i].trim().isEmpty()) {
+                        link.append(", ").append(url).append(args[i]).append("\">").append(args[i].trim()).append("</a>");
+                    }
+                }
+            }else {
+                link.append(" ").append(url).append(args[0]).append("\">").append(args[0]);
+                if (null != args[1] && !args[1].trim().isEmpty())
+                    link.append(" ").append(args[1]);
+                link.append("</a>");
+            }
+            if (link.length() > 0) link.deleteCharAt(0);
         }
         return link.toString();
+    }
+    
+    public static String getCreator(List<String> names) {
+        int i = 0;
+        if (null == names) return "";
+        StringBuilder creator = new StringBuilder();
+        for (String name : names) {
+            creator.append(" ").append(name);
+            if (i == 1) break;
+            i++;
+        }
+        if (creator.length() > 1) creator.deleteCharAt(0);
+        return creator.toString();
     }
     
     public static String suprXSS(String str) {

@@ -39,10 +39,10 @@
                         %>
                     </div>
                 </div>
-                <div class="owl-nav col">
+                <!--div class="owl-nav col"-->
                     <div class="rel customPrevBtn"><i class="fa fa-chevron-left" aria-hidden="true"></i></div>
                     <div class="rel customNextBtn"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
-                </div>
+                <!--/div-->
             </div>
         </div>
     </div>

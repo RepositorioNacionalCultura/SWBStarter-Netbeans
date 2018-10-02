@@ -51,4 +51,9 @@ public class Rights  implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    @Override
+    public String toString() {
+        return "Rights{" + "url=" + url + ", media=" + media + ", rightstitle=" + rightstitle + ", description=" + description + '}';
+    }
 }
