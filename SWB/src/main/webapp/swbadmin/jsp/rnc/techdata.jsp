@@ -75,7 +75,7 @@
             <%=Utils.getTechData("resourcetype", holder, type, paramRequest.getLocaleString("usrmsg_view_detail_type_object"), true, true)%>
             <%=Utils.getTechData("oaiid/identifier", holder, entry.getIdentifiers(), paramRequest.getLocaleString("usrmsg_view_detail_identifier"), true, true)%>
             <%=Utils.getTechData("holder", holder, urlholder, paramRequest.getLocaleString("usrmsg_view_detail_institution"), true, true)%>
-            <%=Utils.getTechData("generator", holder, Utils.concatLink(userLang, site.getId(), true, entry.getGenerator().toArray(new String[0])), paramRequest.getLocaleString("usrmsg_view_detail_collection"), true, true)%>
+            <% if (null !=  entry.getGenerator() && !entry.getGenerator().isEmpty()) { out.println(Utils.getTechData("generator", holder, Utils.concatLink(userLang, site.getId(), true, entry.getGenerator().toArray(new String[0])), paramRequest.getLocaleString("usrmsg_view_detail_collection"), true, true)); } %>
             <%=Utils.getTechData("rights.rightstitle", holder, rights, paramRequest.getLocaleString("usrmsg_view_detail_rights"), true, true)%>
             <%
                 if (null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty() && null != entry.getRights() && null != entry.getRights().getDescription()) {
