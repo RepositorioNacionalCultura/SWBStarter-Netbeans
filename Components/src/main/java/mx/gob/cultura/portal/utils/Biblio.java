@@ -105,6 +105,7 @@ public class Biblio {
         ceim.put("oaiid/identifier", REQUIRED);
         ceim.put("recordtitle", REQUIRED);
         ceim.put("creator", REQUIRED);
+        ceim.put("creatorgroup", REQUIRED);
         ceim.put("holder", REQUIRED);
         ceim.put("serie", COMPLEMENTARY);
         ceim.put("dimension+unidad", REQUIRED);
