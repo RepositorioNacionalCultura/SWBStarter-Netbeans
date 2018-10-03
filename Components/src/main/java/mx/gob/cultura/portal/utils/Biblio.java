@@ -129,7 +129,10 @@ public class Biblio {
         cl22.put("keywords", COMPLEMENTARY);
         cl22.put("rights.rightstitle", REQUIRED);
         cl22.put("rights.description+rights.url", REQUIRED);
+        cl22.put("reccollection", COMPLEMENTARY);
         cl22.put("episode", COMPLEMENTARY);
+        cl22.put("media", COMPLEMENTARY);
+        cl22.put("availableformats", COMPLEMENTARY);
     }
     
     static {
@@ -174,7 +177,7 @@ public class Biblio {
         dgp.put("oaiid/identifier", REQUIRED);
         dgp.put("recordtitle", REQUIRED);
         dgp.put("number", REQUIRED);
-        dgp.put("subtile", COMPLEMENTARY);
+        dgp.put("subtile", REQUIRED);
         dgp.put("creator", REQUIRED);
         dgp.put("holder", REQUIRED);
         dgp.put("dimension+unidad", REQUIRED);
@@ -187,6 +190,8 @@ public class Biblio {
         dgp.put("editorial", COMPLEMENTARY);
         dgp.put("serie", COMPLEMENTARY);
         dgp.put("credits", COMPLEMENTARY);
+        dgp.put("media", COMPLEMENTARY);
+        dgp.put("availableformats", COMPLEMENTARY);
     }
     
     static {
@@ -202,6 +207,9 @@ public class Biblio {
         dgb.put("rights.description+rights.url", REQUIRED);
         dgb.put("lugar+state", COMPLEMENTARY);
         dgb.put("press", COMPLEMENTARY);
+        dgb.put("creatorgroup", COMPLEMENTARY);
+        dgb.put("media", COMPLEMENTARY);
+        dgb.put("availableformats", COMPLEMENTARY);
     }
     
     static {
@@ -215,6 +223,8 @@ public class Biblio {
         bv.put("rights.rightstitle", REQUIRED);
         bv.put("rights.description+rights.url", REQUIRED);
         bv.put("lugar+state", COMPLEMENTARY);
+        bv.put("media", COMPLEMENTARY);
+        bv.put("availableformats", COMPLEMENTARY);
     }
     
     static {

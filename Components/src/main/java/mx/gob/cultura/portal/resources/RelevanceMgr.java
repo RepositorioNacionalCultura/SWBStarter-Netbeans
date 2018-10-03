@@ -32,6 +32,7 @@ import org.semanticwb.portal.api.SWBResourceModes;
 import org.semanticwb.portal.api.SWBResourceURL;
 
 import static mx.gob.cultura.portal.utils.Constants.PARAM_REQUEST;
+import org.semanticwb.model.Role;
 
 /**
  *
@@ -47,6 +48,8 @@ public class RelevanceMgr extends GenericResource {
     public void doAdmin(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
         StringBuilder ret = new StringBuilder();
         try {
+            Role admin = paramRequest.getWebPage().getWebSite().getUserRepository().getRole("Administrador");
+            System.out.println("ROLE: " + admin);
             List<Collection> collectionList = mgr.collectionsByStatus(COLLECTION_PRIVATE);
             if ("add".equals(paramRequest.getAction()) || "edit".equals(paramRequest.getAction())) {
                 SWBResourceURL url=paramRequest.getRenderUrl();

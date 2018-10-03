@@ -13,9 +13,10 @@
     String title = "";
     String place = "";
     String holder = "";
-    Document desc = null;
     String rights = "";
+    String subtile = "";
     String urlholder = "";
+    Document desc = null;
     List<Title> titles = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
@@ -41,8 +42,8 @@
 	//creator = Utils.getRowData(entry.getCreator(), 0, true);
         //period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
 	if (!titles.isEmpty()) title = titles.get(0).getValue();
-        //rights = Utils.getRights(entry);
         title = Utils.getTitle(titles, 0);
+        subtile = (Utils.c(entry.getNumber()) + " " + Utils.c(entry.getSubtile())).trim();
         desc = Utils.getDescription(entry.getDescription());
         fdesc = (null != desc && null != desc.get("full")) ? (String)desc.get("full") : "";
         
@@ -70,6 +71,7 @@
             <tr>
                 <th colspan="2"><%=paramRequest.getLocaleString("usrmsg_view_detail_data_sheet")%></th>
             </tr>
+            <%=Utils.getTechData("recordtitle", holder, title+subtile, paramRequest.getLocaleString("usrmsg_view_detail_title"), true, true)%>
             <%=Utils.getTechData("creator", holder, Utils.concatLink(userLang, site.getId(), true, entry.getCreator().toArray(new String[0])), paramRequest.getLocaleString("usrmsg_view_detail_artist"), true, true)%>
             <%=Utils.getTechData("datecreated", holder, null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "", paramRequest.getLocaleString("usrmsg_view_detail_date"), true, true)%>
             <%=Utils.getTechData("resourcetype", holder, type, paramRequest.getLocaleString("usrmsg_view_detail_type_object"), true, true)%>

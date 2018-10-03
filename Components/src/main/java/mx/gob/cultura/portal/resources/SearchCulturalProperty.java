@@ -466,7 +466,7 @@ public class SearchCulturalProperty extends PagerAction {
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-video.png");
                             else if (type.equalsIgnoreCase("pdf"))
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-pdf.png");
-                            else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("aiff"))
+                            else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("aiff") || type.equalsIgnoreCase("mp3"))
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-audio.png");
                             else if (type.equalsIgnoreCase("conjunto de archivos") || type.equalsIgnoreCase("multimedia"))
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-multimedia.png");
