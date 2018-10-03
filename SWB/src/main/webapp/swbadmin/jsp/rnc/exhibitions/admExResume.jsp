@@ -23,14 +23,14 @@
 			<tr>
                 <td class="datos">Ordenamiento: </td>
                 <td class="valores">
-                       <select name="sort" id="sort" disabled="disabled">
-                           <option value=""></option>
-                           <option value="date" <% if (base.getAttribute("sort","").equals("date")) out.println("selected='selected'"); %>>Fecha</option>
-                           <option value="relv" <% if (base.getAttribute("sort","").equals("relv")) out.println("selected='selected'"); %>>Relevancia</option>
-                           <option value="stat" <% if (base.getAttribute("sort","").equals("stat")) out.println("selected='selected'"); %>>Popularidad</option>
-                       </select>
-					   <input type="radio" name="order" value="des" <% if (base.getAttribute("order","").equals("des")) out.println("checked"); %>>Descendente
-					   <input type="radio" name="order" value="asc" <% if (base.getAttribute("order","").equals("asc")) out.println("checked"); %>>Ascendente
+                    <select name="sort" id="sort" disabled="disabled">
+                        <option value=""></option>
+                        <option value="date" <% if (base.getAttribute("sort","").equals("date")) out.println("selected='selected'"); %>>Fecha</option>
+                        <option value="relv" <% if (base.getAttribute("sort","").equals("relv")) out.println("selected='selected'"); %>>Relevancia</option>
+                        <option value="stat" <% if (base.getAttribute("sort","").equals("stat")) out.println("selected='selected'"); %>>Popularidad</option>
+                    </select>
+                    <input type="radio" name="order" value="des" <% if (base.getAttribute("order","").equals("des")) out.println("checked"); %>>Descendente
+                    <input type="radio" name="order" value="asc" <% if (base.getAttribute("order","").equals("asc")) out.println("checked"); %>>Ascendente
                 </td>
             </tr>
 			<tr>

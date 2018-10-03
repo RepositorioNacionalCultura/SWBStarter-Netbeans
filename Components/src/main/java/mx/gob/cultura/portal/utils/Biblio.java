@@ -177,8 +177,7 @@ public class Biblio {
         dgp.put("subtile", COMPLEMENTARY);
         dgp.put("creator", REQUIRED);
         dgp.put("holder", REQUIRED);
-        dgp.put("dimension", REQUIRED);
-        dgp.put("unidad", REQUIRED);
+        dgp.put("dimension+unidad", REQUIRED);
         dgp.put("datecreated", REQUIRED);
         dgp.put("resourcetype", REQUIRED);
         dgp.put("reccollection", COMPLEMENTARY);
@@ -195,8 +194,7 @@ public class Biblio {
         dgb.put("recordtitle", REQUIRED);
         dgb.put("creator", REQUIRED);
         dgb.put("holder", REQUIRED);
-        dgb.put("dimension", REQUIRED);
-        dgb.put("unidad", REQUIRED);
+        dgb.put("dimension+unidad", REQUIRED);
         dgb.put("datecreated", REQUIRED);
         dgb.put("resourcetype", REQUIRED);
         dgb.put("keywords", COMPLEMENTARY);
@@ -210,14 +208,13 @@ public class Biblio {
         bv.put("oaiid/identifier", REQUIRED);
         bv.put("recordtitle", REQUIRED);
         bv.put("holder", REQUIRED);
-        bv.put("dimension", REQUIRED);
-        bv.put("unidad", REQUIRED);
+        bv.put("dimension+unidad", REQUIRED);
         bv.put("datecreated", REQUIRED);
         bv.put("resourcetype", REQUIRED);
         bv.put("keywords", COMPLEMENTARY);
         bv.put("rights.rightstitle", REQUIRED);
         bv.put("rights.description+rights.url", REQUIRED);
-        bv.put("lugar", COMPLEMENTARY);
+        bv.put("lugar+state", COMPLEMENTARY);
     }
     
     static {
@@ -230,13 +227,14 @@ public class Biblio {
         imcine.put("keywords", COMPLEMENTARY);
         imcine.put("rights.rightstitle", REQUIRED);
         imcine.put("rights.description+rights.url", REQUIRED);
-        imcine.put("dimension+tipo_de_dimension", REQUIRED);
-        imcine.put("unidad+tipo_de_unidad", REQUIRED);
+        imcine.put("dimension+unidad", REQUIRED);
         imcine.put("director", COMPLEMENTARY);
         imcine.put("producer", COMPLEMENTARY);
         imcine.put("screenplay", COMPLEMENTARY);
         imcine.put("credits", COMPLEMENTARY);
         imcine.put("distribution", COMPLEMENTARY);
+        imcine.put("media", COMPLEMENTARY);
+        imcine.put("availableformats", COMPLEMENTARY);
     }
     
     static {
@@ -244,7 +242,7 @@ public class Biblio {
         dgcp.put("recordtitle", REQUIRED);
         dgcp.put("serie", COMPLEMENTARY);
         dgcp.put("creator", REQUIRED);
-        dgcp.put("unidad", REQUIRED);
+        dgcp.put("dimension+unidad", REQUIRED);
         dgcp.put("datecreated", REQUIRED);
         dgcp.put("resourcetype", REQUIRED);
         dgcp.put("holder", REQUIRED);
@@ -252,6 +250,8 @@ public class Biblio {
         dgcp.put("rights.rightstitle", REQUIRED);
         dgcp.put("rights.description+rights.url", REQUIRED);
         dgcp.put("lugar+state", COMPLEMENTARY);
+        dgcp.put("media", COMPLEMENTARY);
+        dgcp.put("availableformats", COMPLEMENTARY);
     }
     
     static {
@@ -272,6 +272,9 @@ public class Biblio {
         inehrm.put("screenplay", COMPLEMENTARY);
         inehrm.put("credits", COMPLEMENTARY);
         inehrm.put("distribution", COMPLEMENTARY);
+        inehrm.put("techmaterial", COMPLEMENTARY);
+        inehrm.put("media", COMPLEMENTARY);
+        inehrm.put("availableformats", COMPLEMENTARY);
     }
     
     static {
@@ -463,7 +466,7 @@ public class Biblio {
             case  "Dirección General de Publicaciones" : isRequired = dgp.containsKey(property); break;
             case  "Dirección General de Bibliotecas" : isRequired = dgb.containsKey(property); break;
             case  "Biblioteca Vasconcelos" : isRequired = bv.containsKey(property); break;
-            case  "Instituto Mexicano de Cinematografía" : isRequired = imcine.containsKey(property); break;
+            case  "Instituto Mexicano de Cinematografía" : isRequired = imcine.containsKey(property); break;
             case  "Dirección General de Culturas Populares e Indígenas": isRequired = dgcp.containsKey(property); break;
             case  "Instituto Nacional de Estudios Históricos de las Revoluciones de México" : isRequired = inehrm.containsKey(property); break;
             case  "Centro de Información y Documentación Alberto Beltrán" : isRequired = cidab.containsKey(property); break;

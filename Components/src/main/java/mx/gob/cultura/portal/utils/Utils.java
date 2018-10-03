@@ -33,6 +33,7 @@ import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Title;
 import mx.gob.cultura.portal.response.CountName;
 import mx.gob.cultura.portal.response.Aggregation;
+import mx.gob.cultura.portal.response.Rights;
 
 /**
  *
@@ -100,6 +101,14 @@ public class Utils {
         }
         if (creator.length() > 1) creator.deleteCharAt(0);
         return creator.toString();
+    }
+    
+    public static String getMedia(Rights rights) {
+        if (null != rights && null != rights.getMedia()) {
+            if (null != rights.getMedia().getMime()) return rights.getMedia().getMime();
+            if (null != rights.getMedia().getName()) return rights.getMedia().getName();
+        }
+        return "";
     }
     
     public static String suprXSS(String str) {
