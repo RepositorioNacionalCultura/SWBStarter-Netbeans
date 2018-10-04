@@ -83,6 +83,7 @@ public class Biblio {
         redu.put("chapter", COMPLEMENTARY);
         redu.put("credits", COMPLEMENTARY);
         redu.put("description", COMPLEMENTARY);
+        redu.put("media", COMPLEMENTARY);
         redu.put("availableformats", COMPLEMENTARY);
     }
     
@@ -115,6 +116,8 @@ public class Biblio {
         ceim.put("rights.rightstitle", REQUIRED);
         ceim.put("rights.description+rights.url", REQUIRED);
         ceim.put("documentalfund", COMPLEMENTARY);
+        ceim.put("media", COMPLEMENTARY);
+        ceim.put("availableformats", COMPLEMENTARY);
     }
     
     static {

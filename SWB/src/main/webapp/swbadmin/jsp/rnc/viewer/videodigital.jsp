@@ -96,17 +96,7 @@
         <p class="oswL"><%=creator%></p>
     </div>
     <div class="explora">
-        <div class="explora2">
-            <div class="explo1">
-                &reg; <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
-            </div>
-            <div class="explo2 row">
-                <jsp:include page="../share.jsp" flush="true"/>
-            </div>
-            <div class="explo3 row">
-                <jsp:include page="../nav.jsp" flush="true"/>
-            </div>
-        </div>
+        <jsp:include page="../share.jsp" flush="true"/>
     </div>
     <%=scriptHeader%>
     <%=scriptCallVisor%>

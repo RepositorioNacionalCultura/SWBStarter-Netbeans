@@ -12,12 +12,20 @@
     WebSite site = paramRequest.getWebPage().getWebSite();
     String userLang = paramRequest.getUser().getLanguage();
 %>
-<div class="col-4">
-    <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
-</div>
-<div class="col-4">
-    <span class="ion-social-twitter"></span>
-</div>
-<div class="col-4">
-    <a href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
+<div class="explora2">
+    <div class="row">
+        <div class="col-3 col-md-12 explo-rese">
+            &reg; <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
+        </div>
+        <div class="col-2 col-md-4 explo-face">
+            <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
+        </div>
+        <div class="col-1 col-md-4 explo-twit">
+            <a href="#"><span class="ion-social-twitter"></span></a>
+        </div>
+        <div class="col-2 col-md-4 explo-like">
+            <a href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span> <%=entry.getResourcestats().getViews()%></a>
+        </div>
+        <jsp:include page="nav.jsp" flush="true"/>
+    </div>
 </div>

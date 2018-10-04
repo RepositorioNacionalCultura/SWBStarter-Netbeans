@@ -22,7 +22,7 @@
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     WebSite site = paramRequest.getWebPage().getWebSite();
-    String userLang = paramRequest.getUser().getLanguage();
+    String viewer = null != site.getModelProperty("pdf_pathViewer") ? site.getModelProperty("pdf_pathViewer")+"/multimedia/" : "https://mexicana.cultura.gob.mx"+"/multimedia/";
     if (null != entry) {
         if (null != entry.getDigitalObject()) {
             digitalobjects = entry.getDigitalObject();
@@ -32,12 +32,19 @@
             creator = Utils.replaceSpecialChars(Utils.getRowData(entry.getCreator(), 0, false));
             scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
             scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-pdf.css'/>");
-            if (Utils.getClientBrowser(request).contains("Firefox") || Utils.getClientBrowser(request).contains("Safari")) {
-		scriptCallVisor.append("<iframe src=\"").append(digital.getUrl()).append("\" width=\"1200px\" height=\"900px\"></iframe>");
+            String url = digital.getUrl().contains(viewer) ? digital.getUrl().replace(viewer, "../") : digital.getUrl();
+            if (url.contains("../")) {
+                scriptHeader = new StringBuilder();
+                scriptCallVisor.append("<iframe src=\"").append(viewer).append("ViewerJS/#").append(url).append("\" width=\"1200px\" height=\"900px\" allowfullscreen webkitallowfullscreen></iframe>");
+            }else if (url.startsWith("/multimedia/")) {
+		scriptHeader = new StringBuilder();
+		scriptCallVisor.append("<iframe src=\"").append(viewer).append("ViewerJS/#").append(url.replace("/multimedia/","../")).append("\" width=\"1200px\" height=\"900px\" allowfullscreen webkitallowfullscreen></iframe>");
+            }else if (Utils.getClientBrowser(request).contains("Firefox") || Utils.getClientBrowser(request).contains("Safari")) {
+                scriptCallVisor.append("<iframe src=\"").append(url).append("\" width=\"1200px\" height=\"900px\"></iframe>");
             }else {
-		scriptCallVisor.append("<script type=\"text/javascript\">")
+                scriptCallVisor.append("<script type=\"text/javascript\">")
                     .append("   $(document).ready(function() {")
-                    .append("       PDFObject.embed(\"").append(digital.getUrl()).append("\", \"#pdfdetail\");")
+                    .append("       PDFObject.embed(\"").append(url).append("\", \"#pdfdetail\");")
                     .append("   });")
                     .append("</script>");
                 divVisor.append("<div id=\"pdfdetail\"></div>");
@@ -52,17 +59,7 @@
         <p class="oswL"><%=creator%></p>
     </div>
     <div class="explora">
-        <div class="explora2">
-            <div class="explo1">
-                &reg; <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
-            </div>
-            <div class="explo2 row">
-                <jsp:include page="../share.jsp" flush="true"/>
-            </div>
-            <div class="explo3 row">
-                <jsp:include page="../nav.jsp" flush="true"/>
-            </div>
-        </div>
+        <jsp:include page="../share.jsp" flush="true"/>
     </div>
     <%=scriptHeader%>
     <%=divVisor%>

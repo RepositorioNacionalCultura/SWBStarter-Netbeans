@@ -23,17 +23,17 @@
     int iPrev = iDigit-1;
     int iNext = iDigit+1;
 %>
-<div class="col-4">
+<div class="col-1 col-md-4 explo-back">
     <%
 	if (iPrev >= 0) {
     %>
             <a href="#" onclick="nextObj('<%=digitURL%>?id=', '<%=entry.getId()%>&word=<%=w%>&r=<%=r%>&t=<%=t%><%=l%><%=fs%><%=f%>', <%=iPrev%>);"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></a>
     <%  } %>
 </div>
-<div class="col-4">
+<div class="col-2 col-md-4 explo-obje">
     <%=position%>/<%=objects%> <%=paramRequest.getLocaleString("usrmsg_view_detail_objects")%>
 </div>
-<div class="col-4">
+<div class="col-1 col-md-4 explo-forw">
     <%
 	if (iNext < objects) {
     %>

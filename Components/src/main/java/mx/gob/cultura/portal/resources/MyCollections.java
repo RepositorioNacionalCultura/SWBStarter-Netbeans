@@ -153,7 +153,6 @@ public class MyCollections extends GenericResource {
             request.setAttribute(PARAM_REQUEST, paramRequest);
             request.setAttribute("mycollections", new ArrayList<>());
             if (null != user && user.isSigned()) total = count(user.getId()).intValue();
-            System.out.println("total: " + total);
             if (total > 0) {
                 path = "/swbadmin/jsp/rnc/collections/mycollections.jsp";
                 List<Collection> collectionList = collectionList(paramRequest.getUser());
@@ -165,7 +164,6 @@ public class MyCollections extends GenericResource {
                 request.setAttribute(COUNT_BY_USER, total);
                 init(request);
             }
-            System.out.println("path: " + path);
             request.setAttribute(NUM_RECORDS_TOTAL, total);
             request.setAttribute(COUNT_BY_STAT, collectionList(null).size());
             RequestDispatcher rd = request.getRequestDispatcher(path);

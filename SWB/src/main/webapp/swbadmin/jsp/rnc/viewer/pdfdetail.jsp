@@ -20,6 +20,7 @@
     Entry entry = (Entry)request.getAttribute("entry");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
+    String viewer = null != site.getModelProperty("pdf_pathViewer") ? site.getModelProperty("pdf_pathViewer")+"/multimedia/" : "https://mexicana.cultura.gob.mx"+"/multimedia/";
     if (null != entry) {
         iDigit = entry.getPosition();
 	if (null != entry.getDigitalObject()) {
@@ -29,22 +30,26 @@
             if (null != digital.getUrl() && (digital.getUrl().endsWith(".pdf") || digital.getUrl().endsWith("view"))) {
 		scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
                 scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-pdf.css'/>");
-		if (Utils.getClientBrowser(request).contains("Firefox")) {
-                    scriptCallVisor.append("<iframe src=\"").append(digital.getUrl()).append("\" width=\"1200px\" height=\"900px\"></iframe>");
-		}else if (Utils.getClientBrowser(request).contains("edge")) {
+		String url = digital.getUrl().contains(viewer) ? digital.getUrl().replace(viewer, "../") : digital.getUrl();
+                if (url.contains("../")) {
+                    scriptHeader = new StringBuilder();
+                    scriptCallVisor.append("<iframe src=\"").append(viewer).append("ViewerJS/#").append(url).append("\" width=\"1200px\" height=\"900px\" allowfullscreen webkitallowfullscreen></iframe>");
+                }else if (url.startsWith("/multimedia/")) {
+                    scriptHeader = new StringBuilder();
+                    scriptCallVisor.append("<iframe src=\"").append(viewer).append("ViewerJS/#").append(url.replace("/multimedia/","../")).append("\" width=\"1200px\" height=\"900px\" allowfullscreen webkitallowfullscreen></iframe>");
+		}else if (Utils.getClientBrowser(request).contains("Firefox") || Utils.getClientBrowser(request).contains("Safari")) {
+                    scriptCallVisor.append("<iframe src=\"").append(url).append("\" width=\"1200px\" height=\"900px\"></iframe>");
+                }else {
                     scriptCallVisor.append("<script type=\"text/javascript\">")
-                    .append("   $(document).ready(function() {")
-                    .append("       PDFObject.embed(\"").append(digital.getUrl()).append("\", \"#pdfdetail\");")
-                    .append("   });")
-                    .append("</script>");
+                        .append("   $(document).ready(function() {")
+                        .append("       PDFObject.embed(\"").append(url).append("\", \"#pdfdetail\");")
+                        .append("   });")
+                        .append("</script>");
                     divVisor.append("<div id=\"pdfdetail\"></div>");
-		}else {
-                    String url = digital.getUrl().contains("/multimedia") ? digital.getUrl().replaceFirst("/multimedia", "..") : digital.getUrl();
-                    scriptCallVisor.append("<iframe src=\"").append("/multimedia/ViewerJS/#").append(url).append("\" width=\"1200px\" height=\"900px\" allowfullscreen webkitallowfullscreen></iframe>");
                 }
-		title = Utils.getTitle(entry.getRecordtitle(), 0);
-                creator = Utils.getRowData(entry.getCreator(), 0, false);
             }
+            title = Utils.getTitle(entry.getRecordtitle(), 0);
+            creator = Utils.getRowData(entry.getCreator(), 0, false);
         }
     }
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
@@ -62,17 +67,7 @@
             <p class="oswL"><%=creator%></p>
         </div>
         <div class="explora">
-            <div class="explora2">
-		<div class="explo1">
-                    © <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
-                </div>
-		<div class="explo2 row">
-                    <jsp:include page="../share.jsp" flush="true"/>
-                </div>
-		<div class="explo3 row">
-                    <jsp:include page="../nav.jsp" flush="true"/>
-                </div>
-            </div>
+            <jsp:include page="../share.jsp" flush="true"/>
 	</div>
         <%=scriptHeader%>
 	<%=divVisor%>

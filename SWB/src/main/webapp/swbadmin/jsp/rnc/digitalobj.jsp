@@ -21,7 +21,6 @@
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     WebSite site = paramRequest.getWebPage().getWebSite();
-    String userLang = paramRequest.getUser().getLanguage();
     StringBuilder divNavigator = new StringBuilder("<div id=\"navigatorDiv\" class=\"explora1\"><div id=\"toolbarDiv\" class=\"exploratl\"></div></div>");
     if (null != entry) {
         if (null != entry.getDigitalObject()) {
@@ -91,17 +90,7 @@
     </div>
     <div class="explora">
         <%=divNavigator%>
-        <div class="explora2">
-            <div class="explo1">
-                &reg; <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
-            </div>
-            <div class="explo2 row">
-                <jsp:include page="share.jsp" flush="true"/>
-            </div>
-            <div class="explo3 row">
-                <jsp:include page="nav.jsp" flush="true"/>
-            </div>
-        </div>
+        <jsp:include page="share.jsp" flush="true"/>
     </div>
     <%=scriptHeader%>
     <%=divVisor%>

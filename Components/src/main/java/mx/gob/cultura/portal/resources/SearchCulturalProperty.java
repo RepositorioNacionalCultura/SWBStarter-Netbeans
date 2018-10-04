@@ -457,7 +457,7 @@ public class SearchCulturalProperty extends PagerAction {
                     DigitalObject dObj = list.get(position);
                     if (null != dObj && null != dObj.getMediatype() && null != dObj.getMediatype().getMime()) {
                         String type = dObj.getMediatype().getMime();
-                        if (!existImg(e.getResourcethumbnail())) {
+                        if (!existImg(site, e.getResourcethumbnail())) {
                             if (type.equalsIgnoreCase("zip"))
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-zip.png");
                             else if (type.equalsIgnoreCase("avi") || type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("wav"))
@@ -479,8 +479,9 @@ public class SearchCulturalProperty extends PagerAction {
         }
     }
     
-    private static boolean existImg(String urlImg) {
-        if (null == urlImg || urlImg.isEmpty() || !urlImg.startsWith("http")) return false;
+    private static boolean existImg(WebSite site, String urlImg) {
+        if (null == urlImg || urlImg.isEmpty() || !urlImg.startsWith("http") || !urlImg.startsWith("/multimedia")) return false;
+        if (urlImg.startsWith("/multimedia")) urlImg = null != site.getModelProperty("host_media") ? site.getModelProperty("host_media")+urlImg : urlImg;
         try {
             HttpURLConnection.setFollowRedirects(false);
             HttpURLConnection con = (HttpURLConnection) new URL(urlImg).openConnection();
