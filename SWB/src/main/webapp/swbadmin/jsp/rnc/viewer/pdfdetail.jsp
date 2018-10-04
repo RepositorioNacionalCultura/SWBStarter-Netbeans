@@ -56,7 +56,6 @@
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     
     String scriptFB = Utils.getScriptFBShare(request);
-    String userLang = paramRequest.getUser().getLanguage();
 %>
 <%=scriptFB%>
 <section id="detalle" class="vis-pdf">
@@ -67,7 +66,7 @@
             <p class="oswL"><%=creator%></p>
         </div>
         <div class="explora">
-            <jsp:include page="../share.jsp" flush="true"/>
+            
 	</div>
         <%=scriptHeader%>
 	<%=divVisor%>

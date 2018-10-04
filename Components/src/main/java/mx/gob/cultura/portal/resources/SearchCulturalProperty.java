@@ -481,7 +481,7 @@ public class SearchCulturalProperty extends PagerAction {
     
     private static boolean existImg(WebSite site, String urlImg) {
         if (null == urlImg || urlImg.isEmpty() || !urlImg.startsWith("http") || !urlImg.startsWith("/multimedia")) return false;
-        if (urlImg.startsWith("/multimedia")) urlImg = null != site.getModelProperty("host_media") ? site.getModelProperty("host_media")+urlImg : urlImg;
+        if (urlImg.startsWith("/multimedia")) return true;//urlImg = null != site.getModelProperty("host_media") ? site.getModelProperty("host_media")+urlImg : urlImg;
         try {
             HttpURLConnection.setFollowRedirects(false);
             HttpURLConnection con = (HttpURLConnection) new URL(urlImg).openConnection();
