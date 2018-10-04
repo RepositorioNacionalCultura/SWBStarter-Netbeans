@@ -457,6 +457,7 @@ public class SearchCulturalProperty extends PagerAction {
                     DigitalObject dObj = list.get(position);
                     if (null != dObj && null != dObj.getMediatype() && null != dObj.getMediatype().getMime()) {
                         String type = dObj.getMediatype().getMime();
+                        e.setResourcethumbnail("/multimedia/IMCINE/thumbnail/IMCINE152_th.jpg");
                         if (!existImg(site, e.getResourcethumbnail())) {
                             if (type.equalsIgnoreCase("zip"))
                                 e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-zip.png");
@@ -480,8 +481,8 @@ public class SearchCulturalProperty extends PagerAction {
     }
     
     private static boolean existImg(WebSite site, String urlImg) {
-        if (null == urlImg || urlImg.isEmpty() || !urlImg.startsWith("http") || !urlImg.startsWith("/multimedia")) return false;
-        if (urlImg.startsWith("/multimedia")) return true;//urlImg = null != site.getModelProperty("host_media") ? site.getModelProperty("host_media")+urlImg : urlImg;
+        if (null == urlImg || urlImg.isEmpty() || !(urlImg.startsWith("http") || urlImg.startsWith("/multimedia"))) return false;
+        if (urlImg.startsWith("/multimedia")) urlImg = null != site.getModelProperty("host_media") ? site.getModelProperty("host_media")+urlImg : urlImg;
         try {
             HttpURLConnection.setFollowRedirects(false);
             HttpURLConnection con = (HttpURLConnection) new URL(urlImg).openConnection();
