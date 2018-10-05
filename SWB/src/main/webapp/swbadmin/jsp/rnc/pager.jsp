@@ -32,7 +32,7 @@
     String fs = null != request.getAttribute("filters") ? (String)request.getAttribute("filters") : "";
 %>
 <div class="paginacion">
-    <p><%=first%>-<%=last%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=Utils.decimalFormat("###,###", totalRegistros)%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%></p>
+    <p><%=Utils.decimalFormat("###,###", first)%>-<%=Utils.decimalFormat("###,###", last)%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <%=Utils.decimalFormat("###,###", totalRegistros)%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%></p>
     <ul class="azul">
     <!-- liga para saltar al bloque anterior -->
     <%

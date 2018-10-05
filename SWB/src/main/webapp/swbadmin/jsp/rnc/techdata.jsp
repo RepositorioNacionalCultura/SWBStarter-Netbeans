@@ -71,7 +71,7 @@
                 <th colspan="2"><%=paramRequest.getLocaleString("usrmsg_view_detail_data_sheet")%></th>
             </tr>
             <%=Utils.getTechData("recordtitle", holder, title+subtile, paramRequest.getLocaleString("usrmsg_view_detail_title"), true, true)%>
-            <%=Utils.getTechData("creator", holder, Utils.concatLink(userLang, site.getId(), true, entry.getCreator().toArray(new String[0])), paramRequest.getLocaleString("usrmsg_view_detail_artist"), true, true)%>
+            <%=Utils.getTechData("creator", holder, Utils.concatLink(userLang, site.getId(), true, Utils.getCreator(entry.getCreator())), paramRequest.getLocaleString("usrmsg_view_detail_artist"), true, true)%>
             <%=Utils.getTechData("datecreated", holder, null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "", paramRequest.getLocaleString("usrmsg_view_detail_date"), true, true)%>
             <%=Utils.getTechData("resourcetype", holder, type, paramRequest.getLocaleString("usrmsg_view_detail_type_object"), true, true)%>
             <%=Utils.getTechData("oaiid/identifier", holder, entry.getIdentifiers(), paramRequest.getLocaleString("usrmsg_view_detail_identifier"), true, true)%>

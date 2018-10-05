@@ -244,7 +244,7 @@
     <%  if (null != rights && !rights.isEmpty()) { %>
         <div class="card">
             <div class="" role="tab" id="heading4">
-                <a data-toggle="collapse" href="#collapse4" aria-expanded="true" aria-controls="collapse4" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_use")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
+                <a data-toggle="collapse" href="#collapse4" aria-expanded="false" aria-controls="collapse4" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_use")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
             </div>
             <div id="collapse4" class="collapse" role="tabpanel" aria-labelledby="heading4" data-parent="#accordion">
                 <ul>
@@ -270,7 +270,7 @@
     <%	if (null != languages && !languages.isEmpty()) { %>
         <div class="card">
             <div class="" role="tab" id="heading5">
-                <a data-toggle="collapse" href="#collapse5" aria-expanded="true" aria-controls="collapse5" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_languages")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
+                <a data-toggle="collapse" href="#collapse5" aria-expanded="false" aria-controls="collapse5" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_languages")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
             </div>
             <div id="collapse5" class="collapse" role="tabpanel" aria-labelledby="heading5" data-parent="#accordion">
                 <ul>

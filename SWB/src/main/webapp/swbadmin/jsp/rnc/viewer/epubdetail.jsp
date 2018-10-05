@@ -21,7 +21,7 @@
     Entry entry = (Entry)request.getAttribute("entry");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
-    String userLang = paramRequest.getUser().getLanguage();
+    String viewer = null != site.getModelProperty("host_media") ? site.getModelProperty("host_media") : "https://mexicana.cultura.gob.mx";
     if (null != entry) {
         iDigit = entry.getPosition();
 	if (null != entry.getDigitalObject()) {
@@ -29,6 +29,7 @@
             books = null != digitalobjects ? digitalobjects.size() : 0;
             digital = books >= iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
             if (null != digital.getUrl() && digital.getUrl().endsWith(".epub")) {
+                String url = digital.getUrl().startsWith("/multimedia/") ? viewer+digital.getUrl() : digital.getUrl();
                 divVisor.append("<div id=\"sidebar\">")
                     .append("	<div id=\"panels\">")
                     .append("       <a id=\"show-Toc\" class=\"show_view icon-list-1 active\" data-view=\"Toc\">TOC</a>")
@@ -85,7 +86,7 @@
                     .append("	\"use strict\";")
                     .append("	document.onreadystatechange = function () {")
                     .append("       if (document.readyState == \"complete\") {")
-                    .append("           window.reader = ePubReader(\"").append(digital.getUrl()).append("\", {")
+                    .append("           window.reader = ePubReader(\"").append(url).append("\", {")
                     .append("               restore: true")
                     .append("           });")
                     .append("       }")
