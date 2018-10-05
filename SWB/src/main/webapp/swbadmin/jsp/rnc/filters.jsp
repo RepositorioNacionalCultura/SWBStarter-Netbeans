@@ -202,7 +202,7 @@
             <div class="" role="tab" id="heading6">
                 <a data-toggle="collapse" href="#collapse6" aria-expanded="true" aria-controls="collapse6" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_holder")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
             </div>
-            <div id="collapse6" class="collapse" role="tabpanel" aria-labelledby="heading5" data-parent="#accordion">
+            <div id="collapse6" class="collapse show" role="tabpanel" aria-labelledby="heading5" data-parent="#accordion">
                 <ul>
                     <li>
 			<ul>

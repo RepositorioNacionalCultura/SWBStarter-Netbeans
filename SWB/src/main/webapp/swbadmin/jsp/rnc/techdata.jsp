@@ -23,7 +23,6 @@
     WebSite site = paramRequest.getWebPage().getWebSite();
     String userLang = paramRequest.getUser().getLanguage();
     if (null != entry) {
-        //holders = entry.getHolder();
         titles = entry.getRecordtitle();
 	StringBuilder builder = new StringBuilder();
         StringBuilder collection = new StringBuilder();
