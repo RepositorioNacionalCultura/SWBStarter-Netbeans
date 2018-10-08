@@ -91,6 +91,7 @@ public class ArtDetail extends GenericAdmResource {
                 }
                 request.setAttribute("entry", entry);
                 request.setAttribute("collection", explore(entry, baseUri));
+                request.setAttribute("serie", serie(entry, request, baseUri));
             }
             setParams(request, paramRequest);
             RequestDispatcher rd = request.getRequestDispatcher(path);
@@ -115,6 +116,19 @@ public class ArtDetail extends GenericAdmResource {
             }
         }
         return entry;
+    }
+    
+    private List<DigitalObject> serie(Entry entry, HttpServletRequest request, String base) {
+        List<DigitalObject> serieList = new ArrayList<>();
+        if (null != entry && null != entry.getSerie() && !entry.getSerie().isEmpty()) {
+            for (String serie : entry.getSerie()) {
+                String uri = base + "/api/v1/search?q="+serie;
+                Entry e = getEntry(request, uri);
+                if (entry.getSerie() == e.getSerie() && null != e.getDigitalObject()) 
+                    serieList.addAll(e.getDigitalObject());
+            }
+        }
+        return serieList;
     }
     
     private String getParamUri(String base, HttpServletRequest request) throws UnsupportedEncodingException {

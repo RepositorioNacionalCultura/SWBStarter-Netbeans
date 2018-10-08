@@ -3,12 +3,12 @@
     Created on : 15/06/2018, 14:15:08 AM
     Author     : sergio.tellez
 --%>
+<%@page import="java.util.Arrays"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DateDocument, mx.gob.cultura.portal.response.DigitalObject"%>
 <%@ page import="mx.gob.cultura.portal.resources.ArtDetail, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, 
     org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.ArrayList, java.util.List, org.bson.Document"%>
 <%
-    String type = "";
     String fdesc = "";
     String title = "";
     String place = "";
@@ -22,35 +22,25 @@
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
     String userLang = paramRequest.getUser().getLanguage();
+    StringBuilder uri = new StringBuilder("<a href=\"/").append(userLang).append("/").append(site.getId()).append("/resultados?theme=");
     if (null != entry) {
         titles = entry.getRecordtitle();
-	StringBuilder builder = new StringBuilder();
         StringBuilder collection = new StringBuilder();
-        for (String t : entry.getResourcetype()) {
-            builder.append("<a href=\"/").append(userLang).append("/").append(site.getId()).append("/resultados?word=").append(t).append("\">").append(t).append("</a>").append(", ");
-        }
-	if (builder.length() > 0) builder.deleteCharAt(builder.length() - 2);
-        type =  builder.toString();
         if (null != entry.getGenerator()) {
             for (String t : entry.getGenerator()) {
                 collection.append(t).append(", ");
             }
         }
 	if (collection.length() > 0) collection.deleteCharAt(collection.length() - 2);
-        //generator = Utils.getRowData(entry.getGenerator(), 0, true);
-	//creator = Utils.getRowData(entry.getCreator(), 0, true);
-        //period = null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "";
 	if (!titles.isEmpty()) title = titles.get(0).getValue();
         title = Utils.getTitle(titles, 0);
         subtile = (Utils.c(entry.getNumber()) + " " + Utils.c(entry.getSubtile())).trim();
         desc = Utils.getDescription(entry.getDescription());
         fdesc = (null != desc && null != desc.get("full")) ? (String)desc.get("full") : "";
-        
         holder = Utils.getRowData(entry.getHolder(), 0, false);
         String holdernote = (null != entry.getHoldernote() && !entry.getHoldernote().isEmpty()) ? (" " + entry.getHoldernote()) : "";
-        urlholder = !holder.isEmpty() ? "<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ holder + "\">"+holder+holdernote+"</a>" : "";
-        String rht = Utils.getRights(entry);
-        rights = !rht.isEmpty() ? "<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ rht + "\">"+rht+"</a>" : "";
+        urlholder = !holder.isEmpty() ? uri + holder + "&filter=holder:" + holder + "\">"+holder+holdernote+"</a>" : "";
+        rights = Utils.concatFilter(userLang, site.getId(), "rights", Arrays.asList(Utils.getRights(entry)));
         String state = (null != entry.getState() && !entry.getState().isEmpty()) ? (" " + entry.getState()) : "";
         place = (null != entry.getLugar()) ? "<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ entry.getLugar() + "\">"+entry.getLugar()+state+"</a>" : "";
     }
@@ -73,7 +63,7 @@
             <%=Utils.getTechData("recordtitle", holder, title+subtile, paramRequest.getLocaleString("usrmsg_view_detail_title"), true, true)%>
             <%=Utils.getTechData("creator", holder, Utils.concatLink(userLang, site.getId(), true, Utils.getCreator(entry.getCreator())), paramRequest.getLocaleString("usrmsg_view_detail_artist"), true, true)%>
             <%=Utils.getTechData("datecreated", holder, null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "", paramRequest.getLocaleString("usrmsg_view_detail_date"), true, true)%>
-            <%=Utils.getTechData("resourcetype", holder, type, paramRequest.getLocaleString("usrmsg_view_detail_type_object"), true, true)%>
+            <%=Utils.getTechData("resourcetype", holder, Utils.concatFilter(userLang, site.getId(), "resourcetype", entry.getResourcetype()), paramRequest.getLocaleString("usrmsg_view_detail_type_object"), true, true)%>
             <%=Utils.getTechData("oaiid/identifier", holder, entry.getIdentifiers(), paramRequest.getLocaleString("usrmsg_view_detail_identifier"), true, true)%>
             <%=Utils.getTechData("holder", holder, urlholder, paramRequest.getLocaleString("usrmsg_view_detail_institution"), true, true)%>
             <% if (null !=  entry.getGenerator() && !entry.getGenerator().isEmpty()) { out.println(Utils.getTechData("generator", holder, Utils.concatLink(userLang, site.getId(), true, entry.getGenerator().toArray(new String[0])), paramRequest.getLocaleString("usrmsg_view_detail_collection"), true, true)); } %>
@@ -93,13 +83,7 @@
             %>
                     <tr>
                         <td><%=paramRequest.getLocaleString("usrmsg_view_detail_lang")%></td>
-                        <% if (entry.getLang().size() == 4) {
-                            out.println("<td><a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ entry.getLang().get(2) + "\">"+entry.getLang().get(2)+"</a>, ");
-                            out.println("<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ entry.getLang().get(3) + "\">"+entry.getLang().get(3)+"</a></td>");
-                        %>
-                        <% } else if (entry.getLang().size() == 3) {%>
-                        <td><%=entry.getLang().get(1)%>, <%=entry.getLang().get(2)%></td>
-                        <% } %>
+                        <td><%=Utils.concatFilter(userLang, site.getId(), "lang", entry.getLang())%></td>
                     </tr>
             <%
                 }
@@ -134,7 +118,7 @@
             <%=Utils.getTechData("press", holder, entry.getPress(), paramRequest.getLocaleString("usrmsg_view_detail_press"), false, true)%>
             <%=Utils.getTechData("period", holder, entry.getPeriod(), paramRequest.getLocaleString("usrmsg_view_detail_period"), false, true)%>
             <%=Utils.getTechData("techmaterial", holder, entry.getTechmaterial(), paramRequest.getLocaleString("usrmsg_view_detail_techmaterial"), false, true)%>
-            <%=Utils.getTechData("media", holder, Utils.concatLink(userLang, site.getId(), true, Utils.getMedia(entry.getRights())), paramRequest.getLocaleString("usrmsg_view_detail_media"), false, true)%>
+            <%=Utils.getTechData("media", holder, Utils.concatFilter(userLang, site.getId(), "mediatype", Utils.getMedia(entry.getRights())), paramRequest.getLocaleString("usrmsg_view_detail_media"), false, true)%>
             <%=Utils.getTechData("hiperonimo", holder, entry.getHiperonimo(), paramRequest.getLocaleString("usrmsg_view_detail_hiperonimo"), false, true)%>
             <%=Utils.getTechData("curaduria", holder, entry.getCuraduria(), paramRequest.getLocaleString("usrmsg_view_detail_curaduria"), false, true)%>
             <%=Utils.getTechData("inscripcionobra", holder, entry.getInscripcionobra(), paramRequest.getLocaleString("usrmsg_view_detail_inscripcionobra"), false, true)%>

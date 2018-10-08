@@ -36,6 +36,7 @@ public class Biblio {
     public static final Map mnv = new HashMap();
     public static final Map mncp = new HashMap();
     public static final Map mam = new HashMap();
+    public static final Map medc = new HashMap();
     
     static {
         inba.put("recordtitle", REQUIRED);
@@ -463,6 +464,24 @@ public class Biblio {
         mnh.put("keywords", COMPLEMENTARY);
     }
     
+    static {
+        medc.put("oaiid/identifier", REQUIRED);
+        medc.put("recordtitle", REQUIRED);
+        medc.put("creator", REQUIRED);
+        medc.put("dimension", REQUIRED);
+        medc.put("datecreated", REQUIRED);
+        medc.put("resourcetype", REQUIRED);
+        medc.put("holder", REQUIRED);
+        medc.put("lugar", COMPLEMENTARY);
+        medc.put("credits", COMPLEMENTARY);
+        medc.put("material", COMPLEMENTARY);
+        medc.put("techmaterial", COMPLEMENTARY);
+        medc.put("media", COMPLEMENTARY);
+        medc.put("availableformats", COMPLEMENTARY);
+        medc.put("rights.rightstitle", REQUIRED);
+        medc.put("rights.description+rights.url", REQUIRED);
+    }
+    
     public static boolean isRequired(String property, String holder) {
         boolean isRequired;
         if (null == holder || null == property) return false;
@@ -491,6 +510,7 @@ public class Biblio {
             case  "Museo Nacional del Virreinato" : isRequired = mnv.containsKey(property); break;
             case  "Museo Nacional de Culturas Populares" : isRequired = mncp.containsKey(property); break;
             case  "Museo de Arte Moderno" : isRequired = mam.containsKey(property); break;
+            case  "Mediateca" : isRequired = medc.containsKey(property); break;
             default: isRequired = false;
         }
         return isRequired;

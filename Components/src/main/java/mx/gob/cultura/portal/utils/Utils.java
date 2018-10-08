@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 
 import java.util.logging.Logger;
 import org.semanticwb.model.WebSite;
@@ -89,6 +90,18 @@ public class Utils {
         }
         return link.toString();
     }
+   
+    public static String concatFilter(String userLang, String site, String attribute, List<String> args) {
+        StringBuilder link = new StringBuilder();
+        if (null == args || args.isEmpty()) return "";
+        String url = "<a href=\"/" + userLang + "/" + site + "/resultados?word=*&theme=";
+        for (String arg : args) {
+            if (null != arg && !arg.trim().isEmpty())
+                link.append(", ").append(url).append(arg.trim()).append("&filter=").append(attribute).append(":").append(arg).append("\">").append(arg.trim()).append("</a>");
+        }
+        if (link.length() > 0) link.deleteCharAt(0);
+        return link.toString();
+    }
     
     public static String getCreator(List<String> names) {
         int i = 0;
@@ -103,12 +116,12 @@ public class Utils {
         return creator.toString();
     }
     
-    public static String getMedia(Rights rights) {
+    public static List<String> getMedia(Rights rights) {
         if (null != rights && null != rights.getMedia()) {
-            if (null != rights.getMedia().getMime()) return rights.getMedia().getMime();
-            if (null != rights.getMedia().getName()) return rights.getMedia().getName();
+            if (null != rights.getMedia().getMime() && !rights.getMedia().getMime().isEmpty()) return Arrays.asList(rights.getMedia().getMime());
+            if (null != rights.getMedia().getName() && !rights.getMedia().getName().isEmpty()) return Arrays.asList(rights.getMedia().getName());
         }
-        return "";
+        return new ArrayList();
     }
     
     public static String suprXSS(String str) {
