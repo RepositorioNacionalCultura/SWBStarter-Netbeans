@@ -244,9 +244,7 @@ public class MyCollections extends GenericResource {
         }else if (SWBResourceURL.Action_EDIT.equals(response.getAction())) {
             Collection collection = setCollection(request);
             if (null != user && user.isSigned() && !collection.isEmpty() && null != request.getParameter(IDENTIFIER)) {
-                //Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
-                collectionList = collectionList(user);//(List<Collection>)request.getSession().getAttribute("mycollections");
-                //if (!exist(collectionList, collection.getTitle(), request.getParameter(IDENTIFIER))) {
+                collectionList = collectionList(user);
                 if (!exist(collection.getTitle(), request.getParameter(IDENTIFIER))) {
                     for (Collection c : collectionList) {
                         if (c.getId().equals(request.getParameter(IDENTIFIER))) {
@@ -479,7 +477,7 @@ public class MyCollections extends GenericResource {
     }
     
      private Collection setCollection(HttpServletRequest request) {
-        Collection collection = new Collection(request.getParameter("title").trim(), null == request.getParameter("status"), request.getParameter("description").trim());
+        Collection collection = new Collection(request.getParameter("title").trim(), null != request.getParameter("status"), request.getParameter("description").trim());
         return collection;
     }
      
