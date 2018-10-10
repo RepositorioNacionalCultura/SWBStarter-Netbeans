@@ -51,7 +51,7 @@
                                 <% if (!c.getStatus()) { %><span class="ion-locked">Privado<% }else { %><span class="ion-unlocked">Público<% } %></span>
                             </label>
                         </div>
-                        <button type="button" onclick="saveEdit('<%=saveURL.toString()%>');" class="btn-cultura btn-rojo btn-mayus">Editar colección</button>
+                        <button type="button" onclick="saveEdit('<%=saveURL.toString()%>');" class="btn-cultura btn-rojo btn-mayus">Guardar</button>
                     </form>
                 </div>
             </div>
