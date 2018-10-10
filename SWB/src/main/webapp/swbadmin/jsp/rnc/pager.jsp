@@ -39,7 +39,7 @@
 	if (totalPages > 1) { //TODO: Check condition
             if (numBloque==0) {
     %>
-		<li><a href="#"><i class="ion-ios-arrow-back" aria-hidden="true"></i><i class="ion-ios-arrow-back" aria-hidden="true"></i></a></li>
+		<!--li><a href="#"><i class="ion-ios-arrow-back" aria-hidden="true"></i><i class="ion-ios-arrow-back" aria-hidden="true"></i></a></li-->
     <%
             }else {
 		int primeraPaginaBloqueAnterior = (numBloque-1)*paginasPorBloque+1;
@@ -53,14 +53,20 @@
     %>
     <!-- numeración de páginas a mostrar -->
     <%
-        for (int i=paginaInicialBloque; i <= paginaFinalBloque; i++) {
+        int index = paginaInicialBloque;
+        if (numBloque==ultimoBloque && totalPages > paginasPorBloque) {
+            out.println("<li><a href=\"#\" onclick=\"javascript:doPage("+1+",'"+m+"','"+f+"','"+fs+"')\">"+1+"</a></li>");
+            out.println("<li><a href=\"#\">...</a></li>");
+            index=paginaInicialBloque-paginasPorBloque > 2 ? paginaInicialBloque-(paginasPorBloque-2) : paginaInicialBloque;
+	}
+        for (int i=index; i <= paginaFinalBloque; i++) {
             if (i==paginaActual) {
                 out.println("<li><a href=\"#\" class=\"select\">"+i+"</a></li>");
             }else {
-		out.println("<li><a href=\"#\" onclick=\"javascript:doPage("+i+",'"+m+"','"+f+"','"+fs+"')\">"+i+"</a></li>");
+                out.println("<li><a href=\"#\" onclick=\"javascript:doPage("+i+",'"+m+"','"+f+"','"+fs+"')\">"+i+"</a></li>");
             }
-        }
-    %>	
+	}
+    %>
     
     <!-- liga para saltar a la página final -->
 	
@@ -76,7 +82,7 @@
         if (totalPages > 1) {
 	    if (numBloque==ultimoBloque || totalRegistros==0) {
     %>
-                <li><a href="#"><i class="ion-ios-arrow-forward" aria-hidden="true"></i><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
+                <!--li><a href="#"><i class="ion-ios-arrow-forward" aria-hidden="true"></i><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li-->
     <%
             }else {
                 int primeraPaginaBloqueSiguiente = (numBloque+1)*paginasPorBloque+1;

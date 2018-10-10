@@ -118,8 +118,15 @@ public class Utils {
     
     public static List<String> getMedia(Rights rights) {
         if (null != rights && null != rights.getMedia()) {
-            if (null != rights.getMedia().getMime() && !rights.getMedia().getMime().isEmpty()) return Arrays.asList(rights.getMedia().getMime());
-            if (null != rights.getMedia().getName() && !rights.getMedia().getName().isEmpty()) return Arrays.asList(rights.getMedia().getName());
+            if (null != rights.getMedia().getMime()) return getList(rights.getMedia().getMime());
+            return getList(rights.getMedia().getName());
+        }
+        return new ArrayList();
+    }
+    
+    public static List<String> getList(String item) {
+        if (null != item && !item.isEmpty()) {
+            return Arrays.asList(item);
         }
         return new ArrayList();
     }

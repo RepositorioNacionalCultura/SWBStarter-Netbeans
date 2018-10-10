@@ -44,7 +44,7 @@ public class Biblio {
         inba.put("datecreated", REQUIRED);
         inba.put("reccollection", COMPLEMENTARY);
         inba.put("holder", REQUIRED);
-        inba.put("resourcetype", REQUIRED);
+        inba.put("bictype", REQUIRED);
         inba.put("reference", COMPLEMENTARY);
         inba.put("oaiid/identifier", REQUIRED);
         inba.put("rights.rightstitle", REQUIRED);
@@ -61,7 +61,7 @@ public class Biblio {
         inali.put("lugar+state", COMPLEMENTARY);
         inali.put("reccollection", COMPLEMENTARY);
 	inali.put("lang", COMPLEMENTARY);
-	inali.put("resourcetype", REQUIRED);
+	inali.put("bictype", REQUIRED);
 	inali.put("holder", REQUIRED);
         inali.put("rights.rightstitle", REQUIRED);
         inali.put("rights.description+rights.url", REQUIRED);
@@ -76,7 +76,7 @@ public class Biblio {
         redu.put("dimension+unidad", REQUIRED);
         redu.put("datecreated", REQUIRED);
         redu.put("holder", REQUIRED);
-        redu.put("resourcetype", REQUIRED);
+        redu.put("bictype", REQUIRED);
         redu.put("rights.rightstitle", REQUIRED);
         redu.put("rights.description+rights.url", REQUIRED);
         redu.put("keywords", COMPLEMENTARY);
@@ -95,7 +95,7 @@ public class Biblio {
         fona.put("holder", REQUIRED);
         fona.put("dimension+unidad", REQUIRED);
         fona.put("datecreated", REQUIRED);
-        fona.put("resourcetype", REQUIRED);
+        fona.put("bictype", REQUIRED);
         fona.put("reccollection", COMPLEMENTARY);
         fona.put("keywords", COMPLEMENTARY);
         fona.put("rights.rightstitle", REQUIRED);
@@ -112,7 +112,7 @@ public class Biblio {
         ceim.put("serie", COMPLEMENTARY);
         ceim.put("dimension+unidad", REQUIRED);
         ceim.put("datecreated", REQUIRED);
-        ceim.put("resourcetype", REQUIRED);
+        ceim.put("bictype", REQUIRED);
         ceim.put("keywords", COMPLEMENTARY);
         ceim.put("rights.rightstitle", REQUIRED);
         ceim.put("rights.description+rights.url", REQUIRED);
@@ -128,7 +128,7 @@ public class Biblio {
         cl22.put("holder", REQUIRED);
         cl22.put("dimension+unidad", REQUIRED);
         cl22.put("datecreated", REQUIRED);
-        cl22.put("resourcetype", REQUIRED);
+        cl22.put("bictype", REQUIRED);
         cl22.put("holdernote", REQUIRED);
         cl22.put("keywords", COMPLEMENTARY);
         cl22.put("rights.rightstitle", REQUIRED);
@@ -147,7 +147,7 @@ public class Biblio {
         cenart.put("dimension", REQUIRED);
         cenart.put("unidad", REQUIRED);
         cenart.put("datecreated", REQUIRED);
-        cenart.put("resourcetype", REQUIRED);
+        cenart.put("bictype", REQUIRED);
         cenart.put("holdernote", REQUIRED);
         cenart.put("keywords", COMPLEMENTARY);
         cenart.put("rights.rightstitle", REQUIRED);
@@ -170,7 +170,7 @@ public class Biblio {
         bcna.put("dimension", REQUIRED);
         bcna.put("unidad", REQUIRED);
         bcna.put("datecreated", REQUIRED);
-        bcna.put("resourcetype", REQUIRED);
+        bcna.put("bictype", REQUIRED);
         bcna.put("keywords", COMPLEMENTARY);
         bcna.put("rights.rightstitle", REQUIRED);
         bcna.put("rights.description+rights.url", REQUIRED);
@@ -186,7 +186,7 @@ public class Biblio {
         dgp.put("holder", REQUIRED);
         dgp.put("dimension+unidad", REQUIRED);
         dgp.put("datecreated", REQUIRED);
-        dgp.put("resourcetype", REQUIRED);
+        dgp.put("bictype", REQUIRED);
         dgp.put("reccollection", COMPLEMENTARY);
         dgp.put("keywords", COMPLEMENTARY);
         dgp.put("rights.rightstitle", REQUIRED);
@@ -205,7 +205,7 @@ public class Biblio {
         dgb.put("holder", REQUIRED);
         dgb.put("dimension+unidad", REQUIRED);
         dgb.put("datecreated", REQUIRED);
-        dgb.put("resourcetype", REQUIRED);
+        dgb.put("bictype", REQUIRED);
         dgb.put("keywords", COMPLEMENTARY);
         dgb.put("rights.rightstitle", REQUIRED);
         dgb.put("rights.description+rights.url", REQUIRED);
@@ -222,7 +222,7 @@ public class Biblio {
         bv.put("holder", REQUIRED);
         bv.put("dimension+unidad", REQUIRED);
         bv.put("datecreated", REQUIRED);
-        bv.put("resourcetype", REQUIRED);
+        bv.put("bictype", REQUIRED);
         bv.put("keywords", COMPLEMENTARY);
         bv.put("rights.rightstitle", REQUIRED);
         bv.put("rights.description+rights.url", REQUIRED);
@@ -237,7 +237,7 @@ public class Biblio {
         imcine.put("creator", REQUIRED);
         imcine.put("holder", REQUIRED);
         imcine.put("datecreated", REQUIRED);
-        imcine.put("resourcetype", REQUIRED);
+        imcine.put("bictype", REQUIRED);
         imcine.put("keywords", COMPLEMENTARY);
         imcine.put("rights.rightstitle", REQUIRED);
         imcine.put("rights.description+rights.url", REQUIRED);
@@ -258,7 +258,7 @@ public class Biblio {
         dgcp.put("creator", REQUIRED);
         dgcp.put("dimension+unidad", REQUIRED);
         dgcp.put("datecreated", REQUIRED);
-        dgcp.put("resourcetype", REQUIRED);
+        dgcp.put("bictype", REQUIRED);
         dgcp.put("holder", REQUIRED);
         dgcp.put("keywords", COMPLEMENTARY);
         dgcp.put("rights.rightstitle", REQUIRED);
@@ -273,7 +273,7 @@ public class Biblio {
         inehrm.put("recordtitle", REQUIRED);
         inehrm.put("reccollection", COMPLEMENTARY);
         inehrm.put("creator", REQUIRED);
-        inehrm.put("resourcetype", REQUIRED);
+        inehrm.put("bictype", REQUIRED);
         inehrm.put("datecreated", REQUIRED);
         inehrm.put("lang", REQUIRED);
         inehrm.put("dimension+unidad", REQUIRED);
@@ -293,7 +293,7 @@ public class Biblio {
     
     static {
         munal.put("oaiid/identifier", REQUIRED);
-        munal.put("resourcetype", REQUIRED);
+        munal.put("bictype", REQUIRED);
         munal.put("recordtitle", REQUIRED);
         munal.put("creator", REQUIRED);
         munal.put("lang", REQUIRED);
@@ -311,7 +311,7 @@ public class Biblio {
         cidab.put("datecreated", REQUIRED);
         cidab.put("reccollection", COMPLEMENTARY);
         cidab.put("holder", REQUIRED);
-        cidab.put("resourcetype", REQUIRED);
+        cidab.put("bictype", REQUIRED);
         cidab.put("oaiid/identifier", REQUIRED);
         cidab.put("rights.rightstitle", REQUIRED);
         cidab.put("rights.description+rights.url", REQUIRED);
@@ -325,7 +325,7 @@ public class Biblio {
         inbal.put("datecreated", REQUIRED);
         inbal.put("reccollection", COMPLEMENTARY);
         inbal.put("holder", REQUIRED);
-        inbal.put("resourcetype", REQUIRED);
+        inbal.put("bictype", REQUIRED);
         inbal.put("oaiid/identifier", REQUIRED);
         inbal.put("rights.rightstitle", REQUIRED);
         inbal.put("rights.description+rights.url", REQUIRED);
@@ -339,7 +339,7 @@ public class Biblio {
         inah.put("datecreated", REQUIRED);
         inah.put("reccollection", COMPLEMENTARY);
         inah.put("holder", REQUIRED);
-        inah.put("resourcetype", REQUIRED);
+        inah.put("bictype", REQUIRED);
         inah.put("oaiid/identifier", REQUIRED);
         inah.put("rights.rightstitle", REQUIRED);
         inah.put("rights.description+rights.url", REQUIRED);
@@ -357,7 +357,7 @@ public class Biblio {
         mnv.put("datecreated", REQUIRED);
         mnv.put("reccollection", COMPLEMENTARY);
         mnv.put("holder", REQUIRED);
-        mnv.put("resourcetype", REQUIRED);
+        mnv.put("bictype", REQUIRED);
         mnv.put("rights.rightstitle", REQUIRED);
         mnv.put("rights.description+rights.url", REQUIRED);
         mnv.put("description", COMPLEMENTARY);
@@ -376,7 +376,7 @@ public class Biblio {
         munae.put("datecreated", REQUIRED);
         munae.put("reccollection", COMPLEMENTARY);
         munae.put("holder", REQUIRED);
-        munae.put("resourcetype", REQUIRED);
+        munae.put("bictype", REQUIRED);
         munae.put("rights.rightstitle", REQUIRED);
         munae.put("rights.description+rights.url", REQUIRED);
         munae.put("description", COMPLEMENTARY);
@@ -395,7 +395,7 @@ public class Biblio {
         mnsc.put("reccollection", COMPLEMENTARY);
         mnsc.put("holder", REQUIRED);
         mnsc.put("hiperonimo", REQUIRED);
-        mnsc.put("resourcetype", REQUIRED);
+        mnsc.put("bictype", REQUIRED);
         mnsc.put("rights.rightstitle", REQUIRED);
         mnsc.put("rights.description+rights.url", REQUIRED);
         mnsc.put("description", COMPLEMENTARY);
@@ -407,7 +407,7 @@ public class Biblio {
         mncp.put("oaiid/identifier", REQUIRED);
         mncp.put("recordtitle", REQUIRED);
         mncp.put("creator+creatorgroup+dimension", REQUIRED);
-        mncp.put("resourcetype", REQUIRED);
+        mncp.put("bictype", REQUIRED);
         mncp.put("reccollection", COMPLEMENTARY);
         mncp.put("period", COMPLEMENTARY);
         mncp.put("datecreated", REQUIRED);
@@ -429,7 +429,7 @@ public class Biblio {
         mam.put("reccollection", COMPLEMENTARY);
         mam.put("holder", REQUIRED);
         mam.put("hiperonimo", COMPLEMENTARY);
-        mam.put("resourcetype", REQUIRED);
+        mam.put("bictype", REQUIRED);
         mam.put("rights.rightstitle", REQUIRED);
         mam.put("rights.description+rights.url", REQUIRED);
         mam.put("techmaterial", COMPLEMENTARY);
@@ -445,7 +445,7 @@ public class Biblio {
         mnh.put("dimension+tipo_de_dimension", REQUIRED);
         mnh.put("unidad+tipo_de_unidad", REQUIRED);
         mnh.put("period", COMPLEMENTARY);
-        mnh.put("resourcetype", REQUIRED);
+        mnh.put("bictype", REQUIRED);
         mnh.put("holder", REQUIRED);
         mnh.put("hiperonimo", COMPLEMENTARY);
         mnh.put("datecreated", REQUIRED);
@@ -470,7 +470,7 @@ public class Biblio {
         medc.put("creator", REQUIRED);
         medc.put("dimension", REQUIRED);
         medc.put("datecreated", REQUIRED);
-        medc.put("resourcetype", REQUIRED);
+        medc.put("bictype", REQUIRED);
         medc.put("holder", REQUIRED);
         medc.put("lugar", COMPLEMENTARY);
         medc.put("credits", COMPLEMENTARY);

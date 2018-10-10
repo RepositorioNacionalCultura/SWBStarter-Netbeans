@@ -21,6 +21,7 @@ public class Entry implements Serializable {
     private List<String> description;
     
     private String lugar;
+    private String bictype;
     private Stats resourcestats;
     private List<String> creator;
     private Period periodcreated;
@@ -84,6 +85,14 @@ public class Entry implements Serializable {
     private List<String> creatorgroup;
     private List<String> reccollection;
 
+    public String getBictype() {
+        return bictype;
+    }
+
+    public void setBictype(String bictype) {
+        this.bictype = bictype;
+    }
+    
     public Stats getResourcestats() {
         return resourcestats;
     }
@@ -616,6 +625,6 @@ public class Entry implements Serializable {
 
     @Override
     public String toString() {
-        return "Entry{" + "_id=" + _id + ", description=" + description + ", creator=" + creator + ", recordtitle=" + recordtitle + ", identifier=" + identifier + ", digitalObject=" + digitalObject + '}';
+        return "Entry{" + "_id=" + _id + ", holder=" + holder + ", creator=" + creator + ", datecreated=" + datecreated + ", identifier=" + identifier + ", digitalObject=" + digitalObject + ", resourcethumbnail=" + resourcethumbnail + ", serie=" + serie + '}';
     }
 }

@@ -124,6 +124,7 @@ public class ArtDetail extends GenericAdmResource {
             for (String serie : entry.getSerie()) {
                 String uri = base + "/api/v1/search?q="+serie;
                 Entry e = getEntry(request, uri);
+                System.out.println("serie: " + e);
                 if (null != e.getSerie() && entry.getSerie() == e.getSerie() && null != e.getDigitalObject()) 
                     serieList.addAll(e.getDigitalObject());
             }
