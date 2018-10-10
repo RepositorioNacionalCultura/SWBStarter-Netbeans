@@ -150,12 +150,12 @@ public class AnnotationMgr {
         return ret;      
     }
 
-    public Annotation findById(String id, String user){        
+    public Annotation findById(String id, String user, boolean isAdmin){   
         BasicDBObject query = new BasicDBObject("_id", new ObjectId(id));  
         Annotation annotation=null;        
         if(user==null || user.isEmpty()){ //  y públicas 
             query.put("moderator",new BasicDBObject("$exists",true).append("$ne",""));
-        }else{ //  y sean del usuario o públicas 
+        }else if(!isAdmin){ //  y sean del usuario o públicas 
             BasicDBList orClause = new BasicDBList();
             orClause.add(new BasicDBObject("creator",user));
             orClause.add(new BasicDBObject("moderator",new BasicDBObject("$exists",true).append("$ne","")));
