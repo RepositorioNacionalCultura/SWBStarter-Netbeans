@@ -91,7 +91,7 @@ public class ArtDetail extends GenericAdmResource {
                 }
                 request.setAttribute("entry", entry);
                 request.setAttribute("collection", explore(entry, baseUri));
-                request.setAttribute("serie", serie(entry, request, baseUri));
+                //request.setAttribute("serie", serie(entry, request, baseUri));
             }
             setParams(request, paramRequest);
             RequestDispatcher rd = request.getRequestDispatcher(path);
