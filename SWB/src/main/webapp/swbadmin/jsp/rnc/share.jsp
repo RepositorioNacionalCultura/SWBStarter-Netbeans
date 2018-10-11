@@ -21,7 +21,8 @@
             <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
         </div>
         <div class="col-1 col-md-4 explo-twit">
-            <a href="#"><span class="ion-social-twitter"></span></a>
+            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false"><span class="ion-social-twitter"></span></a>
+            <!--<a href="#"><span class="ion-social-twitter"></span></a>-->
         </div>
         <div class="col-2 col-md-4 explo-like">
             <a href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span> <%=entry.getResourcestats().getViews()%></a>
