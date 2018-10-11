@@ -123,7 +123,7 @@ public class AnnotationsMgr extends GenericAdmResource{
         String path = "/swbadmin/jsp/rnc/"+this.getClass().getSimpleName()+"/view.jsp";
         
         Annotation annotation = null;
-        if (user!=null && user.isSigned()){
+        if (user.isSigned()){
             isAdmin=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "")));
             isAnnotator=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", ""))); 
             /*if(isAdmin){                
@@ -136,7 +136,7 @@ public class AnnotationsMgr extends GenericAdmResource{
             userid= user.getId();
         } 
         String lang=user.getLanguage();
-        annotation = AnnotationMgr.getInstance().findById(id, user.getId());
+        annotation = AnnotationMgr.getInstance().findById(id, userid, isAdmin);
         RequestDispatcher dis = request.getRequestDispatcher(path);
         try {
             request.setAttribute("paramRequest", paramRequest);
