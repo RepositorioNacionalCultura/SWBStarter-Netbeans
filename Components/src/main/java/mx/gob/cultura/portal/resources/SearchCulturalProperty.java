@@ -257,7 +257,6 @@ public class SearchCulturalProperty extends PagerAction {
         try {
             filters = null != request.getParameter("filter") ? getPageFilter(request) : getFilters(request);
             uri += URLEncoder.encode(words, StandardCharsets.UTF_8.name());
-            //uri += Utils.getParamSearch(words);
             uri += filters;
         } catch (UnsupportedEncodingException uex) {
             LOG.error(uex);
@@ -268,6 +267,7 @@ public class SearchCulturalProperty extends PagerAction {
             if (request.getParameter("sort").equalsIgnoreCase("dateasc")) uri += "&sort=datecreated.value";
             if (request.getParameter("sort").equalsIgnoreCase("statdes")) uri += "&sort=-resourcestats.views";
             if (request.getParameter("sort").equalsIgnoreCase("statasc")) uri += "&sort=resourcestats.views";
+            if (request.getParameter("sort").equalsIgnoreCase("imptdesc")) uri += "&sort=-important";
         }
         ListBICRequest req = new ListBICRequest(uri);
         try {

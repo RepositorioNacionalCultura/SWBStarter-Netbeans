@@ -19,6 +19,7 @@
 %>
 <%  if (!references.isEmpty()) {  %>
 	<!--div id="references"-->
+            <jsp:include page="filters.jsp" flush="true"/>
             <div class="ruta-resultado row" id="ruta-resultado">
 		<%  if (null != wxss) { %>
 			<p class="oswL"><%=Utils.decimalFormat("###,###", t)%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>

@@ -267,11 +267,24 @@ public class Utils {
     public static boolean chdFtr(String filter, String type, String value) {
         if (null == filter || filter.isEmpty() || null == type || type.isEmpty() || null == value || value.isEmpty()) return false;
         if (type.equalsIgnoreCase("selfecha")) return filter.equalsIgnoreCase(value);
-        String [] params = filter.split(",");
+        String [] params = filter.split(";;");
         for (int i=0; i<params.length; i++) {
             String [] pair = params[i].split(":");
+            if (type.equalsIgnoreCase("mediatype")) return isMedia(pair[1], value);
             if (pair[0].equalsIgnoreCase(type) && pair[1].equals(value)) return true;
         }
+        return false;
+    }
+    
+    public static boolean isMedia(String media, String value) {
+        if (null == media || null == value) return false;
+        if (media.equalsIgnoreCase("jpg") || media.equalsIgnoreCase("png") || media.startsWith("image")) return value.equalsIgnoreCase("Imagen");
+        if (media.equalsIgnoreCase("aiff") || media.equalsIgnoreCase("wav") || media.equalsIgnoreCase("mp3") || media.startsWith("audio")) return value.equalsIgnoreCase("Audio");
+        if (media.equalsIgnoreCase("avi") || media.startsWith("video") || media.equalsIgnoreCase("mp4") || media.equalsIgnoreCase("mov")) return value.equalsIgnoreCase("Video");
+        if (media.equalsIgnoreCase("pdf") || media.equalsIgnoreCase("application/pdf")) return value.equalsIgnoreCase("PDF");
+        if (media.startsWith("model/x3d") || media.equalsIgnoreCase("3d")) return value.equalsIgnoreCase("3D");
+        if (media.equalsIgnoreCase("zip") || media.equalsIgnoreCase("application/zip")) return value.equalsIgnoreCase("ZIP");
+        if (media.equalsIgnoreCase("application/epub+zip")) return value.equalsIgnoreCase("EPUB");
         return false;
     }
     

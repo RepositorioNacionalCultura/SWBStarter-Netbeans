@@ -66,9 +66,9 @@
             <em class="fa fa-sliders" aria-hidden="true"></em> <%=paramRequest.getLocaleString("usrmsg_view_search_filters")%> <i class="ion-close " aria-hidden="true"></i>
         </span>
     </div>
-    <jsp:include page="filters.jsp" flush="true"/>
     <a name="showPage"></a>
     <div id="references">
+        <jsp:include page="filters.jsp" flush="true"/>
         <div class="ruta-resultado row" id="ruta-resultado">
             <% if (null != wxss && !wxss.isEmpty()) {%>
                 <p class="oswL"><%=Utils.decimalFormat("###,###", t)%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
