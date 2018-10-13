@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import org.semanticwb.model.WebSite;
 
 /**
  * Strategy component that writes meta tags for social sharing of BIC.
@@ -28,11 +29,28 @@ public class SocialTags extends GenericAdmResource {
                 "/api/v1/search?identifier=" + oId;
             String fbAppId = paramRequest.getWebPage().getWebSite().getModelProperty("facebook_appid");
 
+            String reqHost = request.getRequestURL().toString();
+            int indexColon = reqHost.indexOf(":", 7);
+            String pathBegining = null;
+            if (indexColon != -1) {
+                pathBegining = reqHost.substring(0, reqHost.indexOf("/", indexColon));
+            } else {
+                pathBegining = reqHost.substring(0, reqHost.indexOf("/", 10));
+            }
+            
             GetBICRequest req = new GetBICRequest(uri);
             Entry entry = req.makeRequest();
+            String title = null;
+            String urlImage = null;
+            String description = null;
 
             if (null != entry) {
-                StringBuilder metas = new StringBuilder();
+                title = !entry.getRecordtitle().isEmpty() ? entry.getRecordtitle().get(0).getValue() : "Sin t&iacute;tulo";
+                urlImage = entry.getResourcethumbnail() != null ? (entry.getResourcethumbnail().startsWith("/") ?
+                        pathBegining + entry.getResourcethumbnail() : entry.getResourcethumbnail()) : "";
+                description = !entry.getDescription().isEmpty() ? entry.getDescription().get(0) : "";
+                
+                StringBuilder metas = new StringBuilder(128);
                 metas.append("<meta charset=\"utf-8\" />\n");
                 metas.append("");
                 if (null != fbAppId) {
@@ -41,7 +59,9 @@ public class SocialTags extends GenericAdmResource {
                     metas.append("\" />\n");
                 }
                 metas.append("<meta property=\"og:type\" content=\"website\" />\n");
-//                metas.append("<meta property=\"og:description\" content=\"Visita el Repositorio Digital del Patrimonio Cultural de México. Este es un ejemplo de lo que puedes encontrar.\" />\n");
+                metas.append("<meta property=\"og:description\" content=\"");
+                metas.append(description);
+                metas.append("\" />\n");
                 metas.append("<meta property=\"og:url\" content=\"")
                         .append(request.getRequestURL())
                         .append("?")
@@ -49,12 +69,17 @@ public class SocialTags extends GenericAdmResource {
                         .append("\" />\n");
 
                 metas.append("<meta property=\"og:title\" content=\"")
-                    .append(entry.getRecordtitle().get(0).getValue())
+                    .append(title)
                     .append("\" />\n");
 
                 metas.append("<meta property=\"og:image\" content=\"")
-                    .append(entry.getDigitalObject().get(0).getUrl())
+                    .append(urlImage)
                     .append("\" />\n");
+                metas.append("<meta name=\"twitter:card\" content=\"summary\" />");
+                metas.append("<meta name=\"twitter:image\" content=\"")
+                    .append(urlImage)
+                    .append("\" />\n");
+                metas.append("<script async src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>\n");
 
                 try {
                     Writer out = response.getWriter();
