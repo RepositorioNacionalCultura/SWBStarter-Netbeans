@@ -18,7 +18,6 @@
     Entry entry = (Entry)request.getAttribute("entry");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
-    String userLang = paramRequest.getUser().getLanguage();
     if (null != entry) {
 	if (null != entry.getDigitalObject()) {
             digitalobjects = entry.getDigitalObject();
@@ -49,6 +48,7 @@
 				.append("   },");
 			}
                     }
+                    if (scriptCallVisor.length() > 0) scriptCallVisor.deleteCharAt(scriptCallVisor.length());
                     scriptCallVisor.append("       ]")
 			.append("	});")
 			.append("</script>");

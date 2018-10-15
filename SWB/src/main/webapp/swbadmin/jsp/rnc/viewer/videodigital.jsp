@@ -39,7 +39,10 @@
                 scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/viewer-video-2.css'/>");
                 if (digital.getUrl().contains("youtu")) {
                     divVisor.append("<iframe width=\"800\" height=\"600\" src=\"").append(Utils.urlEmbedYT(digital.getUrl())).append("\" frameborder=\"0\" allowfullscreen></iframe>");
-                }else {
+                }else if (digital.getUrl().contains("vimeo")) {
+                    divVisor.append("<iframe src=\"")
+                        .append(Utils.urlEmbedYT(digital.getUrl())).append("\" frameborder=\"0\" webkitallowfullscreen mozallowfullscreen allowfullscreen allow=\"autoplay; encrypted-media\"></iframe>");
+		}else {
                     divVisor.append("<video id=\"video\" width=\"97%\" poster=\"").append(entry.getResourcethumbnail()).append("\" controls controlsList=\"nodownload\">");
                     divVisor.append("	<source src=\"").append(digital.getUrl()).append("\" type=\"").append(mime).append("\">");
                     divVisor.append("	<p>Tu navegador no soporta video en HTML5</p>");

@@ -34,6 +34,7 @@ import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Title;
 import mx.gob.cultura.portal.response.CountName;
 import mx.gob.cultura.portal.response.Aggregation;
+import mx.gob.cultura.portal.response.DigitalObject;
 import mx.gob.cultura.portal.response.Rights;
 
 /**
@@ -419,6 +420,7 @@ public class Utils {
         StringBuilder watch = new StringBuilder();
         if (null == urlwatch || urlwatch.isEmpty()) return "";
         if (urlwatch.startsWith("https://youtu.be/")) return "https://www.youtube.com/embed/" + urlwatch.substring(17, urlwatch.length());
+        if (urlwatch.startsWith("https://vimeo.com/")) return "https://player.vimeo.com/video/" + urlwatch.substring(18, urlwatch.length());
         if (urlwatch.startsWith("https://www.youtube.com/watch?v=")) {
             int index = urlwatch.indexOf("&", 32);
             if (index == -1) {
@@ -432,6 +434,24 @@ public class Utils {
                 .append(id);
         }else return urlwatch;
         return watch.toString();
+    }
+    
+    public static List<DigitalObject> getAudio(Entry entry, List<DigitalObject> series) {
+        List<DigitalObject> audios = new ArrayList<>();
+        if (null != entry) {
+            if (null != entry.getDigitalObject()) {
+                audios.addAll(entry.getDigitalObject());
+                if (null != series) {
+                    for (DigitalObject digital : series) {
+                        String type = (null != digital.getMediatype() && null != digital.getMediatype().getMime()) ?  digital.getMediatype().getMime() : "";
+                        if (!type.isEmpty() && type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3")) {
+                            if (!entry.getDigitalObject().contains(digital) && null != digital) audios.add(digital);
+                        }
+                    }
+                }
+            }
+        }
+        return audios;
     }
     
     public static String c(String value) {

@@ -90,8 +90,8 @@ public class ArtDetail extends GenericAdmResource {
                     incHits(entry, baseUri, uri);
                 }
                 request.setAttribute("entry", entry);
+                request.setAttribute("serie", serie(entry, baseUri));
                 request.setAttribute("collection", explore(entry, baseUri));
-                //request.setAttribute("serie", serie(entry, request, baseUri));
             }
             setParams(request, paramRequest);
             RequestDispatcher rd = request.getRequestDispatcher(path);
@@ -118,15 +118,19 @@ public class ArtDetail extends GenericAdmResource {
         return entry;
     }
     
-    private List<DigitalObject> serie(Entry entry, HttpServletRequest request, String base) {
+    private List<DigitalObject> serie(Entry entry, String endPoint) {
         List<DigitalObject> serieList = new ArrayList<>();
+        List<String> tmp = new ArrayList<>();
+        tmp.add("capsula");
+        entry.setSerie(tmp);
         if (null != entry && null != entry.getSerie() && !entry.getSerie().isEmpty()) {
             for (String serie : entry.getSerie()) {
-                String uri = base + "/api/v1/search?q="+serie;
-                Entry e = getEntry(request, uri);
-                System.out.println("serie: " + e);
-                if (null != e.getSerie() && entry.getSerie() == e.getSerie() && null != e.getDigitalObject()) 
-                    serieList.addAll(e.getDigitalObject());
+                List<Entry> records = bookCase(endPoint, serie);
+                for (Entry e : records) {
+                    e.setSerie(tmp);
+                    if (null != e.getSerie() && entry.getSerie() == e.getSerie() && null != e.getDigitalObject()) 
+                        serieList.addAll(e.getDigitalObject());
+                }
             }
         }
         return serieList;
@@ -249,7 +253,6 @@ public class ArtDetail extends GenericAdmResource {
         }
         if (bookCase.size() > elements) {
             int randitem = rand.nextInt(bookCase.size()-elements);
-            System.out.println("randitem: " + randitem);
             List<Entry> randomCase = new ArrayList<>();
             for (int i = 0; i<elements; i++){
                 randomCase.add(bookCase.get(randitem+i));

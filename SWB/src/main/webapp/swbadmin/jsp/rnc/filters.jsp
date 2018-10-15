@@ -148,7 +148,23 @@
             url: '<%=pageURL%>?word='+w+'&sort='+f,
             load: function(data) {
                 dojo.byId('references').innerHTML=data;
+                setBounds();
             }
+        });
+    }
+    function setBounds() {
+	var slider = new Slider('#ex1', {});
+	slider.on("slide", function(sliderValue) {
+            var str = sliderValue + "";
+            var res = str.split(',');
+            document.getElementById("bx1").value = res[0];
+            document.getElementById("bx2").value = res[1];
+            document.getElementById("ex1SliderVal").textContent = res[0];
+            document.getElementById("ex2SliderVal").textContent = res[1];
+	});
+        slider.on("slideStop", function() {
+            if (moveSlide())
+		filter();
         });
     }
 </script>
