@@ -120,6 +120,7 @@ public class ArtDetail extends GenericAdmResource {
     
     private List<DigitalObject> serie(Entry entry, String endPoint) {
         List<DigitalObject> serieList = new ArrayList<>();
+        if (null == entry) return serieList;
         List<String> tmp = new ArrayList<>();
         tmp.add("capsula");
         entry.setSerie(tmp);

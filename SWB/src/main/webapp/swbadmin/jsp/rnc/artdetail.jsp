@@ -26,29 +26,7 @@
             images = null != digitalobjects ? digitalobjects.size() : 0;
             digital = images >= iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
             if (null == digital.getUrl()) digital.setUrl("");
-            if (digital.getUrl().endsWith(".dzi")) {
-                scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
-                scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/openseadragon.css'/>");
-                divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
-                scriptCallVisor.append("<script type=\"text/javascript\">")
-                    .append("var dz = OpenSeadragon({")
-                    .append("	id:\"pyramid\",")
-                    .append("	toolbar:     \"toolbarDiv\",")
-                    .append("	navigatorId:   \"navigatorDiv\",")
-                    .append("	showHomeControl: false,")
-                    .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
-                    .append("	showNavigator: true,")
-                    .append("	immediateRender: true,")
-                    .append("	defaultZoomLevel: 0.6,")
-                    .append("	maxZoomLevel: 1.5,")
-                    .append("	minZoomLevel: 0.4,")
-                    .append("	tileSources:   [")
-                    .append("		\"").append(digital.getUrl()).append("\"")
-                    .append("	]")
-                    .append("});")
-                    .append("dz.gestureSettingsMouse.scrollToZoom = false;")
-                    .append("</script>");
-            }else if (digital.getUrl().endsWith("view") || digital.getUrl().endsWith(".png") || digital.getUrl().endsWith(".jpg") || digital.getUrl().endsWith(".JPG")) {
+            if (digital.getUrl().endsWith("view") || digital.getUrl().endsWith(".png") || digital.getUrl().endsWith(".jpg") || digital.getUrl().endsWith(".JPG")) {
                 scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
                 scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/openseadragon.css'/>");
                 divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
@@ -71,9 +49,34 @@
                     .append("});")
                     .append("vw.gestureSettingsMouse.scrollToZoom = false;")
                     .append("</script>");
-            } else {
-                if (digital.getUrl().endsWith(".zip") || digital.getUrl().endsWith(".rtf") || digital.getUrl().endsWith(".docx")) divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
-                else divVisor.append("<img src=\"").append(digital.getUrl()).append("\">");
+            }else if (digital.getUrl().endsWith(".zip") || digital.getUrl().endsWith(".rtf") || digital.getUrl().endsWith(".docx")) {
+                divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
+            }else if (digital.getUrl().contains("amazonaws")) {
+                divVisor.append("<div id=\"gpxdetail\">")
+                    .append("   <iframe class=\"sciframeclass\" src=\"").append(digital.getUrl()).append(" width=\"1440\" height=\"940\" scw=\"1440\" sch=\"940\"></iframe>")
+                    .append("</div>");
+            }else {
+                scriptHeader.append("<script src=\"/work/models/").append(site.getId()).append("/js/openseadragon.min.js\"></script>");
+                scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/openseadragon.css'/>");
+                divVisor.append("<div id=\"pyramid\" class=\"openseadragon front-page\">");
+                scriptCallVisor.append("<script type=\"text/javascript\">")
+                    .append("var dz = OpenSeadragon({")
+                    .append("	id:\"pyramid\",")
+                    .append("	toolbar:     \"toolbarDiv\",")
+                    .append("	navigatorId:   \"navigatorDiv\",")
+                    .append("	showHomeControl: false,")
+                    .append("	prefixUrl:      \"/work/models/").append(site.getId()).append("/open/\",")
+                    .append("	showNavigator: true,")
+                    .append("	immediateRender: true,")
+                    .append("	defaultZoomLevel: 0.6,")
+                    .append("	maxZoomLevel: 1.5,")
+                    .append("	minZoomLevel: 0.4,")
+                    .append("	tileSources:   [")
+                    .append("		\"").append(digital.getUrl()).append("\"")
+                    .append("	]")
+                    .append("});")
+                    .append("dz.gestureSettingsMouse.scrollToZoom = false;")
+                    .append("</script>");
             }
             title = Utils.getTitle(entry.getRecordtitle(), 0);
             creator = Utils.getRowData(entry.getCreator(), 0, false);
