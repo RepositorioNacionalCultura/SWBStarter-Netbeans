@@ -43,12 +43,14 @@ public class SocialTags extends GenericAdmResource {
             String title = null;
             String urlImage = null;
             String description = null;
-
+            String default_description = paramRequest.getWebPage().getWebSite().getModelProperty("share_default_description");
+            if(null==default_description) default_description = "";
             if (null != entry) {
                 title = !entry.getRecordtitle().isEmpty() ? entry.getRecordtitle().get(0).getValue() : "Sin t&iacute;tulo";
                 urlImage = entry.getResourcethumbnail() != null ? (entry.getResourcethumbnail().startsWith("/") ?
                         pathBegining + entry.getResourcethumbnail() : entry.getResourcethumbnail()) : "";
-                description = !entry.getDescription().isEmpty() ? entry.getDescription().get(0) : "";
+                description = !entry.getDescription().isEmpty() ? entry.getDescription().get(0) : default_description; //
+
                 
                 StringBuilder metas = new StringBuilder(128);
                 metas.append("<meta charset=\"utf-8\" />\n");
