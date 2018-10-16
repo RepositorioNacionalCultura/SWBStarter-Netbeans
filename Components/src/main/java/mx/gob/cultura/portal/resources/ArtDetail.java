@@ -118,19 +118,19 @@ public class ArtDetail extends GenericAdmResource {
         return entry;
     }
     
-    private List<DigitalObject> serie(Entry entry, String endPoint) {
-        List<DigitalObject> serieList = new ArrayList<>();
+    private List<Entry> serie(Entry entry, String endPoint) {
+        List<Entry> serieList = new ArrayList<>();
         if (null == entry) return serieList;
         List<String> tmp = new ArrayList<>();
         tmp.add("capsula");
         entry.setSerie(tmp);
-        if (null != entry && null != entry.getSerie() && !entry.getSerie().isEmpty()) {
+        if (null != entry.getSerie() && !entry.getSerie().isEmpty()) {
             for (String serie : entry.getSerie()) {
                 List<Entry> records = bookCase(endPoint, serie);
                 for (Entry e : records) {
                     e.setSerie(tmp);
-                    if (null != e.getSerie() && entry.getSerie() == e.getSerie() && null != e.getDigitalObject()) 
-                        serieList.addAll(e.getDigitalObject());
+                    if (null != e.getSerie() && entry.getSerie() == e.getSerie()) 
+                        serieList.add(e);
                 }
             }
         }

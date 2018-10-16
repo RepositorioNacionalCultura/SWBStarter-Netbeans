@@ -17,68 +17,66 @@
     String fs = null != request.getAttribute("filters") ? "&fs="+request.getAttribute("filters") : "";
     String f = null != request.getAttribute("sort") ? "&sort="+request.getAttribute("sort") : "";
 %>
-<%  if (!references.isEmpty()) {  %>
+<% if (!references.isEmpty()) {  %>
 	<!--div id="references"-->
-            <jsp:include page="filters.jsp" flush="true"/>
-            <div class="ruta-resultado row" id="ruta-resultado">
-		<%  if (null != wxss) { %>
-			<p class="oswL"><%=Utils.decimalFormat("###,###", t)%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
-		<%  }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
-            </div>
-            <div id="contenido">
-		<div id="resultados" class="<%=mode%>">
-		<%  
-                    for (Entry reference : references) {
-			String title =  Utils.getTitle(reference.getRecordtitle(), 50);
-			Document desc = Utils.getDescription(reference.getDescription());
-                        String holder = Utils.getRowData(reference.getHolder(), 0, false);
-			String creator = Utils.getRowData(reference.getCreator(), 0, false);
-		%>
-                            <div class="pieza-res card">
-				<a class="pieza-res-img" href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%>&t=<%=t%><%=fs%><%=f%><%=uri%>">
-                                    <img src="<%=reference.getResourcethumbnail()%>" />
-				</a>
-				<div class="pieza-res-inf">
-                                    <p class="tit"><a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%>&t=<%=t%><%=fs%><%=f%><%=uri%>"><%=title%></a></p>
-                                    <p class="autor"><a href="#"><%=creator%></a></p>
-                                    <p class="desc"><% if (null != desc) desc.get("short");%></p>
-                                    <p class="palabras">
-                                    <%
-                                        int i = 0;
-                                        for (String key : reference.getKeywords()) {
-                                            if (i < reference.getKeywords().size()) key += ", ";
-                                            out.println("<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word=" + key + "\">" + key + "</a>");
-                                            i++;
-                                                                        }
-                                    %>
-                                    </p>
-                                    <div>
-                                        <p class="tipo"><a href="#"><%=holder%></a></p>
-                        		<a href="#" class="pieza-res-like" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=reference.getId()%>');"><span class="ion-heart"></span></a>
-                                    </div>
-				</div>
-                            </div>
-		<%
-                    }
-		%>
+		<jsp:include page="filters.jsp" flush="true"/>
+		<div class="ruta-resultado row" id="ruta-resultado">
+			<% if (null != wxss) { %>
+				<p class="oswL"><%=Utils.decimalFormat("###,###", t)%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
+			<% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
 		</div>
+		<div id="contenido">
+			<div id="resultados" class="<%=mode%>">
+			<%  
+				for (Entry reference : references) {
+					String title =  Utils.getTitle(reference.getRecordtitle(), 50);
+                    Document desc = Utils.getDescription(reference.getDescription());
+                    String holder = Utils.getRowData(reference.getHolder(), 0, false);
+                    String creator = Utils.getRowData(reference.getCreator(), 0, false);
+			%>
+					<div class="pieza-res card">
+						<a class="pieza-res-img" href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%>&t=<%=t%><%=fs%><%=f%><%=uri%>">
+							<img src="<%=reference.getResourcethumbnail()%>" />
+						</a>
+						<div class="pieza-res-inf">
+							<p class="tit"><a href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%>&t=<%=t%><%=fs%><%=f%><%=uri%>"><%=title%></a></p>
+							<p class="autor"><a href="#"><%=creator%></a></p>
+							<p class="desc"><% if (null != desc) desc.get("short");%></p>
+							<p class="palabras">
+							<%
+								int i = 0;
+                                for (String key : reference.getKeywords()) {
+									if (i < reference.getKeywords().size()) key += ", ";
+                                    out.println("<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word=" + key + "\">" + key + "</a>");
+                                    i++;
+								}
+                            %>
+                            </p>
+							<div>
+								<p class="tipo"><a href="#"><%=holder%></a></p>
+								<a href="#" class="pieza-res-like" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=reference.getId()%>');"><span class="ion-heart"></span></a>
+							</div>
+						</div>
+					</div>
+			<%
+				}
+			%>
+			</div>
 		<jsp:include page="pager.jsp" flush="true"/>
 		<jsp:include page="footer.jsp" flush="true"/>
-            <!--/div-->
-        </div>
+	<div>
+<!--/div-->
 <%
-    }else if (null != word) { 
+	}else if (null != word) { 
 %>	
-	<div id="references">
-            <div class="ruta-resultado row" id="ruta-resultado">
-		<div class="col-12 col-sm-8 col-md-8">
-                    <p class="oswL rojo"><%=paramRequest.getLocaleString("usrmsg_view_search_no_results")%> <span class="oswB rojo"><%=word%></span></p>
+		<div class="ruta-resultado row" id="ruta-resultado">
+			<div class="col-12 col-sm-8 col-md-8">
+				<p class="oswL rojo"><%=paramRequest.getLocaleString("usrmsg_view_search_no_results")%> <span class="oswB rojo"><%=word%></span></p>
+			</div>
+			<div class="col-12 col-sm-4 col-md-4 ordenar"></div>
 		</div>
-                <div class="col-12 col-sm-4 col-md-4 ordenar"></div>
-            </div>
-            <div id="resultados" class="<%=mode%>"></div>
-            <div class="container paginacion"></div>
-	</div>
+		<div id="resultados" class="<%=mode%>"></div>
+		<div class="container paginacion"></div>
 <%
-    }
+	}
 %>

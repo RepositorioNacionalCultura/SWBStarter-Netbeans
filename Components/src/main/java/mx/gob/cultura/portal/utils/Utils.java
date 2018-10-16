@@ -271,13 +271,15 @@ public class Utils {
         String [] params = filter.split(";;");
         for (int i=0; i<params.length; i++) {
             String [] pair = params[i].split(":");
-            if (type.equalsIgnoreCase("mediatype")) return isMedia(pair[1], value);
+            if (type.equalsIgnoreCase("mediatype") && pair[0].equalsIgnoreCase(type)) return isMedia(pair[1], value);
             if (pair[0].equalsIgnoreCase(type) && pair[1].equals(value)) return true;
         }
         return false;
     }
     
     public static boolean isMedia(String media, String value) {
+        System.out.println("media: " + media);
+        System.out.println("value: " + value);
         if (null == media || null == value) return false;
         if (media.equalsIgnoreCase("jpg") || media.equalsIgnoreCase("png") || media.startsWith("image")) return value.equalsIgnoreCase("Imagen");
         if (media.equalsIgnoreCase("aiff") || media.equalsIgnoreCase("wav") || media.equalsIgnoreCase("mp3") || media.startsWith("audio")) return value.equalsIgnoreCase("Audio");
