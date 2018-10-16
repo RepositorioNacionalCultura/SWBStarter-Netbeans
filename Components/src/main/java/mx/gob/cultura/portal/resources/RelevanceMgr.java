@@ -377,16 +377,17 @@ public class RelevanceMgr extends GenericResource {
     }
 
     public void collectionById(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+
         User user = paramRequest.getUser();
         Collection collection = null;
         List<Entry> favorites = new ArrayList<>();
         String path = "/swbadmin/jsp/rnc/collections/pagecollection.jsp"; //elements.jsp
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
-            if (null != user && user.isSigned() && null != request.getParameter(IDENTIFIER) /**
+            if ( null != request.getParameter(IDENTIFIER) /**
                      * && !collectionList.isEmpty()*
                      */
-                    ) {
+                    ) { //null != user && user.isSigned() &&
                 collection = mgr.findById(request.getParameter(IDENTIFIER));
             }
             if (null != collection && null != collection.getElements()) {
