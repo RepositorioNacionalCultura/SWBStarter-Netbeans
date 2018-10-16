@@ -22,7 +22,7 @@
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
     String userLang = paramRequest.getUser().getLanguage();
-    StringBuilder uri = new StringBuilder("<a href=\"/").append(userLang).append("/").append(site.getId()).append("/resultados?theme=");
+    StringBuilder uri = new StringBuilder("<a href=\"/").append(userLang).append("/").append(site.getId()).append("/resultados?word=*&theme=");
     if (null != entry) {
         titles = entry.getRecordtitle();
         StringBuilder collection = new StringBuilder();
@@ -61,7 +61,7 @@
                 <th colspan="2"><%=paramRequest.getLocaleString("usrmsg_view_detail_data_sheet")%></th>
             </tr>
             <%=Utils.getTechData("recordtitle", holder, title+subtile, paramRequest.getLocaleString("usrmsg_view_detail_title"), true, true)%>
-            <%=Utils.getTechData("creator", holder, Utils.concatLink(userLang, site.getId(), true, Utils.getCreator(entry.getCreator())), paramRequest.getLocaleString("usrmsg_view_detail_artist"), true, true)%>
+            <%=Utils.getTechData("creator", holder, Utils.getCreator(entry.getCreator()), paramRequest.getLocaleString("usrmsg_view_detail_artist"), true, true)%>
             <%=Utils.getTechData("datecreated", holder, null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "", paramRequest.getLocaleString("usrmsg_view_detail_date"), true, true)%>
             <%=Utils.getTechData("resourcetype", holder, Utils.concatFilter(userLang, site.getId(), "resourcetype", Utils.getList(entry.getBictype())), paramRequest.getLocaleString("usrmsg_view_detail_type_object"), false, false)%>
             <%=Utils.getTechData("resourcetype", holder, Utils.concatFilter(userLang, site.getId(), "resourcetype", entry.getResourcetype()), paramRequest.getLocaleString("usrmsg_view_detail_type_object"), true, true)%>
