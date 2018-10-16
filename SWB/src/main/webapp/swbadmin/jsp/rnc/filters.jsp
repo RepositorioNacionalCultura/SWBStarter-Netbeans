@@ -208,7 +208,7 @@
                             <%
                                 for (CountName r : mediastype) {
                             %>
-                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="mediastype" value="<%=r.getName()%>" <% if (Utils.chdFtr(filters, "mediastype", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span><span class="checkmark"></span></label></li>
+                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="mediastype" value="<%=r.getName()%>" <% if (Utils.chdFtr(filters, "mediatype", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span><span class="checkmark"></span></label></li>
                             <%
 				}
                             %>

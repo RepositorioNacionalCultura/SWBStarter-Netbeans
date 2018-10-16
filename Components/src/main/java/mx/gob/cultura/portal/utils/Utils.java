@@ -278,8 +278,6 @@ public class Utils {
     }
     
     public static boolean isMedia(String media, String value) {
-        System.out.println("media: " + media);
-        System.out.println("value: " + value);
         if (null == media || null == value) return false;
         if (media.equalsIgnoreCase("jpg") || media.equalsIgnoreCase("png") || media.startsWith("image")) return value.equalsIgnoreCase("Imagen");
         if (media.equalsIgnoreCase("aiff") || media.equalsIgnoreCase("wav") || media.equalsIgnoreCase("mp3") || media.startsWith("audio")) return value.equalsIgnoreCase("Audio");
@@ -438,16 +436,21 @@ public class Utils {
         return watch.toString();
     }
     
-    public static List<DigitalObject> getAudio(Entry entry, List<DigitalObject> series) {
+    public static List<DigitalObject> getAudio(Entry entry, List<Entry> series) {
         List<DigitalObject> audios = new ArrayList<>();
         if (null != entry) {
             if (null != entry.getDigitalObject()) {
                 audios.addAll(entry.getDigitalObject());
-                if (null != series) {
-                    for (DigitalObject digital : series) {
-                        String type = (null != digital.getMediatype() && null != digital.getMediatype().getMime()) ?  digital.getMediatype().getMime() : "";
-                        if (!type.isEmpty() && type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3")) {
-                            if (!entry.getDigitalObject().contains(digital) && null != digital) audios.add(digital);
+                if (null != series && !series.isEmpty()) {
+                    for (Entry serie : series) {
+                        List<DigitalObject> list = serie.getDigitalObject();
+                        if (null != list) {
+                            for (DigitalObject digital : list) {
+                                String type = (null != digital.getMediatype() && null != digital.getMediatype().getMime()) ?  digital.getMediatype().getMime() : "";
+                                if (!type.isEmpty() && type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3")) {
+                                    if (!entry.getDigitalObject().contains(digital)) audios.add(digital);
+                                }
+                            }
                         }
                     }
                 }
