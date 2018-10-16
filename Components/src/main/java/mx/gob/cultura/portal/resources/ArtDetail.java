@@ -324,6 +324,8 @@ public class ArtDetail extends GenericAdmResource {
                 path = "/swbadmin/jsp/rnc/viewer/epubdigital.jsp";
             else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
                 path = "/swbadmin/jsp/rnc/viewer/audiodigital.jsp";
+            else if (type.equalsIgnoreCase("3d") || type.contains("3d"))
+                path = "/swbadmin/jsp/rnc/viewer/sketchdigital.jsp";
             else
                 path = "/swbadmin/jsp/rnc/digitalobj.jsp";
         } else {
@@ -337,6 +339,8 @@ public class ArtDetail extends GenericAdmResource {
                 path = "/swbadmin/jsp/rnc/viewer/epubdetail.jsp";
             else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
                 path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
+            else if (type.equalsIgnoreCase("3d") || type.contains("3d"))
+                path = "/swbadmin/jsp/rnc/viewer/sketchdetail.jsp";
         }
         return path;
     }
@@ -363,6 +367,8 @@ public class ArtDetail extends GenericAdmResource {
                 path = "/swbadmin/jsp/rnc/viewer/epubdigital.jsp";
             else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
                 path = "/swbadmin/jsp/rnc/viewer/audiodigital.jsp";
+            else if (type.equalsIgnoreCase("3d") || type.contains("3d"))
+                path = "/swbadmin/jsp/rnc/viewer/sketchdigital.jsp";
             else
                 path = "/swbadmin/jsp/rnc/digitalobj.jsp";
         } else {
@@ -376,6 +382,8 @@ public class ArtDetail extends GenericAdmResource {
                 path = "/swbadmin/jsp/rnc/viewer/epubdetail.jsp";
             else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3") || type.startsWith("audio"))
                 path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
+            else if (type.equalsIgnoreCase("3d") || type.contains("3d"))
+                path = "/swbadmin/jsp/rnc/viewer/sketchdetail.jsp";
         }
         return path;
     }

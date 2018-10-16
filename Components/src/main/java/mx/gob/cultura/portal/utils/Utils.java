@@ -271,7 +271,7 @@ public class Utils {
         String [] params = filter.split(";;");
         for (int i=0; i<params.length; i++) {
             String [] pair = params[i].split(":");
-            if (type.equalsIgnoreCase("mediatype") && pair[0].equalsIgnoreCase(type)) return isMedia(pair[1], value);
+            if (type.equalsIgnoreCase("mediatype") && pair[0].equalsIgnoreCase(type) && isMedia(pair[1], value)) return true;
             if (pair[0].equalsIgnoreCase(type) && pair[1].equals(value)) return true;
         }
         return false;

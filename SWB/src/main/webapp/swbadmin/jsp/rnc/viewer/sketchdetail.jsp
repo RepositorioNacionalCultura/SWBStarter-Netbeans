@@ -19,16 +19,15 @@
     List<DigitalObject> digitalobjects = new ArrayList<>();
     Entry entry = (Entry)request.getAttribute("entry");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
-    WebSite site = paramRequest.getWebPage().getWebSite();
     if (null != entry) {
         iDigit = entry.getPosition();
         if (null != entry.getDigitalObject()) {
             digitalobjects = entry.getDigitalObject();
             books = null != digitalobjects ? digitalobjects.size() : 0;
             digital = books >= iDigit ? digitalobjects.get(iDigit) : new DigitalObject();
-            if (null != digital.getUrl()) {
-                scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
-                scriptHeader.append("<link rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/mediaelement@4.2.7/build/mediaelementplayer.min.css'/>");
+            if (null != digital.getMediatype() && null != digital.getMediatype().getName() && !digital.getMediatype().getName().trim().isEmpty()) {
+                //scriptHeader.append("<link rel='stylesheet' type='text/css' media='screen' href='/work/models/").append(site.getId()).append("/css/style.css'/>");
+                //scriptHeader.append("<link rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/mediaelement@4.2.7/build/mediaelementplayer.min.css'/>");
                 divVisor.append("<iframe width=\"1280\" height=\"860\" src=\"\" id=\"api-frame\" allowfullscreen mozallowfullscreen=\"true\" webkitallowfullscreen=\"true\"></iframe>");
                 scriptCallVisor.append("<style type=\"text/css\">")
                     .append("	.explora, .obranombre { bottom:60px}")
@@ -36,7 +35,7 @@
                     .append("</style>")
                     .append("<script type=\"text/javascript\">")
                     .append("   var iframe = document.getElementById( 'api-frame' );")
-                    .append("	var urlid = '9e898967d93e406e8a1aecf878caec21';")
+                    .append("	var urlid = '").append(digital.getMediatype().getName()).append("';")
                     .append("	var client = new Sketchfab( iframe );")
                     .append("	client.init( urlid, {")
                     .append("       success: function onSuccess( api ) {")
@@ -59,7 +58,6 @@
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     
     String scriptFB = Utils.getScriptFBShare(request);
-    String userLang = paramRequest.getUser().getLanguage();
 %>
 <%=scriptFB%>
 <section id="detalle" class="vis-sketch">
@@ -74,6 +72,7 @@
         </div>
         <%=scriptHeader%>
         <%=divVisor%>
+        <%=scriptCallVisor%>
     </div>
 </section>
 <section id="detalleinfo">
@@ -91,5 +90,4 @@
         </div>
     </div>
 </section>
-<%=scriptCallVisor%>
 <jsp:include page="addtree.jsp" flush="true"/>
