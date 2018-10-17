@@ -7,9 +7,14 @@ package mx.gob.cultura.portal.utils;
 
 import java.io.Writer;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import java.net.URL;
+import java.net.URLConnection;
+import java.io.BufferedInputStream;
 
 import java.text.Format;
 import java.text.DecimalFormat;
@@ -21,21 +26,30 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 
 import java.util.logging.Logger;
 import org.semanticwb.model.WebSite;
 import org.semanticwb.model.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Title;
+import mx.gob.cultura.portal.response.Rights;
 import mx.gob.cultura.portal.response.CountName;
 import mx.gob.cultura.portal.response.Aggregation;
 import mx.gob.cultura.portal.response.DigitalObject;
-import mx.gob.cultura.portal.response.Rights;
+
+import org.w3c.dom.Element;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -535,5 +549,28 @@ public class Utils {
             }
         }
         return actionPath.toString();
+    }
+    
+    public static Element getOSDProps(String path) {
+        Element eElement = null;
+        try {
+            URL url = new URL(path);
+            URLConnection urlConnection = url.openConnection();
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            org.w3c.dom.Document doc = dBuilder.parse(in);
+            doc.getDocumentElement().normalize();
+            NodeList nList = doc.getElementsByTagName("IMAGE_PROPERTIES");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    eElement = (Element) nNode;
+                }
+            }
+        } catch (Exception ex) {
+           ex.printStackTrace();
+        }
+        return eElement;
     }
 }

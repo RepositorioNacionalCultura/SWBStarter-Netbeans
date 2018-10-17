@@ -5,6 +5,7 @@
  */
 package mx.gob.cultura.portal.resources;
 
+import com.google.gson.Gson;
 import org.semanticwb.Logger;
 import org.semanticwb.SWBUtils;
 import org.semanticwb.SWBPlatform;
@@ -18,6 +19,7 @@ import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceException;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -32,16 +34,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
 import java.util.Random;
+import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.request.ListBICRequest;
 import mx.gob.cultura.portal.response.DigitalObject;
-import mx.gob.cultura.portal.response.Document;
+import static mx.gob.cultura.portal.utils.Constants.SORT;
+import static mx.gob.cultura.portal.utils.Constants.TOTAL;
 import static mx.gob.cultura.portal.utils.Constants.WORD;
 import static mx.gob.cultura.portal.utils.Constants.FILTER;
 import static mx.gob.cultura.portal.utils.Constants.IDENTIFIER;
 import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORD;
-import static mx.gob.cultura.portal.utils.Constants.SORT;
-import static mx.gob.cultura.portal.utils.Constants.TOTAL;
 
 /**
  *
@@ -52,6 +54,8 @@ public class ArtDetail extends GenericAdmResource {
     private static final String POSITION = "n";
     private static final String MODE_VISOR = "VISOR";
     private static final String MODE_DIGITAL = "DIGITAL";
+    
+    public static final String MODE_RES_ADD = "RES_ADD";
     private static final Logger LOG = SWBUtils.getLogger(ArtDetail.class);
 
     @Override
@@ -62,7 +66,9 @@ public class ArtDetail extends GenericAdmResource {
             doDigital(request, response, paramRequest);
         } else if (MODE_VISOR.equals(mode)) {
             //MODE_VISOR
-        } else {
+        } else if (MODE_RES_ADD.equals(mode)) {
+            redirectJsonResponse(request, response, paramRequest);
+        }else {
             super.processRequest(request, response, paramRequest);
         }
     }
@@ -101,6 +107,23 @@ public class ArtDetail extends GenericAdmResource {
         }
     }
     
+    public void redirectJsonResponse(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
+        Entry json = null;
+        Gson gson = new Gson();
+        String _index = request.getParameter("_index");
+        int index = Utils.toInt(_index);
+        List<Entry> serie = (List<Entry>)request.getAttribute("serie");
+        if (index < 0 || null == serie || serie.isEmpty() || index > serie.size()) json = new Entry();
+        else json = serie.get(index);
+        response.setContentType("application/json");
+	response.setHeader("Cache-Control", "no-cache");
+	PrintWriter pw = response.getWriter();
+	pw.write(gson.toJson(json));
+	pw.flush();
+	pw.close();
+	response.flushBuffer();
+    }
+    
     public static Entry getEntry(HttpServletRequest request, String uri) {
         Entry entry = null;
         Document document = null;
@@ -125,12 +148,21 @@ public class ArtDetail extends GenericAdmResource {
             for (String serie : entry.getSerie()) {
                 List<Entry> records = bookCase(endPoint, serie);
                 for (Entry e : records) {
-                    if (null != e.getSerie() && entry.getSerie() == e.getSerie()) 
+                    if (null != e.getSerie() && comparator(entry.getSerie(), e.getSerie())) {
                         serieList.add(e);
+                    }
                 }
             }
         }
         return serieList;
+    }
+    
+    private boolean comparator(List<String> a, List<String> b) {
+        if (null == a || null == b || a.isEmpty() || b.isEmpty() || a.size() != b.size()) return false;
+        for (int i=0; i<a.size(); i++) {
+            if (!a.get(i).equalsIgnoreCase(b.get(i))) return false;
+        }
+        return true;
     }
     
     private String getParamUri(String base, HttpServletRequest request) throws UnsupportedEncodingException {
@@ -138,7 +170,7 @@ public class ArtDetail extends GenericAdmResource {
         uri.append("/api/v1/search?");
         if (null != request.getParameter(IDENTIFIER)) uri.append("identifier=").append(request.getParameter(IDENTIFIER));
         else {
-            if (null != request.getParameter(WORD)) uri.append("q=").append(URLEncoder.encode(Utils.getParamSearch(request.getParameter(WORD)), StandardCharsets.UTF_8.name()));
+            if (null != request.getParameter(WORD)) uri.append("q=").append(URLEncoder.encode(request.getParameter(WORD), StandardCharsets.UTF_8.name()));
             if (null != request.getParameter(FILTER)) uri.append(getPageFilter(request));
             if (null != request.getParameter(NUM_RECORD)) uri.append("&from=").append(request.getParameter(NUM_RECORD)).append("&size=1");
         }

@@ -625,6 +625,6 @@ public class Entry implements Serializable {
 
     @Override
     public String toString() {
-        return "Entry{" + "_id=" + _id + ", holder=" + holder + ", creator=" + creator + ", datecreated=" + datecreated + ", identifier=" + identifier + ", digitalObject=" + digitalObject + ", resourcethumbnail=" + resourcethumbnail + ", serie=" + serie + '}';
+        return "Entry{" + "_id=" + _id + ", holder=" + holder + ", resourcetype=" + resourcetype + ", digitalObject=" + digitalObject + ", rights=" + rights + ", resourcethumbnail=" + resourcethumbnail + ", serie=" + serie + '}';
     }
 }
