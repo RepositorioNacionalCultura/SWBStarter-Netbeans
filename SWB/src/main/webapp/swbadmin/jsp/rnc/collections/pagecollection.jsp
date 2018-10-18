@@ -3,10 +3,13 @@
     Created on : 03/09/2018, 02:00:37 PM
     Author     : sergio.tellez
 --%>
+<%@page import="mx.gob.cultura.portal.response.Collection"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DigitalObject, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Identifier, java.util.List"%>
 <%@ page import="org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceException, org.semanticwb.model.WebPage" %>
 <%
+    Collection collection = (Collection)request.getAttribute("collection");
+    
     List<Entry> relevants = (List<Entry>) request.getAttribute("relevants");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebPage detail = paramRequest.getWebPage().getWebSite().getWebPage("detalle");
@@ -14,6 +17,7 @@
     if (relevants != null && !relevants.isEmpty()) {
 %>
 	<div class="content container exhibiciones-main">
+            <p><%=collection!=null&&collection.getTitle()!=null?collection.getTitle():""%></p>
             <div class="row">
                 <%
                     for (Entry item : relevants) {
