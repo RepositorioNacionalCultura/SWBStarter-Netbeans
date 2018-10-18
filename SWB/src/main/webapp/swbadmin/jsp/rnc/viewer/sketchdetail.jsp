@@ -91,4 +91,4 @@
         </div>
     </div>
 </section>
-<jsp:include page="addtree.jsp" flush="true"/>
+<jsp:include page="../addtree.jsp" flush="true"/>
