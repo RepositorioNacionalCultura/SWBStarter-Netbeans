@@ -10,6 +10,7 @@ import java.util.List;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -63,19 +64,17 @@ public class RelevanceMgr extends GenericResource {
 
     CollectionMgr mgr = CollectionMgr.getInstance();
 
-    
-    
-    
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         response.setContentType("text/html; charset=UTF-8");
         String mode = paramRequest.getMode();
         if (MODE_VIEW_USR.equals(mode)) {
             collectionById(request, response, paramRequest);
-        }else
+        } else {
             super.processRequest(request, response, paramRequest);
+        }
     }
-    
+
     @Override
     public void doAdmin(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
         StringBuilder ret = new StringBuilder();
@@ -160,7 +159,7 @@ public class RelevanceMgr extends GenericResource {
                 ret.append("			<tr> \n");
                 ret.append("				<td class=\"datos\">Id del Usuario para mostrar sus colecciones: </td> \n");
                 ret.append("				<td class=\"valores\"> \n");
-                ret.append("					<input type=\"text\" name=\"userid\" value=\"").append(getResourceBase().getAttribute("userid", "").trim()).append("\" size=\"50\">");
+                ret.append("					<input type=\"text\" name=\"userid\" value=\"").append(getResourceBase().getAttribute("userid", "").trim()).append("\" size=\"50\" disabled=\"disabled\">");
                 ret.append("				</td>");
                 ret.append("			</tr> \n");
                 ret.append("		<tr> \n");
@@ -243,7 +242,7 @@ public class RelevanceMgr extends GenericResource {
             baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
         }
         for (Collection c : list) {
-            c.setCovers(MyCollections.getCovers(paramRequest, c.getElements(), baseUri, size));
+            c.setCovers(getCovers(paramRequest, c.getElements(), baseUri, size));
         }
     }
 
@@ -384,7 +383,7 @@ public class RelevanceMgr extends GenericResource {
         String path = "/swbadmin/jsp/rnc/collections/pagecollection.jsp"; //elements.jsp
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
-            if ( null != request.getParameter(IDENTIFIER) /**
+            if (null != request.getParameter(IDENTIFIER) /**
                      * && !collectionList.isEmpty()*
                      */
                     ) { //null != user && user.isSigned() &&
@@ -406,5 +405,34 @@ public class RelevanceMgr extends GenericResource {
         } catch (ServletException se) {
             LOG.info(se.getMessage());
         }
+    }
+
+    private List<String> getCovers(SWBParamRequest paramRequest, List<String> elements, String baseUri, int size) {
+        Entry entry = null;
+        List<String> covers = new ArrayList<>();
+        if (elements.isEmpty()) {
+            return covers;
+        }
+        Iterator it = elements.iterator();
+        while (it.hasNext()) {
+            String uri = baseUri + "/api/v1/search?identifier=" + it.next();
+            GetBICRequest req = new GetBICRequest(uri);
+            try {
+                entry = req.makeRequest();
+            } catch (Exception e) {
+                entry = null;
+                LOG.info(e.getMessage());
+            }
+            if (null != entry && null != entry.getResourcethumbnail() && entry.getResourcethumbnail().trim().length() > 0) {
+                covers.add(entry.getResourcethumbnail());
+            } else {
+                SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), size);
+                covers.add(entry.getResourcethumbnail());
+            }
+            if (covers.size() >= size) {
+                break;
+            }
+        }
+        return covers;
     }
 }
