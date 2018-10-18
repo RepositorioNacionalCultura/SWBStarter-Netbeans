@@ -8,6 +8,7 @@
     List<CountName> holders = new ArrayList<>();
     List<CountName> languages = new ArrayList<>();
     List<CountName> mediastype = new ArrayList<>();
+    List<CountName> rightsmedia = new ArrayList<>();
     List<CountName> resourcetypes = new ArrayList<>();
     String word = (String)request.getAttribute("word");
     String pdfs = Utils.getFilterTypes(request, "pdf");
@@ -24,6 +25,7 @@
         if (null !=  aggs.getHolders()) holders = aggs.getHolders();
         if (null !=  aggs.getLanguages()) languages = aggs.getLanguages();
 	if (null !=  aggs.getMediastype()) mediastype = aggs.getMediastype();
+        if (null !=  aggs.getRightsmedia()) rightsmedia = aggs.getRightsmedia();
         if (null !=  aggs.getResourcetypes()) resourcetypes = aggs.getResourcetypes();
     }
     SWBResourceURL pageURL = paramRequest.getRenderUrl().setMode("SORT");
@@ -57,6 +59,7 @@
 	var dates = '&datecreated=';
 	var mediastype = '&mediatype=';
 	var languages = '&languages=';
+        var rightsmedia='rightsmedia=';
 	var resourcetype='resourcetype=';
 	var inputElements = document.getElementsByClassName('form-check-input');
 	for (i=0; i<inputElements.length; i++) {
@@ -83,6 +86,8 @@
                     languages += '::'+inputElements[i].value;
 		}else if (inputElements[i].name == 'holder') {
                     holder += '::'+inputElements[i].value;
+		}else if (inputElements[i].name == 'rightsmedia') {
+                    rightsmedia += '::'+inputElements[i].value;
 		}
             }
 	}
@@ -90,9 +95,10 @@
         if (rights.length > 8) {rights = rights.replace("=::","=");}else {rights=''}
         if (holder.length > 8) {holder = holder.replace("=::","=");}else {holder=''}
         if (mediastype.length > 11) {mediastype = mediastype.replace("=::","=");}else {mediastype=''}
+        if (rightsmedia.length > 12) {rightsmedia = rightsmedia.replace("=::","=");}else {rightsmedia=''}
         if (resourcetype.length > 13) {resourcetype = resourcetype.replace("=::","=");}else {resourcetype=''}
         if (filterDate) dates+=document.getElementById("bx1").value+","+document.getElementById("bx2").value; else {dates=""}
-        filters += resourcetype + mediastype + rights + languages + holder + dates;
+        filters += resourcetype + rightsmedia + rights + languages + holder + dates;
         doSort('<%=word%>'+filters,'relvdes');
     }
     function selectAll(type) {
@@ -202,7 +208,7 @@
         </div>
     <% } %>
 
-    <%  if (null != mediastype && !mediastype.isEmpty()) { %>
+    <%  if (null != rightsmedia && !rightsmedia.isEmpty()) { %>
         <div class="card card-media">
             <div class="" role="tab" id="heading2">
                 <a data-toggle="collapse" href="#collapse2" aria-expanded="true" aria-controls="collapseOne" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_media")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
@@ -212,9 +218,9 @@
                     <li>
                         <ul>
                             <%
-                                for (CountName r : mediastype) {
+                                for (CountName r : rightsmedia) {
                             %>
-                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="mediastype" value="<%=r.getName()%>" <% if (Utils.chdFtr(filters, "mediatype", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span><span class="checkmark"></span></label></li>
+                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="mediastype" value="<%=r.getName()%>" <% if (Utils.chdFtr(filters, "rightsmedia", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span><span class="checkmark"></span></label></li>
                             <%
 				}
                             %>

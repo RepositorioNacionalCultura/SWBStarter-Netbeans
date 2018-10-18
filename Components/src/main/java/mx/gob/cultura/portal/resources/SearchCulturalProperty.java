@@ -302,6 +302,7 @@ public class SearchCulturalProperty extends PagerAction {
         filters.append(getFilter(request, "rights"));
         filters.append(getFilter(request, "languages"));
         filters.append(getFilter(request, "holder"));
+        filters.append(getFilter(request, "rightsmedia"));
         if (filters.length() > 0) {
             filters.delete(0, 2);
             filters.insert(0, "&filter=");
@@ -371,6 +372,7 @@ public class SearchCulturalProperty extends PagerAction {
             aggregation.setHolders(new ArrayList<>());
             aggregation.setLanguages(new ArrayList<>());
             aggregation.setMediastype(new ArrayList<>());
+            aggregation.setRightsmedia(new ArrayList<>());
             aggregation.setResourcetypes(new ArrayList<>());
             for (Aggregation a : aggs) {
                 if (null !=  a.getDates()) aggregation.getDates().addAll(a.getDates());
@@ -379,6 +381,7 @@ public class SearchCulturalProperty extends PagerAction {
                 if (null !=  a.getLanguages()) aggregation.getLanguages().addAll(a.getLanguages());
                 if (null !=  a.getResourcetypes()) aggregation.getResourcetypes().addAll(a.getResourcetypes());
                 if (null !=  a.getMediastype()) aggregation.getMediastype().addAll(getTypes(a.getMediastype()));
+                if (null !=  a.getRightsmedia()) aggregation.getRightsmedia().addAll(getTypes(a.getRightsmedia()));
             }
             for (CountName date : aggregation.getDates()) {
                 cal.setTime(Utils.convert(date.getName(), "yyyy-MM-dd'T'HH:mm:ss"));

@@ -28,6 +28,8 @@ public class Aggregation implements Serializable {
     
     private List<CountName> languages;
     
+    private List<CountName> rightsmedia;
+    
     private static final long serialVersionUID = 7895964432008759515L;
 
     public List<CountName> getHolders() {
@@ -86,8 +88,16 @@ public class Aggregation implements Serializable {
         this.languages = languages;
     }
 
+    public List<CountName> getRightsmedia() {
+        return rightsmedia;
+    }
+
+    public void setRightsmedia(List<CountName> rightsmedia) {
+        this.rightsmedia = rightsmedia;
+    }
+
     @Override
     public String toString() {
-        return "Aggregation{" + "mediastype=" + mediastype + '}';
+        return "Aggregation{" + "languages=" + languages + ", rightsmedia=" + rightsmedia + '}';
     }
 }
