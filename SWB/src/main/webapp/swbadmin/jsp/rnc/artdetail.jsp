@@ -21,6 +21,7 @@
     Entry entry = (Entry) request.getAttribute("entry");
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
+    StringBuilder divNavigator = new StringBuilder("<div id=\"navigatorDiv\" class=\"explora1\"><div id=\"toolbarDiv\" class=\"exploratl\"></div></div>");
     if (null != entry) {
         iDigit = entry.getPosition();
         if (null != entry.getDigitalObject()) {
@@ -60,6 +61,7 @@
             }else if (digital.getUrl().endsWith(".zip") || digital.getUrl().endsWith(".rtf") || digital.getUrl().endsWith(".docx")) {
                 divVisor.append("<a href='").append(digital.getUrl()).append("'><img src=\"").append(entry.getResourcethumbnail()).append("\"></a>");
             }else if (digital.getUrl().contains("amazonaws")) {
+                divNavigator = new StringBuilder();
                 workReference = new StringBuilder();
 		workReference.append("<div class=\"scroll-gpixel\">")
                     .append("	<a href=\"#detalleinfo\">Ver ficha <span class=\"ion-chevron-down\"></span></a>")
@@ -117,7 +119,7 @@
         <jsp:include page="flow.jsp" flush="true"/>
         <%=workReference%>
         <div class="explora">
-            <div id="navigatorDiv" class="explora1"><div id="toolbarDiv" class="exploratl"></div></div>
+            <%=divNavigator%>
             <jsp:include page="share.jsp" flush="true"/>
         </div>
         <%=scriptHeader%>
