@@ -113,7 +113,6 @@
                     %>
                 </div>
                 <jsp:include page="pager.jsp" flush="true"/>
-                <jsp:include page="footer.jsp" flush="true"/>
         
 	<%
             }else{ 
