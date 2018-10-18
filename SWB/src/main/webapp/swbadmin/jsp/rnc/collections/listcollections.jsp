@@ -48,97 +48,14 @@
     uall.setCallMethod(SWBParamRequest.Call_CONTENT);
     
 %>
-<script>
-    $(document).ready(function () {
-        $("#alertSuccess").on('hidden.bs.modal', function () {
-            window.location.replace('<%=wall%>');
-        });
-    });
-</script>
-<script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
-<script>
+
+<!--<script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>-->
+<!--<script>
 	dojo.require("dijit.dijit"); // loads the optimized dijit layer
 	dojo.require('dijit.Dialog');
-</script>
+</script>-->
 <script type="text/javascript">
-    function addByForm() {
-        //Do not use in dialog
-        document.getElementById("addCollForm").action = '<%=saveURL.toString()%>';
-        document.getElementById("addCollForm").submit();
-    }
-    function add(url) {
-        //Do not use in dialog
-        var leftPosition = (screen.width) ? (screen.width - 480) / 3 : 0;
-        var topPosition = (screen.height) ? (screen.height - 441) / 3 : 0;
-        popCln = window.open(
-                url, 'popCln', 'height=441,width=480,left=' + leftPosition + ',top=' + topPosition + ',resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no')
-    }
-    function editByForm(id) {
-        //document.getElementById("addCollForm").action = '<%=uedt.toString()%>?id='+id;
-        //document.getElementById("addCollForm").submit();
-        dojo.xhrPost({
-            url: '<%=uedt.toString()%>?id=' + id,
-            load: function (data) {
-                dojo.byId('editCollection').innerHTML = data;
-                $('#editCollection').modal('show');
-            }
-        });
-    }
-    function save() {
-        if (validateData()) {
-            dojo.xhrPost({
-                url: '<%=saveURL.toString()%>',
-                form: 'addCollForm',
-                sync: true,
-                timeout: 180000,
-                load: function (data) {
-                    var res = dojo.fromJson(data);
-                    if (null != res.id) {
-                        //alert('Se guardó correctamente su colección');
-                        $('#modalExh').modal('hide');
-                        jQuery("#dialog-text").text("Se guardó correctamente en su colección.");
-                        $('#alertSuccess').modal('show');
-                        //window.location.replace('/swb/<%=site.getId()%>/colecciones');
-                    } else {
-                        //alert('Ya tiene una colección con éste nombre');
-                        jQuery("#dialog-msg").text("Ya tiene una colección con éste nombre.");
-                        //$("#dialog-message" ).dialog( "open" );
-                    }
-                }
-            });
-        }
-    }
-    function validateData() {
-        if (document.forms.addCollForm.title.value === '') {
-            //alert("Favor de proporcionar nombre de colección.");	
-            jQuery("#dialog-msg").text("Favor de proporcionar nombre de colección.");
-            //$("#dialog-message" ).dialog( "open" );
-            return false;
-        }
-        return true;
-    }
-    function del(id) {
-	var xhttp = new XMLHttpRequest();
-	var url = '<%=udel%>'+'?id='+id;
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                dialogMsgConfirm.hide();
-                jQuery("#dialog-text").text("Se actualizó correctamente en su colección.");
-		$('#alertSuccess').modal('show');
-            }
-	};
-        xhttp.open("POST", url, true);
-	xhttp.send();
-    }
-    function changeStatus(id) {
-        dojo.xhrPost({
-            url: '<%=uper%>?id=' + id,
-            load: function (data) {
-                dojo.byId('references').innerHTML = data;
-                location.href = '#showPage';
-            }
-        });
-    }
+    
     function doPage(p) {
         dojo.xhrPost({
             url: '<%=pageURL%>?p=' + p,
@@ -149,58 +66,7 @@
         });
     }
 </script>
-<script type="text/javascript">
-    function saveEdit(uri) {
-        if (validateEdit()) {
-            dojo.xhrPost({
-                url: uri,
-                form: 'saveCollForm',
-                sync: true,
-                timeout: 180000,
-                load: function (data) {
-                    var res = dojo.fromJson(data);
-                    if (null != res.id) {
-                        //alert('Se guardó correctamente en su colección');
-                        $('#editCollection').modal('hide');
-                        jQuery("#dialog-text").text("Se actualizó correctamente en su colección.");
-                        $('#alertSuccess').modal('show');
-                        //window.location.replace('/swb/<%=site.getId()%>/colecciones');
-                    } else {
-                        //alert('Ya tiene una colección con éste nombre');
-                        jQuery("#dialog-msg-edit").text("Ya tiene una colección con éste nombre.");
-                        //$("#dialog-message" ).dialog( "open" );
-                    }
-                }
-            });
-        }
-    }
-    function validateEdit() {
-        if (document.forms.saveCollForm.title.value === '') {
-            //alert("Favor de proporcionar nombre de colección.");	
-            jQuery("#dialog-msg-edit").text("Favor de proporcionar nombre de colección.");
-            //$("#dialog-message" ).dialog( "open" );
-            return false;
-        }
-        return true;
-    }
-    function messageConfirm(msg, id) {
-	var entry = "'"+id+"'";
-	var html =
-            '<div id="messageDialgopC" name="messageDialgopC" style="width:350px; border:1px solid #b7b7b7; background:#fff; padding:8px; margin:0 auto; height:150px; overflow:auto;">' +
-                '<p style="color:#999;">'+ msg +'</p>'+
-                '<table><tr>' + 
-                    '<td style="width:50%; align="center"><input id="btnRenv" class="btn btn-sm rojo" type="button" name="btnRenv" onClick="del('+entry+')" value="Aceptar"/></td>' +
-                    '<td style="width:50%; align="center"><input id="btnCanc" class="btn btn-sm rojo" type="button" name="btnCanc" onClick="dialogMsgConfirm.hide();" value="Cancelar"/></td>' +
-                '</tr></table>' +
-            '</div>';
-	dialogMsgConfirm = new dijit.Dialog({
-            content: html,
-	    style: "width:300px;",
-            showTitle: false, draggable : false, closable : false,
-	});	
-	dialogMsgConfirm.show();
-    }
-</script>
+
 <div class="container usrTit">
     <div class="row">
         <!--<img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">-->
@@ -292,9 +158,9 @@
     </div>
     <jsp:include page="pager.jsp" flush="true"/>
 </div>
-<div class="coleccionSecc-03 col-12 col-md-8 col-lg-6">
+<!--<div class="coleccionSecc-03 col-12 col-md-8 col-lg-6">
     <div class="agregarColecc ">
-        <a href="#" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/coleccion');">
+        <a href="#" onclick="javascript:location.replace('/<%//=userLang%>/<%//=site.getId()%>/coleccion');">
             <span class="ion-ios-plus"></span>
             <em class="oswM">Agregar  desde la colección</em>
             <span class="btn-cultura">Explorar <span class="ion-chevron-right"></span></span>
@@ -303,7 +169,7 @@
             <img src="/work/models/repositorio/img/cabecera-carranza.jpg">
         </div>
     </div>
-</div>
+</div>-->
 <!-- MODAL -->
 <div class="modal fade" id="modalExh" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-exh modal-2col" role="document">
