@@ -228,11 +228,11 @@ public class SearchCulturalProperty extends PagerAction {
             }
         }
         request.setAttribute("aggs", getAggregation(document.getAggs()));
-        request.setAttribute("pdf", getAgg(document.getAggs(), "pdf"));
+        /**request.setAttribute("pdf", getAgg(document.getAggs(), "pdf"));
         request.setAttribute("zip", getAgg(document.getAggs(), "zip"));
         request.setAttribute("image", getAgg(document.getAggs(), "image"));
         request.setAttribute("audio", getAgg(document.getAggs(), "audio"));
-        request.setAttribute("video", getAgg(document.getAggs(), "video"));
+        request.setAttribute("video", getAgg(document.getAggs(), "video"));**/
     }
 
     private void cassette(HttpServletRequest request, int total, int pagenum) {
@@ -381,7 +381,7 @@ public class SearchCulturalProperty extends PagerAction {
                 if (null !=  a.getLanguages()) aggregation.getLanguages().addAll(a.getLanguages());
                 if (null !=  a.getResourcetypes()) aggregation.getResourcetypes().addAll(a.getResourcetypes());
                 if (null !=  a.getMediastype()) aggregation.getMediastype().addAll(getTypes(a.getMediastype()));
-                if (null !=  a.getRightsmedia()) aggregation.getRightsmedia().addAll(getTypes(a.getRightsmedia()));
+                if (null !=  a.getRightsmedia()) aggregation.getRightsmedia().addAll(a.getRightsmedia());
             }
             for (CountName date : aggregation.getDates()) {
                 cal.setTime(Utils.convert(date.getName(), "yyyy-MM-dd'T'HH:mm:ss"));
@@ -392,7 +392,7 @@ public class SearchCulturalProperty extends PagerAction {
         return aggregation;
     }
     
-     private List<CountName> getAgg(List<Aggregation> aggs, String type) {
+     /**private List<CountName> getAgg(List<Aggregation> aggs, String type) {
         List<CountName> list= new ArrayList<>();
         if (null != aggs && !aggs.isEmpty()) {
             for (Aggregation a : aggs) {
@@ -408,7 +408,7 @@ public class SearchCulturalProperty extends PagerAction {
             }
         }
         return list;
-    }
+    }**/
     
     private List<CountName> getTypes(List<CountName> media) {
         List<CountName> types = new ArrayList<>();
