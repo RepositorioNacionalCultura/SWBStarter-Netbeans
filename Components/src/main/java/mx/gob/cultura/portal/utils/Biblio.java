@@ -176,7 +176,7 @@ public class Biblio {
         bcna.put("chapter", REQUIRED);
         bcna.put("creator", REQUIRED);
         bcna.put("holder", REQUIRED);
-        bcna.put("dimension+unidad", REQUIRED);
+        bcna.put("dimension", REQUIRED);
         bcna.put("datecreated", REQUIRED);
         bcna.put("resourcetype", REQUIRED);
         bcna.put("keywords", COMPLEMENTARY);

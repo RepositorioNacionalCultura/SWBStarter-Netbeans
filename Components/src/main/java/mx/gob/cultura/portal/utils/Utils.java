@@ -196,7 +196,7 @@ public class Utils {
     
     public static String esDate(String sDate) {
         if (null == sDate || sDate.isEmpty()) return "";
-        if (sDate.length() == 4 && toInt(sDate) > -1) return sDate;
+        if (sDate.length() <= 4 && toInt(sDate) > -1) return sDate;
         Date date2format = convert(sDate, "yyyy-MM-dd");
         Locale local = new Locale("es");
         Format formatter = new SimpleDateFormat("d' de 'MMMM' de 'yyyy", local);
@@ -305,7 +305,7 @@ public class Utils {
     
     public static String getIvl(String filter, String type, Aggregation aggs) {
         String interval = "";
-        if (null == filter) {
+        if (null == filter || !filter.contains("datestart")) {
             if (type.equalsIgnoreCase("datestart")) interval =  aggs.getInterval().getLowerLimit().toString();
             else interval =  aggs.getInterval().getUpperLimit().toString();
         }else {

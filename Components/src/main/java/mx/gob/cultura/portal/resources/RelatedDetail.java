@@ -60,8 +60,8 @@ public class RelatedDetail extends GenericResource {
     
     private List<Entry> getRelated(Entry entry, StringBuilder endpoint, SWBParamRequest paramRequest) {
         endpoint.append("q=");
-        List<Entry> related = new ArrayList<>();
         Document document = null;
+        List<Entry> related = new ArrayList<>();
         if (null == entry || entry.getKeywords().isEmpty()) return new ArrayList<>();
         for (String key : entry.getKeywords()) {
             StringBuilder search = new StringBuilder(endpoint.toString());

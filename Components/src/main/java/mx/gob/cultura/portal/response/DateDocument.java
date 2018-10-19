@@ -16,6 +16,7 @@ import java.io.Serializable;
 public class DateDocument implements Serializable {
 
     private static final long serialVersionUID = 5823180062173479772L;
+    private String note;
     private String value;
     private String format;
     private Date datevalue;
@@ -42,6 +43,14 @@ public class DateDocument implements Serializable {
 
     public void setDatevalue(Date datevalue) {
         this.datevalue = datevalue;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     @Override
