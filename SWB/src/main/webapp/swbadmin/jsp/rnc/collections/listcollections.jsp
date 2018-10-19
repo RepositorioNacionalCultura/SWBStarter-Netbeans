@@ -52,18 +52,6 @@
 
 %>
 
-<script type="text/javascript">
-
-    function doPage(p) {
-        dojo.xhrPost({
-            url: '<%=pageURL%>?p=' + p,
-            load: function (data) {
-                dojo.byId('references').innerHTML = data;
-                location.href = '#showPage';
-            }
-        });
-    }
-</script>
 
 <div class="container usrTit">
     <div class="row">

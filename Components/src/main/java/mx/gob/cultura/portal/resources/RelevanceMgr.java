@@ -425,7 +425,7 @@ public class RelevanceMgr extends GenericResource {
             }
             if (null != entry && null != entry.getResourcethumbnail() && entry.getResourcethumbnail().trim().length() > 0) {
                 covers.add(entry.getResourcethumbnail());
-            } else {
+            } else if(null != entry){
                 SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), size);
                 covers.add(entry.getResourcethumbnail());
             }
