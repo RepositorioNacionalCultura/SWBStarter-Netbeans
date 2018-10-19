@@ -16,8 +16,16 @@
     String uri = detail.getRealUrl(paramRequest.getUser().getLanguage());
     if (relevants != null && !relevants.isEmpty()) {
 %>
+<div class="container usrTit">
+    <div class="row">
+        <!--<img src="/work/models/<%//=site.getId()%>/img/agregado-07.jpg" class="circle">-->
+        <div>
+            <h2 class="oswM nombre"><%=collection!=null&&collection.getTitle()!=null?collection.getTitle():""%></h2>
+        </div>
+    </div>
+</div>
 	<div class="content container exhibiciones-main">
-            <p><%=collection!=null&&collection.getTitle()!=null?collection.getTitle():""%></p>
+
             <div class="row">
                 <%
                     for (Entry item : relevants) {
