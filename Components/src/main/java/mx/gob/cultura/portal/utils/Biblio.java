@@ -396,6 +396,8 @@ public class Biblio {
         munae.put("description", COMPLEMENTARY);
         munae.put("keywords", COMPLEMENTARY);
         munae.put("techmaterial", COMPLEMENTARY);
+        munae.put("media", COMPLEMENTARY);
+        munae.put("format", COMPLEMENTARY);
     }
     
     static {
