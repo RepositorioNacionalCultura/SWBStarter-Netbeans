@@ -34,9 +34,9 @@
 	if (collection.length() > 0) collection.deleteCharAt(collection.length() - 2);
 	if (!titles.isEmpty()) title = titles.get(0).getValue();
         title = Utils.getTitle(titles, 0);
-        subtile = (Utils.c(entry.getNumber()) + " " + Utils.c(entry.getSubtile())).trim();
-        desc = Utils.getDescription(entry.getDescription());
-        fdesc = (null != desc && null != desc.get("full")) ? (String)desc.get("full") : "";
+        subtile = " " + (Utils.c(entry.getNumber()) + " " + Utils.c(entry.getSubtile())).trim();
+        desc = Utils.getDescription(entry.getDescription(), 0);
+	fdesc = (null != desc && null !=desc.get("full")) ? (String)desc.get("full") : "";
         holder = Utils.getRowData(entry.getHolder(), 0, false);
         String holdernote = (null != entry.getHoldernote() && !entry.getHoldernote().isEmpty()) ? (" " + entry.getHoldernote()) : "";
         urlholder = !holder.isEmpty() ? uri + holder + "&filter=holder:" + holder + "\">"+holder+holdernote+"</a>" : "";
@@ -65,8 +65,10 @@
             <%=Utils.getTechData("datecreated", holder, null != entry.getDatecreated() ? Utils.esDate(entry.getDatecreated().getValue()) : "", paramRequest.getLocaleString("usrmsg_view_detail_date"), true, true)%>
             <%=Utils.getTechData("resourcetype", holder, Utils.concatFilter(userLang, site.getId(), "resourcetype", Utils.getList(entry.getBictype())), paramRequest.getLocaleString("usrmsg_view_detail_type_object"), false, false)%>
             <%=Utils.getTechData("resourcetype", holder, Utils.concatFilter(userLang, site.getId(), "resourcetype", entry.getResourcetype()), paramRequest.getLocaleString("usrmsg_view_detail_type_object"), true, true)%>
-            <%=Utils.getTechData("oaiid/identifier", holder, entry.getIdentifiers(), paramRequest.getLocaleString("usrmsg_view_detail_identifier"), true, true)%>
             <%=Utils.getTechData("holder", holder, urlholder, paramRequest.getLocaleString("usrmsg_view_detail_institution"), true, true)%>
+            <%=Utils.getTechData("invited", holder, entry.getInvited(), paramRequest.getLocaleString("usrmsg_view_detail_invited"), false, true)%>
+            <%=Utils.getTechData("theme", holder, entry.getTheme(), paramRequest.getLocaleString("usrmsg_view_detail_theme"), false, true)%>
+            <%=Utils.getTechData("synopsis", holder, entry.getSynopsis(), paramRequest.getLocaleString("usrmsg_view_detail_synopsis"), false, true)%>
             <% if (null !=  entry.getGenerator() && !entry.getGenerator().isEmpty()) { out.println(Utils.getTechData("generator", holder, Utils.concatLink(userLang, site.getId(), true, entry.getGenerator().toArray(new String[0])), paramRequest.getLocaleString("usrmsg_view_detail_collection"), true, true)); } %>
             <%=Utils.getTechData("rights.rightstitle", holder, rights, paramRequest.getLocaleString("usrmsg_view_detail_rights"), true, true)%>
             <%
@@ -98,6 +100,7 @@
             <%=Utils.getTechData("serie", holder, Utils.getRowData(entry.getSerie(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_serie"), false, true)%>
             <%=Utils.getTechData("chapter", holder, entry.getChapter(), paramRequest.getLocaleString("usrmsg_view_detail_chapter"), false, true)%>
             <%=Utils.getTechData("credits", holder, Utils.getRowData(entry.getCredits(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_credits"), false, true)%>
+            <%=Utils.getTechData("format", holder, Utils.getFormat(entry), paramRequest.getLocaleString("usrmsg_view_detail_availableformats"), false, true)%>
             <%=Utils.getTechData("availableformats", holder, entry.getAvailableformats(), paramRequest.getLocaleString("usrmsg_view_detail_availableformats"), false, true)%>
             <%=Utils.getTechData("documentalfund", holder, entry.getDocumentalfund(), paramRequest.getLocaleString("usrmsg_view_detail_documentalfund"), false, true)%>
             <%=Utils.getTechData("episode", holder, entry.getEpisode(), paramRequest.getLocaleString("usrmsg_view_detail_episode"), false, true)%>
@@ -132,6 +135,7 @@
             <%=Utils.getTechData("creator+creatorgroup+dimension", holder, Utils.getRowData(entry.getCreatorgroup(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_creator_group"), false, true)%>
             <%=Utils.getTechData("material", holder, entry.getMaterial(), paramRequest.getLocaleString("usrmsg_view_detail_material"), false, true)%>
             <%=Utils.getTechData("collectionnote", holder, entry.getCollectionnote(), paramRequest.getLocaleString("usrmsg_view_detail_collection_note"), false, true)%>
+            <%=Utils.getTechData("oaiid/identifier", holder, entry.getIdentifiers(), paramRequest.getLocaleString("usrmsg_view_detail_identifier"), true, true)%>
         </table>
         <table class="collapse" id="vermas-ficha">
         </table>

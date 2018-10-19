@@ -50,7 +50,7 @@
 	document.getElementById("bx2").value = <%=upper%>;
 	document.getElementById("ex1SliderVal").textContent = document.getElementById("bx1").value;
         document.getElementById("ex2SliderVal").textContent = document.getElementById("bx2").value;
-        doSort('<%=word%>','relvdes');
+        doSort('<%=word%>','imptdes');
     }
     function filter() {
 	var filters = '&';
@@ -99,7 +99,7 @@
         if (resourcetype.length > 13) {resourcetype = resourcetype.replace("=::","=");}else {resourcetype=''}
         if (filterDate) dates+=document.getElementById("bx1").value+","+document.getElementById("bx2").value; else {dates=""}
         filters += resourcetype + rightsmedia + rights + languages + holder + dates;
-        doSort('<%=word%>'+filters,'relvdes');
+        doSort('<%=word%>'+filters,'imptdes');
     }
     function selectAll(type) {
 	var inputElements = document.getElementsByName(type.value);
@@ -208,7 +208,7 @@
         </div>
     <% } %>
 
-    <%  if (null != rightsmedia && !rightsmedia.isEmpty()) { %>
+    <%	if (null != rightsmedia && !rightsmedia.isEmpty()) { %>
         <div class="card card-media">
             <div class="" role="tab" id="heading2">
                 <a data-toggle="collapse" href="#collapse2" aria-expanded="true" aria-controls="collapseOne" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_media")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
@@ -216,20 +216,23 @@
             <div id="collapse2" class="collapse show" role="tabpanel" aria-labelledby="heading2" data-parent="#accordion">
                 <ul>
                     <li>
-                        <ul>
-                            <%
-                                for (CountName r : rightsmedia) {
-                            %>
-                                    <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="filter()" name="mediastype" value="<%=r.getName()%>" <% if (Utils.chdFtr(filters, "rightsmedia", r.getName())) out.print("checked"); %>><span><%=r.getName()%></span><span> <%=Utils.decimalFormat("###,###", r.getCount())%></span><span class="checkmark"></span></label></li>
-                            <%
-				}
-                            %>
+			<ul>
+                            <%=Utils.chdFtrList(rightsmedia, filters, "rightsmedia", "moremedias", true)%>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="alltype" value="rightsmedia" ><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span><span class="checkmark"></span></label></li>
                         </ul>
                     </li>
                 </ul>
+                <% if (rightsmedia.size() > 5) { %>
+                    <p class="vermas-filtros">
+                        <button class="btn-vermas" type="button" data-toggle="collapse" data-target="#moremedias" aria-expanded="false" aria-controls="vermas">
+                            <span class="ion-plus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span></span>
+                            <span class="ion-minus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span></span> 
+                        </button>
+                    </p>
+                <% } %>
             </div>
         </div>
-   <% } %>
+    <% } %>
    
    <% if (!holders.isEmpty()) { %>
         <div class="card">

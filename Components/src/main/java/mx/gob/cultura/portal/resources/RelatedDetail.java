@@ -75,12 +75,14 @@ public class RelatedDetail extends GenericResource {
                 ListBICRequest req = new ListBICRequest(search.toString());
                 try {
                     document = req.makeRequest();
-                    List<Entry> records = document.getRecords();
-                    if (null != records) {
-                        for (Entry item : records) {
-                            SearchCulturalProperty.setThumbnail(item, paramRequest.getWebPage().getWebSite(), 0);
-                            related.add(item);
-                            if (related.size() >= NUM_REL) break;
+                    if (null != document) {
+                        List<Entry> records = document.getRecords();
+                        if (null != records) {
+                            for (Entry item : records) {
+                                SearchCulturalProperty.setThumbnail(item, paramRequest.getWebPage().getWebSite(), 0);
+                                related.add(item);
+                                if (related.size() >= NUM_REL) break;
+                            }
                         }
                     }
                 } catch (Exception se) {

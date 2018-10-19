@@ -37,6 +37,9 @@ public class Biblio {
     public static final Map mncp = new HashMap();
     public static final Map mam = new HashMap();
     public static final Map medc = new HashMap();
+    public static final Map ccc = new HashMap();
+    public static final Map cndci = new HashMap();
+    public static final Map mnfm = new HashMap();
     
     static {
         inba.put("recordtitle", REQUIRED);
@@ -51,6 +54,7 @@ public class Biblio {
         inba.put("rights.description+rights.url", REQUIRED);
         inba.put("description", COMPLEMENTARY);
         inba.put("keywords", COMPLEMENTARY);
+        inba.put("media", COMPLEMENTARY);
     }
     
     static {
@@ -73,7 +77,7 @@ public class Biblio {
         redu.put("oaiid/identifier", REQUIRED);
         redu.put("recordtitle", REQUIRED);
         redu.put("creator", REQUIRED);
-        redu.put("dimension+unidad", REQUIRED);
+        redu.put("dimension", REQUIRED);
         redu.put("datecreated", REQUIRED);
         redu.put("holder", REQUIRED);
         redu.put("resourcetype", REQUIRED);
@@ -85,7 +89,7 @@ public class Biblio {
         redu.put("credits", COMPLEMENTARY);
         redu.put("description", COMPLEMENTARY);
         redu.put("media", COMPLEMENTARY);
-        redu.put("availableformats", COMPLEMENTARY);
+        redu.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -101,6 +105,8 @@ public class Biblio {
         fona.put("rights.rightstitle", REQUIRED);
         fona.put("rights.description+rights.url", REQUIRED);
         fona.put("credits", COMPLEMENTARY);
+        fona.put("media", COMPLEMENTARY);
+        fona.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -118,7 +124,9 @@ public class Biblio {
         ceim.put("rights.description+rights.url", REQUIRED);
         ceim.put("documentalfund", COMPLEMENTARY);
         ceim.put("media", COMPLEMENTARY);
-        ceim.put("availableformats", COMPLEMENTARY);
+        ceim.put("format", COMPLEMENTARY);
+        ceim.put("reccollection", COMPLEMENTARY);
+        ceim.put("press", COMPLEMENTARY);
     }
     
     static {
@@ -136,7 +144,7 @@ public class Biblio {
         cl22.put("reccollection", COMPLEMENTARY);
         cl22.put("episode", COMPLEMENTARY);
         cl22.put("media", COMPLEMENTARY);
-        cl22.put("availableformats", COMPLEMENTARY);
+        cl22.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -144,8 +152,7 @@ public class Biblio {
         cenart.put("recordtitle", REQUIRED);
         cenart.put("creator", REQUIRED);
         cenart.put("holder", REQUIRED);
-        cenart.put("dimension", REQUIRED);
-        cenart.put("unidad", REQUIRED);
+        cenart.put("dimension+unidad", REQUIRED);
         cenart.put("datecreated", REQUIRED);
         cenart.put("resourcetype", REQUIRED);
         cenart.put("holdernote", REQUIRED);
@@ -159,6 +166,8 @@ public class Biblio {
         cenart.put("music", COMPLEMENTARY);
         cenart.put("libreto", COMPLEMENTARY);
         cenart.put("musicaldirection", COMPLEMENTARY);
+        cenart.put("media", COMPLEMENTARY);
+        inehrm.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -167,14 +176,15 @@ public class Biblio {
         bcna.put("chapter", REQUIRED);
         bcna.put("creator", REQUIRED);
         bcna.put("holder", REQUIRED);
-        bcna.put("dimension", REQUIRED);
-        bcna.put("unidad", REQUIRED);
+        bcna.put("dimension+unidad", REQUIRED);
         bcna.put("datecreated", REQUIRED);
         bcna.put("resourcetype", REQUIRED);
         bcna.put("keywords", COMPLEMENTARY);
         bcna.put("rights.rightstitle", REQUIRED);
         bcna.put("rights.description+rights.url", REQUIRED);
         bcna.put("credits", COMPLEMENTARY);
+        bcna.put("media", COMPLEMENTARY);
+        bcna.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -195,7 +205,7 @@ public class Biblio {
         dgp.put("serie", COMPLEMENTARY);
         dgp.put("credits", COMPLEMENTARY);
         dgp.put("media", COMPLEMENTARY);
-        dgp.put("availableformats", COMPLEMENTARY);
+        dgp.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -213,14 +223,14 @@ public class Biblio {
         dgb.put("press", COMPLEMENTARY);
         dgb.put("creatorgroup", COMPLEMENTARY);
         dgb.put("media", COMPLEMENTARY);
-        dgb.put("availableformats", COMPLEMENTARY);
+        dgb.put("format", COMPLEMENTARY);
     }
     
     static {
         bv.put("oaiid/identifier", REQUIRED);
         bv.put("recordtitle", REQUIRED);
         bv.put("holder", REQUIRED);
-        bv.put("dimension+unidad", REQUIRED);
+        bv.put("dimension", REQUIRED);
         bv.put("datecreated", REQUIRED);
         bv.put("resourcetype", REQUIRED);
         bv.put("keywords", COMPLEMENTARY);
@@ -228,7 +238,7 @@ public class Biblio {
         bv.put("rights.description+rights.url", REQUIRED);
         bv.put("lugar+state", COMPLEMENTARY);
         bv.put("media", COMPLEMENTARY);
-        bv.put("availableformats", COMPLEMENTARY);
+        bv.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -241,14 +251,14 @@ public class Biblio {
         imcine.put("keywords", COMPLEMENTARY);
         imcine.put("rights.rightstitle", REQUIRED);
         imcine.put("rights.description+rights.url", REQUIRED);
-        imcine.put("dimension+unidad", REQUIRED);
+        imcine.put("dimension", REQUIRED);
         imcine.put("director", COMPLEMENTARY);
         imcine.put("producer", COMPLEMENTARY);
         imcine.put("screenplay", COMPLEMENTARY);
         imcine.put("credits", COMPLEMENTARY);
         imcine.put("distribution", COMPLEMENTARY);
         imcine.put("media", COMPLEMENTARY);
-        imcine.put("availableformats", COMPLEMENTARY);
+        imcine.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -256,7 +266,7 @@ public class Biblio {
         dgcp.put("recordtitle", REQUIRED);
         dgcp.put("serie", COMPLEMENTARY);
         dgcp.put("creator", REQUIRED);
-        dgcp.put("dimension+unidad", REQUIRED);
+        dgcp.put("dimension", REQUIRED);
         dgcp.put("datecreated", REQUIRED);
         dgcp.put("resourcetype", REQUIRED);
         dgcp.put("holder", REQUIRED);
@@ -265,7 +275,7 @@ public class Biblio {
         dgcp.put("rights.description+rights.url", REQUIRED);
         dgcp.put("lugar+state", COMPLEMENTARY);
         dgcp.put("media", COMPLEMENTARY);
-        dgcp.put("availableformats", COMPLEMENTARY);
+        dgcp.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -288,7 +298,11 @@ public class Biblio {
         inehrm.put("distribution", COMPLEMENTARY);
         inehrm.put("techmaterial", COMPLEMENTARY);
         inehrm.put("media", COMPLEMENTARY);
-        inehrm.put("availableformats", COMPLEMENTARY);
+        inehrm.put("format", COMPLEMENTARY);
+        inehrm.put("lugar+state", COMPLEMENTARY);
+        inehrm.put("invited", COMPLEMENTARY);
+        inehrm.put("theme", COMPLEMENTARY);
+        inehrm.put("synopsis", COMPLEMENTARY);
     }
     
     static {
@@ -381,6 +395,7 @@ public class Biblio {
         munae.put("rights.description+rights.url", REQUIRED);
         munae.put("description", COMPLEMENTARY);
         munae.put("keywords", COMPLEMENTARY);
+        munae.put("techmaterial", COMPLEMENTARY);
     }
     
     static {
@@ -394,28 +409,33 @@ public class Biblio {
         mnsc.put("techmaterial", COMPLEMENTARY);
         mnsc.put("reccollection", COMPLEMENTARY);
         mnsc.put("holder", REQUIRED);
-        mnsc.put("hiperonimo", REQUIRED);
         mnsc.put("resourcetype", REQUIRED);
         mnsc.put("rights.rightstitle", REQUIRED);
         mnsc.put("rights.description+rights.url", REQUIRED);
         mnsc.put("description", COMPLEMENTARY);
         mnsc.put("keywords", COMPLEMENTARY);
+        mnsc.put("media", COMPLEMENTARY);
+        mnsc.put("format", COMPLEMENTARY);
+        mnsc.put("hiperonimo", REQUIRED);
         mnsc.put("discipline", COMPLEMENTARY);
     }
     
     static {
         mncp.put("oaiid/identifier", REQUIRED);
         mncp.put("recordtitle", REQUIRED);
-        mncp.put("creator+creatorgroup+dimension", REQUIRED);
+        mncp.put("creator", REQUIRED);
+        mncp.put("dimension", REQUIRED);
         mncp.put("resourcetype", REQUIRED);
         mncp.put("reccollection", COMPLEMENTARY);
-        mncp.put("period", COMPLEMENTARY);
+        mncp.put("techmaterial", COMPLEMENTARY);
         mncp.put("datecreated", REQUIRED);
         mncp.put("holder", REQUIRED);
         mncp.put("rights.rightstitle", REQUIRED);
         mncp.put("rights.description+rights.url", REQUIRED);
         mncp.put("description", COMPLEMENTARY);
         mncp.put("keywords", COMPLEMENTARY);
+        mncp.put("media", COMPLEMENTARY);
+        mncp.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -436,6 +456,8 @@ public class Biblio {
         mam.put("description", COMPLEMENTARY);
         mam.put("keywords", COMPLEMENTARY);
         mam.put("collectionnote", COMPLEMENTARY);
+        mam.put("media", COMPLEMENTARY);
+        mam.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -445,16 +467,18 @@ public class Biblio {
         mnh.put("dimension+tipo_de_dimension", REQUIRED);
         mnh.put("unidad+tipo_de_unidad", REQUIRED);
         mnh.put("period", COMPLEMENTARY);
+        mnh.put("datecreated", REQUIRED);
         mnh.put("resourcetype", REQUIRED);
         mnh.put("holder", REQUIRED);
-        mnh.put("hiperonimo", COMPLEMENTARY);
-        mnh.put("datecreated", REQUIRED);
-        mnh.put("curaduria", COMPLEMENTARY);
+        mnh.put("techmaterial", COMPLEMENTARY);
         mnh.put("reccollection", COMPLEMENTARY);
         mnh.put("rights.rightstitle", REQUIRED);
         mnh.put("rights.description+rights.url", REQUIRED);
+        mnh.put("media", COMPLEMENTARY);
+        mnh.put("format", COMPLEMENTARY);
+        mnh.put("hiperonimo", COMPLEMENTARY);
+        mnh.put("curaduria", COMPLEMENTARY);
         mnh.put("material", COMPLEMENTARY);
-        mnh.put("techmaterial", COMPLEMENTARY);
         mnh.put("inscripcionobra", COMPLEMENTARY);
         mnh.put("cultura", COMPLEMENTARY);
         mnh.put("origin", COMPLEMENTARY);
@@ -477,9 +501,66 @@ public class Biblio {
         medc.put("material", COMPLEMENTARY);
         medc.put("techmaterial", COMPLEMENTARY);
         medc.put("media", COMPLEMENTARY);
-        medc.put("availableformats", COMPLEMENTARY);
+        medc.put("format", COMPLEMENTARY);
         medc.put("rights.rightstitle", REQUIRED);
         medc.put("rights.description+rights.url", REQUIRED);
+    }
+    
+    static {
+        ccc.put("oaiid/identifier", REQUIRED);
+        ccc.put("recordtitle", REQUIRED);
+        ccc.put("creator", REQUIRED);
+        ccc.put("dimension", REQUIRED);
+        ccc.put("tipo_de_unidad", REQUIRED);
+        ccc.put("tipo_de_dimension", REQUIRED);
+        ccc.put("media", COMPLEMENTARY);
+        ccc.put("format", COMPLEMENTARY);
+        ccc.put("datecreated", REQUIRED);
+        ccc.put("resourcetype", REQUIRED);
+        ccc.put("holder", REQUIRED);
+        ccc.put("reccollection", COMPLEMENTARY);
+        ccc.put("rights.rightstitle", REQUIRED);
+        ccc.put("rights.description+rights.url", REQUIRED);
+        ccc.put("producer", COMPLEMENTARY);
+        ccc.put("producer", COMPLEMENTARY);
+        ccc.put("screenplay", COMPLEMENTARY);
+        ccc.put("credits", COMPLEMENTARY);
+        ccc.put("distribution", COMPLEMENTARY);
+        ccc.put("synopsis", COMPLEMENTARY);
+    }
+
+    static {
+        cndci.put("oaiid/identifier", REQUIRED);
+        cndci.put("recordtitle", REQUIRED);
+        cndci.put("creator", REQUIRED);
+        cndci.put("media", COMPLEMENTARY);
+        cndci.put("format", COMPLEMENTARY);
+        cndci.put("unidad", REQUIRED);
+        cndci.put("datecreated", REQUIRED);
+        cndci.put("resourcetype", REQUIRED);
+        cndci.put("holder", REQUIRED);
+        cndci.put("reccollection", COMPLEMENTARY);
+        cndci.put("rights.rightstitle", REQUIRED);
+        cndci.put("rights.description+rights.url", REQUIRED);
+    }
+    
+    static {
+        mnfm.put("oaiid/identifier", REQUIRED);
+        mnfm.put("recordtitle", REQUIRED);
+        mnfm.put("creator", REQUIRED);
+        mnfm.put("dimension+tipo_de_dimension", REQUIRED);
+        mnfm.put("datecreated", REQUIRED);
+        mnfm.put("resourcetype", REQUIRED);
+        mnfm.put("holder", REQUIRED);
+        mnfm.put("rights.rightstitle", REQUIRED);
+        mnfm.put("rights.description+rights.url", REQUIRED);
+        mnfm.put("media", REQUIRED);
+        mnfm.put("format", REQUIRED);
+        mnfm.put("serie", REQUIRED);
+        mnfm.put("category+subcategory", REQUIRED);
+        mnfm.put("class", REQUIRED);
+        mnfm.put("lugar", REQUIRED);
+        mnfm.put("keywords", COMPLEMENTARY);
     }
     
     public static boolean isRequired(String property, String holder) {
@@ -511,6 +592,9 @@ public class Biblio {
             case  "Museo Nacional de Culturas Populares" : isRequired = mncp.containsKey(property); break;
             case  "Museo de Arte Moderno" : isRequired = mam.containsKey(property); break;
             case  "Mediateca" : isRequired = medc.containsKey(property); break;
+            case  "Centro de Capacitación Cinematográfica" : isRequired = ccc.containsKey(property); break;
+            case  "Coordinación Nacional de Desarrollo Cultural Infantil" : isRequired = cndci.containsKey(property); break;
+            case  "Centro Nacional para la Preservación del Patrimonio Cultural Ferrocarrilero" : isRequired = mnfm.containsKey(property); break;
             default: isRequired = false;
         }
         return isRequired;

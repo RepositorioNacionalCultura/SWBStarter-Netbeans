@@ -38,6 +38,7 @@ public class GetBICRequest {
             mue.printStackTrace();
         }
         if (null != url) {
+            System.out.println(uri);
             try {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");

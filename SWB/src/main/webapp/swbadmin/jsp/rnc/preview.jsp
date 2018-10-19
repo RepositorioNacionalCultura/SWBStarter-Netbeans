@@ -94,26 +94,8 @@
     <div id="idetail" class="detalleimg">
         <jsp:include page="flow.jsp" flush="true"/>
         <div class="explora">
-            <div class="explora2">
-                <div class="explo1">
-                    © <%=paramRequest.getLocaleString("usrmsg_view_detail_all_rights")%>
-                </div>
-		<div class="explo2 row">
-                    <div class="col-3">
-                        <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span></a>
-                    </div>
-                    <div class="col-3">
-                        <span class="ion-social-twitter"></span>
-                    </div>
-                    <div class="col-6">
-                        <a href="#" onclick="loadDoc('/swb/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span></a> <%=entry.getResourcestats().getViews()%>
-                    </div>
-                </div>
-		<div class="explo3 row">
-                    
-		</div>
-            </div>
-        </div>
+            <jsp:include page="share.jsp" flush="true"/>
+	</div>
 	<%=divVisor%>
     </div>
 </section>

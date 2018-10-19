@@ -79,6 +79,9 @@ public class Entry implements Serializable {
     private String discipline;
     private String collectionnote;
     private String material;
+    private String theme;
+    private String synopsis;
+    private String invited;
     
     private List<String> serie;
     private List<String> credits;
@@ -272,6 +275,8 @@ public class Entry implements Serializable {
         this.rights = new Rights();
         this.rights.setMedia(new MediaType());
         this.rights.getMedia().setMime("");
+        this._id = "";
+        this.digitalObject = new ArrayList<>();
     }
     
     public String getIdentifiers() {
@@ -621,6 +626,30 @@ public class Entry implements Serializable {
 
     public void setCreatorgroup(List<String> creatorgroup) {
         this.creatorgroup = creatorgroup;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
+    }
+
+    public String getSynopsis() {
+        return synopsis;
+    }
+
+    public void setSynopsis(String synopsis) {
+        this.synopsis = synopsis;
+    }
+
+    public String getInvited() {
+        return invited;
+    }
+
+    public void setInvited(String invited) {
+        this.invited = invited;
     }
 
     @Override

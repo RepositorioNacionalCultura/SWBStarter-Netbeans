@@ -367,11 +367,13 @@ public class MyCollections extends GenericResource {
                 entry = null;
                 LOG.info(e.getMessage());
             }
-            if (null != entry && null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty()
-                && null != entry.getDigitalObject().get(0).getUrl() && !entry.getDigitalObject().get(0).getUrl().isEmpty() && null != entry.getDigitalObject().get(0).getMediatype()
-                && null != entry.getDigitalObject().get(0).getMediatype().getMime() && (entry.getDigitalObject().get(0).getMediatype().getMime().startsWith("image") 
-                || entry.getDigitalObject().get(0).getMediatype().getMime().equalsIgnoreCase("jpg") || entry.getDigitalObject().get(0).getMediatype().getMime().equalsIgnoreCase("png"))) {
-                covers.add(entry.getDigitalObject().get(0).getUrl());
+            if (null != entry) {
+                if (null != entry.getResourcethumbnail() && !entry.getResourcethumbnail().trim().isEmpty())
+                    covers.add(entry.getResourcethumbnail());
+                else {
+                    SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), size);
+                    covers.add(entry.getResourcethumbnail());
+                }
             }
             if (covers.size() >= size) break;
         }

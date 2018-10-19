@@ -141,7 +141,7 @@ public class Utils {
     
     public static List<String> getList(String item) {
         if (null != item && !item.isEmpty()) {
-            return Arrays.asList(item);
+            return Arrays.asList(item.toLowerCase());
         }
         return new ArrayList();
     }
@@ -239,13 +239,13 @@ public class Utils {
         return elements;
     }
     
-    public static org.bson.Document getDescription(List<String> descriptions) {
+    public static org.bson.Document getDescription(List<String> descriptions, int size) {
         if (null == descriptions || descriptions.isEmpty()) return null;
         String description = descriptions.get(0);
         if (null == description || description.isEmpty()) return null;
         org.bson.Document bson = new org.bson.Document("size", description.length());
-        if (description.length() > 240) {
-            bson.append("short", description.substring(0, 240)+"...");
+        if (description.length() > size) {
+            bson.append("short", description.substring(0, size)+"...");
             bson.append("full", description);
         }else
             bson.append("short", description);
@@ -572,5 +572,15 @@ public class Utils {
            ex.printStackTrace();
         }
         return eElement;
+    }
+    
+    public static String getFormat(Entry entry) {
+        String format = "";
+        if (null != entry && null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty()) {
+            DigitalObject o = entry.getDigitalObject().get(0);
+            if (null != o && null != o.getMediatype() && null != o.getMediatype().getMime() && !o.getMediatype().getMime().trim().isEmpty())
+                format = o.getMediatype().getMime();
+        }
+        return format;
     }
 }
