@@ -377,6 +377,8 @@ public class Biblio {
         mnv.put("description", COMPLEMENTARY);
         mnv.put("techmaterial", COMPLEMENTARY);
         mnv.put("keywords", COMPLEMENTARY);
+        mnv.put("media", COMPLEMENTARY);
+        mnv.put("format", COMPLEMENTARY);
         mnv.put("lugar", COMPLEMENTARY);
     }
     
@@ -468,7 +470,6 @@ public class Biblio {
         mnh.put("creator", REQUIRED);
         mnh.put("dimension+tipo_de_dimension", REQUIRED);
         mnh.put("unidad+tipo_de_unidad", REQUIRED);
-        mnh.put("period", COMPLEMENTARY);
         mnh.put("datecreated", REQUIRED);
         mnh.put("resourcetype", REQUIRED);
         mnh.put("holder", REQUIRED);
@@ -488,6 +489,7 @@ public class Biblio {
         mnh.put("acervo", COMPLEMENTARY);
         mnh.put("description", COMPLEMENTARY);
         mnh.put("keywords", COMPLEMENTARY);
+        mnh.put("period", COMPLEMENTARY);
     }
     
     static {
