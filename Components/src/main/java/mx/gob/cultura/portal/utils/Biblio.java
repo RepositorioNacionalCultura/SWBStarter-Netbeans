@@ -152,7 +152,7 @@ public class Biblio {
         cenart.put("recordtitle", REQUIRED);
         cenart.put("creator", REQUIRED);
         cenart.put("holder", REQUIRED);
-        cenart.put("dimension+unidad", REQUIRED);
+        cenart.put("dimension", REQUIRED);
         cenart.put("datecreated", REQUIRED);
         cenart.put("resourcetype", REQUIRED);
         cenart.put("holdernote", REQUIRED);

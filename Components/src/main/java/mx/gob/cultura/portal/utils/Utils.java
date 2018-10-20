@@ -133,8 +133,8 @@ public class Utils {
     
     public static List<String> getMedia(Rights rights) {
         if (null != rights && null != rights.getMedia()) {
-            if (null != rights.getMedia().getMime()) return getList(rights.getMedia().getMime());
-            return getList(rights.getMedia().getName());
+            if (null != rights.getMedia().getName()) return getList(rights.getMedia().getName());
+            return getList(rights.getMedia().getMime());
         }
         return new ArrayList();
     }
