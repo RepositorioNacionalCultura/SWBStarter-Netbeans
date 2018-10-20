@@ -141,10 +141,12 @@ public class Utils {
     
     public static List<String> getList(String item) {
         if (null != item && !item.isEmpty()) {
-            return Arrays.asList(item.toLowerCase());
+            return Arrays.asList(mediaLbl(item));
         }
         return new ArrayList();
     }
+    
+    
     
     public static String suprXSS(String str) {
 	try {
@@ -301,6 +303,21 @@ public class Utils {
         if (media.equalsIgnoreCase("zip") || media.equalsIgnoreCase("application/zip")) return value.equalsIgnoreCase("ZIP");
         if (media.equalsIgnoreCase("application/epub+zip")) return value.equalsIgnoreCase("EPUB");
         return false;
+    }
+    
+    public static String mediaLbl(String media) {
+        if (null == media || media.isEmpty()) return "";
+        if (media.equalsIgnoreCase("jpg") || media.equalsIgnoreCase("png") || media.startsWith("image")) return "Imagen";
+        if (media.equalsIgnoreCase("aiff") || media.equalsIgnoreCase("wav") || media.equalsIgnoreCase("mp3") || media.startsWith("audio")) return "Audio";
+        if (media.equalsIgnoreCase("avi") || media.startsWith("video") || media.equalsIgnoreCase("mp4") || media.equalsIgnoreCase("mov")) return "Video";
+        if (media.equalsIgnoreCase("pdf") || media.equalsIgnoreCase("application/pdf")) return "Texto";
+        if (media.startsWith("model/x3d") || media.equalsIgnoreCase("3d")) return "3D";
+        if (media.equalsIgnoreCase("zip") || media.equalsIgnoreCase("application/zip")) return "ZIP";
+        if (media.equalsIgnoreCase("application/epub+zip")) return "Texto";
+        if (media.equalsIgnoreCase("texto")) return "Texto";
+        if (media.equalsIgnoreCase("multimedia")) return "Multimedia";
+        if (media.equalsIgnoreCase("Conjunto de archivos")) return "Conjunto de archivos";
+        return media;
     }
     
     public static String getIvl(String filter, String type, Aggregation aggs) {
