@@ -50,7 +50,7 @@ public class RelatedDetail extends GenericResource {
             StringBuilder uri =  new StringBuilder(base);
             if (null != request.getParameter(IDENTIFIER)) uri.append("identifier=").append(request.getParameter(IDENTIFIER));
             Entry entry = ArtDetail.getEntry(request, uri.toString());
-            request.setAttribute("related", getRelated(entry, base, paramRequest));
+            request.setAttribute("related", getRelated(entry, base, request, paramRequest));
             rd.include(request, response);
         }catch (IOException | ServletException se) {
             LOG.info(se.getMessage());
@@ -58,7 +58,7 @@ public class RelatedDetail extends GenericResource {
         
     }
     
-    private List<Entry> getRelated(Entry entry, StringBuilder endpoint, SWBParamRequest paramRequest) {
+    private List<Entry> getRelated(Entry entry, StringBuilder endpoint, HttpServletRequest request, SWBParamRequest paramRequest) {
         endpoint.append("q=");
         Document document = null;
         List<Entry> related = new ArrayList<>();

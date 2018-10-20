@@ -167,7 +167,7 @@ public class Biblio {
         cenart.put("libreto", COMPLEMENTARY);
         cenart.put("musicaldirection", COMPLEMENTARY);
         cenart.put("media", COMPLEMENTARY);
-        inehrm.put("format", COMPLEMENTARY);
+        cenart.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -286,7 +286,7 @@ public class Biblio {
         inehrm.put("resourcetype", REQUIRED);
         inehrm.put("datecreated", REQUIRED);
         inehrm.put("lang", REQUIRED);
-        inehrm.put("dimension+unidad", REQUIRED);
+        inehrm.put("dimension", REQUIRED);
         inehrm.put("holder", REQUIRED);
         inehrm.put("keywords", COMPLEMENTARY);
         inehrm.put("rights.rightstitle", REQUIRED);

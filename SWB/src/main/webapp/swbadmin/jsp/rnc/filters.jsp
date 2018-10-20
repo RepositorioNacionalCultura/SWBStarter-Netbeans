@@ -59,7 +59,7 @@
 	var dates = '&datecreated=';
 	var mediastype = '&mediatype=';
 	var languages = '&languages=';
-        var rightsmedia='rightsmedia=';
+        var rightsmedia='&rightsmedia=';
 	var resourcetype='resourcetype=';
 	var inputElements = document.getElementsByClassName('form-check-input');
 	for (i=0; i<inputElements.length; i++) {
@@ -95,7 +95,7 @@
         if (rights.length > 8) {rights = rights.replace("=::","=");}else {rights=''}
         if (holder.length > 8) {holder = holder.replace("=::","=");}else {holder=''}
         if (mediastype.length > 11) {mediastype = mediastype.replace("=::","=");}else {mediastype=''}
-        if (rightsmedia.length > 12) {rightsmedia = rightsmedia.replace("=::","=");}else {rightsmedia=''}
+        if (rightsmedia.length > 13) {rightsmedia = rightsmedia.replace("=::","=");}else {rightsmedia=''}
         if (resourcetype.length > 13) {resourcetype = resourcetype.replace("=::","=");}else {resourcetype=''}
         if (filterDate) dates+=document.getElementById("bx1").value+","+document.getElementById("bx2").value; else {dates=""}
         filters += resourcetype + rightsmedia + rights + languages + holder + dates;

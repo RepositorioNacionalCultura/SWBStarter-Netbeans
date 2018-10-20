@@ -598,6 +598,6 @@ public class Utils {
             if (null != o && null != o.getMediatype() && null != o.getMediatype().getMime() && !o.getMediatype().getMime().trim().isEmpty())
                 format = o.getMediatype().getMime();
         }
-        return format;
+        return format.toUpperCase();
     }
 }
