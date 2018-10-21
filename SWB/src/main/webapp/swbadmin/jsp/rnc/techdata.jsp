@@ -66,6 +66,7 @@
             <%=Utils.getTechData("resourcetype", holder, Utils.concatFilter(userLang, site.getId(), "resourcetype", Utils.getList(entry.getBictype())), paramRequest.getLocaleString("usrmsg_view_detail_type_object"), false, false)%>
             <%=Utils.getTechData("resourcetype", holder, Utils.concatFilter(userLang, site.getId(), "resourcetype", entry.getResourcetype()), paramRequest.getLocaleString("usrmsg_view_detail_type_object"), true, true)%>
             <%=Utils.getTechData("holder", holder, urlholder, paramRequest.getLocaleString("usrmsg_view_detail_institution"), true, true)%>
+            <%=Utils.getTechData("publisher", holder, entry.getPublisher(), paramRequest.getLocaleString("usrmsg_view_detail_publisher"), false, true)%>
             <%=Utils.getTechData("invited", holder, entry.getInvited(), paramRequest.getLocaleString("usrmsg_view_detail_invited"), false, true)%>
             <%=Utils.getTechData("theme", holder, entry.getTheme(), paramRequest.getLocaleString("usrmsg_view_detail_theme"), false, true)%>
             <%=Utils.getTechData("synopsis", holder, entry.getSynopsis(), paramRequest.getLocaleString("usrmsg_view_detail_synopsis"), false, true)%>
@@ -109,7 +110,6 @@
             <%=Utils.getTechData("music", holder, entry.getMusic(), paramRequest.getLocaleString("usrmsg_view_detail_music"), false, true)%>
             <%=Utils.getTechData("libreto", holder, entry.getLibreto(), paramRequest.getLocaleString("usrmsg_view_detail_libretto"), false, true)%>
             <%=Utils.getTechData("musicaldirection", holder, entry.getMusicaldirection(), paramRequest.getLocaleString("usrmsg_view_detail_music_direction"), false, true)%>
-            <%=Utils.getTechData("number", holder, entry.getNumber(), paramRequest.getLocaleString("usrmsg_view_detail_number"), false, true)%>
             <%=Utils.getTechData("subtile", holder, entry.getSubtile(), paramRequest.getLocaleString("usrmsg_view_detail_subtile"), false, true)%>
             <%=Utils.getTechData("editorial", holder, entry.getEditorial(), paramRequest.getLocaleString("usrmsg_view_detail_editorial"), false, true)%>
             <%=Utils.getTechData("lugar+state", holder, place, paramRequest.getLocaleString("usrmsg_view_detail_place"), false, true)%>
@@ -120,7 +120,11 @@
             <%=Utils.getTechData("producer", holder, entry.getProducer(), paramRequest.getLocaleString("usrmsg_view_detail_producer"), false, true)%>
             <%=Utils.getTechData("screenplay", holder, entry.getScreenplay(), paramRequest.getLocaleString("usrmsg_view_detail_screenplay"), false, true)%>
             <%=Utils.getTechData("distribution", holder, entry.getDistribution(), paramRequest.getLocaleString("usrmsg_view_detail_distribution"), false, true)%>
+            <%=Utils.getTechData("clasification", holder, entry.getClasification(), paramRequest.getLocaleString("usrmsg_view_detail_clasification"), false, true)%>
+            <%=Utils.getTechData("characters", holder, entry.getCharacters(), paramRequest.getLocaleString("usrmsg_view_detail_characters"), false, true)%>
             <%=Utils.getTechData("press", holder, entry.getPress(), paramRequest.getLocaleString("usrmsg_view_detail_press"), false, true)%>
+            <%=Utils.getTechData("category", holder, entry.getCategory(), paramRequest.getLocaleString("usrmsg_view_detail_category"), false, true)%>
+            <%=Utils.getTechData("subcategory", holder, entry.getSubcategory(), paramRequest.getLocaleString("usrmsg_view_detail_subcategory"), false, true)%>
             <%=Utils.getTechData("period", holder, entry.getPeriod(), paramRequest.getLocaleString("usrmsg_view_detail_period"), false, true)%>
             <%=Utils.getTechData("techmaterial", holder, entry.getTechmaterial(), paramRequest.getLocaleString("usrmsg_view_detail_techmaterial"), false, true)%>
             <%=Utils.getTechData("media", holder, Utils.concatFilter(userLang, site.getId(), "rightsmedia", Utils.getMedia(entry.getRights())), paramRequest.getLocaleString("usrmsg_view_detail_media"), false, true)%>
@@ -129,11 +133,21 @@
             <%=Utils.getTechData("inscripcionobra", holder, entry.getInscripcionobra(), paramRequest.getLocaleString("usrmsg_view_detail_inscripcionobra"), false, true)%>
             <%=Utils.getTechData("cultura", holder, entry.getCultura(), paramRequest.getLocaleString("usrmsg_view_detail_cultura"), false, true)%>
             <%=Utils.getTechData("origin", holder, entry.getOrigin(), paramRequest.getLocaleString("usrmsg_view_detail_origin"), false, true)%>
+            <%=Utils.getTechData("culturalregion", holder, entry.getCulturalregion(), paramRequest.getLocaleString("usrmsg_view_detail_cultural_region"), false, true)%>
             <%=Utils.getTechData("acervo", holder, entry.getAcervo(), paramRequest.getLocaleString("usrmsg_view_detail_acervo"), false, true)%>
             <%=Utils.getTechData("discipline", holder, entry.getDiscipline(), paramRequest.getLocaleString("usrmsg_view_detail_discipline"), false, true)%>
             <%=Utils.getTechData("creatorgroup", holder, Utils.getRowData(entry.getCreatorgroup(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_creator_group"), false, true)%>
             <%=Utils.getTechData("creator+creatorgroup+dimension", holder, Utils.getRowData(entry.getCreatorgroup(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_creator_group"), false, true)%>
             <%=Utils.getTechData("material", holder, entry.getMaterial(), paramRequest.getLocaleString("usrmsg_view_detail_material"), false, true)%>
+            
+            <%=Utils.getTechData("gprlang", holder, entry.getGprlang(), paramRequest.getLocaleString("usrmsg_view_detail_gprlang"), false, true)%>
+            <%=Utils.getTechData("genre", holder, entry.getGenre(), paramRequest.getLocaleString("usrmsg_view_detail_genre"), false, true)%>
+            <%=Utils.getTechData("movs", holder, entry.getMovs(), paramRequest.getLocaleString("usrmsg_view_detail_movs"), false, true)%>
+            <%=Utils.getTechData("acts", holder, entry.getActs(), paramRequest.getLocaleString("usrmsg_view_detail_acts"), false, true)%>
+            <%=Utils.getTechData("clase", holder, entry.getClase(), paramRequest.getLocaleString("usrmsg_view_detail_clase"), false, true)%>
+            <%=Utils.getTechData("observations", holder, entry.getObservations(), paramRequest.getLocaleString("usrmsg_view_detail_observations"), false, true)%>
+            <%=Utils.getTechData("biccustodyentity", holder, entry.getBiccustodyentity(), paramRequest.getLocaleString("usrmsg_view_detail_biccustodyentity"), false, true)%>
+            
             <%=Utils.getTechData("collectionnote", holder, entry.getCollectionnote(), paramRequest.getLocaleString("usrmsg_view_detail_collection_note"), false, true)%>
             <%=Utils.getTechData("oaiid/identifier", holder, entry.getIdentifiers(), paramRequest.getLocaleString("usrmsg_view_detail_identifier"), true, true)%>
         </table>

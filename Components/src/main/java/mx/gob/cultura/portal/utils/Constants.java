@@ -44,4 +44,15 @@ public final class Constants {
     
     public static final Integer REQUIRED = 1;
     public static final Integer COMPLEMENTARY = 2;
+    
+    public static final String ZIP = "Zip";
+    public static final String MAP = "Mapa";
+    public static final String THREED = "3D";
+    public static final String TEXT = "Texto";
+    public static final String IMAGE = "Imagen";
+    public static final String AUDIO = "Audio";
+    public static final String VIDEO = "Video";
+    public static final String MIX = "Técnica mixta";
+    public static final String MEDIA = "Multimedia";
+    public static final String FILES = "Conjunto de archivos";
 }

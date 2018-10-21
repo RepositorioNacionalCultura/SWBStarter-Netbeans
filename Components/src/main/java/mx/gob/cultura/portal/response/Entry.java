@@ -79,9 +79,22 @@ public class Entry implements Serializable {
     private String discipline;
     private String collectionnote;
     private String material;
+    private String gprlang;
+    private String genre;
+    private String movs;
+    private String acts;
+    private String clase;
+    private String observations;
+    private String biccustodyentity;
     private String theme;
     private String synopsis;
     private String invited;
+    private String publisher;
+    private String characters;
+    private String category;
+    private String subcategory;
+    private String clasification;
+    private String culturalregion;
     
     private List<String> serie;
     private List<String> credits;
@@ -652,6 +665,110 @@ public class Entry implements Serializable {
         this.invited = invited;
     }
 
+    public String getCulturalregion() {
+        return culturalregion;
+    }
+
+    public void setCulturalregion(String culturalregion) {
+        this.culturalregion = culturalregion;
+    }
+
+    public String getCharacters() {
+        return characters;
+    }
+
+    public void setCharacters(String characters) {
+        this.characters = characters;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public String getClasification() {
+        return clasification;
+    }
+
+    public void setClasification(String clasification) {
+        this.clasification = clasification;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getSubcategory() {
+        return subcategory;
+    }
+
+    public void setSubcategory(String subcategory) {
+        this.subcategory = subcategory;
+    }
+
+    public String getGprlang() {
+        return gprlang;
+    }
+
+    public void setGprlang(String gprlang) {
+        this.gprlang = gprlang;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String getMovs() {
+        return movs;
+    }
+
+    public void setMovs(String movs) {
+        this.movs = movs;
+    }
+
+    public String getActs() {
+        return acts;
+    }
+
+    public void setActs(String acts) {
+        this.acts = acts;
+    }
+
+    public String getClase() {
+        return clase;
+    }
+
+    public void setClase(String clase) {
+        this.clase = clase;
+    }
+
+    public String getObservations() {
+        return observations;
+    }
+
+    public void setObservations(String observations) {
+        this.observations = observations;
+    }
+
+    public String getBiccustodyentity() {
+        return biccustodyentity;
+    }
+
+    public void setBiccustodyentity(String biccustodyentity) {
+        this.biccustodyentity = biccustodyentity;
+    }
+    
     @Override
     public String toString() {
         return "Entry{" + "_id=" + _id + ", holder=" + holder + ", resourcetype=" + resourcetype + ", digitalObject=" + digitalObject + ", rights=" + rights + ", resourcethumbnail=" + resourcethumbnail + ", serie=" + serie + '}';

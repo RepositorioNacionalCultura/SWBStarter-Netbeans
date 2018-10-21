@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="mx.gob.cultura.portal.response.Aggregation, mx.gob.cultura.portal.response.CountName"%>
-<%@page import="mx.gob.cultura.portal.utils.Utils, org.semanticwb.portal.api.SWBParamRequest,org.semanticwb.portal.api.SWBResourceURL,java.util.ArrayList, java.util.List"%>
+<%@page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.utils.Constants, org.semanticwb.portal.api.SWBParamRequest,org.semanticwb.portal.api.SWBResourceURL,java.util.ArrayList, java.util.List"%>
 <%
     boolean showFilters = false;
     List<CountName> dates = new ArrayList<>();
@@ -11,7 +11,7 @@
     List<CountName> rightsmedia = new ArrayList<>();
     List<CountName> resourcetypes = new ArrayList<>();
     String word = (String)request.getAttribute("word");
-    String pdfs = Utils.getFilterTypes(request, "pdf");
+    String texts = Utils.getFilterTypes(request, "text");
     String zips = Utils.getFilterTypes(request, "zip");
     String images = Utils.getFilterTypes(request, "image");
     String audios = Utils.getFilterTypes(request, "audio");
@@ -69,8 +69,8 @@
 		}else if (inputElements[i].name == 'mediastype') {
                     if ('Audio' == inputElements[i].value) {
                         mediastype += '<%=audios%>';
-                    }else if ('PDF' == inputElements[i].value) {
-			mediastype += '<%=pdfs%>';
+                    }else if ('Texto' == inputElements[i].value) {
+			mediastype += '<%=texts%>';
                     }else if ('Imagen' == inputElements[i].value) {
 			mediastype += '<%=images%>';
                     }else if ('Video' == inputElements[i].value) {

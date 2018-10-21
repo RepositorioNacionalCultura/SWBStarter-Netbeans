@@ -228,12 +228,17 @@ public class SearchCulturalProperty extends PagerAction {
             }
         }
         request.setAttribute("aggs", getAggregation(document.getAggs()));
-        /**request.setAttribute("pdf", getAgg(document.getAggs(), "pdf"));
+        request.setAttribute("text", getAgg(document.getAggs(), "text"));
         request.setAttribute("zip", getAgg(document.getAggs(), "zip"));
         request.setAttribute("image", getAgg(document.getAggs(), "image"));
         request.setAttribute("audio", getAgg(document.getAggs(), "audio"));
-        request.setAttribute("video", getAgg(document.getAggs(), "video"));**/
-    }
+        request.setAttribute("video", getAgg(document.getAggs(), "video"));
+        request.setAttribute("files", getAgg(document.getAggs(), "files"));
+        request.setAttribute("3d", getAgg(document.getAggs(), "3d"));
+        request.setAttribute("map", getAgg(document.getAggs(), "map"));
+        request.setAttribute("mix", getAgg(document.getAggs(), "mix"));
+        request.setAttribute("multimedia", getAgg(document.getAggs(), "multimedia"));
+        }
 
     private void cassette(HttpServletRequest request, int total, int pagenum) {
         int last = 0;
@@ -381,7 +386,8 @@ public class SearchCulturalProperty extends PagerAction {
                 if (null !=  a.getLanguages()) aggregation.getLanguages().addAll(a.getLanguages());
                 if (null !=  a.getResourcetypes()) aggregation.getResourcetypes().addAll(a.getResourcetypes());
                 if (null !=  a.getMediastype()) aggregation.getMediastype().addAll(getTypes(a.getMediastype()));
-                if (null !=  a.getRightsmedia()) aggregation.getRightsmedia().addAll(a.getRightsmedia());
+                //if (null !=  a.getRightsmedia()) aggregation.getRightsmedia().addAll(a.getRightsmedia());
+                if (null !=  a.getRightsmedia()) aggregation.getRightsmedia().addAll(getTypes(a.getRightsmedia()));
             }
             for (CountName date : aggregation.getDates()) {
                 cal.setTime(Utils.convert(date.getName(), "yyyy-MM-dd'T'HH:mm:ss"));
@@ -392,49 +398,63 @@ public class SearchCulturalProperty extends PagerAction {
         return aggregation;
     }
     
-     /**private List<CountName> getAgg(List<Aggregation> aggs, String type) {
+     private List<CountName> getAgg(List<Aggregation> aggs, String type) {
         List<CountName> list= new ArrayList<>();
         if (null != aggs && !aggs.isEmpty()) {
             for (Aggregation a : aggs) {
-                if (null !=  a.getMediastype()) {
-                    for (CountName c : a.getMediastype()) {
-                        if (type.equals("image") && (c.getName().startsWith("image") || c.getName().equalsIgnoreCase("jpg") || c.getName().equalsIgnoreCase("png"))) list.add(c);
-                        else if (type.equals("pdf") && (c.getName().startsWith("pdf") || c.getName().equalsIgnoreCase("application/pdf"))) list.add(c);
-                        else if (type.equals("audio") && (c.getName().startsWith("audio") || c.getName().equalsIgnoreCase("aiff") || c.getName().equalsIgnoreCase("wav") || c.getName().equalsIgnoreCase("mp3"))) list.add(c);
-                        else if (type.equals("video") && (c.getName().startsWith("video") || c.getName().equalsIgnoreCase("avi") || c.getName().equalsIgnoreCase("mp4") || c.getName().equalsIgnoreCase("mov"))) list.add(c);
-                        else if (type.equals("zip") && (c.getName().startsWith("zip") || c.getName().equalsIgnoreCase("application/zip"))) list.add(c);
+                if (null !=  a.getRightsmedia()) {
+                    for (CountName c : a.getRightsmedia()) {
+                        if (type.equals("image") && (c.getName().equalsIgnoreCase("imagen") || c.getName().equalsIgnoreCase("jpg") || c.getName().equalsIgnoreCase("png"))) list.add(c);
+                        else if (type.equals("text") && (c.getName().equalsIgnoreCase("texto") || c.getName().equalsIgnoreCase("pdf"))) list.add(c);
+                        else if (type.equals("audio") && (c.getName().equalsIgnoreCase("audio") || c.getName().equalsIgnoreCase("aiff") || c.getName().equalsIgnoreCase("wav") || c.getName().equalsIgnoreCase("mp3"))) list.add(c);
+                        else if (type.equals("video") && (c.getName().equalsIgnoreCase("video") || c.getName().equalsIgnoreCase("avi") || c.getName().equalsIgnoreCase("mp4") || c.getName().equalsIgnoreCase("mov"))) list.add(c);
+                        else if (type.equals("zip") && (c.getName().equalsIgnoreCase("zip") || c.getName().equalsIgnoreCase("application/zip"))) list.add(c);
+                        else if (type.equals("files") && c.getName().equalsIgnoreCase("conjunto de archivos")) list.add(c);
+                        else if (type.equals("3d") && c.getName().equalsIgnoreCase("3d")) list.add(c);
+                        else if (type.equals("map") && c.getName().equalsIgnoreCase("mapa")) list.add(c);
+                        else if (type.equals("mix") && c.getName().equalsIgnoreCase("técnica mixta")) list.add(c);
+                        else if (type.equals("multimedia") && c.getName().equalsIgnoreCase("multimedia")) list.add(c);
                     }
                 }
             }
         }
         return list;
-    }**/
+    }
     
     private List<CountName> getTypes(List<CountName> media) {
         List<CountName> types = new ArrayList<>();
-        CountName pdf = new CountName("PDF", 0);
+        CountName text = new CountName("Texto", 0);
         CountName zip = new CountName("ZIP", 0);
         CountName three = new CountName("3D", 0);
-        CountName eBook = new CountName("EPUB", 0);
         CountName image = new CountName("Imagen", 0);
         CountName audio = new CountName("Audio", 0);
         CountName video = new CountName("Video", 0);
+        CountName map = new CountName("Mapa", 0);
+        CountName mix = new CountName("Técnica mixta", 0);
+        CountName mmedia = new CountName("Multimedia", 0);
+        CountName files = new CountName("Conjunto de archivos", 0);
         for (CountName c : media) {
-            if (c.getName().equalsIgnoreCase("jpg") || c.getName().equalsIgnoreCase("png") || c.getName().startsWith("image")) image.setCount(image.getCount() + c.getCount());
-            if (c.getName().equalsIgnoreCase("aiff") || c.getName().equalsIgnoreCase("wav") || c.getName().equalsIgnoreCase("mp3") || c.getName().startsWith("audio")) audio.setCount(audio.getCount() + c.getCount());
-            if (c.getName().equalsIgnoreCase("avi") || c.getName().startsWith("video") || c.getName().equalsIgnoreCase("mp4") || c.getName().equalsIgnoreCase("mov")) video.setCount(video.getCount() + c.getCount());
-            if (c.getName().equalsIgnoreCase("pdf") || c.getName().equalsIgnoreCase("application/pdf")) pdf.setCount(pdf.getCount() + c.getCount());
-            if (c.getName().startsWith("model/x3d")) three.setCount(three.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("imagen") || c.getName().equalsIgnoreCase("jpg") || c.getName().equalsIgnoreCase("png") || c.getName().startsWith("image")) image.setCount(image.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("audio") || c.getName().equalsIgnoreCase("aiff") || c.getName().equalsIgnoreCase("wav") || c.getName().equalsIgnoreCase("mp3") || c.getName().startsWith("audio")) audio.setCount(audio.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("video") || c.getName().equalsIgnoreCase("avi") || c.getName().startsWith("video") || c.getName().equalsIgnoreCase("mp4") || c.getName().equalsIgnoreCase("mov")) video.setCount(video.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("pdf") || c.getName().equalsIgnoreCase("texto")) text.setCount(text.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("3d")) three.setCount(three.getCount() + c.getCount());
             if (c.getName().equalsIgnoreCase("zip") || c.getName().equalsIgnoreCase("application/zip")) zip.setCount(zip.getCount() + c.getCount());
-            if (c.getName().equalsIgnoreCase("application/epub+zip")) eBook.setCount(eBook.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("mapa")) map.setCount(map.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("técnica mixta")) mix.setCount(mix.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("multimedia")) mmedia.setCount(mmedia.getCount() + c.getCount());
+            if (c.getName().equalsIgnoreCase("conjunto de archivos")) files.setCount(files.getCount() + c.getCount());
         }
         if (image.getCount() > 0) types.add(image);
         if (audio.getCount() > 0) types.add(audio);
         if (video.getCount() > 0) types.add(video);
-        if (pdf.getCount() > 0) types.add(pdf);
-        if (eBook.getCount() > 0) types.add(eBook);
+        if (text.getCount() > 0) types.add(text);
+        if (map.getCount() > 0) types.add(map);
         if (three.getCount() > 0) types.add(three);
         if (zip.getCount() > 0) types.add(zip);
+        if (mix.getCount() > 0) types.add(mix);
+        if (mmedia.getCount() > 0) types.add(mmedia);
+        if (files.getCount() > 0) types.add(files);
         return types;
     }
 

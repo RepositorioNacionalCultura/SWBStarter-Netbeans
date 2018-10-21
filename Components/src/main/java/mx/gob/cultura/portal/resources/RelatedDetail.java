@@ -30,6 +30,7 @@ import org.semanticwb.Logger;
 import org.semanticwb.SWBUtils;
 import static mx.gob.cultura.portal.utils.Constants.IDENTIFIER;
 import static mx.gob.cultura.portal.utils.Constants.NUM_REL;
+import mx.gob.cultura.portal.utils.Utils;
 
 
 /**
@@ -50,7 +51,7 @@ public class RelatedDetail extends GenericResource {
             StringBuilder uri =  new StringBuilder(base);
             if (null != request.getParameter(IDENTIFIER)) uri.append("identifier=").append(request.getParameter(IDENTIFIER));
             Entry entry = ArtDetail.getEntry(request, uri.toString());
-            request.setAttribute("related", getRelated(entry, base, request, paramRequest));
+            request.setAttribute("related", getRelated(entry, base, paramRequest));
             rd.include(request, response);
         }catch (IOException | ServletException se) {
             LOG.info(se.getMessage());
@@ -58,11 +59,13 @@ public class RelatedDetail extends GenericResource {
         
     }
     
-    private List<Entry> getRelated(Entry entry, StringBuilder endpoint, HttpServletRequest request, SWBParamRequest paramRequest) {
+    private List<Entry> getRelated(Entry entry, StringBuilder endpoint, SWBParamRequest paramRequest) {
         endpoint.append("q=");
         Document document = null;
         List<Entry> related = new ArrayList<>();
-        if (null == entry || entry.getKeywords().isEmpty()) return new ArrayList<>();
+        if (null == entry) return new ArrayList<>();
+        if (null != entry.getRecordtitle() && !entry.getRecordtitle().isEmpty())
+            entry.getKeywords().add(0,Utils.getTitle(entry.getRecordtitle(), 0));
         for (String key : entry.getKeywords()) {
             StringBuilder search = new StringBuilder(endpoint.toString());
             if (null != key && !key.trim().isEmpty()) {
@@ -79,8 +82,10 @@ public class RelatedDetail extends GenericResource {
                         List<Entry> records = document.getRecords();
                         if (null != records) {
                             for (Entry item : records) {
-                                SearchCulturalProperty.setThumbnail(item, paramRequest.getWebPage().getWebSite(), 0);
-                                related.add(item);
+                                if (null != item && !item.getId().equalsIgnoreCase(entry.getId())) {
+                                    SearchCulturalProperty.setThumbnail(item, paramRequest.getWebPage().getWebSite(), 0);
+                                    related.add(item);
+                                }
                                 if (related.size() >= NUM_REL) break;
                             }
                         }

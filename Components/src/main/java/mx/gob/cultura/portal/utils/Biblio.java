@@ -40,6 +40,8 @@ public class Biblio {
     public static final Map ccc = new HashMap();
     public static final Map cndci = new HashMap();
     public static final Map mnfm = new HashMap();
+    public static final Map mna = new HashMap();
+    public static final Map holders = new HashMap();
     
     static {
         inba.put("recordtitle", REQUIRED);
@@ -71,6 +73,7 @@ public class Biblio {
         inali.put("rights.description+rights.url", REQUIRED);
         inali.put("keywords", COMPLEMENTARY);
         inali.put("description", COMPLEMENTARY);
+        inali.put("gprlang", COMPLEMENTARY);
     }
     
     static {
@@ -176,6 +179,7 @@ public class Biblio {
         bcna.put("chapter", REQUIRED);
         bcna.put("creator", REQUIRED);
         bcna.put("holder", REQUIRED);
+        bcna.put("publisher", REQUIRED);
         bcna.put("dimension", REQUIRED);
         bcna.put("datecreated", REQUIRED);
         bcna.put("resourcetype", REQUIRED);
@@ -190,7 +194,7 @@ public class Biblio {
     static {
         dgp.put("oaiid/identifier", REQUIRED);
         dgp.put("recordtitle", REQUIRED);
-        dgp.put("number", REQUIRED);
+        //dgp.put("number", REQUIRED);
         dgp.put("subtile", REQUIRED);
         dgp.put("creator", REQUIRED);
         dgp.put("holder", REQUIRED);
@@ -295,7 +299,7 @@ public class Biblio {
         inehrm.put("producer", COMPLEMENTARY);
         inehrm.put("screenplay", COMPLEMENTARY);
         inehrm.put("credits", COMPLEMENTARY);
-        inehrm.put("distribution", COMPLEMENTARY);
+        //inehrm.put("distribution", COMPLEMENTARY);
         inehrm.put("techmaterial", COMPLEMENTARY);
         inehrm.put("media", COMPLEMENTARY);
         inehrm.put("format", COMPLEMENTARY);
@@ -303,6 +307,7 @@ public class Biblio {
         inehrm.put("invited", COMPLEMENTARY);
         inehrm.put("theme", COMPLEMENTARY);
         inehrm.put("synopsis", COMPLEMENTARY);
+        inehrm.put("characters", COMPLEMENTARY);
     }
     
     static {
@@ -380,6 +385,7 @@ public class Biblio {
         mnv.put("media", COMPLEMENTARY);
         mnv.put("format", COMPLEMENTARY);
         mnv.put("lugar", COMPLEMENTARY);
+        mnv.put("observations", COMPLEMENTARY);
     }
     
     static {
@@ -530,6 +536,7 @@ public class Biblio {
         ccc.put("screenplay", COMPLEMENTARY);
         ccc.put("credits", COMPLEMENTARY);
         ccc.put("distribution", COMPLEMENTARY);
+        ccc.put("clasification", COMPLEMENTARY);
         ccc.put("synopsis", COMPLEMENTARY);
     }
 
@@ -561,13 +568,55 @@ public class Biblio {
         mnfm.put("media", REQUIRED);
         mnfm.put("format", REQUIRED);
         mnfm.put("serie", REQUIRED);
-        mnfm.put("category+subcategory", REQUIRED);
-        mnfm.put("class", REQUIRED);
+        mnfm.put("category", COMPLEMENTARY);
+        mnfm.put("subcategory", COMPLEMENTARY);
+        mnfm.put("clase", COMPLEMENTARY);
         mnfm.put("lugar", REQUIRED);
         mnfm.put("keywords", COMPLEMENTARY);
     }
     
+    static {
+        mna.put("oaiid/identifier", REQUIRED);
+        mna.put("recordtitle", REQUIRED);
+        mna.put("creator", REQUIRED);
+        //mna.put("dimension", REQUIRED);
+        mna.put("datecreated", REQUIRED);
+        mna.put("resourcetype", REQUIRED);
+        mna.put("holder", REQUIRED);
+        mna.put("rights.rightstitle", REQUIRED);
+        mna.put("rights.description+rights.url", REQUIRED);
+        mna.put("media", REQUIRED);
+        mna.put("format", REQUIRED);
+        mna.put("keywords", COMPLEMENTARY);
+        mna.put("cultura", REQUIRED);
+        mna.put("lugar", REQUIRED);
+        mna.put("clase", COMPLEMENTARY);
+        mna.put("category", COMPLEMENTARY);
+        mna.put("subcategory", COMPLEMENTARY);
+        mna.put("biccustodyentity", COMPLEMENTARY);
+        mna.put("culturalregion", COMPLEMENTARY);
+    }
+    
+    static {
+        holders.put("Instituto Nacional de Bellas Artes", "INBA");
+        holders.put("Instituto Nacional de Bellas Artes y Literatura", "INBA");
+        holders.put("Instituto Nacional de Lenguas Indígenas", "INALI");
+        holders.put("Instituto Mexicano de Cinematografía", "IMCINE");
+        holders.put("Radio Educación", "IMER");
+        holders.put("Fonoteca Nacional", "FONAL");
+        holders.put("Centro de la Imagen", "CEIM");
+        holders.put("Televisión Metropolitana S.A. de C.V.", "Canal 22");
+        holders.put("Centro Nacional de las Artes", "CENART");
+        holders.put("Biblioteca de las Artes del Centro Nacional de las Artes", "BACNA");
+        holders.put("Dirección General de Publicaciones", "DGP");
+        holders.put("Dirección General de Bibliotecas", "DGB");
+        holders.put("Dirección General de Culturas Populares e Indígenas", "DGCP");
+        holders.put("Biblioteca Vasconcelos", "BV");
+        holders.put("Centro Nacional para la Preservación del Patrimonio Cultural Ferrocarrilero", "MNFM");
+    }
+    
     public static boolean isRequired(String property, String holder) {
+        System.out.println("HOLDER: " + holder + " " + isConfigBase(holder));
         boolean isRequired;
         if (null == holder || null == property) return false;
         switch (holder) {
@@ -595,6 +644,7 @@ public class Biblio {
             case  "Museo Nacional del Virreinato" : isRequired = mnv.containsKey(property); break;
             case  "Museo Nacional de Culturas Populares" : isRequired = mncp.containsKey(property); break;
             case  "Museo de Arte Moderno" : isRequired = mam.containsKey(property); break;
+            case  "Museo Nacional de Antropología" : isRequired = mna.containsKey(property); break;
             case  "Mediateca" : isRequired = medc.containsKey(property); break;
             case  "Centro de Capacitación Cinematográfica" : isRequired = ccc.containsKey(property); break;
             case  "Coordinación Nacional de Desarrollo Cultural Infantil" : isRequired = cndci.containsKey(property); break;
@@ -602,5 +652,9 @@ public class Biblio {
             default: isRequired = false;
         }
         return isRequired;
+    }
+    
+    public static boolean isConfigBase(String holder) {
+        return holders.containsKey(holder);
     }
 }
