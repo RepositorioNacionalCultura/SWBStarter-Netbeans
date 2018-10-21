@@ -616,7 +616,6 @@ public class Biblio {
     }
     
     public static boolean isRequired(String property, String holder) {
-        System.out.println("HOLDER: " + holder + " " + isConfigBase(holder));
         boolean isRequired;
         if (null == holder || null == property) return false;
         switch (holder) {
