@@ -74,6 +74,9 @@ public class Biblio {
         inali.put("keywords", COMPLEMENTARY);
         inali.put("description", COMPLEMENTARY);
         inali.put("gprlang", COMPLEMENTARY);
+        inali.put("dimension", REQUIRED);
+        inali.put("media", COMPLEMENTARY);
+        inali.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -100,7 +103,7 @@ public class Biblio {
         fona.put("recordtitle", REQUIRED);
         fona.put("creator", REQUIRED);
         fona.put("holder", REQUIRED);
-        fona.put("dimension+unidad", REQUIRED);
+        fona.put("dimension", REQUIRED);
         fona.put("datecreated", REQUIRED);
         fona.put("resourcetype", REQUIRED);
         fona.put("reccollection", COMPLEMENTARY);
@@ -119,7 +122,7 @@ public class Biblio {
         ceim.put("creatorgroup", REQUIRED);
         ceim.put("holder", REQUIRED);
         ceim.put("serie", COMPLEMENTARY);
-        ceim.put("dimension+unidad", REQUIRED);
+        ceim.put("dimension", REQUIRED);
         ceim.put("datecreated", REQUIRED);
         ceim.put("resourcetype", REQUIRED);
         ceim.put("keywords", COMPLEMENTARY);
@@ -137,7 +140,7 @@ public class Biblio {
         cl22.put("recordtitle", REQUIRED);
         cl22.put("creator", REQUIRED);
         cl22.put("holder", REQUIRED);
-        cl22.put("dimension+unidad", REQUIRED);
+        cl22.put("dimension", REQUIRED);
         cl22.put("datecreated", REQUIRED);
         cl22.put("resourcetype", REQUIRED);
         cl22.put("holdernote", REQUIRED);
@@ -155,6 +158,7 @@ public class Biblio {
         cenart.put("recordtitle", REQUIRED);
         cenart.put("creator", REQUIRED);
         cenart.put("holder", REQUIRED);
+        cenart.put("publisher", REQUIRED);
         cenart.put("dimension", REQUIRED);
         cenart.put("datecreated", REQUIRED);
         cenart.put("resourcetype", REQUIRED);
@@ -198,7 +202,7 @@ public class Biblio {
         dgp.put("subtile", REQUIRED);
         dgp.put("creator", REQUIRED);
         dgp.put("holder", REQUIRED);
-        dgp.put("dimension+unidad", REQUIRED);
+        dgp.put("dimension", REQUIRED);
         dgp.put("datecreated", REQUIRED);
         dgp.put("resourcetype", REQUIRED);
         dgp.put("reccollection", COMPLEMENTARY);
@@ -217,7 +221,7 @@ public class Biblio {
         dgb.put("recordtitle", REQUIRED);
         dgb.put("creator", REQUIRED);
         dgb.put("holder", REQUIRED);
-        dgb.put("dimension+unidad", REQUIRED);
+        dgb.put("dimension", REQUIRED);
         dgb.put("datecreated", REQUIRED);
         dgb.put("resourcetype", REQUIRED);
         dgb.put("keywords", COMPLEMENTARY);
@@ -316,7 +320,7 @@ public class Biblio {
         munal.put("recordtitle", REQUIRED);
         munal.put("creator", REQUIRED);
         munal.put("lang", REQUIRED);
-        munal.put("dimension+tipo_de_dimension", REQUIRED);
+        munal.put("dimension", REQUIRED);
         munal.put("unidad+tipo_de_unidad", REQUIRED);
         munal.put("holder", REQUIRED);
         munal.put("keywords", COMPLEMENTARY);
@@ -370,7 +374,7 @@ public class Biblio {
         mnv.put("oaiid/identifier", REQUIRED);
         mnv.put("recordtitle", REQUIRED);
         mnv.put("creator", REQUIRED);
-        mnv.put("dimension+tipo_de_dimension", REQUIRED);
+        mnv.put("dimension", REQUIRED);
         mnv.put("unidad+tipo_de_unidad", REQUIRED);
         mnv.put("period", COMPLEMENTARY);
         mnv.put("datecreated", REQUIRED);
@@ -392,7 +396,7 @@ public class Biblio {
         munae.put("oaiid/identifier", REQUIRED);
         munae.put("recordtitle", REQUIRED);
         munae.put("creator", REQUIRED);
-        munae.put("dimension+tipo_de_dimension", REQUIRED);
+        munae.put("dimension", REQUIRED);
         munae.put("unidad+tipo_de_unidad", REQUIRED);
         munae.put("period", COMPLEMENTARY);
         munae.put("datecreated", REQUIRED);
@@ -412,7 +416,7 @@ public class Biblio {
         mnsc.put("oaiid/identifier", REQUIRED);
         mnsc.put("recordtitle", REQUIRED);
         mnsc.put("creator", REQUIRED);
-        mnsc.put("dimension+tipo_de_dimension", REQUIRED);
+        mnsc.put("dimension", REQUIRED);
         mnsc.put("unidad+tipo_de_unidad", REQUIRED);
         mnsc.put("period", COMPLEMENTARY);
         mnsc.put("datecreated", REQUIRED);
@@ -452,8 +456,7 @@ public class Biblio {
         mam.put("oaiid/identifier", REQUIRED);
         mam.put("recordtitle", REQUIRED);
         mam.put("creator", REQUIRED);
-        mam.put("dimension+tipo_de_dimension", REQUIRED);
-        mam.put("unidad+tipo_de_unidad", REQUIRED);
+        mam.put("dimension", REQUIRED);
         mam.put("datecreated", REQUIRED);
         mam.put("discipline", COMPLEMENTARY);
         mam.put("reccollection", COMPLEMENTARY);
@@ -474,8 +477,7 @@ public class Biblio {
         mnh.put("oaiid/identifier", REQUIRED);
         mnh.put("recordtitle", REQUIRED);
         mnh.put("creator", REQUIRED);
-        mnh.put("dimension+tipo_de_dimension", REQUIRED);
-        mnh.put("unidad+tipo_de_unidad", REQUIRED);
+        mnh.put("dimension", REQUIRED);
         mnh.put("datecreated", REQUIRED);
         mnh.put("resourcetype", REQUIRED);
         mnh.put("holder", REQUIRED);
@@ -521,8 +523,6 @@ public class Biblio {
         ccc.put("recordtitle", REQUIRED);
         ccc.put("creator", REQUIRED);
         ccc.put("dimension", REQUIRED);
-        ccc.put("tipo_de_unidad", REQUIRED);
-        ccc.put("tipo_de_dimension", REQUIRED);
         ccc.put("media", COMPLEMENTARY);
         ccc.put("format", COMPLEMENTARY);
         ccc.put("datecreated", REQUIRED);
@@ -559,7 +559,7 @@ public class Biblio {
         mnfm.put("oaiid/identifier", REQUIRED);
         mnfm.put("recordtitle", REQUIRED);
         mnfm.put("creator", REQUIRED);
-        mnfm.put("dimension+tipo_de_dimension", REQUIRED);
+        mnfm.put("dimension", REQUIRED);
         mnfm.put("datecreated", REQUIRED);
         mnfm.put("resourcetype", REQUIRED);
         mnfm.put("holder", REQUIRED);

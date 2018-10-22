@@ -139,7 +139,6 @@
             <%=Utils.getTechData("creatorgroup", holder, Utils.getRowData(entry.getCreatorgroup(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_creator_group"), false, true)%>
             <%=Utils.getTechData("creator+creatorgroup+dimension", holder, Utils.getRowData(entry.getCreatorgroup(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_creator_group"), false, true)%>
             <%=Utils.getTechData("material", holder, entry.getMaterial(), paramRequest.getLocaleString("usrmsg_view_detail_material"), false, true)%>
-            
             <%=Utils.getTechData("gprlang", holder, entry.getGprlang(), paramRequest.getLocaleString("usrmsg_view_detail_gprlang"), false, true)%>
             <%=Utils.getTechData("genre", holder, entry.getGenre(), paramRequest.getLocaleString("usrmsg_view_detail_genre"), false, true)%>
             <%=Utils.getTechData("movs", holder, entry.getMovs(), paramRequest.getLocaleString("usrmsg_view_detail_movs"), false, true)%>
