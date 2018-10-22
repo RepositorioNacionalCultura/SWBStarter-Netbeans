@@ -112,10 +112,19 @@ public class Utils {
         String url = "<a href=\"/" + userLang + "/" + site + "/resultados?word=*&theme=";
         for (String arg : args) {
             if (null != arg && !arg.trim().isEmpty())
-                link.append(", ").append(url).append(arg.trim()).append("&filter=").append(attribute).append(":").append(arg.toLowerCase()).append("\">").append(arg.trim()).append("</a>");
+                link.append(", ").append(url).append(arg.trim()).append("&filter=").append(attribute).append(":").append(arg).append("\">").append(arg.trim()).append("</a>");
         }
         if (link.length() > 0) link.deleteCharAt(0);
         return link.toString();
+    }
+    
+    public static String concatReplace(String userLang, String site, String attribute, List<String> args, String regex, String replacement) {
+        String filter = concatFilter(userLang, site, attribute, args);
+        if (!filter.isEmpty() && null != regex && !regex.isEmpty() && null != replacement && !replacement.isEmpty() ) {
+            filter = filter.replaceAll(regex, replacement);
+        }
+        System.out.println("replacement: " + filter);
+        return filter;
     }
     
     public static String getCreator(List<String> names) {

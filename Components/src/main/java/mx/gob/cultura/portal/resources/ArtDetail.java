@@ -112,9 +112,20 @@ public class ArtDetail extends GenericAdmResource {
         Gson gson = new Gson();
         String _index = request.getParameter("_index");
         int index = Utils.toInt(_index);
-        List<Entry> serie = (List<Entry>)request.getAttribute("serie");
-        if (index < 0 || null == serie || serie.isEmpty() || index > serie.size()) json = new Entry();
-        else json = serie.get(index);
+        String baseUri = getBaseUri(paramRequest);
+        String uri = getParamUri(baseUri, request);
+        try {
+            if (null != uri) {
+                Entry entry = getEntry(request, uri);
+                if (null != entry) {
+                    List<Entry> serie = serie(entry, baseUri);
+                    if (index < 0 || null == serie || serie.isEmpty() || index > serie.size()) json = new Entry();
+                    else json = serie.get(index);
+                }
+            }
+        } catch (Exception se) {
+            LOG.error(se);
+        }
         response.setContentType("application/json");
 	response.setHeader("Cache-Control", "no-cache");
 	PrintWriter pw = response.getWriter();
