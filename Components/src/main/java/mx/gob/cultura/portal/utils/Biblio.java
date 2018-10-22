@@ -305,7 +305,7 @@ public class Biblio {
         inehrm.put("screenplay", COMPLEMENTARY);
         inehrm.put("credits", COMPLEMENTARY);
         //inehrm.put("distribution", COMPLEMENTARY);
-        inehrm.put("techmaterial", COMPLEMENTARY);
+        inehrm.put("technique", COMPLEMENTARY);
         inehrm.put("media", COMPLEMENTARY);
         inehrm.put("format", COMPLEMENTARY);
         inehrm.put("lugar+state", COMPLEMENTARY);
@@ -378,7 +378,7 @@ public class Biblio {
         inah.put("lugar", COMPLEMENTARY);
         inah.put("credits", COMPLEMENTARY);
         inah.put("material", COMPLEMENTARY);
-        inah.put("techmaterial", COMPLEMENTARY);
+        inah.put("technique", COMPLEMENTARY);
         inah.put("media", COMPLEMENTARY);
         inah.put("format", COMPLEMENTARY);
     }
@@ -396,7 +396,7 @@ public class Biblio {
         mnv.put("rights.rightstitle", REQUIRED);
         mnv.put("rights.description+rights.url", REQUIRED);
         mnv.put("description", COMPLEMENTARY);
-        mnv.put("techmaterial", COMPLEMENTARY);
+        mnv.put("technique", COMPLEMENTARY);
         mnv.put("keywords", COMPLEMENTARY);
         mnv.put("media", COMPLEMENTARY);
         mnv.put("format", COMPLEMENTARY);
@@ -418,7 +418,7 @@ public class Biblio {
         munae.put("rights.description+rights.url", REQUIRED);
         munae.put("description", COMPLEMENTARY);
         munae.put("keywords", COMPLEMENTARY);
-        munae.put("techmaterial", COMPLEMENTARY);
+        munae.put("technique", COMPLEMENTARY);
         munae.put("media", COMPLEMENTARY);
         munae.put("format", COMPLEMENTARY);
     }
@@ -430,7 +430,7 @@ public class Biblio {
         mnsc.put("dimension", REQUIRED);
         mnsc.put("period", COMPLEMENTARY);
         mnsc.put("datecreated", REQUIRED);
-        mnsc.put("techmaterial", COMPLEMENTARY);
+        mnsc.put("technique", COMPLEMENTARY);
         mnsc.put("reccollection", COMPLEMENTARY);
         mnsc.put("holder", REQUIRED);
         mnsc.put("resourcetype", REQUIRED);
@@ -475,7 +475,7 @@ public class Biblio {
         mam.put("resourcetype", REQUIRED);
         mam.put("rights.rightstitle", REQUIRED);
         mam.put("rights.description+rights.url", REQUIRED);
-        mam.put("techmaterial", COMPLEMENTARY);
+        mam.put("technique", COMPLEMENTARY);
         mam.put("description", COMPLEMENTARY);
         mam.put("keywords", COMPLEMENTARY);
         mam.put("collectionnote", COMPLEMENTARY);
@@ -491,7 +491,7 @@ public class Biblio {
         mnh.put("datecreated", REQUIRED);
         mnh.put("resourcetype", REQUIRED);
         mnh.put("holder", REQUIRED);
-        mnh.put("techmaterial", COMPLEMENTARY);
+        mnh.put("technique", COMPLEMENTARY);
         mnh.put("reccollection", COMPLEMENTARY);
         mnh.put("rights.rightstitle", REQUIRED);
         mnh.put("rights.description+rights.url", REQUIRED);
