@@ -57,6 +57,7 @@ public class Biblio {
         inba.put("description", COMPLEMENTARY);
         inba.put("keywords", COMPLEMENTARY);
         inba.put("media", COMPLEMENTARY);
+        inba.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -320,8 +321,10 @@ public class Biblio {
         munal.put("recordtitle", REQUIRED);
         munal.put("creator", REQUIRED);
         munal.put("lang", REQUIRED);
+        munal.put("datecreated", REQUIRED);
         munal.put("dimension", REQUIRED);
-        munal.put("unidad+tipo_de_unidad", REQUIRED);
+        munal.put("media", COMPLEMENTARY);
+        munal.put("format", COMPLEMENTARY);
         munal.put("holder", REQUIRED);
         munal.put("keywords", COMPLEMENTARY);
         munal.put("rights.rightstitle", REQUIRED);
@@ -354,11 +357,15 @@ public class Biblio {
         inbal.put("rights.description+rights.url", REQUIRED);
         inbal.put("description", COMPLEMENTARY);
         inbal.put("keywords", COMPLEMENTARY);
+        inbal.put("dimension", REQUIRED);
+        inbal.put("media", COMPLEMENTARY);
+        inbal.put("format", COMPLEMENTARY);
     }
     
     static {
         inah.put("recordtitle", REQUIRED);
         inah.put("creator", REQUIRED);
+        inah.put("dimension", REQUIRED);
         inah.put("datecreated", REQUIRED);
         inah.put("reccollection", COMPLEMENTARY);
         inah.put("holder", REQUIRED);
@@ -368,6 +375,12 @@ public class Biblio {
         inah.put("rights.description+rights.url", REQUIRED);
         inah.put("description", COMPLEMENTARY);
         inah.put("keywords", COMPLEMENTARY);
+        inah.put("lugar", COMPLEMENTARY);
+        inah.put("credits", COMPLEMENTARY);
+        inah.put("material", COMPLEMENTARY);
+        inah.put("techmaterial", COMPLEMENTARY);
+        inah.put("media", COMPLEMENTARY);
+        inah.put("format", COMPLEMENTARY);
     }
     
     static {
@@ -375,8 +388,7 @@ public class Biblio {
         mnv.put("recordtitle", REQUIRED);
         mnv.put("creator", REQUIRED);
         mnv.put("dimension", REQUIRED);
-        mnv.put("unidad+tipo_de_unidad", REQUIRED);
-        mnv.put("period", COMPLEMENTARY);
+        //mnv.put("period", COMPLEMENTARY);
         mnv.put("datecreated", REQUIRED);
         mnv.put("reccollection", COMPLEMENTARY);
         mnv.put("holder", REQUIRED);
@@ -397,7 +409,6 @@ public class Biblio {
         munae.put("recordtitle", REQUIRED);
         munae.put("creator", REQUIRED);
         munae.put("dimension", REQUIRED);
-        munae.put("unidad+tipo_de_unidad", REQUIRED);
         munae.put("period", COMPLEMENTARY);
         munae.put("datecreated", REQUIRED);
         munae.put("reccollection", COMPLEMENTARY);
@@ -417,7 +428,6 @@ public class Biblio {
         mnsc.put("recordtitle", REQUIRED);
         mnsc.put("creator", REQUIRED);
         mnsc.put("dimension", REQUIRED);
-        mnsc.put("unidad+tipo_de_unidad", REQUIRED);
         mnsc.put("period", COMPLEMENTARY);
         mnsc.put("datecreated", REQUIRED);
         mnsc.put("techmaterial", COMPLEMENTARY);
@@ -487,14 +497,14 @@ public class Biblio {
         mnh.put("rights.description+rights.url", REQUIRED);
         mnh.put("media", COMPLEMENTARY);
         mnh.put("format", COMPLEMENTARY);
-        mnh.put("hiperonimo", COMPLEMENTARY);
-        mnh.put("curaduria", COMPLEMENTARY);
+        //mnh.put("hiperonimo", COMPLEMENTARY);
+        //mnh.put("curaduria", COMPLEMENTARY);
         mnh.put("material", COMPLEMENTARY);
-        mnh.put("inscripcionobra", COMPLEMENTARY);
-        mnh.put("cultura", COMPLEMENTARY);
-        mnh.put("origin", COMPLEMENTARY);
+        //mnh.put("inscripcionobra", COMPLEMENTARY);
+        //mnh.put("cultura", COMPLEMENTARY);
+        //mnh.put("origin", COMPLEMENTARY);
         mnh.put("lugar", COMPLEMENTARY);
-        mnh.put("acervo", COMPLEMENTARY);
+        //mnh.put("acervo", COMPLEMENTARY);
         mnh.put("description", COMPLEMENTARY);
         mnh.put("keywords", COMPLEMENTARY);
         mnh.put("period", COMPLEMENTARY);
@@ -590,11 +600,13 @@ public class Biblio {
         mna.put("keywords", COMPLEMENTARY);
         mna.put("cultura", REQUIRED);
         mna.put("lugar", REQUIRED);
-        mna.put("clase", COMPLEMENTARY);
-        mna.put("category", COMPLEMENTARY);
-        mna.put("subcategory", COMPLEMENTARY);
-        mna.put("biccustodyentity", COMPLEMENTARY);
+        mna.put("origin", COMPLEMENTARY);
         mna.put("culturalregion", COMPLEMENTARY);
+        mna.put("material", COMPLEMENTARY);
+        mna.put("technique", COMPLEMENTARY);
+        mna.put("reccollection", COMPLEMENTARY);
+        mna.put("period", COMPLEMENTARY);
+        mna.put("catalog", COMPLEMENTARY);
     }
     
     static {

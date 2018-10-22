@@ -95,6 +95,8 @@ public class Entry implements Serializable {
     private String subcategory;
     private String clasification;
     private String culturalregion;
+    private String technique;
+    private String catalog;
     
     private List<String> serie;
     private List<String> credits;
@@ -767,6 +769,22 @@ public class Entry implements Serializable {
 
     public void setBiccustodyentity(String biccustodyentity) {
         this.biccustodyentity = biccustodyentity;
+    }
+
+    public String getTechnique() {
+        return technique;
+    }
+
+    public void setTechnique(String technique) {
+        this.technique = technique;
+    }
+
+    public String getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
     }
     
     @Override

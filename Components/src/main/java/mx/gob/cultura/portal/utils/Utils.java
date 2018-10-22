@@ -112,7 +112,7 @@ public class Utils {
         String url = "<a href=\"/" + userLang + "/" + site + "/resultados?word=*&theme=";
         for (String arg : args) {
             if (null != arg && !arg.trim().isEmpty())
-                link.append(", ").append(url).append(arg.trim()).append("&filter=").append(attribute).append(":").append(arg).append("\">").append(arg.trim()).append("</a>");
+                link.append(", ").append(url).append(arg.trim()).append("&filter=").append(attribute).append(":").append(arg.toLowerCase()).append("\">").append(arg.trim()).append("</a>");
         }
         if (link.length() > 0) link.deleteCharAt(0);
         return link.toString();

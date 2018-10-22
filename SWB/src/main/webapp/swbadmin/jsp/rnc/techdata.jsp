@@ -126,7 +126,9 @@
             <%=Utils.getTechData("category", holder, entry.getCategory(), paramRequest.getLocaleString("usrmsg_view_detail_category"), false, true)%>
             <%=Utils.getTechData("subcategory", holder, entry.getSubcategory(), paramRequest.getLocaleString("usrmsg_view_detail_subcategory"), false, true)%>
             <%=Utils.getTechData("period", holder, entry.getPeriod(), paramRequest.getLocaleString("usrmsg_view_detail_period"), false, true)%>
+            <%=Utils.getTechData("technique", holder, entry.getTechnique(), paramRequest.getLocaleString("usrmsg_view_detail_techmaterial"), false, true)%>
             <%=Utils.getTechData("techmaterial", holder, entry.getTechmaterial(), paramRequest.getLocaleString("usrmsg_view_detail_techmaterial"), false, true)%>
+            <%=Utils.getTechData("catalog", holder, entry.getCatalog(), paramRequest.getLocaleString("usrmsg_view_detail_catalog"), false, true)%>
             <%=Utils.getTechData("media", holder, Utils.concatFilter(userLang, site.getId(), "rightsmedia", Utils.getMedia(entry.getRights())), paramRequest.getLocaleString("usrmsg_view_detail_media"), false, true)%>
             <%=Utils.getTechData("hiperonimo", holder, entry.getHiperonimo(), paramRequest.getLocaleString("usrmsg_view_detail_hiperonimo"), false, true)%>
             <%=Utils.getTechData("curaduria", holder, entry.getCuraduria(), paramRequest.getLocaleString("usrmsg_view_detail_curaduria"), false, true)%>
