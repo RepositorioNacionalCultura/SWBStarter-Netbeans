@@ -110,7 +110,9 @@ public class Exhibition extends GenericResource {
     	String url = "/swbadmin/jsp/rnc/exhibitions/exhibitions.jsp";
     	RequestDispatcher rd = request.getRequestDispatcher(url);
     	try {
+
             if (null != getResourceBase() && null != getResourceBase().getAttribute("criteria")) {
+
     		document = getReference(request);
                 List<String> favs = getElements("favorites");
                 List<String> hds = getElements("hiddenarts");
