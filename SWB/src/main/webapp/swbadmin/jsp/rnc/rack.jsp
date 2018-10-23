@@ -8,7 +8,7 @@
 	String userLang = paramRequest.getUser().getLanguage();
 	Entry entry = (Entry)request.getAttribute("entry");
 	String rackuri = "javascript:location.replace('/"+paramRequest.getUser().getLanguage()+"/"+paramRequest.getWebPage().getWebSiteId()+"/resultados?word=";
-	if (!entry.getCollection().isEmpty()) {
+	if (null != entry && null != entry.getCollection() && !entry.getCollection().isEmpty()) {
 		rackuri += entry.getCollection().get(0);
 	}
 	rackuri += "')";
@@ -16,12 +16,12 @@
 <div class="col-12 col-sm-6  col-md-3 col-lg-3 order-md-1 order-sm-2 order-2 mascoleccion">
     <div>
 	<p class="tit2"><%=paramRequest.getLocaleString("usrmsg_view_detail_more_collection")%></p>
-	<%  if (!c.isEmpty()) {
+	<%  if (null != c && !c.isEmpty()) {
                 int i = 0;
 		for (Entry book : c)  {
                     String title = Utils.getTitle(book.getRecordtitle(), 50);
-                    String holder = Utils.getRowData(entry.getHolder(), 0, false);
-                    String creator = Utils.getRowData(entry.getCreator(), 0, true);
+                    String holder = Utils.getRowData(book.getHolder(), 0, false);
+                    String creator = Utils.getRowData(book.getCreator(), 0, true);
                     SearchCulturalProperty.setThumbnail(book, site, 0);
                     if (null == book.getResourcethumbnail()) book.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-multimedia.png");
 	%>

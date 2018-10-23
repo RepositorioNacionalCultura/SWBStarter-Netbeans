@@ -244,7 +244,7 @@
                     <li>
 			<ul>
                             <%=Utils.chdFtrList(holders, filters, "holder", "moreholders", false)%>
-                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allholder" value="holder"><span>Seleccionar todos</span><span> </span><span class="checkmark"></span></label></li>
+                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allholder" value="holder"><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span><span class="checkmark"></span></label></li>
 			</ul>			
                         <% if (holders.size() > 5) { %>
                             <p class="vermas-filtros">

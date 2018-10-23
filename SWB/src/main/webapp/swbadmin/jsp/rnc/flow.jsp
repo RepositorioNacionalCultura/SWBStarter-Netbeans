@@ -7,7 +7,7 @@
 <%@ page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.Entry, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.model.WebSite"%>
 <%
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
-    String back = (String)request.getAttribute("back");
+    String back = null != request.getAttribute("back") ? (String)request.getAttribute("back") : "";
     String w = null != request.getParameter("word") ? request.getParameter("word") : "";
     Integer t = null != request.getAttribute("t") ? (Integer)request.getAttribute("t") : 0;
     Integer r = null != request.getParameter("r") ? Utils.toInt(request.getParameter("r")) : 0;

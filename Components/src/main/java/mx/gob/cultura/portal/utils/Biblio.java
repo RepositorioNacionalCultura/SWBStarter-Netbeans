@@ -600,7 +600,7 @@ public class Biblio {
         mna.put("keywords", COMPLEMENTARY);
         mna.put("cultura", REQUIRED);
         mna.put("lugar", REQUIRED);
-        mna.put("origin", COMPLEMENTARY);
+        //mna.put("origin", COMPLEMENTARY);
         mna.put("culturalregion", COMPLEMENTARY);
         mna.put("material", COMPLEMENTARY);
         mna.put("technique", COMPLEMENTARY);

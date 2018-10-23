@@ -22,10 +22,11 @@
         </div>
         <div class="col-1 col-md-4 explo-twit">
             <a href="#" _class="twitter-share-button" data-show-count="false" target="_new" onclick="window.open('https://twitter.com/share?ref_src=twsrc%5Etfw','', 'width=500,height=500')"><span class="ion-social-twitter"></span></a>
-            <!--<a href="#"><span class="ion-social-twitter"></span></a>-->
         </div>
         <div class="col-2 col-md-4 explo-like">
+        <% if (null != entry.getId() && null != entry.getResourcestats()) { %>
             <a href="#" onclick="loadDoc('/<%=userLang%>/<%=site.getId()%>/favorito?id=', '<%=entry.getId()%>');"><span class="ion-heart"></span> <%=entry.getResourcestats().getViews()%></a>
+	<% } %>
         </div>
         <jsp:include page="nav.jsp" flush="true"/>
     </div>

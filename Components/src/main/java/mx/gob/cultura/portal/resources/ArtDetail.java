@@ -157,7 +157,7 @@ public class ArtDetail extends GenericAdmResource {
         if (null == entry) return serieList;
         if (null != entry.getSerie() && !entry.getSerie().isEmpty()) {
             for (String serie : entry.getSerie()) {
-                List<Entry> records = bookCase(endPoint, serie);
+                List<Entry> records = bookCase(endPoint, serie, false);
                 for (Entry e : records) {
                     if (null != e.getSerie() && comparator(entry.getSerie(), e.getSerie())) {
                         serieList.add(e);
@@ -326,12 +326,22 @@ public class ArtDetail extends GenericAdmResource {
         int elements = Utils.toInt(getResourceBase().getAttribute("moreincollection", String.valueOf(NUM_ROW)));
         if (null != collection && !collection.isEmpty()) {
             for (String rack : collection) {
-                List<Entry> qrack = bookCase(endPoint, rack);
-                if (null != qrack && !qrack.isEmpty())
-                    bookCase.addAll(qrack);
+                List<Entry> qrack = bookCase(endPoint, rack, false);
+                if (null != qrack && !qrack.isEmpty()) bookCase.addAll(qrack);
                 /**if (!bookCase.isEmpty() && bookCase.size() > NUM_ROW) {
                     break;
                 }**/
+            }
+        }
+        if (bookCase.size() < elements && null != entry.getHolder()) {
+            for (String rack : entry.getHolder()) {
+                List<Entry> qrack = bookCase(endPoint, rack, true);
+                if (null != qrack && !qrack.isEmpty()) {
+                    for (Entry e : qrack) {
+                        if (!bookCase.contains(e)) bookCase.add(e);
+                    }
+                }
+                
             }
         }
         if (bookCase.size() > elements) {
@@ -346,11 +356,12 @@ public class ArtDetail extends GenericAdmResource {
         }
     }
 
-    private List<Entry> bookCase(String endPoint, String rack) {
+    private List<Entry> bookCase(String endPoint, String rack, boolean clean) {
         Document document = null;
         String uri = endPoint + "/api/v1/search?q=";
         try {
             uri += URLEncoder.encode(rack, StandardCharsets.UTF_8.name());
+            if (clean) uri = uri.replaceAll("%C2%A0", "%20");
         } catch (UnsupportedEncodingException uex) {
             LOG.error(uex);
         }
