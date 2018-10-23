@@ -347,7 +347,7 @@ public class HTMLCulture extends GenericResource {
             try {
                 List<FileItem> items = sfu.parseRequest(request);
                 Iterator<FileItem> iter = items.iterator();
-                System.out.println("items: " + items.size());
+//                System.out.println("items: " + items.size());
                 while (iter.hasNext()) {
                     FileItem item = iter.next();
                     if (!item.isFormField()) {

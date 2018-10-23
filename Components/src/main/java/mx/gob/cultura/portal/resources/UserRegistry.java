@@ -99,7 +99,7 @@ public class UserRegistry extends GenericAdmResource {
         String action = response.getAction();
         String alert = null;
         String nextMode = null;
-        System.out.println("Referer: " + request.getHeader("Referer"));
+//        System.out.println("Referer: " + request.getHeader("Referer"));
 
         if (ACTION_REGISTER.equals(action)
                 || ACTION_ASYN_REGISTER.equals(action)) {
@@ -107,7 +107,7 @@ public class UserRegistry extends GenericAdmResource {
             if (null == created) {
                 response.setRenderParameter("condition",
                         (String) request.getAttribute("condition"));
-                System.out.println("USUARIO NO CREADO");
+//                System.out.println("USUARIO NO CREADO");
             } else {
                 if (null == this.confirmationActionUrl) {
                     String serverUrl = request.getScheme() + "://" + request.getServerName() + ((request.getServerPort() != 80) ? (":" + request.getServerPort()) : "");
@@ -115,8 +115,8 @@ public class UserRegistry extends GenericAdmResource {
                     this.confirmationActionUrl = serverUrl + urlAcc.setAction("confirming").toString();
                 }
                 this.sendConfirmationEmail(created);
-                System.out.println("Se creo, el usuario  >>>");
-                System.out.println(request.getParameter(ACTION_BE_ANNOTATOR));
+//                System.out.println("Se creo, el usuario  >>>");
+//                System.out.println(request.getParameter(ACTION_BE_ANNOTATOR));
                 if (request.getParameter(ACTION_BE_ANNOTATOR) != null) {
                     this.sendBeAnnotatorEmail(created);
                 }
@@ -131,7 +131,7 @@ public class UserRegistry extends GenericAdmResource {
             if (null == updated) {
                 response.setRenderParameter("condition",
                         (String) request.getAttribute("condition"));
-                System.out.println("USUARIO NO actualizado");
+//                System.out.println("USUARIO NO actualizado");
             } else {
                 if (request.getParameter(ACTION_BE_ANNOTATOR) != null) {
                     this.sendBeAnnotatorEmail(updated);
@@ -287,7 +287,7 @@ public class UserRegistry extends GenericAdmResource {
                     newUser.setLastName(lastName);
                 }
                 newUser.setEmail(email);
-                System.out.println("Contraseña para nuevo usuario: " + password);
+//                System.out.println("Contraseña para nuevo usuario: " + password);
                 //newUser.setActive(true);
                 SemanticObject obj = newUser.getSemanticObject();
                 OntModel ont = SWBPlatform.getSemanticMgr().getSchema().getRDFOntModel();
@@ -348,7 +348,7 @@ public class UserRegistry extends GenericAdmResource {
 
             if (null != password && !password.isEmpty() && password.equals(passwordConfirm)) {
                 user.setPassword(password);
-                System.out.println("Contraseña para nuevo usuario: " + password);
+//                System.out.println("Contraseña para nuevo usuario: " + password);
 
                 Property prprt = ont.createDatatypeProperty(UserRegistry.DATACRED_URI);
                 user.getSemanticObject().getRDFResource().removeAll(prprt);
@@ -406,7 +406,7 @@ public class UserRegistry extends GenericAdmResource {
             LOG.error("Error al encriptar parametro en correo");
         }
 
-        System.out.println("Confirmation registry mail:\n" + linkUrl);
+//        System.out.println("Confirmation registry mail:\n" + linkUrl);
         replaceString(body, "{link}", linkUrl.toString());
 
         try {

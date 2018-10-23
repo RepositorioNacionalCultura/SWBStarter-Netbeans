@@ -80,7 +80,7 @@ public class RelevanceMgr extends GenericResource {
         StringBuilder ret = new StringBuilder();
         try {
             Role admin = paramRequest.getWebPage().getWebSite().getUserRepository().getRole("Administrador");
-            System.out.println("ROLE: " + admin);
+//            System.out.println("ROLE: " + admin);
             List<Collection> collectionList = mgr.collectionsByStatus(COLLECTION_PRIVATE);
             if ("add".equals(paramRequest.getAction()) || "edit".equals(paramRequest.getAction())) {
                 SWBResourceURL url = paramRequest.getRenderUrl();
