@@ -14,6 +14,7 @@ import java.net.URLEncoder;
 import org.semanticwb.Logger;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
@@ -109,7 +110,7 @@ public class Exhibition extends GenericResource {
     	String url = "/swbadmin/jsp/rnc/exhibitions/exhibitions.jsp";
     	RequestDispatcher rd = request.getRequestDispatcher(url);
     	try {
-            if (null != getResourceBase().getAttribute("criteria")) {
+            if (null != getResourceBase() && null != getResourceBase().getAttribute("criteria")) {
     		document = getReference(request);
                 List<String> favs = getElements("favorites");
                 List<String> hds = getElements("hiddenarts");
@@ -123,17 +124,20 @@ public class Exhibition extends GenericResource {
                     }
                     request.setAttribute(FULL_LIST, publicationList);
                     request.setAttribute("NUM_RECORDS_TOTAL", document.getTotal());
-                    request.setAttribute("criteria", getResourceBase().getAttribute("criteria"));
+                    request.setAttribute("criteria", getResourceBase().getAttribute("criteria", ""));
                 }
     	    }
+	}catch (Exception se) {
+            publicationList = new ArrayList<>();
+	}
+        try {
             init(request);
-            request.setAttribute("base", getResourceBase());
             request.setAttribute("references", publicationList);
 	    request.setAttribute("paramRequest", paramRequest);
-	    rd.include(request, response);
-	}catch (ServletException se) {
-            LOG.error(se);
-	}
+            rd.include(request, response);
+        } catch (ServletException ex) {
+            java.util.logging.Logger.getLogger(Exhibition.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void doAdminFilter(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
@@ -435,7 +439,7 @@ public class Exhibition extends GenericResource {
     
     private Document getReference(HttpServletRequest request) {
         Document document = null;
-        String words = getResourceBase().getAttribute("criteria");
+        String words = getResourceBase().getAttribute("criteria", "");
     	String uri = SWBPlatform.getEnv("rnc/endpointURL",getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim() + "/api/v1/search?q=";
     	uri += getParamSearch(words);
         if (null != getResourceBase().getAttribute("sort") && null != getResourceBase().getAttribute("order")) {

@@ -123,7 +123,6 @@ public class Utils {
         if (!filter.isEmpty() && null != regex && !regex.isEmpty() && null != replacement && !replacement.isEmpty() ) {
             filter = filter.replaceAll(regex, replacement);
         }
-        System.out.println("replacement: " + filter);
         return filter;
     }
     
@@ -228,7 +227,9 @@ public class Utils {
         } else if (obj instanceof Double){
             result = ((Double)obj).intValue();
         } else if (obj instanceof String){
-            result = Integer.parseInt((String)obj);
+            try {
+                result = Integer.parseInt((String)obj);
+            }catch (Exception e) {}
         } else if (obj instanceof Number){		
             result = ((Number)obj).intValue();
         }	
