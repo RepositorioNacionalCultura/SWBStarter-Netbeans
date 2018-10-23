@@ -242,7 +242,7 @@ public class RelevanceMgr extends GenericResource {
             baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
         }
         for (Collection c : list) {
-            c.setCovers(getCovers(paramRequest, c.getElements(), baseUri, size));
+            c.setCovers(getCovers(paramRequest, c.getElements(), baseUri, size,c));
         }
     }
 
@@ -357,6 +357,7 @@ public class RelevanceMgr extends GenericResource {
         GetBICRequest req = new GetBICRequest(uri);
         try {
             e = req.makeRequest();
+            
         } catch (Exception se) {
             e = null;
             LOG.info(se.getMessage());
@@ -407,7 +408,7 @@ public class RelevanceMgr extends GenericResource {
         }
     }
 
-    private List<String> getCovers(SWBParamRequest paramRequest, List<String> elements, String baseUri, int size) {
+    private List<String> getCovers(SWBParamRequest paramRequest, List<String> elements, String baseUri, int size, Collection c) {
         Entry entry = null;
         List<String> covers = new ArrayList<>();
         if (elements.isEmpty()) {
@@ -415,12 +416,14 @@ public class RelevanceMgr extends GenericResource {
         }
         Iterator it = elements.iterator();
         while (it.hasNext()) {
-            String uri = baseUri + "/api/v1/search?identifier=" + it.next();
+            String itnext = (String)it.next();
+            String uri = baseUri + "/api/v1/search?identifier=" + itnext;
             GetBICRequest req = new GetBICRequest(uri);
             try {
                 entry = req.makeRequest();
             } catch (Exception e) {
                 entry = null;
+                removeDeletedBicFromCollection(c,itnext);
                 LOG.info(e.getMessage());
             }
             if (null != entry && null != entry.getResourcethumbnail() && entry.getResourcethumbnail().trim().length() > 0) {
@@ -434,5 +437,10 @@ public class RelevanceMgr extends GenericResource {
             }
         }
         return covers;
+    }
+    
+    private void removeDeletedBicFromCollection(Collection c, String bicId){
+        c.getElements().remove(bicId);
+        mgr.updateCollection(c);
     }
 }

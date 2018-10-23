@@ -43,9 +43,10 @@ public class ListBICRequest {
         }
 
         if (null != url) {
-            System.out.println("making request to: "+url);
+            //System.out.println("making request to: "+url);
+            HttpURLConnection connection = null;
             try {
-                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                connection = (HttpURLConnection)url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("Accept", "application/json");
                 if (connection.getResponseCode() == 200) {
@@ -57,6 +58,8 @@ public class ListBICRequest {
                 }
             }catch (JsonSyntaxException | IOException e) {
                 e.printStackTrace();
+            } finally{
+                if(null!=connection) connection.disconnect();
             }
         }
 

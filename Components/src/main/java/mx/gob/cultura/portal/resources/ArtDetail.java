@@ -471,13 +471,14 @@ public class ArtDetail extends GenericAdmResource {
     }
 
     private void incHits(Entry entry, String baseUri, String uri) {
+        HttpURLConnection connection = null;
         try {
             if (null != entry) {
                 uri = baseUri
                         + "/api/v1/search/hits/"
                         + entry.getId();
                 URL url = new URL(uri);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection = (HttpURLConnection) url.openConnection();
                 connection.setDoOutput(true);
                 connection.setRequestMethod("POST");
                 connection.getOutputStream().close();
@@ -485,6 +486,8 @@ public class ArtDetail extends GenericAdmResource {
             }
         } catch (Exception se) {
             LOG.info(se.getMessage());
-        }
+        } finally{
+                if(null!=connection) connection.disconnect();
+            }
     }
 }
