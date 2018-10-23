@@ -390,9 +390,18 @@ public class SearchCulturalProperty extends PagerAction {
                 if (null !=  a.getRightsmedia()) aggregation.getRightsmedia().addAll(getTypes(a.getRightsmedia()));
             }
             for (CountName date : aggregation.getDates()) {
-                cal.setTime(Utils.convert(date.getName(), "YYYY-MM-dd'T'HH:mm:ss"));
-                if (interval.getUpperLimit() < cal.get(Calendar.YEAR)) interval.setUpperLimit(cal.get(Calendar.YEAR));
-                if (interval.getLowerLimit() > cal.get(Calendar.YEAR)) interval.setLowerLimit(cal.get(Calendar.YEAR));
+                if (null != date.getName() && date.getName().startsWith("-") && date.getName().length() > 5) {
+                    int year = Utils.toInt(date.getName().substring(1, 5));
+                    if (year > 0) {
+                        year = -year;
+                        if (interval.getUpperLimit() < year) interval.setUpperLimit(year);
+                        if (interval.getLowerLimit() > year) interval.setLowerLimit(year);
+                    }
+                }else {
+                    cal.setTime(Utils.convert(date.getName(), "YYYY-MM-dd'T'HH:mm:ss"));
+                    if (interval.getUpperLimit() < cal.get(Calendar.YEAR)) interval.setUpperLimit(cal.get(Calendar.YEAR));
+                    if (interval.getLowerLimit() > cal.get(Calendar.YEAR)) interval.setLowerLimit(cal.get(Calendar.YEAR));
+                }
             }
         }
         return aggregation;

@@ -14,7 +14,6 @@ import java.net.URLEncoder;
 import org.semanticwb.Logger;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
@@ -127,17 +126,13 @@ public class Exhibition extends GenericResource {
                     request.setAttribute("criteria", getResourceBase().getAttribute("criteria", ""));
                 }
     	    }
-	}catch (Exception se) {
-            publicationList = new ArrayList<>();
-	}
-        try {
             init(request);
             request.setAttribute("references", publicationList);
 	    request.setAttribute("paramRequest", paramRequest);
-            rd.include(request, response);
-        } catch (ServletException ex) {
-            java.util.logging.Logger.getLogger(Exhibition.class.getName()).log(Level.SEVERE, null, ex);
-        }
+	    rd.include(request, response);
+	}catch (ServletException se) {
+            
+	}
     }
     
     public void doAdminFilter(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {

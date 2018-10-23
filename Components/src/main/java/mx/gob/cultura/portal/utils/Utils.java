@@ -229,7 +229,9 @@ public class Utils {
         } else if (obj instanceof String){
             try {
                 result = Integer.parseInt((String)obj);
-            }catch (Exception e) {}
+            }catch (Exception e) {
+                result = 0;
+            }
         } else if (obj instanceof Number){		
             result = ((Number)obj).intValue();
         }	
