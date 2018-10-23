@@ -357,6 +357,7 @@ public class RelevanceMgr extends GenericResource {
         GetBICRequest req = new GetBICRequest(uri);
         try {
             e = req.makeRequest();
+            
         } catch (Exception se) {
             e = null;
             LOG.info(se.getMessage());

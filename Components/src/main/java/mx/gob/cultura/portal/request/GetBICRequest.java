@@ -49,7 +49,7 @@ public class GetBICRequest {
                 Gson gson = new Gson();
                 entry = gson.fromJson(jsonText, Entry.class);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                // ex.printStackTrace();
             } finally{
                 if(connection!=null) connection.disconnect();
             }
