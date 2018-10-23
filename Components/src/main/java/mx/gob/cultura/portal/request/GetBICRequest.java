@@ -38,9 +38,10 @@ public class GetBICRequest {
             mue.printStackTrace();
         }
         if (null != url) {
-            System.out.println(uri);
+            //System.out.println(uri);
+            HttpURLConnection connection = null;
             try {
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("Accept", "application/json");
                 InputStream is = connection.getInputStream();
@@ -49,6 +50,8 @@ public class GetBICRequest {
                 entry = gson.fromJson(jsonText, Entry.class);
             } catch (Exception ex) {
                 ex.printStackTrace();
+            } finally{
+                if(connection!=null) connection.disconnect();
             }
         }
 
