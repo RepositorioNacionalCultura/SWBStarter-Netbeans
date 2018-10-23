@@ -15,6 +15,7 @@
     WebPage detail = paramRequest.getWebPage().getWebSite().getWebPage("detalle");
     String uri = detail.getRealUrl(paramRequest.getUser().getLanguage());
     if (relevants != null && !relevants.isEmpty()) {
+        //System.out.println("tiene elementos...."+relevants.size());
 %>
 <div class="container usrTit">
     <div class="row">
@@ -28,21 +29,33 @@
 
             <div class="row">
                 <%
+                    String id = null;
                     for (Entry item : relevants) {
+                        try{
+                        if(null==item) continue;
+                        id = null!=item.getId()?item.getId():"";
+                        String thumbnail = null!=item.getResourcethumbnail()?item.getResourcethumbnail():"";
+                        String title = "";
+                        if(null!=item.getRecordtitle()&&!item.getRecordtitle().isEmpty()){
+                            title = item.getRecordtitle().get(0).getValue();
+                        }
                 %>	
                 <div class="col-6 col-md-4 exhibi-pza">
                     <div class="borde-CCC">
                         <div class="exhibi-pza-img">
-                            <a href="<%=uri%>?id=<%=item.getId()%>">
-                                <img src="<%=item.getResourcethumbnail()%>"/>
+                            <a href="<%=uri%>?id=<%=id%>">
+                                <img src="<%=thumbnail%>"/>
                             </a>
                         </div>
-                        <p class="oswB rojo uppercase"><%=item.getRecordtitle().get(0).getValue()%></p>
-                        <p><%=Utils.getRowData(item.getCreator(), 0, false)%></p>
-                        <p><%=Utils.getRowData(item.getHolder(), 0, false)%></p>
+                        <p class="oswB rojo uppercase"><%=title%></p>
+                        <p><%=(null!=item.getCreator()?Utils.getRowData(item.getCreator(), 0, false):"")%></p>
+                        <p><%=(null!=item.getHolder()?Utils.getRowData(item.getHolder(), 0, false):"")%></p>
                     </div>
                 </div>
                 <%
+                    } catch(Exception e){
+                            System.out.println("Error on item:"+id);
+                        }
                     }
                 %>
             </div>
