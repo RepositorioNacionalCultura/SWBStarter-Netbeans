@@ -594,6 +594,7 @@ public class Utils {
                     eElement = (Element) nNode;
                 }
             }
+            in.close();
         } catch (Exception ex) {
            ex.printStackTrace();
         }

@@ -274,6 +274,49 @@ public class ArtDetail extends GenericAdmResource {
             LOG.error(se);
         }
     }
+    
+    public void doViewer(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
+        int iDigit = 0;
+        String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
+        if (null == baseUri || baseUri.isEmpty())
+            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
+        String uri = baseUri + "/api/v1/search?identifier=";
+        String path = "/swbadmin/jsp/rnc/digitalobj.jsp";
+        try {
+            if (null != request.getParameter(IDENTIFIER)) {
+                uri += request.getParameter(IDENTIFIER);
+                if (null != request.getParameter(POSITION))
+                    iDigit = Utils.toInt(request.getParameter(POSITION));
+                GetBICRequest req = new GetBICRequest(uri);
+                Entry entry = req.makeRequest();
+                if (null != entry) {
+                    entry.setPosition(iDigit);
+                    DigitalObject ob = getDigitalObject(entry.getDigitalObject(), iDigit);
+                    SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), iDigit);
+                    int images = null != entry.getDigitalObject() ? entry.getDigitalObject().size() : 0;
+                    if (null != request.getParameter(POSITION))
+                        path = getViewerPath(ob, MODE_DIGITAL);
+                    else path = getViewerPath(entry.getRights().getMedia().getMime(), MODE_DIGITAL);
+                    if (iDigit >= 0 && iDigit <= images) {
+                        request.setAttribute("iDigit", iDigit);
+                        request.setAttribute("digital", entry.getDigitalObject().get(iDigit));
+                    }
+                    if (ob.getMediatype().getMime().equalsIgnoreCase("wav") || ob.getMediatype().getMime().equalsIgnoreCase("mp3")) {
+                        request.setAttribute("iprev", iPrev(entry.getDigitalObject(), iDigit, ob.getMediatype().getMime()));
+                        request.setAttribute("inext", iNext(entry.getDigitalObject(), iDigit, ob.getMediatype().getMime()));
+                    }
+                    incHits(entry, baseUri, uri);
+                }
+                request.setAttribute("entry", entry);
+            }
+            setParams(request, paramRequest);
+            request.setAttribute("paramRequest", paramRequest);
+            RequestDispatcher rd = request.getRequestDispatcher(path);
+            rd.include(request, response);
+        } catch (ServletException se) {
+            LOG.error(se);
+        }
+    }
 
     private List<Entry> explore(Entry entry, String endPoint) {
         Random rand = new Random();
