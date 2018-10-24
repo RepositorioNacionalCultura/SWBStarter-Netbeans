@@ -136,15 +136,16 @@ public class SessionInitializer extends GenericResource {
     /**
      * Genera el vinculo de HTML para ejecutar el inicio de sesion con un usuario de Twitter
      * @param paramRequest
+     * @param returnUrl la URL de la seccion del portal que se mostrara despues de crear la sesion con Twitter
      * @return un {@code String} que representa el elemento de HTML que contiene 
      * la ejecucion para iniciar sesion con un usuario de Twitter
      */
-    public static String getTwitterLink(SWBParamRequest paramRequest) {
+    public static String getTwitterLink(SWBParamRequest paramRequest, String returnUrl) {
         
         StringBuilder text = new StringBuilder(128);
         String resourceUrl = paramRequest.getRenderUrl()
                 .setMode(SWBParamRequest.Mode_VIEW)
-                .setCallMethod(SWBParamRequest.Call_DIRECT).toString();
+                .setCallMethod(SWBParamRequest.Call_DIRECT).setParameter("returnUrl", returnUrl).toString();
         String twitterUrl = Utils.getResourceURL(paramRequest.getWebPage().getWebSite(), OAuthTwitter.class, resourceUrl);
         
         text.append("<a href=\"");

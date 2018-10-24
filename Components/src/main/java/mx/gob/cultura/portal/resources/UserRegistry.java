@@ -4,15 +4,22 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Property;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.File;
 import java.net.SocketException;
 import java.net.URLEncoder;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import javax.security.auth.Subject;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.ProgressListener;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.semanticwb.Logger;
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.SWBPortal;
@@ -28,6 +35,8 @@ import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceException;
 import org.semanticwb.portal.api.SWBResourceURL;
 import org.semanticwb.portal.api.SWBResourceURLImp;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+//import org.semanticwb.base.util.ImageResizer;
 
 /**
  * Realiza la visualizacion y cambios en la informacion del perfil de usuarios
@@ -40,6 +49,7 @@ public class UserRegistry extends GenericAdmResource {
 
     public static final String ACTION_REGISTER = "creating";
     public static final String ACTION_ASYN_REGISTER = "creatingAsyn";
+    public static final String ACTION_UPLOAD_PHOTO = "uploadPhoto";
 
     public static final String REGISTER_MODE = "confirmRegistry";
     public static final String REGISTER_ASYN_MODE = "confirmRegistryAsyn";
@@ -62,6 +72,8 @@ public class UserRegistry extends GenericAdmResource {
             = "http://www.semanticwebbuilder.org/swb4/ontology#telephoneNumber";
     public static final String AREA_INTEREST_URI
             = "http://www.semanticwebbuilder.org/swb4/ontology#areaInterest";
+    public static final String PHOTO_FILE_URI
+            = "http://www.semanticwebbuilder.org/swb4/ontology#photoFile";
 
     private UserRepository userRepository;
 
@@ -99,7 +111,7 @@ public class UserRegistry extends GenericAdmResource {
         String action = response.getAction();
         String alert = null;
         String nextMode = null;
-//        System.out.println("Referer: " + request.getHeader("Referer"));
+        System.out.println("Referer: " + request.getHeader("Referer"));
 
         if (ACTION_REGISTER.equals(action)
                 || ACTION_ASYN_REGISTER.equals(action)) {
@@ -107,7 +119,7 @@ public class UserRegistry extends GenericAdmResource {
             if (null == created) {
                 response.setRenderParameter("condition",
                         (String) request.getAttribute("condition"));
-//                System.out.println("USUARIO NO CREADO");
+                System.out.println("USUARIO NO CREADO");
             } else {
                 if (null == this.confirmationActionUrl) {
                     String serverUrl = request.getScheme() + "://" + request.getServerName() + ((request.getServerPort() != 80) ? (":" + request.getServerPort()) : "");
@@ -115,8 +127,8 @@ public class UserRegistry extends GenericAdmResource {
                     this.confirmationActionUrl = serverUrl + urlAcc.setAction("confirming").toString();
                 }
                 this.sendConfirmationEmail(created);
-//                System.out.println("Se creo, el usuario  >>>");
-//                System.out.println(request.getParameter(ACTION_BE_ANNOTATOR));
+                System.out.println("Se creo, el usuario  >>>");
+                System.out.println(request.getParameter(ACTION_BE_ANNOTATOR));
                 if (request.getParameter(ACTION_BE_ANNOTATOR) != null) {
                     this.sendBeAnnotatorEmail(created);
                 }
@@ -131,7 +143,7 @@ public class UserRegistry extends GenericAdmResource {
             if (null == updated) {
                 response.setRenderParameter("condition",
                         (String) request.getAttribute("condition"));
-//                System.out.println("USUARIO NO actualizado");
+                System.out.println("USUARIO NO actualizado");
             } else {
                 if (request.getParameter(ACTION_BE_ANNOTATOR) != null) {
                     this.sendBeAnnotatorEmail(updated);
@@ -181,8 +193,88 @@ public class UserRegistry extends GenericAdmResource {
                 response.setRenderParameter("condition", alert);
             }
             nextMode = REDIRECT_HOME_MODE;
+        } else if (ACTION_UPLOAD_PHOTO.equals(action)) {
+            final Percentage percentageSaved = new Percentage();
+            try {
+                User user = response.getUser();
+                boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+                HashMap<String, String> params = new HashMap<>(8);
+                // Create a factory for disk-based file items
+                File tmpwrk = new File(SWBPortal.getWorkPath() + "/tmp");
+                if (!tmpwrk.exists()) {
+                    tmpwrk.mkdirs();
+                }
+                FileItemFactory factory = new DiskFileItemFactory(1 * 1024 * 1024, tmpwrk);
+                // Create a new file upload handler
+                ServletFileUpload upload = new ServletFileUpload(factory);
+                //Create a progress listener
+                ProgressListener progressListener = new ProgressListener() {
+
+                    private long kBytes = -1;
+
+                    public void update(long pBytesRead, long pContentLength, int pItems) {
+                        long mBytes = pBytesRead / 10000;
+                        if (kBytes == mBytes) {
+                            return;
+                        }
+                        kBytes = mBytes;
+                        int percent = (int) (pBytesRead * 100 / pContentLength);
+                        percentageSaved.setValue(percent);
+                    }
+                };
+                upload.setProgressListener(progressListener);
+                // Parse the request
+                List items = upload.parseRequest(request); /* FileItem */
+                FileItem currentFile = null;
+                // Process the uploaded items
+                Iterator iter = items.iterator();
+                while (iter.hasNext()) {
+                    FileItem item = (FileItem) iter.next();
+
+                    if (item.isFormField()) {
+                        String name = item.getFieldName();
+                        String value = item.getString();
+                        params.put(name, value);
+                    } else {
+                        currentFile = item;
+//                        String fieldName = item.getFieldName();
+//                        String fileName = item.getName();
+//                        String contentType = item.getContentType();
+//                        boolean isInMemory = item.isInMemory();
+//                        long sizeInBytes = item.getSize();
+//                        File uploadedFile = new File();
+//                        item.write(uploadedFile);
+                    }
+                }
+                if (null != currentFile) {
+                    request.getSession(true).setAttribute(currentFile.getFieldName(), percentageSaved);
+                }
+
+                String path = SWBPortal.getWorkPath() + user.getWorkPath();
+                File file = new File(path);
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+                String name = user.getId() + currentFile.getName().substring(currentFile.getName().lastIndexOf("."));
+                String photoName = path + "/" + name;
+                currentFile.write(new File(photoName));
+                path = user.getWorkPath();
+                //SWBPlatform.getWebWorkPath() +
+                user.setPhoto(path + "/" + name);
+                percentageSaved.setValue(100);
+//                File f = new File(photoName);
+                /*                BufferedImage bi = ImageIO.read(f);
+                int calcHeight = (150 * bi.getHeight() / bi.getWidth());
+                ImageIO.write(createResizedCopy(bi, 150, calcHeight), name.substring(name.lastIndexOf(".")+1), f);*/
+//              ImageResizer.resizeCrop(f, 150, f, name.substring(name.lastIndexOf(".") + 1).toLowerCase());
+            } catch (Exception ex) {
+                UserRegistry.LOG.error(ex);
+            }
+            
         }
-        response.setMode(nextMode);
+        if (null != nextMode) {
+            response.setMode(nextMode);
+        }
     }
 
     @Override
@@ -287,7 +379,7 @@ public class UserRegistry extends GenericAdmResource {
                     newUser.setLastName(lastName);
                 }
                 newUser.setEmail(email);
-//                System.out.println("Contraseña para nuevo usuario: " + password);
+                System.out.println("Contraseña para nuevo usuario: " + password);
                 //newUser.setActive(true);
                 SemanticObject obj = newUser.getSemanticObject();
                 OntModel ont = SWBPlatform.getSemanticMgr().getSchema().getRDFOntModel();
@@ -348,7 +440,7 @@ public class UserRegistry extends GenericAdmResource {
 
             if (null != password && !password.isEmpty() && password.equals(passwordConfirm)) {
                 user.setPassword(password);
-//                System.out.println("Contraseña para nuevo usuario: " + password);
+                System.out.println("Contraseña para nuevo usuario: " + password);
 
                 Property prprt = ont.createDatatypeProperty(UserRegistry.DATACRED_URI);
                 user.getSemanticObject().getRDFResource().removeAll(prprt);
@@ -406,7 +498,7 @@ public class UserRegistry extends GenericAdmResource {
             LOG.error("Error al encriptar parametro en correo");
         }
 
-//        System.out.println("Confirmation registry mail:\n" + linkUrl);
+        System.out.println("Confirmation registry mail:\n" + linkUrl);
         replaceString(body, "{link}", linkUrl.toString());
 
         try {
@@ -483,5 +575,23 @@ public class UserRegistry extends GenericAdmResource {
         while ((index = sb.lastIndexOf(toReplace)) != -1) {
             sb.replace(index, index + toReplace.length(), replacement);
         }
+    }
+}
+
+class Percentage {
+    
+    
+    //valor representado por este objeto
+    int value = 0;
+    
+    
+    public Percentage() {}
+    
+    public void setValue(int value) {
+        this.value = value;
+    }
+    
+    public int getValue() {
+        return this.value;
     }
 }
