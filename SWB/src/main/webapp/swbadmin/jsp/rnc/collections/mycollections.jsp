@@ -200,7 +200,7 @@
 <div class="container usrTit">
     <div class="row">
         <% if (null != paramRequest.getUser().getPhoto()) { %>
-            <img src="<%=SWBPortal.getWorkPath()+paramRequest.getUser().getPhoto()%>" class="circle">
+            <img src="<%=SWBPortal.getWebWorkPath()+paramRequest.getUser().getPhoto()%>" class="circle">
         <% } else {%>
             <img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">
         <% } %>
