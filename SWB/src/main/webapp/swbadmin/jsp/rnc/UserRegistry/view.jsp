@@ -6,6 +6,7 @@
 <%@page import="com.hp.hpl.jena.rdf.model.Statement"%>
 <%@page import="com.hp.hpl.jena.ontology.OntModel"%>
 <%@page import="org.semanticwb.SWBPlatform"%>
+<%@page import="org.semanticwb.SWBPortal"%>
 <%@page import="org.semanticwb.model.User"%>
 <%@page import="org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceException, org.semanticwb.portal.api.SWBResourceURL"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -13,7 +14,8 @@
 <%
     //String swbAction = paramsRequest.getUser().isSigned() ? "editing" : "creating";
     User user = paramsRequest.getUser();
-    SWBResourceURL url = paramsRequest.getActionUrl();   
+    SWBResourceURL url = paramsRequest.getActionUrl();
+    SWBResourceURL url_actPhoto = paramsRequest.getActionUrl().setCallMethod(SWBResourceURL.Call_DIRECT).setAction(UserRegistry.ACTION_UPLOAD_PHOTO);
     
     boolean editMode;  
     boolean isAnnotator = (boolean)request.getAttribute("isAnnotator");
@@ -73,7 +75,7 @@
     }
 %>            
                 if (!isEmailValid(form.email.value)) {
-                    alert("La cuenta de correo proporcionada no es válida.")
+                    alert("La cuenta de correo proporcionada no es válida.");
                     retValue = false;
                 }
                 if (form.usrFirstName.value.trim() === "") {
@@ -84,8 +86,8 @@
                     alert("El nombre de usuario no es válido");
                     retValue = false;
                 }
-            } else {
-                alert("revisa tu información por favor de proporcionar un nombre, cuenta de correo válida y contraseña con su confirmación.");
+            } else if (!document.forms["photoUpload"].photo) {
+                alert("Revisa tu información por favor: proporciona un nombre, cuenta de correo válida y contraseña con su confirmación.");
                 retValue = false;
             }
             
@@ -103,6 +105,17 @@
                 check.form.passConf.type = "password"
             }
         }
+        
+        var uploads_in_progress = 0;
+
+        function beginAsyncUpload(ul, sid) {
+            ul.form.submit();
+            uploads_in_progress = uploads_in_progress + 1;
+            var pb = document.getElementById(ul.name + "_progress");
+            pb.parentNode.style.display = 'block';
+            document.getElementById("fileNameDisplay").innerHTML = "Archivo a subir: " + ul.value;
+        }
+
     </script>
     <div class="row">
 <%
@@ -115,14 +128,39 @@
     }
 %>
         <div class="col-12 col-md-4 offset-1 editarPerfil-01">
-            <!--img src="img/agregado-07.jpg" class="circle">
-            <input type="file" name="photo" -->
-            <!--button class="btn-cultura btn-blanco">< % =btnChngImage% ></button-->
+<%
+    OntModel ont = SWBPlatform.getSemanticMgr().getSchema().getRDFOntModel();
+    Statement tmpStat = null;
+    String tmpValue = user.getPhoto();
+//    if (tmpStat != null) {
+//        tmpValue = tmpStat.getString();
+//    } else {
+//        tmpValue = "";
+//    }
+    if (null != tmpValue && !"".equalsIgnoreCase(tmpValue)) {
+%>
+            <img src="<%=SWBPortal.getWebWorkPath() + tmpValue%>" class="circle">
+<%
+    }
+    if (editMode) {
+%>
+            <form id="photoUpload" name="photoUpload" enctype="multipart/form-data" action="<%=url_actPhoto%>" method="post" target="pictureTransferFrame">
+                <iframe id="pictureTransferFrame" name="pictureTransferFrame" src="" style="display:none" ></iframe>
+                <input type="file" name="photo" onchange="beginAsyncUpload(this, 'photo');" style="display: none;" />
+                <div class="progresscontainer" style="display: none;">
+                    <div class="progressbar" id="photo_progress"></div>
+                </div>
+            </form>
+            <button class="btn-cultura btn-blanco" onclick="document.forms['photoUpload'].photo.click()"><%=paramsRequest.getLocaleString("btn_chngImage")%></button>
+            <div id="fileNameDisplay" class="fileName"></div>
+<%
+    }
+%>
         </div>
         <div class="col-12 col-md-7 editarPerfil-02">
             <h3 class="oswM uppercase"><%=user.isSigned()?paramsRequest.getLocaleString("lbl_titleEdit"):paramsRequest.getLocaleString("lbl_titleCreate")%></h3>
             <form id="regUser" method="post" action="<%=url.toString()%>"><!--  onsubmit="validate(this);" -->
-                <%=user.getLogin()!=null?user.getLogin():"---"%>
+                <%-- =user.getLogin()!=null?user.getLogin():"---" --%>
                 <div class="form-group">
                     <label for="usrFirstName"><%=paramsRequest.getLocaleString("lbl_userName")%></label>
                     <input type="text" class="form-control" id="usrFirstName" name="usrFirstName" placeholder="<%=paramsRequest.getLocaleString("lbl_placeHldrName")%>" required="required" pattern="[a-zA-Z\u00C0-\u00FF' ]+"  value="<%=user.getFirstName()!=null?user.getFirstName():""%>">
@@ -139,10 +177,7 @@
                 if(isAnnotator || toBeAnnotator){
 %>                   
                 <%
-                OntModel ont = SWBPlatform.getSemanticMgr().getSchema().getRDFOntModel();
-                String tmpValue;
-
-                Statement tmpStat=user.getSemanticObject().getRDFResource().getProperty(ont.createDatatypeProperty(UserRegistry.ORGANITATION_NAME_URI));
+                tmpStat=user.getSemanticObject().getRDFResource().getProperty(ont.createDatatypeProperty(UserRegistry.ORGANITATION_NAME_URI));
                 if (tmpStat!=null){
                     tmpValue=tmpStat.getString();
                 }else{

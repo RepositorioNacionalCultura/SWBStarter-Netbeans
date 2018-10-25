@@ -266,6 +266,7 @@ public class OAuthTwitter extends GenericResource {
         final String oauthVersion = "1.0";
         String token = null;
         String tokenSecret = null;
+        String return2 = request.getParameter("returnUrl") != null ? request.getParameter("returnUrl") : "";
         boolean callbackConfirmed = false;
         
         if (null != consumerKey && !consumerKey.isEmpty() &&
@@ -295,7 +296,8 @@ public class OAuthTwitter extends GenericResource {
             OAuthTwitter.LOG.debug("oauth_nonce: " + nonce);
             OAuthTwitter.LOG.debug("oauth_signature_method: " + this.SIGN_METHOD);
             OAuthTwitter.LOG.debug("oauth_timestamp: " + timestamp);
-            request.getSession().setAttribute("returnPoint", reqHost);
+            OAuthTwitter.LOG.debug("Returning to: " + reqHost + " - queryString: " + request.getQueryString());
+            request.getSession().setAttribute("returnPoint", return2);  //antes: reqHost
             //Se recaban los datos para la firma de la peticion
             TreeMap<String, String> params2Sign = new TreeMap();
             params2Sign.put("oauth_callback", callback);

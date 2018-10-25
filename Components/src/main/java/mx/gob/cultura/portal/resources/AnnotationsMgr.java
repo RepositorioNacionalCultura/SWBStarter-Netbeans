@@ -284,7 +284,7 @@ System.out.println("user:"+user);
         String id = request.getParameter("id");
         String bodyValue = request.getParameter("bodyValue");
         
-System.out.println(bodyValue); 
+//System.out.println(bodyValue); 
         User user = paramRequest.getUser(); 
         String lang=user.getLanguage();
         Annotation a = AnnotationMgr.getInstance().updateAnnotation(id,bodyValue);
@@ -483,7 +483,7 @@ System.out.println(sb);
             sb.deleteCharAt(sb.length()-1);
         }
         sb.append("}");
-System.out.println(sb);        
+//System.out.println(sb);        
         return sb;
     }
     

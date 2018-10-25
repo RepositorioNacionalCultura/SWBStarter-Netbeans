@@ -460,7 +460,7 @@
             if (showTwitter) {
 %>
                                 <div class="iniciaTwit">
-                                    <%=SessionInitializer.getTwitterLink(paramsRequest)%>
+                                    <%=SessionInitializer.getTwitterLink(paramsRequest, request.getRequestURL() + (null != request.getQueryString() ? "?" + request.getQueryString() : ""))%>
                                 </div>
 <%
             }
