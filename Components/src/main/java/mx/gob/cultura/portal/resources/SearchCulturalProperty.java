@@ -493,7 +493,7 @@ public class SearchCulturalProperty extends PagerAction {
             if (!existImg(site, e.getResourcethumbnail())) {
                 if (null != e.getRights() && null != e.getRights().getMedia() && null != e.getRights().getMedia().getMime()) {
                     String type = e.getRights().getMedia().getMime();
-                    if (!existImg(site, e.getResourcethumbnail())) {
+                    if (null != type && !type.trim().isEmpty()) {
                         if (type.equalsIgnoreCase("zip"))
                             e.setResourcethumbnail("/work/models/" + site.getId() + "/img/no-zip.png");
                         else if (type.equalsIgnoreCase("avi") || type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("wav"))

@@ -79,9 +79,9 @@
 <div class="menuColecciones">
     <a href="<%=wall%>" class="selected">Mis colecciones (<%=size%>)</a>
     <a href="#" class="">Mis favoritos (0)</a>
-    <a href="#" class="">Recomendados (20)</a>
+    <!--a href="#" class="">Recomendados (20)</a-->
     <a href="<%=uall%>" class="">Todos (<%=allc%>)</a>
-    <a href="#" class="">Temas (1)</a>
+    <!--a href="#" class="">Temas (1)</a-->
 </div>
 <div class="container">
     <div class="row">

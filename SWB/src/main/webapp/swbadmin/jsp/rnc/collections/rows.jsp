@@ -72,7 +72,7 @@
         <%              } %>
                             </span><%=c.getTitle()%><
                         </p>
-			<p>Curada por: <%=paramRequest.getUser().getFullName()%></p>
+			<p>Curada por: <%=c.getUserName()%></p>
                         <a href="#"><span class="ion-social-facebook"></span></a>
                         <a href="#"><span class="ion-social-twitter"></span></a>
                         <a href="#" onclick="messageConfirm('¿Está usted seguro de eliminar la colección?', '<%=c.getId()%>');"><span class="ion-trash-a"></span></a>

@@ -21,12 +21,15 @@ import org.semanticwb.portal.api.SWBResourceException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
+
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +40,7 @@ import java.util.Random;
 import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.request.ListBICRequest;
 import mx.gob.cultura.portal.response.DigitalObject;
+import mx.gob.cultura.portal.utils.Amplitud;
 import static mx.gob.cultura.portal.utils.Constants.SORT;
 import static mx.gob.cultura.portal.utils.Constants.TOTAL;
 import static mx.gob.cultura.portal.utils.Constants.WORD;
@@ -44,6 +48,7 @@ import static mx.gob.cultura.portal.utils.Constants.FILTER;
 import static mx.gob.cultura.portal.utils.Constants.IDENTIFIER;
 import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORD;
+import mx.gob.cultura.portal.utils.Serie;
 
 /**
  *
@@ -82,6 +87,7 @@ public class ArtDetail extends GenericAdmResource {
             if (null != uri) {
                 Entry entry = getEntry(request, uri);
                 if (null != entry) {
+                    System.out.println("DOs: " + entry.getDigitalObject());
                     int position = null != request.getParameter(POSITION) ? Utils.toInt(request.getParameter(POSITION)) : 0;
                     entry.setPosition(position);
                     DigitalObject ob = getDigitalObject(entry.getDigitalObject(), position);
@@ -111,7 +117,7 @@ public class ArtDetail extends GenericAdmResource {
         Entry json = null;
         Gson gson = new Gson();
         String _index = request.getParameter("_index");
-        int index = Utils.toInt(_index);
+        int index = Utils.toInt(_index)-1;
         String baseUri = getBaseUri(paramRequest);
         String uri = getParamUri(baseUri, request);
         try {
@@ -153,17 +159,22 @@ public class ArtDetail extends GenericAdmResource {
     }
     
     private List<Entry> serie(Entry entry, String endPoint) {
+        String key = null;
         List<Entry> serieList = new ArrayList<>();
         if (null == entry) return serieList;
         if (null != entry.getSerie() && !entry.getSerie().isEmpty()) {
-            for (String serie : entry.getSerie()) {
-                List<Entry> records = bookCase(endPoint, serie, false);
-                for (Entry e : records) {
-                    if (null != e.getSerie() && comparator(entry.getSerie(), e.getSerie())) {
-                        serieList.add(e);
-                    }
+            key = null != entry.getSerie().get(0) && !entry.getSerie().get(0).trim().isEmpty() ? entry.getSerie().get(0) : "";
+            if (Amplitud.getSerieList().containsKey(key)) return Amplitud.getSerieList().get(key);
+            List<Entry> records = bookCase(endPoint, key, false);
+            for (Entry e : records) {
+                if (null != e.getSerie() && comparator(entry.getSerie(), e.getSerie())) {
+                    serieList.add(e);
                 }
             }
+        }
+        if (!serieList.isEmpty()) {
+            Collections.sort(serieList, new Serie());
+            Amplitud.getSerieList().put(key, serieList);
         }
         return serieList;
     }
@@ -495,10 +506,10 @@ public class ArtDetail extends GenericAdmResource {
                 connection.getOutputStream().close();
                 connection.getResponseCode();
             }
-        } catch (Exception se) {
+        } catch (IOException se) {
             LOG.info(se.getMessage());
-        } finally{
-                if(null!=connection) connection.disconnect();
-            }
+        } finally {
+            if(null!=connection) connection.disconnect();
+        }
     }
 }

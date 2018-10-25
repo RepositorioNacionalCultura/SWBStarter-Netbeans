@@ -3,8 +3,9 @@
     Created on : 24/01/2018, 05:36:23 PM
     Author     : sergio.tellez
 --%>
+<%@page import="org.semanticwb.SWBPortal"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.model.WebSite, mx.gob.cultura.portal.response.Collection, java.util.List"%>
+<%@ page import="org.semanticwb.SWBPortal, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.model.WebSite, mx.gob.cultura.portal.response.Collection, java.util.List"%>
 <%
     List<Collection> boards = (List<Collection>) request.getAttribute("PAGE_LIST");
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
@@ -198,10 +199,14 @@
 </script>
 <div class="container usrTit">
     <div class="row">
-        <img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">
+        <% if (null != paramRequest.getUser().getPhoto()) { %>
+            <img src="<%=SWBPortal.getWorkPath()+paramRequest.getUser().getPhoto()%>" class="circle">
+        <% } else {%>
+            <img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">
+        <% } %>
         <div>
             <h2 class="oswM nombre"><%=paramRequest.getUser().getFullName()%></h2>
-            <p class="subnombre">Lorem ipsum dolor sit amet, consecetur adipscing elit.</p>
+            <p class="subnombre"></p>
             <button class="btn-cultura btn-blanco" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/Registro');">EDITAR PERFIL</button>
         </div>
     </div>
@@ -213,30 +218,26 @@
 <div class="menuColecciones">
     <a href="<%=wall%>" class="selected">Mis colecciones (<%=cusr%>)</a>
     <a href="#" class="">Mis favoritos (0)</a>
-    <a href="#" class="">Recomendados (20)</a>
+    <!--a href="#" class="">Recomendados (20)</a-->
     <a href="<%=uall%>" class="">Todos (<%=allc%>)</a>
-    <a href="#" class="">Temas (1)</a>
+    <!--a href="#" class="">Temas (1)</a-->
 </div>
 <a name="showPage"></a>
 <div class="container">
     <div id="references">
         <div class="row mosaico-contenedor">
-        <%
-            if (MyCollections.MODE_VIEW_MYALL.equalsIgnoreCase(paramRequest.getMode())) {
-	%>
-                <div class="col-6 col-md-4">
-                    <div class="mosaico radius-overflow">
-                        <a href="#" data-toggle="modal" data-target="#modalExh">
-                            <span class="ion-ios-plus rojo"></span>
-                        </a>
-                    </div>
-                    <div class="mosaico-txt ">
-                        <p><span class="ion-locked rojo"></span> Crear colección</p>
-                        <p>Lorem ipsum dolor sit</p>
-                    </div>
+            <div class="col-6 col-md-4">
+                <div class="mosaico radius-overflow">
+                    <a href="#" data-toggle="modal" data-target="#modalExh">
+                        <span class="ion-ios-plus rojo"></span>
+                    </a>
                 </div>
+                <div class="mosaico-txt ">
+                    <p><span class="ion-locked rojo"></span> Crear colección</p>
+                    <p>Lorem ipsum dolor sit</p>
+                </div>
+           </div>
             <%
-                }
                 if (!boards.isEmpty()) {
                     for (Collection c : boards) {
             %>
@@ -274,7 +275,7 @@
                                 <p>
                                     <% if (!c.getStatus()) { %><span class="ion-locked rojo"><% } else { %><span class="ion-unlocked rojo"><% }%>
                                         </span><%=c.getTitle()%></p>
-                                <p>Curada por: <%=paramRequest.getUser().getFullName()%></p>
+                                <p>Curada por: <%=c.getUserName()%></p>
                                 <a href="#"><span class="ion-social-facebook"></span></a>
                                 <a href="#"><span class="ion-social-twitter"></span></a>
                                 <a href="#" onclick="messageConfirm('¿Está usted seguro de eliminar la colección?', '<%=c.getId()%>');"><span class="ion-trash-a"></span></a>

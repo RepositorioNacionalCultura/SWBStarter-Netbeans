@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package mx.gob.cultura.portal.response;
 
 import java.util.Date;
@@ -33,6 +29,8 @@ public class Collection implements Serializable {
     private List<String> covers;
     
     private Date date;
+    
+    private String userName;
     
     public Collection(String title, Boolean status, String description) {
         this.title = title;
@@ -108,6 +106,14 @@ public class Collection implements Serializable {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     @Override

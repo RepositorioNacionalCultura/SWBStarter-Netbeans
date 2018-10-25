@@ -108,6 +108,7 @@ public class MyCollections extends GenericResource {
         try {
             int count = count(paramRequest.getUser().getId()).intValue();
             List<Collection> collectionList = collectionList(null);
+            setAuthors(paramRequest, collectionList);
             setCovers(paramRequest, collectionList, 3);
             request.setAttribute(FULL_LIST, collectionList);
             request.setAttribute(PARAM_REQUEST, paramRequest);
@@ -129,6 +130,7 @@ public class MyCollections extends GenericResource {
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
             List<Collection> collectionList = collectionList(paramRequest.getUser());
+            setAuthors(paramRequest, collectionList);
             setCovers(paramRequest, collectionList, 3);
             request.setAttribute(FULL_LIST, collectionList);
             request.setAttribute(PARAM_REQUEST, paramRequest);
@@ -156,6 +158,7 @@ public class MyCollections extends GenericResource {
             if (total > 0) {
                 path = "/swbadmin/jsp/rnc/collections/mycollections.jsp";
                 List<Collection> collectionList = collectionList(paramRequest.getUser());
+                setAuthors(paramRequest, collectionList);
                 setCovers(paramRequest, collectionList, 3);
                 request.setAttribute(FULL_LIST, collectionList);
                 request.setAttribute(PARAM_REQUEST, paramRequest);
@@ -516,6 +519,16 @@ public class MyCollections extends GenericResource {
         Collection collection = new Collection(request.getParameter("title").trim(), null != request.getParameter("status"), request.getParameter("description").trim());
         return collection;
     }
+     
+     private void setAuthors(SWBParamRequest paramRequest, List<Collection> list) {
+         if (null == list || list.isEmpty()) return;
+         for (Collection c : list) {
+             if (null != c && null != c.getUserid()) {
+                  User user = paramRequest.getWebPage().getWebSite().getUserRepository().getUser(c.getUserid());
+                  c.setUserName(null != user && null != user.getFullName()? user.getFullName() : "");
+             }
+         }
+     }
      
     protected void setCovers(SWBParamRequest paramRequest, List<Collection> list,  int size) {
         String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");

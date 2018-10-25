@@ -3,8 +3,8 @@
 <%
     int numBloque = 0;
     int ultimoBloque = 0;
-    int paginaFinalBloque = 0;
-    int paginaInicialBloque = 0;
+    int paginaFinalBloque = 1;
+    int paginaInicialBloque = 1;
     int primerRegistroMostrado = 0;
     int ultimoRegistroMostrado = 0;
     Integer totalPages = (Integer) request.getAttribute("TOTAL_PAGES");
