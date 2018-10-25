@@ -3,6 +3,7 @@
     Created on : 24/07/2018, 10:51:22 PM
     Author     : rene.jara
 --%>
+<%@page import="org.semanticwb.SWBPortal"%>
 <%@page import="mx.gob.cultura.portal.utils.Utils"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -162,6 +163,8 @@
 <%
     }
     if(!annotation.isEmpty()){
+        String tmpphoto = "/work/models/repositorio/img/usuario.jpg";
+        if(null!=user.getPhoto()&&user.getPhoto().trim().length()>0) tmpphoto = SWBPortal.getWebWorkPath()+user.getPhoto();
 %>        
     
     <section id="contenidoInterna">
@@ -175,13 +178,17 @@
                             <h2 class="oswM rojo normalcase"><a href="/swb/repositorio/detalle?id=<%=annotation.get("oid")%>"><%=annotation.get("bicTitle")%></a></h2>
                             <p class="bold"><%=annotation.get("bicCreator")%></p>
                             <div class="row perfilHead">
-                                <img src="/work/models/repositorio/img/usuario.jpg" class="circle">
+                                <img src="<%=tmpphoto%>" class="circle">
                                 <p><%=annotation.get("creator")%>, <%=annotation.get("creatorOrg")%> <br> <%=annotation.get("created")%></p>
                             </div>
                             <hr class="rojo">
                             <div class="row redes" id="div_actions">
                                 <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span> <%=paramRequest.getLocaleString("btn_fb")%></a>
-                                <a href="#"><span class="ion-social-twitter"></span> <%=paramRequest.getLocaleString("btn_tw")%></a>
+                                <script type="text/javascript">
+                var url2Share = "https://twitter.com/intent/tweet?original_referer=" + encodeURIComponent(window.location) + "&url=" + encodeURIComponent(window.location);
+            </script>
+            <a href="#" _class="twitter-share-button" data-show-count="false" target="_new" onclick="window.open(url2Share,'', 'width=500,height=500'); return false;"><span class="ion-social-twitter"><%=paramRequest.getLocaleString("btn_tw")%></span></a>
+                                <!--<a href="#"><span class="ion-social-twitter"></span> <%//=paramRequest.getLocaleString("btn_tw")%></a>-->
 <%      
         if(annotation.containsKey("isOwn")&&annotation.containsKey("isMod")){   
 

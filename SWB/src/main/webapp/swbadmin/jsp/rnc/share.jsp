@@ -22,7 +22,7 @@
         </div>
         <div class="col-1 col-md-4 explo-twit">
             <script type="text/javascript">
-                var url2Share = "https://twitter.com/intent/tweet?original_referer=" + encodeURI(window.location) + "&url=" + encodeURI(window.location);
+                var url2Share = "https://twitter.com/intent/tweet?original_referer=" + encodeURIComponent(window.location) + "&url=" + encodeURIComponent(window.location);
             </script>
             <a href="#" _class="twitter-share-button" data-show-count="false" target="_new" onclick="window.open(url2Share,'', 'width=500,height=500')"><span class="ion-social-twitter"></span></a>
             <!--<a href="#" _class="twitter-share-button" data-show-count="false" target="_new" onclick="window.open('https://twitter.com/share?ref_src=twsrc%5Etfw','', 'width=500,height=500')"><span class="ion-social-twitter"></span></a>-->

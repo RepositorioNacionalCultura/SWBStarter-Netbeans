@@ -59,15 +59,15 @@ public class SubscribeNewsletter extends GenericAdmResource{
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Content-Type", "application/json");
         
-System.out.println("email:"+email);
+//System.out.println("email:"+email);
         if(SWBUtils.EMAIL.isValidEmailAddress(email)){  
-System.out.println("intentandolo:");                        
+//System.out.println("intentandolo:");                        
             SWBUtils.EMAIL.sendBGEmail(email,this.getResourceBase().getAttribute("emailSubAck", "alta noticias"),this.getResourceBase().getAttribute("emailMsgAck", "recibiras las noticias"));
             SWBUtils.EMAIL.sendBGEmail(this.getResourceBase().getAttribute("email", "admnl@cultura.gob.mx"),this.getResourceBase().getAttribute("emailSubReq", "alta newsletter"),email+this.getResourceBase().getAttribute("emailMsgReq", " desea recibir el newsletter"));
             out.print("{\"subscribed\":true}");
-System.out.println("mandado:");        
+//System.out.println("mandado:");        
         }else{ 
-System.out.println("formato invalido:");            
+//System.out.println("formato invalido:");            
             out.print("{\"subscribed\":false}");
         }    
     }
