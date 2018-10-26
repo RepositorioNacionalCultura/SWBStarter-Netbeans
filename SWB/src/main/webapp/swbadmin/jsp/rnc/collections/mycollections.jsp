@@ -278,8 +278,10 @@
                                 <p>Curada por: <%=c.getUserName()%></p>
                                 <a href="#"><span class="ion-social-facebook"></span></a>
                                 <a href="#"><span class="ion-social-twitter"></span></a>
-                                <a href="#" onclick="messageConfirm('¿Está usted seguro de eliminar la colección?', '<%=c.getId()%>');"><span class="ion-trash-a"></span></a>
-                                <a href="#" onclick="editByForm('<%=c.getId()%>');"><span class="ion-edit"></span></a>
+                                <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned() && paramRequest.getUser().getId().equalsIgnoreCase(c.getUserid())) {%>
+                                    <a href="#" onclick="messageConfirm('¿Está usted seguro de eliminar la colección?', '<%=c.getId()%>');"><span class="ion-trash-a"></span></a>
+                                    <a href="#" onclick="editByForm('<%=c.getId()%>');"><span class="ion-edit"></span></a>
+                                <% } %>
                             </div>
                         </div>
             <%

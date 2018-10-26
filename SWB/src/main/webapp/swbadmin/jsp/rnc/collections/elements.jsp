@@ -86,7 +86,7 @@
                 <h2 class="oswM rojo"><%=c.getTitle()%></h2>
                 <div class="row perfilHead">
                     <img src="/work/models/repositorio/img/agregado-07.jpg" class="circle">
-                    <p><%=paramRequest.getUser().getFullName()%>,&nbsp;&nbsp;<div id="fdate"></div></p>
+                    <p><%=c.getUserName()%>,&nbsp;&nbsp;<div id="fdate"></div></p>
                 </div>
                 <p><%=_msg%></p>
                 <p><%=c.getDescription()%></p>
@@ -110,7 +110,9 @@
             </div>
         </div>
         <div class="col-3 col-sm-4 coleccionSecc-02">
-            <button type="button" onclick="editByForm('<%=c.getId()%>');" class="btn-cultura btn-blanco btn-mayus d-none d-md-block"><span class="ion-edit"></span> Editar colección</button>
+            <%  if (paramRequest.getUser().isSigned() && paramRequest.getUser().getId().equalsIgnoreCase(c.getUserid())) { %>
+                    <button type="button" onclick="editByForm('<%=c.getId()%>');" class="btn-cultura btn-blanco btn-mayus d-none d-md-block"><span class="ion-edit"></span> Editar colección</button>
+            <%  }  %>
             <button type="submit" class="btn-cultura btn-blanco btn-mayus d-block d-md-none"> <span class="ion-edit"></span> Editar</button>
         </div>
     </div>
@@ -141,7 +143,7 @@
                                 <p class="oswB azul tit"><a href="<%=uri%>?id=<%=item.getId()%>"><%=title.getValue()%></a></p>
                                 <p class="azul autor"><a href="#"><%=creator%></a></p>
                                 <p class="tipo"><%=type%></p>
-                                <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned()) {%>
+                                <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned() && paramRequest.getUser().getId().equalsIgnoreCase(c.getUserid())) {%>
                                     <a href="#" onclick="del('<%=c.getId()%>', '<%=item.getId()%>')"><span class="ion-trash-a"></span></a>
                                 <% } %>
                             </div>
