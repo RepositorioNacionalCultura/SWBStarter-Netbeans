@@ -39,7 +39,7 @@
                     if (null != res.idCollection) {
                         $("#addCollection").dialog("close");
                         jQuery("#dialog-go-text").text("Se guardó correctamente en su colección.");
-                        go2Collection(res.idCollection, '/<%=lang%>/<%=site.getId()%>/colecciones/_rid/92/_mod/VIEW_USR');
+                        go2Collection(res.idCollection, '/<%=lang%>/<%=site.getId()%>/miscolecciones/_rid/112/_mod/VIEW_USR');
                     }
                 }
             });
