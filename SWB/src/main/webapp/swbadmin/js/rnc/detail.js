@@ -77,3 +77,29 @@ function vistaLista() {
         y[i].classList.add("lista");
     }
 }
+
+function go2Collection(id, url) {
+    var entry = url + "?id="+id;
+    $( "#dialog-go-tree").dialog({
+        autoOpen: false,
+        dialogClass: 'msg-dialog',
+        buttons: [
+            {
+                "class": 'btn btn-sm btn-rojo',
+                text: "Cerrar",
+                click: function() {
+                    $( this ).dialog( "close" );
+                }
+            },
+            {
+                "class": 'btn btn-sm btn-rojo',
+                text: "Ir a colecci\xF3n",
+                click: function() {
+                    $( this ).dialog( "close" );
+                    location.replace(entry)
+                }
+            }
+        ]
+    });
+    $("#dialog-go-tree" ).dialog( "open" );
+}

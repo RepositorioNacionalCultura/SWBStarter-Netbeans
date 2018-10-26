@@ -15,7 +15,6 @@
     WebPage detail = paramRequest.getWebPage().getWebSite().getWebPage("detalle");
     String uri = detail.getRealUrl(paramRequest.getUser().getLanguage());
     if (relevants != null && !relevants.isEmpty()) {
-        //System.out.println("tiene elementos...."+relevants.size());
 %>
 <div class="container usrTit">
     <div class="row">

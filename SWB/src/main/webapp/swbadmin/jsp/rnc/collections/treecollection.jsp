@@ -10,9 +10,9 @@
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     SWBResourceURL saveURL = paramRequest.getActionUrl();
     saveURL.setAction(FavoritesMgr.ACTION_ADD_FAV);
+    String lang = paramRequest.getUser().getLanguage();
     String entry = (String) request.getAttribute("entry");
     WebSite site = paramRequest.getWebPage().getWebSite();
-
     SWBResourceURL uedt = paramRequest.getRenderUrl().setMode(FavoritesMgr.MODE_NEW_COLN);
     uedt.setCallMethod(SWBParamRequest.Call_CONTENT);
 %>
@@ -38,8 +38,8 @@
                     var res = dojo.fromJson(data);
                     if (null != res.idCollection) {
                         $("#addCollection").dialog("close");
-                        jQuery("#dialog-msg-tree").text("Se guardó correctamente en su colección.");
-                        $("#dialog-success-tree").dialog("open");
+                        jQuery("#dialog-go-text").text("Se guardó correctamente en su colección.");
+                        go2Collection(res.idCollection, '/<%=lang%>/<%=site.getId()%>/colecciones/_rid/92/_mod/VIEW_USR');
                     }
                 }
             });
@@ -136,3 +136,9 @@
         </div>
     <!--/div-->
 <!--/div-->
+
+<div id="dialog-go-tree" title="Éxito">
+    <p>
+        <div id="dialog-go-text"></div>
+    </p>
+</div>
