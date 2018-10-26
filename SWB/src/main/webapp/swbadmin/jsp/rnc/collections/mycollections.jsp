@@ -3,6 +3,8 @@
     Created on : 24/01/2018, 05:36:23 PM
     Author     : sergio.tellez
 --%>
+<%@page import="org.semanticwb.model.UserRepository"%>
+<%@page import="org.semanticwb.model.User"%>
 <%@page import="org.semanticwb.SWBPortal"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.semanticwb.SWBPortal, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.model.WebSite, mx.gob.cultura.portal.response.Collection, java.util.List"%>
@@ -42,6 +44,9 @@
 
     SWBResourceURL uall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_ALL);
     uall.setCallMethod(SWBParamRequest.Call_CONTENT);
+    
+    User user = paramRequest.getUser();
+    UserRepository usrrep = paramRequest.getWebPage().getWebSite().getUserRepository();
     
 %>
 <script>
@@ -240,6 +245,7 @@
             <%
                 if (!boards.isEmpty()) {
                     for (Collection c : boards) {
+                        
             %>
                         <div class="col-6 col-md-4">
                             <%	if (c.getCovers().isEmpty()) {	%>
@@ -279,6 +285,7 @@
                                 <a href="#"><span class="ion-social-facebook"></span></a>
                                 <a href="#"><span class="ion-social-twitter"></span></a>
                                 <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned() && paramRequest.getUser().getId().equalsIgnoreCase(c.getUserid())) {%>
+                                <% //if(user.equals(usrrep.getUser(c.getUserid()))) {%>
                                     <a href="#" onclick="messageConfirm('¿Está usted seguro de eliminar la colección?', '<%=c.getId()%>');"><span class="ion-trash-a"></span></a>
                                     <a href="#" onclick="editByForm('<%=c.getId()%>');"><span class="ion-edit"></span></a>
                                 <% } %>
