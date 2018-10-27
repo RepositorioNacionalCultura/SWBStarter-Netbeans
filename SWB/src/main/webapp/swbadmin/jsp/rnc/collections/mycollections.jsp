@@ -62,6 +62,8 @@
 
     SWBResourceURL uall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_ALL);
     uall.setCallMethod(SWBParamRequest.Call_CONTENT);
+    
+    User user = paramRequest.getUser();
 %>
 <script>
     $(document).ready(function () {
