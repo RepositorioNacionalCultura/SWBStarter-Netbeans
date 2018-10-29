@@ -1,3 +1,5 @@
+<%@page import="org.semanticwb.SWBPortal"%>
+<%@page import="org.semanticwb.model.User"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.portal.api.SWBResourceURL, org.semanticwb.model.WebPage" %>
 <%@ page import="mx.gob.cultura.portal.response.Title, mx.gob.cultura.portal.response.Collection, mx.gob.cultura.portal.response.DigitalObject, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Identifier, java.util.Date, org.bson.types.ObjectId"%>
@@ -16,6 +18,10 @@
     SWBResourceURL delURL = paramRequest.getActionUrl();
     delURL.setMode(SWBResourceURL.Mode_VIEW);
     delURL.setAction(MyCollections.ACTION_DEL_FAV);
+    
+    String useridColl = c.getUserid();
+    String userName ="";
+    User usr = site.getUserRepository().getUser(useridColl);
 %>
 <script>
     $(document).ready(function () {
@@ -85,8 +91,13 @@
             <div class="precontent">
                 <h2 class="oswM rojo"><%=c.getTitle()%></h2>
                 <div class="row perfilHead">
-                    <img src="/work/models/repositorio/img/agregado-07.jpg" class="circle">
-                    <p><%=c.getUserName()%>,&nbsp;&nbsp;<div id="fdate"></div></p>
+                    <% 
+                        if (null != usr && null != usr.getPhoto()) { %>
+                        <img src="<%=SWBPortal.getWebWorkPath()+usr.getPhoto()%>" class="circle">
+                    <% } else {%>
+                        <img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">
+                    <% } %>
+                    <p><%=c.getUserName()!=null&&c.getUserName().trim().length()>0?c.getUserName():"Sin Nombre Configurado"%>,&nbsp;&nbsp;<div id="fdate"></div></p>
                 </div>
                 <p><%=_msg%></p>
                 <p><%=c.getDescription()%></p>
@@ -159,7 +170,7 @@
     <!--resultados -->
     <div class="coleccionSecc-03 col-12 col-md-8 col-lg-6">
         <div class="agregarColecc ">
-            <a href="#" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/coleccion');">
+            <a href="#" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/explorar');">
                 <span class="ion-ios-plus"></span>
                 <em class="oswM">Agregar  desde la colección</em>
                 <span class="btn-cultura">Explorar <span class="ion-chevron-right"></span></span>
