@@ -7,7 +7,15 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.semanticwb.SWBPortal, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.model.WebSite, mx.gob.cultura.portal.response.Collection, java.util.List"%>
 <%
-    List<Collection> boards = (List<Collection>) request.getAttribute("PAGE_LIST");
+    List<Collection> boards = null;
+
+     try {
+             boards =(List<Collection>) request.getAttribute("PAGE_LIST");
+         } catch (Exception e) {
+             System.out.println("Sin colecciones");
+         }
+       
+            
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     //Use in dialog
     SWBResourceURL saveURL = paramRequest.getActionUrl();
@@ -35,12 +43,24 @@
     WebSite site = paramRequest.getWebPage().getWebSite();
     String userLang = paramRequest.getUser().getLanguage();
 
-    Integer allc = (Integer)request.getAttribute("COUNT_BY_STAT");
+    Integer allc =0; 
+    try {
+            allc =(Integer)request.getAttribute("COUNT_BY_STAT");
+        } catch (Exception e) {
+        }
+        
 
-    Integer cusr = (Integer)request.getAttribute("COUNT_BY_USER");
+    Integer cusr =0; 
+    try {
+            cusr =(Integer)request.getAttribute("COUNT_BY_USER");
+        } catch (Exception e) {
+        }
+        
 
     SWBResourceURL uall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_ALL);
     uall.setCallMethod(SWBParamRequest.Call_CONTENT);
+    
+    User user = paramRequest.getUser();
 %>
 <script>
     $(document).ready(function () {
@@ -198,13 +218,14 @@
 <a name="showPage"></a>
 <div class="container usrTit">
     <div class="row">
-        <% if (null != paramRequest.getUser().getPhoto()) { %>
-            <img src="<%=SWBPortal.getWebWorkPath()+paramRequest.getUser().getPhoto()%>" class="circle">
+        <% 
+            if (null != user && null != user.getPhoto()) { %>
+            <img src="<%=SWBPortal.getWebWorkPath()+user.getPhoto()%>" class="circle">
         <% } else {%>
             <img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">
         <% } %>
         <div>
-            <h2 class="oswM nombre"><%=paramRequest.getUser().getFullName()%></h2>
+            <h2 class="oswM nombre"><%=null!=user ?user.getFullName():""%></h2>
             <p class="subnombre"></p>
             <button class="btn-cultura btn-blanco" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/Registro');">EDITAR PERFIL</button>
         </div>
@@ -236,7 +257,7 @@
                 </div>
            </div>
             <%
-                if (!boards.isEmpty()) {
+                if (null!=boards && !boards.isEmpty()) {
                     for (Collection c : boards) {
                         
             %>
@@ -292,7 +313,7 @@
         <jsp:include page="pager.jsp" flush="true"/>
     </div>
 </div>
-<div class="coleccionSecc-03 col-12 col-md-8 col-lg-6">
+<!--<div class="coleccionSecc-03 col-12 col-md-8 col-lg-6">
     <div class="agregarColecc ">
         <a href="#" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/coleccion');">
             <span class="ion-ios-plus"></span>
@@ -303,7 +324,7 @@
             <img src="/work/models/repositorio/img/cabecera-carranza.jpg">
         </div>
     </div>
-</div>
+</div>-->
 <!-- MODAL -->
 <div class="modal fade" id="modalExh" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-exh modal-2col" role="document">

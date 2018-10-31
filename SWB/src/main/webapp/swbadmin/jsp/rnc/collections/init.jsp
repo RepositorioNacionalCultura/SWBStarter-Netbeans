@@ -3,6 +3,8 @@
     Created on : 28/03/2018, 07:58:29 PM
     Author     : sergio.tellez
 --%>
+<%@page import="org.semanticwb.model.User"%>
+<%@page import="org.semanticwb.SWBPortal"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, org.semanticwb.model.WebSite, mx.gob.cultura.portal.resources.MyCollections, 
          mx.gob.cultura.portal.response.Collection, java.util.List"%>
@@ -22,8 +24,18 @@
     SWBResourceURL uall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_ALL);
     uall.setCallMethod(SWBParamRequest.Call_CONTENT);
     
-    Long size = (Long) request.getAttribute("NUM_RECORDS_TOTAL");
-    Integer allc = (Integer)request.getAttribute("COUNT_BY_STAT");
+    Long size = 0l;
+    try {
+            size = (Long) request.getAttribute("NUM_RECORDS_TOTAL");
+        } catch (Exception e) {
+        }
+    Integer allc = 0;
+    try {
+            allc = (Integer)request.getAttribute("COUNT_BY_STAT");
+        } catch (Exception e) {
+        }
+
+    User user = paramRequest.getUser();
 %>
 <script>
     $(document).ready(function () {
@@ -64,10 +76,14 @@
 </script>
 <div class="container usrTit">
     <div class="row">
-        <img src="/work/models/repositorio/img/agregado-07.jpg" class="circle">
+        <% if (null != user && null != user.getPhoto()) { %>
+        <img src="<%=SWBPortal.getWebWorkPath()+user.getPhoto()%>" class="circle">
+        <% } else {%>
+            <img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">
+        <% } %>
         <div>
             <h2 class="oswM nombre"><%=paramRequest.getUser().getFullName()%></h2>
-            <p class="subnombre">Lorem ipsum dolor sit amet, consecetur adipscing elit.</p>
+            <!--<p class="subnombre">Lorem ipsum dolor sit amet, consecetur adipscing elit.</p>-->
             <button class="btn-cultura btn-blanco" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/Registro');">EDITAR PERFIL</button>
         </div>
     </div>
@@ -93,24 +109,25 @@
             </div>
             <div class="mosaico-txt d-block d-sm-none" style="">
                 <p>Crear colección</p>
-                <p>Lorem ipsum dolor</p>
+                <!--<p>Lorem ipsum dolor</p>-->
             </div>
         </div>
         <div class="col-12 col-sm-7 col-md-9">
             <div class="contactabloque imgColabora radius-overflow margen0 sinsombra">
                 <div class="contactabloque-in ">
                     <p class="oswM">Busca obras de tu interés<br> y agrégalas a tus colecciones</p>
-                    <button class="btn-cultura btn-rojo" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/coleccion');" type="button">EXPLORAR <span class="ion-chevron-right"></span></button>
+                    <button class="btn-cultura btn-rojo" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/explorar');" type="button">EXPLORAR <span class="ion-chevron-right"></span></button>
                 </div>
             </div>
         </div>
         <div class="col-12 mosaico-txt d-none d-sm-block">
             <p>Crear colección</p>
-            <p>Lorem ipsum dolor</p>
+            <!--<p>Lorem ipsum dolor</p>-->
         </div>
     </div>
 </div>
-<div class="container center titulo">
+                
+<!--<div class="container center titulo">
     <h3 class="oswB rojo"><span class="h3linea rojoborde"></span>RECOMENDADOS<span class="h3linea rojoborde"></span></h3>
 </div>
 <div class="container">
@@ -240,8 +257,8 @@
             </div>
         </div>
     </div>
-</div>
-<div class="container paginacion">
+</div>-->
+<!--<div class="container paginacion">
     <hr>
     <ul class="azul">
         <li><a href="#"><i class="ion-ios-arrow-back" aria-hidden="true"></i></a></li>
@@ -252,7 +269,7 @@
         <li><a href="#">5</a></li>
         <li><a href="#"><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
     </ul>
-</div>
+</div>-->
 
 <!-- MODAL -->
 <div class="modal fade" id="modalExh" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
