@@ -678,6 +678,11 @@
             if (paramsRequest.getUser().getLastName()!=null && !paramsRequest.getUser().getLastName().isEmpty()) {
                 initials.append(paramsRequest.getUser().getLastName().charAt(0));
             }
+            if (initials.length()==0){
+                if(paramsRequest.getUser().getLogin()!=null && && !paramsRequest.getUser().getLogin().isEmpty()){
+                    initials.append(paramsRequest.getUser().getLogin().charAt(0));
+                }
+            }
 %>
           }
             </script>
