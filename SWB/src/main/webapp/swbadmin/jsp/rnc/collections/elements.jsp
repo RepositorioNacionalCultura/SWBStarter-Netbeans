@@ -1,6 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="org.semanticwb.model.User"%>
-<%@ page import="mx.gob.cultura.portal.utils.Utils, org.semanticwb.SWBPortal, java.util.List, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.portal.api.SWBResourceURL, org.semanticwb.model.WebPage" %>
+<%@ page import="org.semanticwb.model.User, mx.gob.cultura.portal.utils.Utils, org.semanticwb.SWBPortal, java.util.List, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.portal.api.SWBResourceURL, org.semanticwb.model.WebPage" %>
 <%@ page import="mx.gob.cultura.portal.response.Title, mx.gob.cultura.portal.response.Collection, mx.gob.cultura.portal.response.DigitalObject, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Identifier, java.util.Date, org.bson.types.ObjectId"%>
 <%
     Collection c = (Collection)request.getAttribute("collection");
@@ -95,7 +94,7 @@
                     <% } else {%>
                         <img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">
                     <% } %>
-                    <p><%=c.getUserName()!=null&&c.getUserName().trim().length()>0?c.getUserName():"Sin Nombre Configurado"%>,&nbsp;&nbsp;<div id="fdate"></div></p>
+                    <p><%=c.getUserName()!=null&&c.getUserName().trim().length()>0?c.getUserName():"Anonimo"%>,&nbsp;&nbsp;<div id="fdate"></div></p>
                 </div>
                 <p><%=_msg%></p>
                 <p><%=c.getDescription()%></p>
@@ -171,7 +170,7 @@
                 <span class="btn-cultura">Explorar <span class="ion-chevron-right"></span></span>
             </a>
             <div>
-                <img src="/work/models/repositorio/img/cabecera-carranza.jpg">
+                <img src="/work/models/<%=site.getId()%>/img/cabecera-carranza.jpg">
             </div>
         </div>
     </div>

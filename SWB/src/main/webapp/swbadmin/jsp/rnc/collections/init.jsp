@@ -3,11 +3,8 @@
     Created on : 28/03/2018, 07:58:29 PM
     Author     : sergio.tellez
 --%>
-<%@page import="org.semanticwb.model.User"%>
-<%@page import="org.semanticwb.SWBPortal"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, org.semanticwb.model.WebSite, mx.gob.cultura.portal.resources.MyCollections, 
-         mx.gob.cultura.portal.response.Collection, java.util.List"%>
+<%@ page import="org.semanticwb.SWBPortal, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, org.semanticwb.model.WebSite, mx.gob.cultura.portal.resources.MyCollections, mx.gob.cultura.portal.response.Collection, java.util.List"%>
 <%
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     //Use in dialog
@@ -24,18 +21,8 @@
     SWBResourceURL uall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_ALL);
     uall.setCallMethod(SWBParamRequest.Call_CONTENT);
     
-    Long size = 0l;
-    try {
-            size = (Long) request.getAttribute("NUM_RECORDS_TOTAL");
-        } catch (Exception e) {
-        }
-    Integer allc = 0;
-    try {
-            allc = (Integer)request.getAttribute("COUNT_BY_STAT");
-        } catch (Exception e) {
-        }
-
-    User user = paramRequest.getUser();
+    Integer size = null != request.getAttribute("NUM_RECORDS_TOTAL") ? (Integer)request.getAttribute("NUM_RECORDS_TOTAL") : 0;
+    Integer allc = null != request.getAttribute("COUNT_BY_STAT") ? (Integer)request.getAttribute("COUNT_BY_STAT") : 0;
 %>
 <script>
     $(document).ready(function () {
@@ -76,13 +63,13 @@
 </script>
 <div class="container usrTit">
     <div class="row">
-        <% if (null != user && null != user.getPhoto()) { %>
-        <img src="<%=SWBPortal.getWebWorkPath()+user.getPhoto()%>" class="circle">
+        <% if (null != paramRequest.getUser() && null != paramRequest.getUser().getPhoto()) { %>
+        <img src="<%=SWBPortal.getWebWorkPath()+paramRequest.getUser().getPhoto()%>" class="circle">
         <% } else {%>
             <img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">
         <% } %>
         <div>
-            <h2 class="oswM nombre"><%=paramRequest.getUser().getFullName()%></h2>
+            <h2 class="oswM nombre"><%=null!=paramRequest.getUser() ?paramRequest.getUser().getFullName():""%></h2>
             <!--<p class="subnombre">Lorem ipsum dolor sit amet, consecetur adipscing elit.</p>-->
             <button class="btn-cultura btn-blanco" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/Registro');">EDITAR PERFIL</button>
         </div>

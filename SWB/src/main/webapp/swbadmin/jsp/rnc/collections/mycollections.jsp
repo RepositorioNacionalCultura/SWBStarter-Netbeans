@@ -3,19 +3,10 @@
     Created on : 24/01/2018, 05:36:23 PM
     Author     : sergio.tellez
 --%>
-<%@page import="org.semanticwb.SWBPortal, org.semanticwb.model.UserRepository, org.semanticwb.model.User"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.semanticwb.SWBPortal, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.model.WebSite, mx.gob.cultura.portal.response.Collection, java.util.List"%>
 <%
-    List<Collection> boards = null;
-
-     try {
-             boards =(List<Collection>) request.getAttribute("PAGE_LIST");
-         } catch (Exception e) {
-             System.out.println("Sin colecciones");
-         }
-       
-            
+    List<Collection> boards = (List<Collection>)request.getAttribute("PAGE_LIST");
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     //Use in dialog
     SWBResourceURL saveURL = paramRequest.getActionUrl();
@@ -43,24 +34,11 @@
     WebSite site = paramRequest.getWebPage().getWebSite();
     String userLang = paramRequest.getUser().getLanguage();
 
-    Integer allc =0; 
-    try {
-            allc =(Integer)request.getAttribute("COUNT_BY_STAT");
-        } catch (Exception e) {
-        }
+    Integer allc = null != request.getAttribute("COUNT_BY_STAT") ? (Integer)request.getAttribute("COUNT_BY_STAT") : 0;
+    Integer cusr = null != request.getAttribute("COUNT_BY_USER") ? (Integer)request.getAttribute("COUNT_BY_USER"): 0;
         
-
-    Integer cusr =0; 
-    try {
-            cusr =(Integer)request.getAttribute("COUNT_BY_USER");
-        } catch (Exception e) {
-        }
-        
-
     SWBResourceURL uall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_ALL);
     uall.setCallMethod(SWBParamRequest.Call_CONTENT);
-    
-    User user = paramRequest.getUser();
 %>
 <script>
     $(document).ready(function () {
@@ -219,13 +197,13 @@
 <div class="container usrTit">
     <div class="row">
         <% 
-            if (null != user && null != user.getPhoto()) { %>
-            <img src="<%=SWBPortal.getWebWorkPath()+user.getPhoto()%>" class="circle">
+            if (null != paramRequest.getUser() && null != paramRequest.getUser().getPhoto()) { %>
+            <img src="<%=SWBPortal.getWebWorkPath()+paramRequest.getUser().getPhoto()%>" class="circle">
         <% } else {%>
             <img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">
         <% } %>
         <div>
-            <h2 class="oswM nombre"><%=null!=user ?user.getFullName():""%></h2>
+            <h2 class="oswM nombre"><%=null!=paramRequest.getUser() ?paramRequest.getUser().getFullName():""%></h2>
             <p class="subnombre"></p>
             <button class="btn-cultura btn-blanco" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/Registro');">EDITAR PERFIL</button>
         </div>
@@ -296,10 +274,9 @@
                                     <% if (!c.getStatus()) { %><span class="ion-locked rojo"><% } else { %><span class="ion-unlocked rojo"><% }%>
                                         </span><%=c.getTitle()%></p>
                                 <p>Curada por: <%=c.getUserName()%></p>
-                                <a href="#"><span class="ion-social-facebook"></span></a>
-                                <a href="#"><span class="ion-social-twitter"></span></a>
+                                <!--a href="#"><span class="ion-social-facebook"></span></a-->
+                                <!--a href="#"><span class="ion-social-twitter"></span></a-->
                                 <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned() && paramRequest.getUser().getId().equalsIgnoreCase(c.getUserid())) {%>
-                                <% //if(user.equals(usrrep.getUser(c.getUserid()))) {%>
                                     <a href="#" onclick="messageConfirm('¿Está usted seguro de eliminar la colección?', '<%=c.getId()%>');"><span class="ion-trash-a"></span></a>
                                     <a href="#" onclick="editByForm('<%=c.getId()%>');"><span class="ion-edit"></span></a>
                                 <% } %>
@@ -350,7 +327,7 @@
                                 <label for="crearDescr">Descripción (opcional)</label>
                                 <textarea name="description" id="crearDescr" placeholder="250"></textarea>        
                                 <label for="selprivado" class="selPrivado">
-                                    <input name="status" value="" id="selprivado" type="checkbox" aria-label="Checkbox for following text input"/>
+                                    <input name="status" value="false" id="selprivado" type="checkbox" aria-label="Checkbox for following text input"/>
                                     <span class="ion-locked"> Privado</span>
                                 </label>
                             </div>
@@ -381,7 +358,7 @@
                                 <span class="card-title">Descripción: </span><textarea name="description" rows="4" cols="40" maxlength="500" wrap="hard"></textarea>
                             </div>
                             <div class="card-body">
-                                <span class="card-title">Público: </span><input type="checkbox" name="status" value=""/>
+                                <span class="card-title">Público: </span><input type="checkbox" name="status" value="true"/>
                             </div>
                         </div>
                     </form>
