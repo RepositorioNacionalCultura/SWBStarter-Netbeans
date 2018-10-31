@@ -3,9 +3,7 @@
     Created on : 24/01/2018, 05:36:23 PM
     Author     : sergio.tellez
 --%>
-<%@page import="org.semanticwb.model.UserRepository"%>
-<%@page import="org.semanticwb.model.User"%>
-<%@page import="org.semanticwb.SWBPortal"%>
+<%@page import="org.semanticwb.SWBPortal, org.semanticwb.model.UserRepository, org.semanticwb.model.User"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.semanticwb.SWBPortal, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.model.WebSite, mx.gob.cultura.portal.response.Collection, java.util.List"%>
 <%
@@ -19,9 +17,8 @@
     SWBResourceURL uedt = paramRequest.getRenderUrl().setMode(SWBResourceURL.Mode_EDIT);
     uedt.setCallMethod(SWBParamRequest.Call_DIRECT);
 
-    SWBResourceURL pageURL = paramRequest.getRenderUrl();
+    SWBResourceURL pageURL = paramRequest.getRenderUrl().setMode("PAGE");
     pageURL.setCallMethod(SWBParamRequest.Call_DIRECT);
-    pageURL.setAction("PAGE");
 
     SWBResourceURL uper = paramRequest.getActionUrl();
     SWBResourceURL udel = paramRequest.getActionUrl();
@@ -136,9 +133,9 @@
             }
         });
     }
-    function doPage(p) {
+    function doPage(p,t) {
         dojo.xhrPost({
-            url: '<%=pageURL%>?p=' + p,
+            url: '<%=pageURL%>?p=' + p +'&ct='+t,
             load: function (data) {
                 dojo.byId('references').innerHTML = data;
                 location.href = '#showPage';
@@ -198,6 +195,7 @@
 	dialogMsgConfirm.show();
     }
 </script>
+<a name="showPage"></a>
 <div class="container usrTit">
     <div class="row">
         <% if (null != paramRequest.getUser().getPhoto()) { %>
@@ -223,7 +221,6 @@
     <a href="<%=uall%>" class="">Todos (<%=allc%>)</a>
     <!--a href="#" class="">Temas (1)</a-->
 </div>
-<a name="showPage"></a>
 <div class="container">
     <div id="references">
         <div class="row mosaico-contenedor">
@@ -235,7 +232,7 @@
                 </div>
                 <div class="mosaico-txt ">
                     <p><span class="ion-locked rojo"></span> Crear colección</p>
-                    <p>Lorem ipsum dolor sit</p>
+                    <p></p>
                 </div>
            </div>
             <%
@@ -292,8 +289,8 @@
                 }
             %>
         </div>
+        <jsp:include page="pager.jsp" flush="true"/>
     </div>
-    <jsp:include page="pager.jsp" flush="true"/>
 </div>
 <div class="coleccionSecc-03 col-12 col-md-8 col-lg-6">
     <div class="agregarColecc ">

@@ -13,7 +13,7 @@ public final class Constants {
     
     private Constants() {}
     
-    public static final int NUM_ROW = 8;
+    public static final int NUM_ROW = 2;
     public static final int NUM_REL = 12;
     public static final int PAGE_JUMP_SIZE = 5;
     public static final String PAGE_LIST = "PAGE_LIST";
@@ -41,6 +41,9 @@ public final class Constants {
     
     public static final Boolean COLLECTION_PUBLIC = true;
     public static final Boolean COLLECTION_PRIVATE = false;
+    public static final String COLLECTION_TYPE = "ct";
+    public static final Integer COLLECTION_TYPE_OWN = 0;
+    public static final Integer COLLECTION_TYPE_ALL = 1;
     
     public static final Integer REQUIRED = 1;
     public static final Integer COMPLEMENTARY = 2;

@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import mx.gob.cultura.portal.persist.CollectionMgr;
 import mx.gob.cultura.portal.response.Favorite;
 import mx.gob.cultura.portal.response.Collection;
+import mx.gob.cultura.portal.utils.Utils;
 
 import org.semanticwb.model.User;
 import org.semanticwb.SWBPlatform;
@@ -68,7 +69,7 @@ public class FavoritesMgr extends GenericResource {
                 String title = request.getParameter("title").trim();
                 //if (!exist(collectionList, title)) {
                 if (!exist(title, null)) {
-                    c = new Collection(title, null != request.getParameter("status"), "");
+                    c = new Collection(title, Utils.getStatus(request.getParameter("status")), "");
                     c.setUserid(user.getId());
                     //Integer id = collectionList.size()+1;
                     String id = mgr.insertCollection(c);

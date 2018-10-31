@@ -8,9 +8,9 @@ import mx.gob.cultura.portal.response.Entry;
  *
  * @author sergio.tellez
  */
-public final class Amplitud {
+public final class Amplitude {
     
-    private Amplitud() { }
+    private Amplitude() { }
     
     private static final HashMap<String, List<Entry>> serieList = new HashMap<>();
 

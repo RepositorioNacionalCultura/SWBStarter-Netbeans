@@ -45,7 +45,7 @@
         place = (null != entry.getLugar()) ? "<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ entry.getLugar() + "\">"+entry.getLugar()+state+"</a>" : "";
     }
 %>
-<div class="col-12 col-sm-12 col-md-9 col-lg-9 order-md-2 order-sm-1 order-1 ficha ">
+<div id="tchdta" class="col-12 col-sm-12 col-md-9 col-lg-9 order-md-2 order-sm-1 order-1 ficha ">
     <h3 class="oswM"><%=title%></h3>
     <%  if (null != desc) { %>
             <a name="showPage"></a>

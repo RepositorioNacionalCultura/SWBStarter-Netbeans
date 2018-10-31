@@ -25,7 +25,11 @@ import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Collection;
 import mx.gob.cultura.portal.request.GetBICRequest;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION;
+import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PRIVATE;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PUBLIC;
+import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE;
+import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_ALL;
+import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_OWN;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_STAT;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_USER;
 
@@ -52,6 +56,7 @@ import static mx.gob.cultura.portal.utils.Constants.PAGE_JUMP_SIZE;
 
 import static mx.gob.cultura.portal.utils.Constants.STR_JUMP_SIZE;
 import static mx.gob.cultura.portal.utils.Constants.TOTAL_PAGES;
+import mx.gob.cultura.portal.utils.Utils;
 
 /**
  *
@@ -112,11 +117,11 @@ public class MyCollections extends GenericResource {
             setCovers(paramRequest, collectionList, 3);
             request.setAttribute(FULL_LIST, collectionList);
             request.setAttribute(PARAM_REQUEST, paramRequest);
-            request.setAttribute("mycollections", collectionList);
             total = collectionList.size();
             request.setAttribute(NUM_RECORDS_TOTAL, total);
             request.setAttribute(COUNT_BY_STAT, total);
             request.setAttribute(COUNT_BY_USER, count);
+            request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_ALL);
             init(request);
             rd.include(request, response);
         } catch (ServletException se) {
@@ -153,7 +158,6 @@ public class MyCollections extends GenericResource {
         String path = "/swbadmin/jsp/rnc/collections/init.jsp";
         try {
             request.setAttribute(PARAM_REQUEST, paramRequest);
-            request.setAttribute("mycollections", new ArrayList<>());
             if (null != user && user.isSigned()) total = count(user.getId()).intValue();
             if (total > 0) {
                 path = "/swbadmin/jsp/rnc/collections/mycollections.jsp";
@@ -162,7 +166,6 @@ public class MyCollections extends GenericResource {
                 setCovers(paramRequest, collectionList, 3);
                 request.setAttribute(FULL_LIST, collectionList);
                 request.setAttribute(PARAM_REQUEST, paramRequest);
-                request.setAttribute("mycollections", collectionList);
                 request.setAttribute(NUM_RECORDS_TOTAL, total);
                 request.setAttribute(COUNT_BY_USER, total);
                 init(request);
@@ -172,6 +175,37 @@ public class MyCollections extends GenericResource {
             RequestDispatcher rd = request.getRequestDispatcher(path);
             rd.include(request, response);
         } catch (ServletException se) {
+            LOG.info(se.getMessage());
+        }
+    }
+    
+    public void doPage(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
+        int pagenum = 0;
+        String p = request.getParameter("p");
+        List<Collection> collectionList = null;
+        if (null != p)  pagenum = Integer.parseInt(p);
+        if (pagenum<=0) pagenum = 1;
+        request.setAttribute(NUM_PAGE_LIST, pagenum);
+        request.setAttribute(PAGE_NUM_ROW, NUM_ROW);
+        if (Utils.toInt(request.getParameter(COLLECTION_TYPE)) == COLLECTION_TYPE_ALL) {
+            collectionList = collectionList(null);
+            request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_ALL);
+        } else {
+            collectionList = collectionList(paramRequest.getUser());
+            request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_OWN);
+        }
+        setAuthors(paramRequest, collectionList);
+        setCovers(paramRequest, collectionList, 3);
+        request.setAttribute(FULL_LIST, collectionList);
+        
+        request.setAttribute(NUM_RECORDS_TOTAL, collectionList.size());
+        page(pagenum, request);
+        String url = "/swbadmin/jsp/rnc/collections/rows.jsp";
+        RequestDispatcher rd = request.getRequestDispatcher(url);
+        try {
+            request.setAttribute(PARAM_REQUEST, paramRequest);
+            rd.include(request, response);
+        }catch (ServletException se) {
             LOG.info(se.getMessage());
         }
     }
@@ -326,25 +360,6 @@ public class MyCollections extends GenericResource {
 	pw.flush();
 	pw.close();
 	response.flushBuffer();
-    }
-    
-    public void doPage(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
-        int pagenum = 0;
-        String p = request.getParameter("p");
-        if (null != p)
-            pagenum = Integer.parseInt(p);
-        if (pagenum<=0) pagenum = 1;
-        request.setAttribute(NUM_PAGE_LIST, pagenum);
-        request.setAttribute(PAGE_NUM_ROW, NUM_ROW);
-        page(pagenum, request);
-        String url = "/swbadmin/jsp/rnc/collections/rows.jsp";
-        RequestDispatcher rd = request.getRequestDispatcher(url);
-        try {
-            request.setAttribute(PARAM_REQUEST, paramRequest);
-            rd.include(request, response);
-        }catch (ServletException se) {
-            LOG.info(se.getMessage());
-        }
     }
     
     public void doAdd(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
@@ -519,7 +534,7 @@ public class MyCollections extends GenericResource {
     }
     
      private Collection setCollection(HttpServletRequest request) {
-        Collection collection = new Collection(request.getParameter("title").trim(), null != request.getParameter("status"), request.getParameter("description").trim());
+        Collection collection = new Collection(request.getParameter("title").trim(), Utils.getStatus(request.getParameter("status")), request.getParameter("description").trim());
         return collection;
     }
      

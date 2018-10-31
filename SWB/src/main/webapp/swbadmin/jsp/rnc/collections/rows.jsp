@@ -6,30 +6,27 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, mx.gob.cultura.portal.response.Collection, java.util.List"%>
 <%
-    List<Collection> boards = (List<Collection>) request.getAttribute("mycollections");
+    List<Collection> boards = (List<Collection>)request.getAttribute("PAGE_LIST");
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
     uels.setCallMethod(SWBParamRequest.Call_CONTENT);
     WebSite site = paramRequest.getWebPage().getWebSite();
 %>
-<div id="references">
+
     <div class="row mosaico-contenedor">
+	<div class="col-6 col-md-4">
+            <div class="mosaico radius-overflow">
+                <a href="#" data-toggle="modal" data-target="#modalExh">
+                    <span class="ion-ios-plus rojo"></span>
+                </a>
+            </div>
+            <div class="mosaico-txt ">
+                <p><span class="ion-locked rojo"></span> Crear colección</p>
+                <p></p>
+            </div>
+        </div>
+                
 	<%
-            if (MyCollections.MODE_VIEW_MYALL.equalsIgnoreCase(paramRequest.getMode())) {
-	%>
-                <div class="col-6 col-md-4">
-                    <div class="mosaico radius-overflow">
-                        <a href="#" data-toggle="modal" data-target="#modalExh">
-                            <span class="ion-ios-plus rojo"></span>
-                        </a>
-                    </div>
-                    <div class="mosaico-txt ">
-                        <p><span class="ion-locked rojo"></span> Crear colección</p>
-                        <p>Lorem ipsum dolor sit</p>
-                    </div>
-                </div>
-	<%
-            }	
             if (!boards.isEmpty()) {
 		for (Collection c : boards) {
 	%>
@@ -86,4 +83,4 @@
             }
         %>
     </div>
-</div>
+    <jsp:include page="pager.jsp" flush="true"/>

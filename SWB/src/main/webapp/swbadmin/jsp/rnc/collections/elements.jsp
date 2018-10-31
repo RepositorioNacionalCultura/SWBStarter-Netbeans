@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.portal.api.SWBResourceURL, org.semanticwb.model.WebPage" %>
+<%@page import="org.semanticwb.model.User"%>
+<%@ page import="mx.gob.cultura.portal.utils.Utils, org.semanticwb.SWBPortal, java.util.List, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.portal.api.SWBResourceURL, org.semanticwb.model.WebPage" %>
 <%@ page import="mx.gob.cultura.portal.response.Title, mx.gob.cultura.portal.response.Collection, mx.gob.cultura.portal.response.DigitalObject, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Identifier, java.util.Date, org.bson.types.ObjectId"%>
 <%
     Collection c = (Collection)request.getAttribute("collection");
@@ -16,7 +17,11 @@
     SWBResourceURL delURL = paramRequest.getActionUrl();
     delURL.setMode(SWBResourceURL.Mode_VIEW);
     delURL.setAction(MyCollections.ACTION_DEL_FAV);
+    String useridColl = c.getUserid();
+    User usr = site.getUserRepository().getUser(useridColl);
+    String scriptFB = Utils.getScriptFBShare(request);
 %>
+<%=scriptFB%>
 <script>
     $(document).ready(function () {
         $("#alertSuccess").on('hidden.bs.modal', function () {
@@ -85,17 +90,21 @@
             <div class="precontent">
                 <h2 class="oswM rojo"><%=c.getTitle()%></h2>
                 <div class="row perfilHead">
-                    <img src="/work/models/repositorio/img/agregado-07.jpg" class="circle">
-                    <p><%=c.getUserName()%>,&nbsp;&nbsp;<div id="fdate"></div></p>
+                    <% if (null != usr && null != usr.getPhoto()) { %>
+                        <img src="<%=SWBPortal.getWebWorkPath()+usr.getPhoto()%>" class="circle">
+                    <% } else {%>
+                        <img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">
+                    <% } %>
+                    <p><%=c.getUserName()!=null&&c.getUserName().trim().length()>0?c.getUserName():"Sin Nombre Configurado"%>,&nbsp;&nbsp;<div id="fdate"></div></p>
                 </div>
                 <p><%=_msg%></p>
                 <p><%=c.getDescription()%></p>
-                <!--hr class="rojo">
+                <hr class="rojo">
                 <div class="row redes">
-                    <a href="#"><span class="ion-social-facebook"></span> Compartir</a>
-                    <a href="#"><span class="ion-social-twitter"></span> Tweet</a>
-                    <a href="#" class="rojo"><span class="ion-heart rojo"></span> Favoritos (356)</a>
-                </div-->
+                    <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span> Compartir</a>
+                    <a href="#"  _class="twitter-share-button" data-show-count="false" target="_new" onclick="window.open(url2Share,'', 'width=500,height=500')"><span class="ion-social-twitter"></span> Tweet</a>
+                    <!--a href="#" class="rojo"><span class="ion-heart rojo"></span> Favoritos (356)</a-->
+                </div>
                 <%
                     if (itemsList.isEmpty()) {
 		%>
@@ -103,7 +112,7 @@
                             <div class="contactabloque-in ">
                                 <p class="oswM">Busca obras de tu interés<br>
                                     y agrégalas a tus colecciones</p>
-				<button class="btn-cultura btn-rojo" type="submit">EXPLORAR <span class="ion-chevron-right"></span></button>
+				<button class="btn-cultura btn-rojo" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/explorar');" type="button">EXPLORAR <span class="ion-chevron-right"></span></button>
                             </div>
 			</div>
                 <% } %>
@@ -127,20 +136,17 @@
                     <div id="resultados" class="card-columns">
                         <%
                             for (Entry item : itemsList) {
-                                Title title = new Title();
-                                List<String> creators = item.getCreator();
-                                List<Title> titles = item.getRecordtitle();
                                 List<String> resourcetype = item.getResourcetype();
-                                if (!titles.isEmpty()) title = titles.get(0);
-                                String creator = creators.size() > 0 ? creators.get(0) : "";
-                                String type = resourcetype.size() > 0 ? resourcetype.get(0) : "";
+                                String title = Utils.replaceSpecialChars(Utils.getTitle(item.getRecordtitle(), 0));
+                                String creator = Utils.getRowData(item.getCreator(), 0, false);
+                                String type = null != resourcetype && resourcetype.size() > 0 ? resourcetype.get(0) : "";
                         %>
                         <div class="pieza-res card">
                             <a href="<%=uri%>?id=<%=item.getId()%>">
                                 <img src="<%=item.getResourcethumbnail()%>" />
                             </a>
                             <div>
-                                <p class="oswB azul tit"><a href="<%=uri%>?id=<%=item.getId()%>"><%=title.getValue()%></a></p>
+                                <p class="oswB azul tit"><a href="<%=uri%>?id=<%=item.getId()%>"><%=title%></a></p>
                                 <p class="azul autor"><a href="#"><%=creator%></a></p>
                                 <p class="tipo"><%=type%></p>
                                 <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned() && paramRequest.getUser().getId().equalsIgnoreCase(c.getUserid())) {%>
@@ -159,7 +165,7 @@
     <!--resultados -->
     <div class="coleccionSecc-03 col-12 col-md-8 col-lg-6">
         <div class="agregarColecc ">
-            <a href="#" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/coleccion');">
+            <a href="#" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/explorar');">
                 <span class="ion-ios-plus"></span>
                 <em class="oswM">Agregar  desde la colección</em>
                 <span class="btn-cultura">Explorar <span class="ion-chevron-right"></span></span>
@@ -200,3 +206,7 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    var url2Share = "https://twitter.com/intent/tweet?original_referer=" + encodeURIComponent(window.location) + "&url=" + encodeURIComponent(window.location);
+</script>

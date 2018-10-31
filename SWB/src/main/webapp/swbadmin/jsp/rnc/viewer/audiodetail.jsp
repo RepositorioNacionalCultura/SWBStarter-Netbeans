@@ -4,13 +4,16 @@
     Author     : sergio.tellez
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
-<%@ page import="mx.gob.cultura.portal.utils.Utils, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBResourceURL, org.semanticwb.portal.api.SWBParamRequest"%>
+<%@ page import="mx.gob.cultura.portal.resources.ArtDetail, mx.gob.cultura.portal.utils.Utils, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBResourceURL, org.semanticwb.portal.api.SWBParamRequest"%>
 <%@ page import="java.util.List, java.util.ArrayList, mx.gob.cultura.portal.response.Title, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.DateDocument, mx.gob.cultura.portal.response.DigitalObject"%>
 
 <%
     int audios = 0;
+    String suri = "";
     String title = "";
     String creator = "";
+    List<Entry> series = new ArrayList<>();
+    StringBuilder callBack = new StringBuilder();
     StringBuilder divVisor = new StringBuilder();
     StringBuilder scriptHeader = new StringBuilder();
     StringBuilder scriptCallVisor = new StringBuilder();
@@ -18,8 +21,21 @@
     Entry entry = (Entry)request.getAttribute("entry");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     WebSite site = paramRequest.getWebPage().getWebSite();
+    SWBResourceURL tchURL = paramRequest.getRenderUrl().setMode(ArtDetail.MODE_TCH_DTA);
+    tchURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     if (null != entry) {
-	if (null != entry.getDigitalObject()) {
+        suri = entry.getId();
+        if (null != entry.getSerie() && null != request.getAttribute("serie")) {
+            series = (List<Entry>)request.getAttribute("serie");
+            digitalobjects = Utils.getAudio(entry, series);
+            callBack.append(",")
+                .append("\"callbacks\": {")
+		.append("	'song_change': function() {")
+		.append("		doSerie(Amplitude.getActiveIndex(),'").append(suri).append("');")
+		.append("	}")
+		.append("}");
+	}else digitalobjects = entry.getDigitalObject();
+	if (null != digitalobjects) {
             digitalobjects = entry.getDigitalObject();
             audios = null != digitalobjects ? digitalobjects.size() : 0;
             title = Utils.replaceSpecialChars(Utils.getTitle(entry.getRecordtitle(), 0));
@@ -50,6 +66,7 @@
                     }
                     if (scriptCallVisor.length() > 0) scriptCallVisor.deleteCharAt(scriptCallVisor.length());
                     scriptCallVisor.append("       ]")
+                        .append(callBack)
 			.append("	});")
 			.append("</script>");
             }
@@ -60,6 +77,17 @@
 <%=scriptFB%>
 <%=scriptHeader%>
 <%=divVisor%>
+<script>
+    function doSerie(index, id) {
+        dojo.xhrPost({
+            url: '<%=tchURL%>?_index='+index+'&id='+id,
+            load: function(data) {
+		dojo.byId('tchdta').innerHTML=data;
+		location.href = '#showPage';
+            }
+        });
+    }
+</script>
 <section id="detalle" class="vis-audio">
     <jsp:include page="../flow.jsp" flush="true"/>
     <div id="idetail" class="detallelist">

@@ -5,7 +5,6 @@
  */
 package mx.gob.cultura.portal.resources;
 
-import com.google.gson.Gson;
 import org.semanticwb.Logger;
 import org.semanticwb.SWBUtils;
 import org.semanticwb.SWBPlatform;
@@ -19,7 +18,6 @@ import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceException;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
 import java.net.URL;
@@ -37,18 +35,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
 import java.util.Random;
+import mx.gob.cultura.portal.utils.Serie;
+import mx.gob.cultura.portal.utils.Amplitude;
 import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.request.ListBICRequest;
 import mx.gob.cultura.portal.response.DigitalObject;
-import mx.gob.cultura.portal.utils.Amplitud;
 import static mx.gob.cultura.portal.utils.Constants.SORT;
 import static mx.gob.cultura.portal.utils.Constants.TOTAL;
 import static mx.gob.cultura.portal.utils.Constants.WORD;
 import static mx.gob.cultura.portal.utils.Constants.FILTER;
-import static mx.gob.cultura.portal.utils.Constants.IDENTIFIER;
 import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORD;
-import mx.gob.cultura.portal.utils.Serie;
+import static mx.gob.cultura.portal.utils.Constants.IDENTIFIER;
 
 /**
  *
@@ -57,10 +55,11 @@ import mx.gob.cultura.portal.utils.Serie;
 public class ArtDetail extends GenericAdmResource {
 
     private static final String POSITION = "n";
-    private static final String MODE_VISOR = "VISOR";
+    private static final String MODE_VISUAL = "VISUAL";
     private static final String MODE_DIGITAL = "DIGITAL";
     
     public static final String MODE_RES_ADD = "RES_ADD";
+    public static final String MODE_TCH_DTA = "TCH_DTA";
     private static final Logger LOG = SWBUtils.getLogger(ArtDetail.class);
 
     @Override
@@ -69,11 +68,11 @@ public class ArtDetail extends GenericAdmResource {
         String mode = paramRequest.getMode();
         if (MODE_DIGITAL.equals(mode)) {
             doDigital(request, response, paramRequest);
-        } else if (MODE_VISOR.equals(mode)) {
-            //MODE_VISOR
-        } else if (MODE_RES_ADD.equals(mode)) {
-            redirectJsonResponse(request, response, paramRequest);
-        }else {
+        } else if (MODE_VISUAL.equals(mode)) {
+            doViewer(request, response, paramRequest);
+        } else if (MODE_TCH_DTA.equals(mode)) {
+            doTchdta(request, response, paramRequest);
+        } else {
             super.processRequest(request, response, paramRequest);
         }
     }
@@ -87,7 +86,6 @@ public class ArtDetail extends GenericAdmResource {
             if (null != uri) {
                 Entry entry = getEntry(request, uri);
                 if (null != entry) {
-                    System.out.println("DOs: " + entry.getDigitalObject());
                     int position = null != request.getParameter(POSITION) ? Utils.toInt(request.getParameter(POSITION)) : 0;
                     entry.setPosition(position);
                     DigitalObject ob = getDigitalObject(entry.getDigitalObject(), position);
@@ -113,32 +111,29 @@ public class ArtDetail extends GenericAdmResource {
         }
     }
     
-    public void redirectJsonResponse(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
-        Entry json = null;
-        Gson gson = new Gson();
-        String _index = request.getParameter("_index");
-        int index = Utils.toInt(_index)-1;
+    public void doTchdta(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
+        Entry tch = null;
+        String path = "/swbadmin/jsp/rnc/techrepl.jsp";
         String baseUri = getBaseUri(paramRequest);
         String uri = getParamUri(baseUri, request);
+        String _index = request.getParameter("_index");
+        int index = Utils.toInt(_index)-1;
         try {
             if (null != uri) {
                 Entry entry = getEntry(request, uri);
                 if (null != entry) {
                     List<Entry> serie = serie(entry, baseUri);
-                    if (index < 0 || null == serie || serie.isEmpty() || index > serie.size()) json = new Entry();
-                    else json = serie.get(index);
+                    if (index < 0 || null == serie || serie.isEmpty() || index > serie.size()) tch = entry;
+                    else tch = serie.get(index);
                 }
+                request.setAttribute("entry", tch);
             }
-        } catch (Exception se) {
+            request.setAttribute("paramRequest", paramRequest);
+            RequestDispatcher rd = request.getRequestDispatcher(path);
+            rd.include(request, response);
+        } catch (ServletException se) {
             LOG.error(se);
         }
-        response.setContentType("application/json");
-	response.setHeader("Cache-Control", "no-cache");
-	PrintWriter pw = response.getWriter();
-	pw.write(gson.toJson(json));
-	pw.flush();
-	pw.close();
-	response.flushBuffer();
     }
     
     public static Entry getEntry(HttpServletRequest request, String uri) {
@@ -157,6 +152,85 @@ public class ArtDetail extends GenericAdmResource {
         }
         return entry;
     }
+
+    public void doDigital(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
+        int iDigit = 0;
+        String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
+        if (null == baseUri || baseUri.isEmpty())
+            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
+        String uri = baseUri + "/api/v1/search?identifier=";
+        String path = "/swbadmin/jsp/rnc/digitalobj.jsp";
+        try {
+            if (null != request.getParameter(IDENTIFIER)) {
+                uri += request.getParameter(IDENTIFIER);
+                if (null != request.getParameter(POSITION))
+                    iDigit = Utils.toInt(request.getParameter(POSITION));
+                GetBICRequest req = new GetBICRequest(uri);
+                Entry entry = req.makeRequest();
+                if (null != entry) {
+                    entry.setPosition(iDigit);
+                    DigitalObject ob = getDigitalObject(entry.getDigitalObject(), iDigit);
+                    SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), iDigit);
+                    int images = null != entry.getDigitalObject() ? entry.getDigitalObject().size() : 0;
+                    if (null != request.getParameter(POSITION))
+                        path = getViewerPath(ob, MODE_DIGITAL);
+                    else path = getViewerPath(entry.getRights().getMedia().getMime(), MODE_DIGITAL);
+                    if (iDigit >= 0 && iDigit <= images) {
+                        request.setAttribute("iDigit", iDigit);
+                        request.setAttribute("digital", entry.getDigitalObject().get(iDigit));
+                    }
+                    if (ob.getMediatype().getMime().equalsIgnoreCase("wav") || ob.getMediatype().getMime().equalsIgnoreCase("mp3")) {
+                        request.setAttribute("iprev", iPrev(entry.getDigitalObject(), iDigit, ob.getMediatype().getMime()));
+                        request.setAttribute("inext", iNext(entry.getDigitalObject(), iDigit, ob.getMediatype().getMime()));
+                    }
+                    incHits(entry, baseUri, uri);
+                }
+                request.setAttribute("entry", entry);
+            }
+            setParams(request, paramRequest);
+            request.setAttribute("paramRequest", paramRequest);
+            RequestDispatcher rd = request.getRequestDispatcher(path);
+            rd.include(request, response);
+        } catch (ServletException se) {
+            LOG.error(se);
+        }
+    }
+    
+    public void doViewer(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
+        int iDigit = 0;
+        String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
+        if (null == baseUri || baseUri.isEmpty())
+            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
+        String uri = baseUri + "/api/v1/search?identifier=";
+        String path = "/swbadmin/jsp/rnc/resources/artdetail.jsp";
+        try {
+            if (null != request.getParameter(POSITION)) iDigit = Utils.toInt(request.getParameter(POSITION));
+            if (null != request.getParameter(IDENTIFIER)) {
+                uri += request.getParameter(IDENTIFIER);
+                GetBICRequest req = new GetBICRequest(uri);
+                Entry entry = req.makeRequest();
+                if (null != entry) {
+                    entry.setPosition(iDigit);
+                    int images = null != entry.getDigitalObject() ? entry.getDigitalObject().size() : 0;
+                    if (iDigit >= 0 && iDigit <= images) {
+                        request.setAttribute("iDigit", iDigit);
+                        request.setAttribute("digital", entry.getDigitalObject().get(iDigit));
+                    }
+                    DigitalObject ob = getDigitalObject(entry.getDigitalObject(), iDigit);
+                    SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), iDigit);
+                    if (null != request.getParameter(POSITION)) path = getViewerPath(ob, MODE_DIGITAL);
+                    else path = getViewerPath(entry.getRights().getMedia().getMime(), MODE_DIGITAL);
+                }
+                request.setAttribute("entry", entry);
+            }
+            path = path.replaceFirst("/rnc/", "/rnc/resources/").replaceFirst("digitalobj", "artdetail");
+            request.setAttribute("paramRequest", paramRequest);
+            RequestDispatcher rd = request.getRequestDispatcher(path);
+            rd.include(request, response);
+        } catch (ServletException se) {
+            LOG.error(se);
+        }
+    }
     
     private List<Entry> serie(Entry entry, String endPoint) {
         String key = null;
@@ -164,7 +238,7 @@ public class ArtDetail extends GenericAdmResource {
         if (null == entry) return serieList;
         if (null != entry.getSerie() && !entry.getSerie().isEmpty()) {
             key = null != entry.getSerie().get(0) && !entry.getSerie().get(0).trim().isEmpty() ? entry.getSerie().get(0) : "";
-            if (Amplitud.getSerieList().containsKey(key)) return Amplitud.getSerieList().get(key);
+            if (Amplitude.getSerieList().containsKey(key)) return Amplitude.getSerieList().get(key);
             List<Entry> records = bookCase(endPoint, key, false);
             for (Entry e : records) {
                 if (null != e.getSerie() && comparator(entry.getSerie(), e.getSerie())) {
@@ -174,7 +248,7 @@ public class ArtDetail extends GenericAdmResource {
         }
         if (!serieList.isEmpty()) {
             Collections.sort(serieList, new Serie());
-            Amplitud.getSerieList().put(key, serieList);
+            Amplitude.getSerieList().put(key, serieList);
         }
         return serieList;
     }
@@ -241,92 +315,6 @@ public class ArtDetail extends GenericAdmResource {
         if (p > 1) params.append("&p=").append(p);
         String back = (null != request.getParameter("word")) ? "javascript:location.replace('" + params.toString() + "');" : "javascript:history.go(-1)";
         return back;
-    }
-
-    public void doDigital(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
-        int iDigit = 0;
-        String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
-        if (null == baseUri || baseUri.isEmpty())
-            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
-        String uri = baseUri + "/api/v1/search?identifier=";
-        String path = "/swbadmin/jsp/rnc/digitalobj.jsp";
-        try {
-            if (null != request.getParameter(IDENTIFIER)) {
-                uri += request.getParameter(IDENTIFIER);
-                if (null != request.getParameter(POSITION))
-                    iDigit = Utils.toInt(request.getParameter(POSITION));
-                GetBICRequest req = new GetBICRequest(uri);
-                Entry entry = req.makeRequest();
-                if (null != entry) {
-                    entry.setPosition(iDigit);
-                    DigitalObject ob = getDigitalObject(entry.getDigitalObject(), iDigit);
-                    SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), iDigit);
-                    int images = null != entry.getDigitalObject() ? entry.getDigitalObject().size() : 0;
-                    if (null != request.getParameter(POSITION))
-                        path = getViewerPath(ob, MODE_DIGITAL);
-                    else path = getViewerPath(entry.getRights().getMedia().getMime(), MODE_DIGITAL);
-                    if (iDigit >= 0 && iDigit <= images) {
-                        request.setAttribute("iDigit", iDigit);
-                        request.setAttribute("digital", entry.getDigitalObject().get(iDigit));
-                    }
-                    if (ob.getMediatype().getMime().equalsIgnoreCase("wav") || ob.getMediatype().getMime().equalsIgnoreCase("mp3")) {
-                        request.setAttribute("iprev", iPrev(entry.getDigitalObject(), iDigit, ob.getMediatype().getMime()));
-                        request.setAttribute("inext", iNext(entry.getDigitalObject(), iDigit, ob.getMediatype().getMime()));
-                    }
-                    incHits(entry, baseUri, uri);
-                }
-                request.setAttribute("entry", entry);
-            }
-            setParams(request, paramRequest);
-            request.setAttribute("paramRequest", paramRequest);
-            RequestDispatcher rd = request.getRequestDispatcher(path);
-            rd.include(request, response);
-        } catch (ServletException se) {
-            LOG.error(se);
-        }
-    }
-    
-    public void doViewer(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
-        int iDigit = 0;
-        String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
-        if (null == baseUri || baseUri.isEmpty())
-            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
-        String uri = baseUri + "/api/v1/search?identifier=";
-        String path = "/swbadmin/jsp/rnc/digitalobj.jsp";
-        try {
-            if (null != request.getParameter(IDENTIFIER)) {
-                uri += request.getParameter(IDENTIFIER);
-                if (null != request.getParameter(POSITION))
-                    iDigit = Utils.toInt(request.getParameter(POSITION));
-                GetBICRequest req = new GetBICRequest(uri);
-                Entry entry = req.makeRequest();
-                if (null != entry) {
-                    entry.setPosition(iDigit);
-                    DigitalObject ob = getDigitalObject(entry.getDigitalObject(), iDigit);
-                    SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), iDigit);
-                    int images = null != entry.getDigitalObject() ? entry.getDigitalObject().size() : 0;
-                    if (null != request.getParameter(POSITION))
-                        path = getViewerPath(ob, MODE_DIGITAL);
-                    else path = getViewerPath(entry.getRights().getMedia().getMime(), MODE_DIGITAL);
-                    if (iDigit >= 0 && iDigit <= images) {
-                        request.setAttribute("iDigit", iDigit);
-                        request.setAttribute("digital", entry.getDigitalObject().get(iDigit));
-                    }
-                    if (ob.getMediatype().getMime().equalsIgnoreCase("wav") || ob.getMediatype().getMime().equalsIgnoreCase("mp3")) {
-                        request.setAttribute("iprev", iPrev(entry.getDigitalObject(), iDigit, ob.getMediatype().getMime()));
-                        request.setAttribute("inext", iNext(entry.getDigitalObject(), iDigit, ob.getMediatype().getMime()));
-                    }
-                    incHits(entry, baseUri, uri);
-                }
-                request.setAttribute("entry", entry);
-            }
-            setParams(request, paramRequest);
-            request.setAttribute("paramRequest", paramRequest);
-            RequestDispatcher rd = request.getRequestDispatcher(path);
-            rd.include(request, response);
-        } catch (ServletException se) {
-            LOG.error(se);
-        }
     }
 
     private List<Entry> explore(Entry entry, String endPoint) {

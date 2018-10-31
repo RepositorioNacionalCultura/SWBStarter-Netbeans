@@ -11,8 +11,9 @@
     Integer totalPaginas = (Integer) request.getAttribute("TOTAL_PAGES");
     Integer paginaActual = (Integer) request.getAttribute("NUM_PAGE_LIST");
     Integer paginasPorBloque = (Integer) request.getAttribute("PAGE_JUMP_SIZE");
-    Integer registrosPorPagina = (Integer) request.getAttribute("NUM_RECORDS_VISIBLE");
     Integer totalRegistros = (Integer) request.getAttribute("NUM_RECORDS_TOTAL");
+    Integer registrosPorPagina = (Integer) request.getAttribute("NUM_RECORDS_VISIBLE");
+    Integer t = null != request.getAttribute("ct") ? (Integer)request.getAttribute("ct") : 0;
     if (null == paginaActual) {
         paginaActual = 1;
     }
@@ -39,12 +40,13 @@
             if (totalPages > 1) { //TODO: Check condition
                 if (numBloque == 0) {
         %>
-        <li><a href="#"><i class="ion-ios-arrow-back" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="ion-ios-arrow-back" aria-hidden="true"></i></a></li>
                 <%
                 } else {
                     int primeraPaginaBloqueAnterior = (numBloque - 1) * paginasPorBloque + 1;
+                    String it = primeraPaginaBloqueAnterior+","+t;
                 %>
-        <li><a class="ion-ios-arrow-back" aria-hidden="true" title="anterior" href="javascript:doPage(<% out.print("'" + primeraPaginaBloqueAnterior); %>')">&nbsp;</a></li>
+                    <li><a class="ion-ios-arrow-back" aria-hidden="true" title="anterior" href="javascript:doPage(<% out.print("'" + it); %>')">&nbsp;</a></li>
             <%
                     }
                 }
@@ -55,7 +57,8 @@
                 if (i == paginaActual) {
                     out.println("<li><a href=\"#\" class=\"select\">" + i + "</a></li>");
                 } else {
-                    out.println("<li><a href=\"#\" onclick=\"javascript:doPage(" + i + ")\">" + i + "</a></li>");
+                    String it = i+","+t;
+                    out.println("<li><a href=\"#\" onclick=\"javascript:doPage(" + it + ")\">" + i + "</a></li>");
                 }
             }
         %>
@@ -64,12 +67,13 @@
             if (totalPages > 1) {
                 if (numBloque == ultimoBloque || totalRegistros == 0) {
         %>
-        <li><a href="#"><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
                 <%
                 } else {
                     int primeraPaginaBloqueSiguiente = (numBloque + 1) * paginasPorBloque + 1;
+                    String it = primeraPaginaBloqueSiguiente+","+t;
                 %>
-        <li><a href="#" onclick="doPage('<%= primeraPaginaBloqueSiguiente%>')"><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
+        <li><a href="#" onclick="doPage('<%= it%>')"><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
                 <%
                         }
                     }

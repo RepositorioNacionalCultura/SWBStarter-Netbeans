@@ -45,6 +45,8 @@ import mx.gob.cultura.portal.response.Rights;
 import mx.gob.cultura.portal.response.CountName;
 import mx.gob.cultura.portal.response.Aggregation;
 import mx.gob.cultura.portal.response.DigitalObject;
+import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PRIVATE;
+import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PUBLIC;
 
 import org.w3c.dom.Element;
 
@@ -81,6 +83,18 @@ public class Utils {
         data.append("<tr>")
             .append("   <td>").append(locale).append("</td>")
             .append("   <td>").append(key).append("</td>")
+            .append("</tr>");
+        return data.toString();
+    }
+    
+    public static String getTechRepl(String property, String holder, String key, String locale, boolean basic, boolean notNull) {
+        if (notNull && (null == key || key.trim().isEmpty())) return "";
+        if (!basic && !Biblio.isRequired(property, holder)) return "";
+        StringBuilder data = new StringBuilder();
+        key = null != key ? key.trim() : "";
+        data.append("<tr>")
+            .append("   <td>").append(Utils.replaceSpecialChars(locale)).append("</td>")
+            .append("   <td>").append(Utils.replaceSpecialChars(key)).append("</td>")
             .append("</tr>");
         return data.toString();
     }
@@ -613,4 +627,10 @@ public class Utils {
         }
         return format.toUpperCase();
     }
+    
+    public static Boolean getStatus(String status) {
+         if (null == status || status.trim().isEmpty()) return COLLECTION_PUBLIC;
+         if (status.equalsIgnoreCase("true")) return COLLECTION_PUBLIC;
+         return COLLECTION_PRIVATE;
+     }
 }
