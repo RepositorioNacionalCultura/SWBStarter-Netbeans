@@ -1,4 +1,4 @@
-<%-- 
+x<%-- 
     Document   : mycollections
     Created on : 24/01/2018, 05:36:23 PM
     Author     : sergio.tellez
@@ -292,7 +292,7 @@
 </div>
 <!--<div class="coleccionSecc-03 col-12 col-md-8 col-lg-6">
     <div class="agregarColecc ">
-        <a href="#" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/coleccion');">
+        <a href="#" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/explorar');">
             <span class="ion-ios-plus"></span>
             <em class="oswM">Agregar  desde la colección</em>
             <span class="btn-cultura">Explorar <span class="ion-chevron-right"></span></span>
