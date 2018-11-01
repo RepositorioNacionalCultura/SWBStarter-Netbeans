@@ -625,6 +625,7 @@
 <%
         } else {  //si si existe el usuario en sesion de SWB
             WebPage wpCollections = paramsRequest.getWebPage().getWebSite().getWebPage("miscolecciones");
+            WebPage wpRegistry = paramsRequest.getWebPage().getWebSite().getWebPage("Registro");
             if (isSocialNetUser) {
                 //revisar que la sesion de la red social este activa tambien
                 //esto es parte de la funcion mystatusChangeCallback
@@ -677,6 +678,11 @@
             if (paramsRequest.getUser().getLastName()!=null && !paramsRequest.getUser().getLastName().isEmpty()) {
                 initials.append(paramsRequest.getUser().getLastName().charAt(0));
             }
+            if (initials.length()==0){
+                if (paramsRequest.getUser().getLogin()!=null && !paramsRequest.getUser().getLogin().isEmpty()){
+                    initials.append(paramsRequest.getUser().getLogin().charAt(0));
+                }
+            }
 %>
           }
             </script>
@@ -691,19 +697,26 @@
                     <a class="dropdown-item" href="<%=wpCollections.getRealUrl(paramsRequest.getUser().getLanguage())%>"><%=wpCollections.getTitle(paramsRequest.getUser().getLanguage())%></a>
 <%
             }
+            if (wpRegistry != null) {
+%>
+                    <a class="dropdown-item" href="<%=wpRegistry.getRealUrl(paramsRequest.getUser().getLanguage())%>"><%=wpRegistry.getTitle(paramsRequest.getUser().getLanguage())%></a>
+<%
+            }
+            String logoutUrl = new StringBuilder()
+                .append(SWBPlatform.getContextPath())
+                .append("/es/")
+                .append(paramsRequest.getWebPage().getWebSiteId())
+                .append("/")
+                .append("home").toString();
             if (isSocialNetUser) {
 %>
-                    <a class="dropdown-item" href="#" onclick="closeSWBSession();"><%=mainLabel%></a>
+                    <a class="dropdown-item" href="#" onclick="closeSWBSession();window.location='/login?wb_goto=<%=logoutUrl%>&wb_logout=true';"><%=mainLabel%></a>
 <%
             } else {
-                String logoutUrl = new StringBuilder()
-                        .append(SWBPlatform.getContextPath())
-                        .append("/login/")
-                        .append(paramsRequest.getWebPage().getWebSiteId())
-                        .append("/")
-                        .append(paramsRequest.getWebPage().getId()).toString();
+
+                
 %>
-                    <a class="dropdown-item" href="<%=logoutUrl%>?wb_logout=true"><%=mainLabel%></a>
+                    <a class="dropdown-item" href="/login?wb_goto=<%=logoutUrl%>&wb_logout=true"><%=mainLabel%></a>
 <%
             }
 %>
