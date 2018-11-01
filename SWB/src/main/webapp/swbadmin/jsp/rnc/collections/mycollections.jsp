@@ -223,18 +223,22 @@
 <div class="container">
     <div id="references">
         <div class="row mosaico-contenedor">
-            <div class="col-6 col-md-4">
-                <div class="mosaico radius-overflow">
-                    <a href="#" data-toggle="modal" data-target="#modalExh">
-                        <span class="ion-ios-plus rojo"></span>
-                    </a>
-                </div>
-                <div class="mosaico-txt ">
-                    <p><span class="ion-locked rojo"></span> Crear colección</p>
-                    <p></p>
-                </div>
-           </div>
             <%
+                if (MyCollections.MODE_VIEW_MYALL.equalsIgnoreCase(paramRequest.getMode()) || SWBResourceURL.Mode_VIEW.equalsIgnoreCase(paramRequest.getMode())) {
+            %>
+                    <div class="col-6 col-md-4">
+                        <div class="mosaico radius-overflow">
+                            <a href="#" data-toggle="modal" data-target="#modalExh">
+                                <span class="ion-ios-plus rojo"></span>
+                            </a>
+                        </div>
+                        <div class="mosaico-txt ">
+                            <p><span class="ion-locked rojo"></span> Crear colección</p>
+                            <p></p>
+                        </div>
+                   </div>
+            <%
+                }
                 if (null!=boards && !boards.isEmpty()) {
                     for (Collection c : boards) {
                         

@@ -14,19 +14,23 @@
 %>
 
     <div class="row mosaico-contenedor">
-	<div class="col-6 col-md-4">
-            <div class="mosaico radius-overflow">
-                <a href="#" data-toggle="modal" data-target="#modalExh">
-                    <span class="ion-ios-plus rojo"></span>
-                </a>
-            </div>
-            <div class="mosaico-txt ">
-                <p><span class="ion-locked rojo"></span> Crear colección</p>
-                <p></p>
-            </div>
-        </div>
+        <%
+            if (MyCollections.MODE_VIEW_MYALL.equalsIgnoreCase(paramRequest.getMode()) || SWBResourceURL.Mode_VIEW.equalsIgnoreCase(paramRequest.getMode())) {
+	%>
+                <div class="col-6 col-md-4">
+                    <div class="mosaico radius-overflow">
+                        <a href="#" data-toggle="modal" data-target="#modalExh">
+                            <span class="ion-ios-plus rojo"></span>
+                        </a>
+                    </div>
+                    <div class="mosaico-txt ">
+                        <p><span class="ion-locked rojo"></span> Crear colección</p>
+                        <p></p>
+                    </div>
+                </div>
                 
 	<%
+            }
             if (!boards.isEmpty()) {
 		for (Collection c : boards) {
 	%>
@@ -70,8 +74,8 @@
                             </span><%=c.getTitle()%><
                         </p>
 			<p>Curada por: <%=c.getUserName()%></p>
-                        <a href="#"><span class="ion-social-facebook"></span></a>
-                        <a href="#"><span class="ion-social-twitter"></span></a>
+                        <!--a href="#"><span class="ion-social-facebook"></span></a-->
+                        <!--a href="#"><span class="ion-social-twitter"></span></a-->
                         <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned() && paramRequest.getUser().getId().equalsIgnoreCase(c.getUserid())) {%>
                             <a href="#" onclick="messageConfirm('¿Está usted seguro de eliminar la colección?', '<%=c.getId()%>');"><span class="ion-trash-a"></span></a>
                             <a href="#" onclick="editByForm('<%=c.getId()%>');"><span class="ion-edit"></span></a>

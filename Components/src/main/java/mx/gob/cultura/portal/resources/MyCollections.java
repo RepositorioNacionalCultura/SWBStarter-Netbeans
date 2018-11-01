@@ -24,14 +24,14 @@ import mx.gob.cultura.portal.persist.CollectionMgr;
 import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Collection;
 import mx.gob.cultura.portal.request.GetBICRequest;
+import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_STAT;
+import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_USER;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION;
-import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PRIVATE;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PUBLIC;
+
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_ALL;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_OWN;
-import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_STAT;
-import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_USER;
 
 import org.semanticwb.model.User;
 import org.semanticwb.SWBPlatform;
