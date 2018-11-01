@@ -36,7 +36,6 @@
 		.append("}");
 	}else digitalobjects = entry.getDigitalObject();
 	if (null != digitalobjects) {
-            digitalobjects = entry.getDigitalObject();
             audios = null != digitalobjects ? digitalobjects.size() : 0;
             title = Utils.replaceSpecialChars(Utils.getTitle(entry.getRecordtitle(), 0));
             creator = Utils.getRowData(entry.getCreator(), 0, false);
@@ -64,7 +63,7 @@
 				.append("   },");
 			}
                     }
-                    if (scriptCallVisor.length() > 0) scriptCallVisor.deleteCharAt(scriptCallVisor.length());
+                    if (scriptCallVisor.length() > 0) scriptCallVisor.deleteCharAt(scriptCallVisor.length()-1);
                     scriptCallVisor.append("       ]")
                         .append(callBack)
 			.append("	});")

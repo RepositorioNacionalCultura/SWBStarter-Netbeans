@@ -10,9 +10,8 @@
 <%
     List<Document> references = (List<Document>) request.getAttribute("PAGE_LIST");
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
-    SWBResourceURL pageURL = paramRequest.getRenderUrl();
+    SWBResourceURL pageURL = paramRequest.getRenderUrl().setMode("PAGE");
     pageURL.setCallMethod(SWBParamRequest.Call_DIRECT);
-    pageURL.setAction("PAGE");
 %>
 <script>
     function doPage(p) {
@@ -78,6 +77,6 @@
                 %>
             </div>
         </div>
-	<jsp:include page="pager.jsp" flush="true"/>
+	<!--jsp:include page="pager.jsp" flush="true"/-->
     </div>
 </div>
