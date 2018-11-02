@@ -16,6 +16,11 @@
     String images = Utils.getFilterTypes(request, "image");
     String audios = Utils.getFilterTypes(request, "audio");
     String videos = Utils.getFilterTypes(request, "video");
+    String three = Utils.getFilterTypes(request, "3d");
+    String map = Utils.getFilterTypes(request, "map");
+    String tech = Utils.getFilterTypes(request, "mix");
+    String media = Utils.getFilterTypes(request, "multimedia");
+    String files = Utils.getFilterTypes(request, "files");
     Aggregation aggs = (Aggregation)request.getAttribute("aggs");
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     if (null != aggs) {
@@ -66,19 +71,29 @@
             if (inputElements[i].checked) {
                 if (inputElements[i].name == 'resourcetype') {
                     resourcetype += '::'+inputElements[i].value;
-		}else if (inputElements[i].name == 'mediastype') {
+		}else if (inputElements[i].name == 'rightsmedia') {
                     if ('Audio' == inputElements[i].value) {
-                        mediastype += '<%=audios%>';
+                        rightsmedia += '<%=audios%>';
                     }else if ('Texto' == inputElements[i].value) {
-			mediastype += '<%=texts%>';
+			rightsmedia += '<%=texts%>';
                     }else if ('Imagen' == inputElements[i].value) {
-			mediastype += '<%=images%>';
+			rightsmedia += '<%=images%>';
                     }else if ('Video' == inputElements[i].value) {
-			mediastype += '<%=videos%>';
+			rightsmedia += '<%=videos%>';
                     }else if ('ZIP' == inputElements[i].value) {
-                        mediastype += '<%=zips%>';
+                        rightsmedia += '<%=zips%>';
+                    }else if ('3D' == inputElements[i].value) {
+			rightsmedia += '<%=three%>';
+                    }else if ('Mapa' == inputElements[i].value) {
+                        rightsmedia += '<%=map%>';
+                    }else if ('<%=Constants.MIX%>' == inputElements[i].value) {
+                        rightsmedia += '<%=tech%>';
+                    }else if ('Multimedia' == inputElements[i].value) {
+                        rightsmedia += '<%=media%>';
+                    }else if ('Conjunto de archivos' == inputElements[i].value) {
+                        rightsmedia += '<%=files%>';
                     }else {
-                        mediastype += '::'+inputElements[i].value;
+                        rightsmedia += '::'+inputElements[i].value;
                     }
 		}else if (inputElements[i].name == 'rights') {
                     rights += '::'+inputElements[i].value;

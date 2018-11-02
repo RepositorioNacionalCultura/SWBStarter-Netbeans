@@ -86,7 +86,13 @@
         xhttp.send();
     }
 </script>
-<div class="col-md-3"><a class=" oswL" href="javascript:history.go(-1)"><i aria-hidden="true" class="fa fa-long-arrow-left"></i> Regresar</a></div>
+<div class="container miscolec">
+    <div class="regresar">
+        <button class="btn btn-rojo" onclick="javascript:history.go(-1)">
+            <span class="ion-chevron-left"></span>Regresar
+        </button>
+    </div>
+</div>
 <div class="container coleccionSecc">
     <div class="row">
         <div class="col-9 col-sm-8 coleccionSecc-01">
