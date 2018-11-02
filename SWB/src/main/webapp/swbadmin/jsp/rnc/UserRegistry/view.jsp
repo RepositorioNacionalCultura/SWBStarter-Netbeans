@@ -3,6 +3,7 @@
     Created on : 30/04/2018, 06:05:32 PM
     Author     : jose.jimenez
 --%><%@page import="mx.gob.cultura.portal.resources.UserRegistry"%>
+<%@page import="mx.gob.cultura.portal.resources.SessionInitializer"%>
 <%@page import="com.hp.hpl.jena.rdf.model.Statement"%>
 <%@page import="com.hp.hpl.jena.ontology.OntModel"%>
 <%@page import="org.semanticwb.SWBPlatform"%>
@@ -20,6 +21,10 @@
     boolean editMode;  
     boolean isAnnotator = (boolean)request.getAttribute("isAnnotator");
     boolean toBeAnnotator =false;
+    boolean canChangePwd = user.getLogin().startsWith(SessionInitializer.FACEBOOK) || 
+            user.getLogin().startsWith(SessionInitializer.GOOGLEP) ||
+            user.getLogin().startsWith(SessionInitializer.TWITTER) ? false : true;
+    
     if (user.isSigned()){
         url.setAction(SWBParamRequest.Action_EDIT);
         editMode=true;
@@ -58,20 +63,22 @@
             var retValue = true;
             if (form.checkValidity()) {
 <%
-    if (editMode) {
+    if (canChangePwd) {
+        if (editMode) {
 %>            
                 if (form.pass2 && form.pass2.value !== form.passConf.value) {
                     alert("La contraseña no coincide con la confirmación.");
                     retValue = false;
                 }
 <%
-   }else{
+        } else {
 %>  
                 if (form.pass2.value !== form.passConf.value) {
                     alert("La contraseña no coincide con la confirmación.");
                     retValue = false;
                 }            
 <%
+        }
     }
 %>            
                 if (!isEmailValid(form.email.value)) {
@@ -228,7 +235,8 @@
                 }
 %>                 
 <%
-                if(editMode){
+        if (canChangePwd) {
+                if (editMode) {
 %>                 <h4 class="rojo">Cambiar contraseña</h4>
 <%
                 }
@@ -255,6 +263,7 @@
                         <label class="privado" for="privado"><span class="ion-locked"></span> Perfil Privado</label>
                   </div-->
 <%
+        }
                 if(!editMode){
 %>        
                 <div class="form-check">

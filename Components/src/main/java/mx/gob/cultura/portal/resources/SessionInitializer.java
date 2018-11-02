@@ -36,7 +36,7 @@ public class SessionInitializer extends GenericResource {
     
     public static final String FACEBOOK = "facebook";
     
-    private static final String TWITTER = "twitter";
+    public static final String TWITTER = "twitter";
     
     public static final String GOOGLEP = "googleP";
     
