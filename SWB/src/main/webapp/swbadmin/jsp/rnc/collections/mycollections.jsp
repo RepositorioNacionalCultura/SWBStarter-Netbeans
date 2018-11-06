@@ -1,3 +1,5 @@
+<%@page import="org.semanticwb.portal.api.SWBResourceURLImp"%>
+<%@page import="org.semanticwb.model.WebPage"%>
 x<%-- 
     Document   : mycollections
     Created on : 24/01/2018, 05:36:23 PM
@@ -25,13 +27,17 @@ x<%--
     uper.setCallMethod(SWBParamRequest.Call_DIRECT);
     udel.setAction(SWBResourceURL.Action_REMOVE);
 
-    SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
-    uels.setCallMethod(SWBParamRequest.Call_CONTENT);
+    WebSite site = paramRequest.getWebPage().getWebSite();
+    WebPage wpdetail = site.getWebPage("Detalle_coleccion");
+    String uels = wpdetail.getUrl();
+//    SWBResourceURLImp uels = new SWBResourceURLImp(request, paramRequest.getResourceBase(), wpdetail, SWBResourceURL.Call_CONTENT);
+//            paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
+//    uels.setCallMethod(SWBParamRequest.Call_CONTENT);
 
     SWBResourceURL wall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_MYALL);
     wall.setCallMethod(SWBParamRequest.Call_CONTENT);
     
-    WebSite site = paramRequest.getWebPage().getWebSite();
+    
     String userLang = paramRequest.getUser().getLanguage();
 
     Integer allc = null != request.getAttribute("COUNT_BY_STAT") ? (Integer)request.getAttribute("COUNT_BY_STAT") : 0;
