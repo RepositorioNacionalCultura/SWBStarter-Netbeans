@@ -4,7 +4,7 @@
     Author     : sergio.tellez
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="org.semanticwb.SWBPortal, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.model.WebSite, mx.gob.cultura.portal.response.Collection, java.util.List"%>
+<%@ page import="org.semanticwb.SWBPortal, org.semanticwb.model.WebPage, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.model.WebSite, mx.gob.cultura.portal.response.Collection, java.util.List"%>
 <%
     List<Collection> boards = (List<Collection>)request.getAttribute("PAGE_LIST");
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
@@ -25,13 +25,17 @@
     uper.setCallMethod(SWBParamRequest.Call_DIRECT);
     udel.setAction(SWBResourceURL.Action_REMOVE);
 
-    SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
-    uels.setCallMethod(SWBParamRequest.Call_CONTENT);
+    WebSite site = paramRequest.getWebPage().getWebSite();
+    WebPage wpdetail = site.getWebPage("Detalle_coleccion");
+    String uels = wpdetail.getUrl();
+//    SWBResourceURLImp uels = new SWBResourceURLImp(request, paramRequest.getResourceBase(), wpdetail, SWBResourceURL.Call_CONTENT);
+//            paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
+//    uels.setCallMethod(SWBParamRequest.Call_CONTENT);
 
     SWBResourceURL wall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_MYALL);
     wall.setCallMethod(SWBParamRequest.Call_CONTENT);
     
-    WebSite site = paramRequest.getWebPage().getWebSite();
+    
     String userLang = paramRequest.getUser().getLanguage();
 
     Integer allc = null != request.getAttribute("COUNT_BY_STAT") ? (Integer)request.getAttribute("COUNT_BY_STAT") : 0;
