@@ -103,3 +103,20 @@ function go2Collection(id, url) {
     });
     $("#dialog-go-tree" ).dialog( "open" );
 }
+
+function share(op, status) {
+    if (status == 'false') {
+        if (op == 'fb') {
+            jQuery("#dialog-share").text("La colección debe ser pública para poder compartir en facebook.");
+        } else {
+            jQuery("#dialog-share").text("La colección debe ser pública para poder compartir en twitter.");
+        }
+        $('#alertShare').modal('show');
+    } else {
+        if (op == 'fb') {
+            fbShare();
+        } else {
+            window.open(url2Share, '', 'width=500,height=500');
+        }
+    }
+}

@@ -30,6 +30,7 @@
     Integer favs = null != c.getFavorites() ? c.getFavorites() : 0;
     String username = null != c.getUserName() && !c.getUserName().trim().isEmpty() ? c.getUserName():"Anonimo";
 %>
+<script type="text/javascript" src="/swbadmin/js/rnc/detail.js"></script>
 <%=scriptFB%>
 <script>
     $(document).ready(function () {
@@ -129,8 +130,8 @@
                 <p><%=c.getDescription()%></p>
                 <hr class="rojo">
                 <div class="row redes">
-                    <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span> Compartir</a>
-                    <a href="#"  _class="twitter-share-button" data-show-count="false" target="_new" onclick="window.open(url2Share,'', 'width=500,height=500')"><span class="ion-social-twitter"></span> Tweet</a>
+                    <a href="#" onclick="share('fb', '<%=c.getStatus()%>');"><span class="ion-social-facebook"></span> Compartir</a>
+                    <a href="#"  _class="twitter-share-button" data-show-count="false" onclick="share('tw', '<%=c.getStatus()%>');"><span class="ion-social-twitter"></span> Tweet</a>
                     <a href="#" onclick="add('<%=c.getId()%>');" class="rojo"><div id="favs"><span class="ion-heart rojo"></span> Favoritos (<%=favs%>)</a></div>l
                 </div>
                 <%
@@ -227,6 +228,23 @@
             </div>
             <div class="modal-body">
                 <div id="dialog-text"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="closeAlert" class="btn btn-sm rojo" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="alertShare" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Importante</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="dialog-share"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" id="closeAlert" class="btn btn-sm rojo" data-dismiss="modal">Cerrar</button>
