@@ -1,3 +1,5 @@
+var url2Share = "https://twitter.com/intent/tweet?original_referer=" + encodeURIComponent(window.location) + "&url=" + encodeURIComponent(window.location);
+
 function add(url, id) {
     dojo.xhrPost({
         url: url + id,

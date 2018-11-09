@@ -252,7 +252,3 @@
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    var url2Share = "https://twitter.com/intent/tweet?original_referer=" + encodeURIComponent(window.location) + "&url=" + encodeURIComponent(window.location);
-</script>
