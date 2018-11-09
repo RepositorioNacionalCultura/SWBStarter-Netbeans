@@ -47,7 +47,7 @@
                             <label for="crearDescr">Descripción (opcional)</label>
                             <textarea name="description" id="crearDescr" placeholder="250"><%=c.getDescription()%></textarea>        
                             <label for="selprivado" class="selPrivado">
-                                <input name="status" <% if (c.getStatus()) { out.println(" checked"); }%> id="selprivado" type="checkbox" aria-label="Checkbox for following text input"/>
+                                <input name="status" <% /**if (c.getStatus())**/ out.println(" checked"); %> id="selprivado" type="checkbox" aria-label="Checkbox for following text input"/>
                                 <% if (!c.getStatus()) { %><span class="ion-locked">Privado<% }else { %><span class="ion-unlocked">Público<% } %></span>
                             </label>
                         </div>
