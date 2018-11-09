@@ -5,10 +5,8 @@
  */
 package mx.gob.cultura.portal.resources;
 
-import java.util.Map;
 import java.util.List;
-import java.util.HashMap;
-
+import org.bson.Document;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -20,18 +18,25 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mx.gob.cultura.portal.persist.CollectionMgr;
+import mx.gob.cultura.portal.persist.UserCollectionMgr;
 
 import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Collection;
 import mx.gob.cultura.portal.request.GetBICRequest;
+import mx.gob.cultura.portal.response.UserCollection;
+import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_REST;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_STAT;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_USER;
+
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PUBLIC;
 
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_ALL;
+import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_FAV;
+import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_FND;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_OWN;
+import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_FAVS;
 
 import org.semanticwb.model.User;
 import org.semanticwb.SWBPlatform;
@@ -40,6 +45,8 @@ import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.GenericResource;
 import org.semanticwb.portal.api.SWBActionResponse;
 import org.semanticwb.portal.api.SWBResourceException;
+
+import mx.gob.cultura.portal.utils.Utils;
 import static mx.gob.cultura.portal.utils.Constants.FULL_LIST;
 import static mx.gob.cultura.portal.utils.Constants.MODE_PAGE;
 import static mx.gob.cultura.portal.utils.Constants.NUM_PAGE_JUMP;
@@ -51,12 +58,10 @@ import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_TOTAL;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_VISIBLE;
 
 import static mx.gob.cultura.portal.utils.Constants.PAGE_LIST;
+import static mx.gob.cultura.portal.utils.Constants.TOTAL_PAGES;
 import static mx.gob.cultura.portal.utils.Constants.PAGE_NUM_ROW;
 import static mx.gob.cultura.portal.utils.Constants.PAGE_JUMP_SIZE;
 
-import static mx.gob.cultura.portal.utils.Constants.STR_JUMP_SIZE;
-import static mx.gob.cultura.portal.utils.Constants.TOTAL_PAGES;
-import mx.gob.cultura.portal.utils.Utils;
 
 /**
  *
@@ -75,13 +80,17 @@ public class MyCollections extends GenericResource {
     public static final String MODE_VIEW_USR = "VIEW_USR";
     public static final String MODE_VIEW_ALL = "VIEW_ALL";
     public static final String ACTION_DEL_FAV = "DEL_FAV";
+    public static final String ACTION_ADD_CLF = "ADD_CLF";
+    public static final String MODE_VIEW_FIND = "VIEW_FIND";
     public static final String MODE_VIEW_MYALL = "VIEW_MYALL";
+    public static final String MODE_VIEW_MYFAV = "VIEW_MYFAV";
    
     private static final String COLLECTION_RENDER = "_collection";
     
     private static final Logger LOG = Logger.getLogger(MyCollections.class.getName());
     
     CollectionMgr mgr = CollectionMgr.getInstance();
+    UserCollectionMgr umr = UserCollectionMgr.getInstance();
     
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
@@ -101,26 +110,33 @@ public class MyCollections extends GenericResource {
             doViewAll(request, response, paramRequest);
         }else if (MODE_VIEW_MYALL.equals(mode)) {
             doViewMyAll(request, response, paramRequest);
+        }else if (MODE_VIEW_FIND.equals(mode)) {
+            doSearch(request, response, paramRequest);
+        }else if (MODE_VIEW_MYFAV.equals(mode)) {
+            doViewMyFav(request, response, paramRequest);
         }else
             super.processRequest(request, response, paramRequest);
     }
     
     public void doViewAll(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        Integer favs = 0;
         Integer total = 0;
         response.setContentType("text/html; charset=UTF-8");
         String path = "/swbadmin/jsp/rnc/collections/mycollections.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
-            int count = count(paramRequest.getUser().getId()).intValue();
-            List<Collection> collectionList = collectionList(null);
+            total = count(null, COLLECTION_PUBLIC).intValue();
+            favs = umr.countByUser(paramRequest.getUser().getId()).intValue();
+            int count = count(paramRequest.getUser().getId(), null).intValue();
+            List<Collection> collectionList = collectionList(null, 1, NUM_ROW);
             setAuthors(paramRequest, collectionList);
             setCovers(paramRequest, collectionList, 3);
             request.setAttribute(FULL_LIST, collectionList);
             request.setAttribute(PARAM_REQUEST, paramRequest);
-            total = collectionList.size();
             request.setAttribute(NUM_RECORDS_TOTAL, total);
             request.setAttribute(COUNT_BY_STAT, total);
             request.setAttribute(COUNT_BY_USER, count);
+            request.setAttribute(COUNT_BY_FAVS, favs);
             request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_ALL);
             init(request);
             rd.include(request, response);
@@ -130,19 +146,27 @@ public class MyCollections extends GenericResource {
     }
     
     public void doViewMyAll(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        Integer favs = 0;
+        Integer total = 0;
+        User user = paramRequest.getUser();
         response.setContentType("text/html; charset=UTF-8");
         String path = "/swbadmin/jsp/rnc/collections/mycollections.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
-            List<Collection> collectionList = collectionList(paramRequest.getUser());
+            if (null != user && user.isSigned()) {
+                total = count(user.getId(), null).intValue();
+                favs = umr.countByUser(paramRequest.getUser().getId()).intValue();
+            }
+            List<Collection> collectionList = collectionList(paramRequest.getUser(), 1, NUM_ROW);
             setAuthors(paramRequest, collectionList);
             setCovers(paramRequest, collectionList, 3);
             request.setAttribute(FULL_LIST, collectionList);
             request.setAttribute(PARAM_REQUEST, paramRequest);
-            request.setAttribute("mycollections", collectionList);
-            request.setAttribute(NUM_RECORDS_TOTAL, collectionList.size());
-            request.setAttribute(COUNT_BY_STAT, collectionList(null).size());
-            request.setAttribute(COUNT_BY_USER, collectionList.size());
+            //request.setAttribute("mycollections", collectionList);
+            request.setAttribute(NUM_RECORDS_TOTAL, total);
+            request.setAttribute(COUNT_BY_FAVS, favs);
+            request.setAttribute(COUNT_BY_USER, total);
+            request.setAttribute(COUNT_BY_STAT, count(null, COLLECTION_PUBLIC).intValue());
             init(request);
             rd.include(request, response);
         } catch (ServletException se) {
@@ -152,16 +176,20 @@ public class MyCollections extends GenericResource {
     
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        Integer favs = 0;
         Integer total = 0;
         User user = paramRequest.getUser();
         response.setContentType("text/html; charset=UTF-8");
         String path = "/swbadmin/jsp/rnc/collections/init.jsp";
         try {
             request.setAttribute(PARAM_REQUEST, paramRequest);
-            if (null != user && user.isSigned()) total = count(user.getId()).intValue();
+            if (null != user && user.isSigned()) {
+                total = count(user.getId(), null).intValue();
+                favs = umr.countByUser(paramRequest.getUser().getId()).intValue();
+            }
             if (total > 0) {
                 path = "/swbadmin/jsp/rnc/collections/mycollections.jsp";
-                List<Collection> collectionList = collectionList(paramRequest.getUser());
+                List<Collection> collectionList = collectionList(paramRequest.getUser(), 1, NUM_ROW);
                 setAuthors(paramRequest, collectionList);
                 setCovers(paramRequest, collectionList, 3);
                 request.setAttribute(FULL_LIST, collectionList);
@@ -171,7 +199,8 @@ public class MyCollections extends GenericResource {
                 init(request);
             }
             request.setAttribute(NUM_RECORDS_TOTAL, total);
-            request.setAttribute(COUNT_BY_STAT, collectionList(null).size());
+            request.setAttribute(COUNT_BY_FAVS, favs);
+            request.setAttribute(COUNT_BY_STAT, count(null, COLLECTION_PUBLIC).intValue());
             RequestDispatcher rd = request.getRequestDispatcher(path);
             rd.include(request, response);
         } catch (ServletException se) {
@@ -181,6 +210,7 @@ public class MyCollections extends GenericResource {
     
     public void doPage(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
         int pagenum = 0;
+        Integer total = 0;
         String p = request.getParameter("p");
         List<Collection> collectionList = null;
         if (null != p)  pagenum = Integer.parseInt(p);
@@ -188,17 +218,28 @@ public class MyCollections extends GenericResource {
         request.setAttribute(NUM_PAGE_LIST, pagenum);
         request.setAttribute(PAGE_NUM_ROW, NUM_ROW);
         if (Utils.toInt(request.getParameter(COLLECTION_TYPE)) == COLLECTION_TYPE_ALL) {
-            collectionList = collectionList(null);
+            total = count(null, COLLECTION_PUBLIC).intValue();
+            collectionList = collectionList(null, pagenum, NUM_ROW);
             request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_ALL);
-        } else {
-            collectionList = collectionList(paramRequest.getUser());
+        } else if (Utils.toInt(request.getParameter(COLLECTION_TYPE)) == COLLECTION_TYPE_FND) {
+            Document reference = getReference(request, paramRequest, pagenum);
+            total = (Integer)reference.get("records");
+            collectionList = (List<Collection>)reference.get("references");
+            request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_FND);
+        } else if (Utils.toInt(request.getParameter(COLLECTION_TYPE)) == COLLECTION_TYPE_FAV) {
+            total = umr.countByUser(paramRequest.getUser().getId()).intValue();
+            collectionList = mgr.favorites(paramRequest.getUser().getId(), pagenum, NUM_ROW);
+            request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_FAV);
+        }  else {
+            total = count(paramRequest.getUser().getId(), null).intValue();
+            collectionList = collectionList(paramRequest.getUser(), pagenum, NUM_ROW);
             request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_OWN);
         }
         setAuthors(paramRequest, collectionList);
         setCovers(paramRequest, collectionList, 3);
         request.setAttribute(FULL_LIST, collectionList);
         
-        request.setAttribute(NUM_RECORDS_TOTAL, collectionList.size());
+        request.setAttribute(NUM_RECORDS_TOTAL, total);
         page(pagenum, request);
         String url = "/swbadmin/jsp/rnc/collections/rows.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(url);
@@ -210,6 +251,73 @@ public class MyCollections extends GenericResource {
         }
     }
     
+    public void doSearch(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        response.setContentType("text/html; charset=UTF-8");
+        String path = "/swbadmin/jsp/rnc/collections/mycollections.jsp";
+        RequestDispatcher rd = request.getRequestDispatcher(path);
+        try {
+            Document reference = getReference(request, paramRequest, 1);
+            Integer results = (Integer)reference.get("records");
+            List<Collection> collectionList = (List<Collection>)reference.get("references");
+            request.setAttribute(FULL_LIST, collectionList);
+            request.setAttribute(PARAM_REQUEST, paramRequest);
+            request.setAttribute(NUM_RECORDS_TOTAL, results);
+            request.setAttribute(COUNT_BY_REST, results);
+            request.setAttribute(COUNT_BY_STAT, count(null, COLLECTION_PUBLIC).intValue());
+            request.setAttribute(COUNT_BY_USER, count(paramRequest.getUser().getId(), null).intValue());
+            request.setAttribute(COUNT_BY_FAVS, umr.countByUser(paramRequest.getUser().getId()).intValue());
+            request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_FND);
+            init(request);
+            rd.include(request, response);
+        } catch (ServletException se) {
+            LOG.info(se.getMessage());
+        }
+    }
+    
+    public void doViewMyFav(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        Integer total = 0;
+        response.setContentType("text/html; charset=UTF-8");
+        String path = "/swbadmin/jsp/rnc/collections/mycollections.jsp";
+        RequestDispatcher rd = request.getRequestDispatcher(path);
+        try {
+            total = umr.countByUser(paramRequest.getUser().getId()).intValue();
+            List<Collection> collectionList = mgr.favorites(paramRequest.getUser().getId(), 1, NUM_ROW);
+            setAuthors(paramRequest, collectionList);
+            setCovers(paramRequest, collectionList, 3);
+            request.setAttribute(FULL_LIST, collectionList);
+            request.setAttribute(PARAM_REQUEST, paramRequest);
+            request.setAttribute(NUM_RECORDS_TOTAL, total);
+            request.setAttribute(COUNT_BY_FAVS, total);
+            request.setAttribute(COUNT_BY_STAT, count(null, COLLECTION_PUBLIC).intValue());
+            request.setAttribute(COUNT_BY_USER, count(paramRequest.getUser().getId(), null).intValue());
+            request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_FAV);
+            init(request);
+            rd.include(request, response);
+        } catch (ServletException se) {
+            LOG.info(se.getMessage());
+        }
+    }
+    
+    private Document getReference(HttpServletRequest request, SWBParamRequest paramRequest, int page) {
+        Integer records = 0;
+        Document reference = new Document();
+        List<Collection> collectionList = new ArrayList<>();
+        try {
+            String criteria = null != request.getParameter("criteria") ? request.getParameter("criteria").trim() : "";
+            request.setAttribute("criteria", criteria);
+            if (!criteria.isEmpty()) records = mgr.countByCriteria(criteria).intValue();
+            if (records > 0) {
+                collectionList = mgr.findByCriteria(criteria, page, NUM_ROW);
+                setAuthors(paramRequest, collectionList);
+                setCovers(paramRequest, collectionList, 3);
+            }
+            reference.append("references", collectionList).append("records", records);
+        }catch (Exception se) {
+            LOG.info(se.getMessage());
+        }
+        return reference;
+    }
+    
     public void collectionById(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         User user = paramRequest.getUser();
         Collection collection = null;
@@ -218,12 +326,13 @@ public class MyCollections extends GenericResource {
         String path = "/swbadmin/jsp/rnc/collections/elements.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
-            if (null != user && user.isSigned() && null != request.getParameter(IDENTIFIER) /**&& !collectionList.isEmpty()**/) {
+            if (null != user && user.isSigned() && null != request.getParameter(IDENTIFIER)) {
                 collection = mgr.findById(request.getParameter(IDENTIFIER));
             }
             if (null != collection && null != collection.getElements()) {
                 list.add(collection);
                 setAuthors(paramRequest, list);
+                collection.setFavorites(umr.countByCollection(collection.getId()).intValue());
                 for (String _id : collection.getElements()) {
                     Entry entry = getEntry(paramRequest, _id);
                     if (null != entry) {
@@ -290,8 +399,9 @@ public class MyCollections extends GenericResource {
                         if (c.getId().equals(request.getParameter(IDENTIFIER))) {
                             c.setUserid(user.getId());
                             c.setTitle(collection.getTitle());
-                            c.setDescription(collection.getDescription());
                             c.setStatus(collection.getStatus());
+                            c.setDescription(collection.getDescription());
+                            c.setUserName(getAuthor(user.getId(), null, response));
                             Gson gson = new Gson();
                             response.setRenderParameter(COLLECTION_RENDER, gson.toJson(c));
                             update(c);
@@ -334,9 +444,9 @@ public class MyCollections extends GenericResource {
         }else if (ACTION_ADD.equals(response.getAction())) {
             Collection c = setCollection(request);
             if (null != user && user.isSigned() && !c.isEmpty()) {
-                //if (!exist(collectionList, c.getTitle(), null)) {
                 if (!exist(c.getTitle(), null)) {
                     c.setUserid(user.getId());
+                    c.setUserName(getAuthor(user.getId(), null, response));
                     String id = create(c);
                     if (null != id) c.setId(id);
                     collectionList.add(c);
@@ -347,6 +457,26 @@ public class MyCollections extends GenericResource {
                 response.setMode(MODE_RES_ADD);
                 response.setCallMethod(SWBParamRequest.Call_DIRECT);
             }
+        }else if (ACTION_ADD_CLF.equals(response.getAction()) && null != request.getParameter(IDENTIFIER) && !request.getParameter(IDENTIFIER).trim().isEmpty()) {
+            Gson gson = new Gson();
+            Collection c = find(request.getParameter(IDENTIFIER));
+            if (!umr.exist(user.getId(), request.getParameter(IDENTIFIER))) {
+                UserCollection uc = new UserCollection(user.getId(), request.getParameter(IDENTIFIER));
+                String _id = umr.insertUserCollection(uc);
+                if (null != _id) {
+                    c.setId(_id);
+                    c.setFavorites(umr.countByCollection(request.getParameter(IDENTIFIER)).intValue());
+                }
+            }else {
+                UserCollection uc = umr.findUserCollection(user.getId(), request.getParameter(IDENTIFIER));
+                if (null != uc) {
+                    Long result = umr.deleteUserCollection(uc.getId());
+                    if (result > 0) c.setFavorites(umr.countByCollection(request.getParameter(IDENTIFIER)).intValue());
+                }
+            }
+            response.setRenderParameter(COLLECTION_RENDER, gson.toJson(c));
+            response.setMode(MODE_RES_ADD);
+            response.setCallMethod(SWBParamRequest.Call_DIRECT);
         }else
             super.processAction(request, response);
     }
@@ -435,6 +565,16 @@ public class MyCollections extends GenericResource {
         mgr.updateCollection(c);
     }
     
+     private List<Collection> collectionList(User user, Integer from, Integer leap) {
+         List<Collection> collection = new ArrayList<>();
+        if (null != user && user.isSigned())
+            collection = mgr.collectionsByUserLimit(user.getId(), from, leap);
+        else {
+            collection = mgr.collectionsByStatusLimit(COLLECTION_PUBLIC, from, leap);
+        }
+        return collection;
+     }
+    
     private List<Collection> collectionList(User user) {
         List<Collection> collection = new ArrayList<>();
         if (null != user && user.isSigned())
@@ -466,7 +606,27 @@ public class MyCollections extends GenericResource {
         page(pagenum, request);
     }
     
-    private void page(int pagenum, HttpServletRequest request) {
+    protected void page(int pagenum, HttpServletRequest request) {
+        ArrayList<?> rows = (ArrayList<?>)request.getAttribute(FULL_LIST);
+        Integer total = (Integer)request.getAttribute(NUM_RECORDS_TOTAL);
+        if (null==total) total = 0;
+        if (null==rows) rows = new ArrayList();
+        try {
+            Integer totalPages = total/NUM_ROW;
+            if (total%NUM_ROW != 0)
+                totalPages ++;
+            request.setAttribute(TOTAL_PAGES, totalPages);
+            Integer currentLeap = (pagenum-1)/PAGE_JUMP_SIZE;
+            request.setAttribute(NUM_PAGE_JUMP, currentLeap);
+            request.setAttribute("PAGE_JUMP_SIZE", PAGE_JUMP_SIZE);
+            request.setAttribute(PAGE_LIST, rows);
+            request.setAttribute(NUM_RECORDS_VISIBLE, rows.size());
+        }catch(Exception e) {
+            LOG.info(e.getMessage());
+        }
+    }
+    
+    /**private void page(int pagenum, HttpServletRequest request) {
         List<?> rows = (List<?>)request.getAttribute(FULL_LIST);
         Integer total = (Integer)request.getAttribute("NUM_RECORDS_TOTAL");
         if (null==rows) rows = new ArrayList();
@@ -504,7 +664,7 @@ public class MyCollections extends GenericResource {
         ArrayList rowsPage = pagesRows.get(page);
         if (rowsPage==null) rowsPage = new ArrayList();
         return rowsPage;
-    }
+    }**/
     
     private String create(Collection c) {
         String id = mgr.insertCollection(c);
@@ -515,10 +675,11 @@ public class MyCollections extends GenericResource {
         return mgr.updateCollection(c);
     }
     
-    private Long count(String userid) {
+    private Long count(String userid, Boolean status) {
         Long count = 0L;
         try {
-            count = mgr.countByUser(userid);
+            if (null != userid) count = mgr.countByUser(userid);
+            else count = mgr.countAllByStatus(status);
         }catch(Exception e) {
             LOG.info(e.getMessage());
         }
@@ -538,15 +699,23 @@ public class MyCollections extends GenericResource {
         return collection;
     }
      
-     private void setAuthors(SWBParamRequest paramRequest, List<Collection> list) {
-         if (null == list || list.isEmpty()) return;
-         for (Collection c : list) {
-             if (null != c && null != c.getUserid()) {
-                  User user = paramRequest.getWebPage().getWebSite().getUserRepository().getUser(c.getUserid());
-                  c.setUserName(null != user && null != user.getFullName()? user.getFullName() : "");
-             }
-         }
-     }
+    private void setAuthors(SWBParamRequest paramRequest, List<Collection> list) {
+        if (null == list || list.isEmpty()) return;
+        for (Collection c : list) {
+            if (null != c && null != c.getUserid()) {
+                c.setUserName(getAuthor(c.getUserid(), paramRequest, null));
+            }
+        }
+    }
+     
+    private String getAuthor(String userid, SWBParamRequest paramRequest, SWBActionResponse response) {
+        User user = null;
+        if (null != paramRequest)
+            user = paramRequest.getWebPage().getWebSite().getUserRepository().getUser(userid);
+        else if (null != response)
+            user = response.getWebPage().getWebSite().getUserRepository().getUser(userid);
+        return null != user && null != user.getFullName() ? user.getFullName() : "";
+    }
      
     protected void setCovers(SWBParamRequest paramRequest, List<Collection> list,  int size) {
         String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");

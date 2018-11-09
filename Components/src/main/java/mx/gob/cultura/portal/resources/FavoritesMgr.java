@@ -67,7 +67,6 @@ public class FavoritesMgr extends GenericResource {
         if (null != user && user.isSigned() && ACTION_ADD_FAV.equals(response.getAction())) {
             if ((null == request.getParameter(IDENTIFIER) || request.getParameter(IDENTIFIER).isEmpty()) && null != request.getParameter("title")) {
                 String title = request.getParameter("title").trim();
-                //if (!exist(collectionList, title)) {
                 if (!exist(title, null)) {
                     c = new Collection(title, Utils.getStatus(request.getParameter("status")), "");
                     c.setUserid(user.getId());
@@ -160,12 +159,4 @@ public class FavoritesMgr extends GenericResource {
     private boolean exist(String title, String _id) {
         return mgr.exist(title, _id);
     }
-    
-    /**public static boolean exist(List<Collection> collectionList, String title) {
-        if (collectionList.isEmpty()) return false;
-        for (Collection c : collectionList) {
-            if (c.getTitle().equalsIgnoreCase(title)) return true;
-        }
-        return false;
-    }**/
 }

@@ -5,13 +5,17 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="org.bson.Document, mx.gob.cultura.portal.utils.Utils, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.List"%>
+<%@page import="org.bson.Document, mx.gob.cultura.portal.utils.Utils, org.semanticwb.model.Role, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.List"%>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
+    boolean haveAccess = false;
     List<Document> references = (List<Document>) request.getAttribute("PAGE_LIST");
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     SWBResourceURL pageURL = paramRequest.getRenderUrl().setMode("PAGE");
     pageURL.setCallMethod(SWBParamRequest.Call_DIRECT);
+    Role admin = paramRequest.getWebPage().getWebSite().getUserRepository().getRole("Administrador");
+    if (null != paramRequest.getUser() && paramRequest.getUser().isSigned())
+        haveAccess = null != admin && paramRequest.getUser().hasRole(admin) ? true : false;
 %>
 <script>
     function doPage(p) {
@@ -28,7 +32,7 @@
         <a name="showPage"></a>
         <div id="references">
             <div class="row">
-                <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned()) { %>
+                <% if (haveAccess) { %>
                         <div class="col-6 col-md-4 exhibi-pza">
                             <div class="mosaico radius-overflow">
                                 <a href="#" data-toggle="modal" data-target="#modalExh">

@@ -15,14 +15,20 @@
     String _msg = null != request.getParameter("_msg") && "2".equals(request.getParameter("_msg")) ? "Se actualizó correctamente en su colección." : "";
     WebPage detail = site.getWebPage("detalle");
     String uri = detail.getRealUrl(paramRequest.getUser().getLanguage());
+    
     SWBResourceURL delURL = paramRequest.getActionUrl();
     delURL.setMode(SWBResourceURL.Mode_VIEW);
     delURL.setAction(MyCollections.ACTION_DEL_FAV);
+    
+    SWBResourceURL clfURL = paramRequest.getActionUrl();
+    clfURL.setMode(SWBResourceURL.Mode_VIEW);
+    clfURL.setAction(MyCollections.ACTION_ADD_CLF);
 
-    String useridColl = c.getUserid();
-    User usr = site.getUserRepository().getUser(useridColl);
+    String userid = c.getUserid();
     String scriptFB = Utils.getScriptFBShare(request);
-
+    User usr = site.getUserRepository().getUser(userid);
+    Integer favs = null != c.getFavorites() ? c.getFavorites() : 0;
+    String username = null != c.getUserName() && !c.getUserName().trim().isEmpty() ? c.getUserName():"Anonimo";
 %>
 <%=scriptFB%>
 <script>
@@ -85,6 +91,17 @@
         xhttp.open("POST", url, true);
         xhttp.send();
     }
+    function add(id) {
+	dojo.xhrPost({
+            url: '<%=clfURL%>?id='+id,
+            load: function(data) {
+                var res = dojo.fromJson(data);
+		if (null != res.id) {
+                    dojo.byId('favs').innerHTML="<span class='ion-heart rojo'></span> Favoritos ("+res.favorites+")</a></div>";
+		}
+            }
+        });
+    }
 </script>
 <div class="container miscolec">
     <div class="regresar">
@@ -105,7 +122,7 @@
                     <% } else {%>
                         <img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">
                     <% } %>
-                    <p><%=c.getUserName()!=null&&c.getUserName().trim().length()>0?c.getUserName():"Anonimo"%>,&nbsp;&nbsp;<div id="fdate"></div></p>
+                    <p><%=username%>,&nbsp;&nbsp;<div id="fdate"></div></p>
 
                 </div>
                 <p><%=_msg%></p>
@@ -114,7 +131,7 @@
                 <div class="row redes">
                     <a href="#" onclick="fbShare();"><span class="ion-social-facebook"></span> Compartir</a>
                     <a href="#"  _class="twitter-share-button" data-show-count="false" target="_new" onclick="window.open(url2Share,'', 'width=500,height=500')"><span class="ion-social-twitter"></span> Tweet</a>
-                    <!--a href="#" class="rojo"><span class="ion-heart rojo"></span> Favoritos (356)</a-->
+                    <a href="#" onclick="add('<%=c.getId()%>');" class="rojo"><div id="favs"><span class="ion-heart rojo"></span> Favoritos (<%=favs%>)</a></div>l
                 </div>
                 <%
                     if (itemsList.isEmpty()) {

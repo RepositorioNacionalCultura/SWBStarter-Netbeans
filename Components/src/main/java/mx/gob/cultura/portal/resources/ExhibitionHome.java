@@ -46,6 +46,7 @@ import static mx.gob.cultura.portal.utils.Constants.PAGE_LIST;
 import static mx.gob.cultura.portal.utils.Constants.PAGE_JUMP_SIZE;
 import static mx.gob.cultura.portal.utils.Constants.STR_JUMP_SIZE;
 import static mx.gob.cultura.portal.utils.Constants.TOTAL_PAGES;
+import org.semanticwb.model.Role;
 
 /**
  *
@@ -74,7 +75,7 @@ public class ExhibitionHome extends GenericAdmResource {
         RequestDispatcher rd = request.getRequestDispatcher(jsppath);
         try {
             request.setAttribute(PARAM_REQUEST, paramRequest);
-            List<org.bson.Document> exhibitionList = getExhibitions(paramRequest);
+            List<org.bson.Document> exhibitionList = getExhibitions(request, paramRequest);
             request.setAttribute("exhibitions", exhibitionList);
             request.setAttribute(FULL_LIST, exhibitionList);
             request.setAttribute(NUM_RECORDS_TOTAL, exhibitionList.size());
@@ -104,11 +105,16 @@ public class ExhibitionHome extends GenericAdmResource {
         }
     }
     
-    private List<org.bson.Document> getExhibitions(SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+    private List<org.bson.Document> getExhibitions(HttpServletRequest request, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        Boolean haveAccess = false;
         WebPage pageBase = paramRequest.getWebPage();
         List<org.bson.Document> exhibitionList = new ArrayList<>();
+        Role admin = paramRequest.getWebPage().getWebSite().getUserRepository().getRole(getResourceBase().getAttribute("rolexh"));
+        if (null != admin && null != paramRequest.getUser() && paramRequest.getUser().isSigned())
+            haveAccess = paramRequest.getUser().hasRole(admin);
         if (null != getResourceBase().getAttribute("pageBase"))
             pageBase = paramRequest.getWebPage().getWebSite().getWebPage(getResourceBase().getAttribute("pageBase"));
+        request.setAttribute("haveAccess", haveAccess);
         String usrlanguage = paramRequest.getUser().getLanguage() == null ? "es" : paramRequest.getUser().getLanguage();
         Iterator<WebPage> exhibitions = pageBase.listChilds(usrlanguage, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, null);
         while (exhibitions.hasNext()) {
@@ -128,7 +134,7 @@ public class ExhibitionHome extends GenericAdmResource {
                 }else elements.add(exhibition.getProperty("posters"));
                 bson.append("posters", elements);
             }
-            if (null != paramRequest.getUser() && paramRequest.getUser().isSigned()) {
+            if (haveAccess) {
                 add = paramRequest.getUser().getId().equalsIgnoreCase(exhibition.getCreator().getId());
             }else add = exhibition.isValid() && paramRequest.getUser().haveAccess(exhibition);
             if (add)

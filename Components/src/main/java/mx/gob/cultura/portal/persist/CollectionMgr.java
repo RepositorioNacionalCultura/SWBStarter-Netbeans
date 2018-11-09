@@ -6,29 +6,30 @@
 package mx.gob.cultura.portal.persist;
 
 import java.util.List;
+import java.util.Iterator;
 import java.util.ArrayList;
 
 import com.mongodb.Block;
 import org.bson.Document;
 import org.semanticwb.Logger;
 import org.semanticwb.SWBUtils;
-
 import org.bson.types.ObjectId;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.UpdateResult;
-import mx.gob.cultura.portal.response.Collection;
-import static com.mongodb.client.model.Filters.eq;
 
-import java.util.Iterator;
 import org.semanticwb.SWBPlatform;
 import mx.gob.cultura.commons.Util;
 import mx.gob.cultura.portal.utils.Utils;
 
-
+import com.mongodb.MongoClient;
+import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Projections;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
+import mx.gob.cultura.portal.response.Collection;
+import static com.mongodb.client.model.Filters.eq;
+import mx.gob.cultura.portal.response.UserCollection;
 
 /**
  *
@@ -43,6 +44,7 @@ public class CollectionMgr {
     private String mSource = "front";
     private String mCollection = "composing";
     
+    UserCollectionMgr umr = UserCollectionMgr.getInstance();
     private static final Logger LOG = SWBUtils.getLogger(CollectionMgr.class);
   
     private CollectionMgr() {
@@ -100,23 +102,14 @@ public class CollectionMgr {
     }
     
     public List<Collection> collections(String userId) {
-        List<Collection> list = new ArrayList<>();
-        try {
-            Block<Document> c = new Block<Document>() {
-                @Override
-                public void apply(final Document document) {
-                    list.add(getCollection(document));
-                }
-           };
-            MongoCollection<Document> mongoCollection = getCollection();
-            mongoCollection.find(eq("userid", userId)).forEach(c);
-        }catch (Exception u) {
-            LOG.error(u);
-        }
-        return list;
+        return collectionsByUserLimit(userId, null, null);
     }
     
     public List<Collection> collectionsByStatus(Boolean status) {
+        return collectionsByStatusLimit(status, null, null);
+    }
+    
+    public List<Collection> collectionsByUserLimit(String userId, Integer from, Integer leap) {
         List<Collection> list = new ArrayList<>();
         try {
             Block<Document> c = new Block<Document>() {
@@ -124,26 +117,97 @@ public class CollectionMgr {
                 public void apply(final Document document) {
                     list.add(getCollection(document));
                 }
-           };
+            };
             MongoCollection<Document> mongoCollection = getCollection();
-            mongoCollection.find(eq("status", status)).forEach(c);
+            if (null != from && null != leap)
+                mongoCollection.find(eq("userid", userId)).skip(leap*(from-1)).limit(leap).forEach(c);
+            else mongoCollection.find(eq("userid", userId)).forEach(c);
         }catch (Exception u) {
             LOG.error(u);
         }
         return list;
     }
     
+    public List<Collection> collectionsByStatusLimit(Boolean status, Integer from, Integer leap) {
+        List<Collection> list = new ArrayList<>();
+        try {
+            Block<Document> c = new Block<Document>() {
+                @Override
+                public void apply(final Document document) {
+                    list.add(getCollection(document));
+                }
+            };
+            MongoCollection<Document> mongoCollection = getCollection();
+            if (null != from && null != leap)
+                mongoCollection.find(eq("status", status)).sort(getSort()).skip(leap*(from-1)).limit(leap).forEach(c);
+            else mongoCollection.find(eq("status", status)).sort(getSort()).forEach(c);
+        }catch (Exception u) {
+            LOG.error(u);
+        }
+        return list;
+    }
+    
+    public List<Collection> findByCriteria(String criteria, Integer from, Integer leap) {
+        List<Collection> list = new ArrayList<>();
+        if (null == criteria || criteria.trim().isEmpty()) return list;
+        try {
+            Block<Document> c = new Block<Document>() {
+                @Override
+                public void apply(final Document document) {
+                    list.add(getCollection(document));
+                }
+            };
+            MongoCollection<Document> mongoCollection = getCollection();
+            if (null != from && null != leap)
+                mongoCollection.find(Filters.text(criteria)).projection(Projections.metaTextScore("score")).sort(Sorts.metaTextScore("score")).skip(leap*(from-1)).limit(leap).forEach(c);
+            else mongoCollection.find(Filters.text(criteria)).projection(Projections.metaTextScore("score")).sort(Sorts.metaTextScore("score")).forEach(c);
+        }catch (Exception u) {
+            LOG.error(u);
+        }
+        return list;
+    }
+    
+    public List<Collection> favorites(String userid, Integer from, Integer leap) {
+        List<Collection> list = new ArrayList<>();
+        if (null != userid && !userid.trim().isEmpty()) {
+            List<UserCollection> lst = umr.collectionsByUserLimit(userid, from, leap);
+            if (null != lst && !lst.isEmpty()) {
+                for (UserCollection uc : lst) {
+                    list.add(this.findById(uc.getCollectionid()));
+                }
+            }
+        }
+        return list;
+    }
+
     public Long countByUser(String userId) {
         MongoCollection<Document> mongoCollection = getCollection();
         return mongoCollection.count(Filters.eq("userid", userId));
+    } 
+    
+    public Long countAllByStatus(Boolean status) {
+        MongoCollection<Document> mongoCollection = getCollection();
+        return mongoCollection.count(Filters.eq("status", status));
+    }
+    
+    public Long countByCriteria(String criteria) {
+        if (null == criteria || criteria.trim().isEmpty()) return 0L;
+        MongoCollection<Document> mongoCollection = getCollection();
+        return mongoCollection.count(Filters.text(criteria));
     }
     
     public Long deleteCollection(String _id) {
+        Long count = -1L;
         DeleteResult result = null;
         Document prev = find(_id);
         MongoCollection<Document> mongoCollection = getCollection();
         if (null != prev) result = mongoCollection.deleteOne(prev);
-        return null != result ? result.getDeletedCount() : -1;
+        if (null != result) {
+            count = result.getDeletedCount();
+            if (count > 0)
+                count = umr.deleteCollectionRecs(_id);
+        }
+        return count;
     }
     
     public Long addElement2Collection(String _id, String entry) {
@@ -163,8 +227,13 @@ public class CollectionMgr {
     
     private Document getBson(Collection collection) {
         Document bson = new Document("title", collection.getTitle())
-                .append("status", collection.getStatus()).append("description", collection.getDescription()).append("userid", collection.getUserid())
-                .append("elements", collection.getElements());
+            .append("status", collection.getStatus()).append("description", collection.getDescription()).append("userid", collection.getUserid())
+            .append ("favorites", collection.getFavorites()).append("username", collection.getUserName()).append("elements", collection.getElements());
+        return bson;
+    }
+    
+    private Document getSort() {
+        Document bson = new Document("_id", -1);
         return bson;
     }
     
@@ -174,6 +243,8 @@ public class CollectionMgr {
         collection.setId(id.toString());
         collection.setDate(id.getDate());
         collection.setUserid(bson.getString("userid"));
+        collection.setUserName(bson.getString("username"));
+        collection.setFavorites(bson.getInteger("favorites"));
         List<String> elements = new ArrayList<>();
         if (bson.get("elements") instanceof String)
             elements.add((String)bson.get("elements"));

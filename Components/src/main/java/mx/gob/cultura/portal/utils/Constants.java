@@ -23,10 +23,12 @@ public final class Constants {
     public static final String NUM_PAGE_LIST = "NUM_PAGE_LIST";
     public static final String NUM_PAGE_JUMP = "NUM_PAGE_JUMP";
     public static final String STR_JUMP_SIZE = "PAGE_JUMP_SIZE";
-    public static final String NUM_RECORDS_TOTAL = "NUM_RECORDS_TOTAL";
-    public static final String NUM_RECORDS_VISIBLE = "NUM_RECORDS_VISIBLE";
     public static final String COUNT_BY_USER = "COUNT_BY_USER";
     public static final String COUNT_BY_STAT = "COUNT_BY_STAT";
+    public static final String COUNT_BY_FAVS = "COUNT_BY_FAVS";
+    public static final String COUNT_BY_REST = "COUNT_BY_REST";
+    public static final String NUM_RECORDS_TOTAL = "NUM_RECORDS_TOTAL";
+    public static final String NUM_RECORDS_VISIBLE = "NUM_RECORDS_VISIBLE";
     
     public static final String WORD = "word";
     public static final String TOTAL = "t";
@@ -44,6 +46,8 @@ public final class Constants {
     public static final String COLLECTION_TYPE = "ct";
     public static final Integer COLLECTION_TYPE_OWN = 0;
     public static final Integer COLLECTION_TYPE_ALL = 1;
+    public static final Integer COLLECTION_TYPE_FND = 2;
+    public static final Integer COLLECTION_TYPE_FAV = 3;
     
     public static final Integer REQUIRED = 1;
     public static final Integer COMPLEMENTARY = 2;

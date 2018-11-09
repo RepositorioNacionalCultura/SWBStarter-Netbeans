@@ -28,21 +28,29 @@
     WebSite site = paramRequest.getWebPage().getWebSite();
     WebPage wpdetail = site.getWebPage("Detalle_coleccion");
     String uels = wpdetail.getUrl();
-//    SWBResourceURLImp uels = new SWBResourceURLImp(request, paramRequest.getResourceBase(), wpdetail, SWBResourceURL.Call_CONTENT);
-//            paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
-//    uels.setCallMethod(SWBParamRequest.Call_CONTENT);
+    
+    //SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
+    //uels.setCallMethod(SWBParamRequest.Call_CONTENT);
 
     SWBResourceURL wall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_MYALL);
     wall.setCallMethod(SWBParamRequest.Call_CONTENT);
     
-    
     String userLang = paramRequest.getUser().getLanguage();
-
-    Integer allc = null != request.getAttribute("COUNT_BY_STAT") ? (Integer)request.getAttribute("COUNT_BY_STAT") : 0;
-    Integer cusr = null != request.getAttribute("COUNT_BY_USER") ? (Integer)request.getAttribute("COUNT_BY_USER"): 0;
         
     SWBResourceURL uall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_ALL);
     uall.setCallMethod(SWBParamRequest.Call_CONTENT);
+    
+    SWBResourceURL find = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_FIND);
+    find.setCallMethod(SWBParamRequest.Call_CONTENT);
+
+    SWBResourceURL favs = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_MYFAV);
+    favs.setCallMethod(SWBParamRequest.Call_CONTENT);
+    
+    Integer allc = (Integer)request.getAttribute("COUNT_BY_STAT");
+    Integer cusr = (Integer)request.getAttribute("COUNT_BY_USER");
+    Integer cfav = (Integer)request.getAttribute("COUNT_BY_FAVS");
+    
+    String f = null != request.getAttribute("criteria") ? "&criteria=" + (String)request.getAttribute("criteria") : "";
 %>
 <script>
     $(document).ready(function () {
@@ -137,10 +145,10 @@
     }
     function doPage(p,t) {
         dojo.xhrPost({
-            url: '<%=pageURL%>?p=' + p +'&ct='+t,
-            load: function (data) {
-                dojo.byId('references').innerHTML = data;
-                location.href = '#showPage';
+            url: '<%=pageURL%>?p='+p+'&ct='+t+'<%=f%>',
+            load: function(data) {
+                dojo.byId('references').innerHTML=data;
+		location.href = '#showPage';
             }
         });
     }
@@ -207,21 +215,39 @@
             <img src="/work/models/<%=site.getId()%>/img/agregado-07.jpg" class="circle">
         <% } %>
         <div>
-            <h2 class="oswM nombre"><%=null!=paramRequest.getUser() ?paramRequest.getUser().getFullName():""%></h2>
+            <h2 class="oswM nombre"><%=null!=paramRequest.getUser() ? paramRequest.getUser().getFullName():""%></h2>
             <p class="subnombre"></p>
             <button class="btn-cultura btn-blanco" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/Registro');">EDITAR PERFIL</button>
         </div>
     </div>
     <div class="buscacol">
-        <button class="" type="submit"><span class="ion-search"></span></button>
-        <input id="buscaColeccion" class="form-control" type="text" placeholder="BUSCA EN LAS COLECCIONES... " aria-label="Search">
+	<form action="<%=find%>">
+            <button class="" type="submit"><span class="ion-search"></span></button>
+            <input name="criteria" id="buscaColeccion" class="form-control" type="text" placeholder="BUSCA EN LAS COLECCIONES... " aria-label="Search">
+	</form>
     </div>
 </div>
 <div class="menuColecciones">
-    <a href="<%=wall%>" class="selected">Mis colecciones (<%=cusr%>)</a>
-    <a href="#" class="">Mis favoritos (0)</a>
-    <!--a href="#" class="">Recomendados (20)</a-->
-    <a href="<%=uall%>" class="">Todos (<%=allc%>)</a>
+    <%
+        if (MyCollections.MODE_VIEW_MYALL.equalsIgnoreCase(paramRequest.getMode()) || SWBResourceURL.Mode_VIEW.equalsIgnoreCase(paramRequest.getMode())) {
+    %>
+            Mis colecciones (<%=cusr%>)
+            <a href="<%=favs%>" class="selected">Mis favoritos (<%=cfav%>)</a>
+            <a href="<%=uall%>" class="selected">Todos (<%=allc%>)</a>
+    <% }else if (MyCollections.MODE_VIEW_FIND.equalsIgnoreCase(paramRequest.getMode())) { %>
+            <a href="<%=wall%>" class="selected">Mis colecciones(<%=cusr%>)</a>
+            <a href="<%=favs%>" class="selected">Mis favoritos (<%=cfav%>)</a>
+            <a href="<%=uall%>" class="selected">Todos (<%=allc%>)</a>
+    <% }else if (MyCollections.MODE_VIEW_MYFAV.equalsIgnoreCase(paramRequest.getMode())) { %>
+            <a href="<%=wall%>" class="selected">Mis colecciones(<%=cusr%>)</a>
+            <a href="#" class="">Mis favoritos (<%=cfav%>)</a>
+            <a href="<%=uall%>" class="selected">Todos (<%=allc%>)</a>
+    <% }else { %> 
+            <a href="<%=wall%>" class="selected">Mis colecciones(<%=cusr%>)</a>
+            <a href="<%=favs%>" class="selected">Mis favoritos (<%=cfav%>)</a>
+            Todos (<%=allc%>)
+    <%  } %>
+    <!--a href="#" class="selected">Recomendados (20)</a-->
     <!--a href="#" class="">Temas (1)</a-->
 </div>
 <div class="container">
@@ -245,7 +271,7 @@
                 }
                 if (null!=boards && !boards.isEmpty()) {
                     for (Collection c : boards) {
-                        
+                        String username = null != c.getUserName() && !c.getUserName().trim().isEmpty() ? c.getUserName() : "Anonimo";
             %>
                         <div class="col-6 col-md-4">
                             <%	if (c.getCovers().isEmpty()) {	%>
@@ -281,7 +307,7 @@
                                 <p>
                                     <% if (!c.getStatus()) { %><span class="ion-locked rojo"><% } else { %><span class="ion-unlocked rojo"><% }%>
                                         </span><%=c.getTitle()%></p>
-                                <p>Curada por: <%=c.getUserName()%></p>
+                                <p>Curada por: <%=username%></p>
                                 <!--a href="#"><span class="ion-social-facebook"></span></a-->
                                 <!--a href="#"><span class="ion-social-twitter"></span></a-->
                                 <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned() && paramRequest.getUser().getId().equalsIgnoreCase(c.getUserid())) {%>
@@ -298,7 +324,7 @@
         <jsp:include page="pager.jsp" flush="true"/>
     </div>
 </div>
-<!--<div class="coleccionSecc-03 col-12 col-md-8 col-lg-6">
+<<div class="coleccionSecc-03 col-12 col-md-8 col-lg-6">
     <div class="agregarColecc ">
         <a href="#" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/explorar');">
             <span class="ion-ios-plus"></span>
@@ -309,7 +335,7 @@
             <img src="/work/models/repositorio/img/cabecera-carranza.jpg">
         </div>
     </div>
-</div>-->
+</div>
 <!-- MODAL -->
 <div class="modal fade" id="modalExh" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-exh modal-2col" role="document">

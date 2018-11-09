@@ -32,7 +32,10 @@ public class Collection implements Serializable {
     
     private String userName;
     
+    private Integer favorites;
+    
     public Collection(String title, Boolean status, String description) {
+        this.favorites = 0;
         this.title = title;
         this.status = status;
         this.description = description;
@@ -114,6 +117,14 @@ public class Collection implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Integer getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(Integer favorites) {
+        this.favorites = favorites;
     }
 
     @Override
