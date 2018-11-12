@@ -11,7 +11,7 @@
     String userLang = paramRequest.getUser().getLanguage();
     SWBResourceURL uedt = paramRequest.getRenderUrl().setMode(SWBResourceURL.Mode_EDIT);
     uedt.setCallMethod(SWBParamRequest.Call_DIRECT);
-    SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
+    SWBResourceURL uels = paramRequest.getRenderUrl().setMode(SWBResourceURL.Mode_VIEW);
     String _msg = null != request.getParameter("_msg") && "2".equals(request.getParameter("_msg")) ? "Se actualizó correctamente en su colección." : "";
     WebPage detail = site.getWebPage("detalle");
     String uri = detail.getRealUrl(paramRequest.getUser().getLanguage());

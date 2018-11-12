@@ -27,6 +27,7 @@ import mx.gob.cultura.portal.response.UserCollection;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_REST;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_STAT;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_USER;
+import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_FAVS;
 
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PUBLIC;
@@ -36,7 +37,6 @@ import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_ALL;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_FAV;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_FND;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_OWN;
-import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_FAVS;
 
 import org.semanticwb.model.User;
 import org.semanticwb.SWBPlatform;
@@ -69,7 +69,7 @@ import static mx.gob.cultura.portal.utils.Constants.PAGE_JUMP_SIZE;
  */
 public class MyCollections extends GenericResource {
     
-    private static final String ENTRY = "entry";
+    public static final String ENTRY = "entry";
     public static final String IDENTIFIER = "id";
     
     public static final String MODE_ADD = "ADD";
@@ -85,7 +85,7 @@ public class MyCollections extends GenericResource {
     public static final String MODE_VIEW_MYALL = "VIEW_MYALL";
     public static final String MODE_VIEW_MYFAV = "VIEW_MYFAV";
    
-    private static final String COLLECTION_RENDER = "_collection";
+    public static final String COLLECTION_RENDER = "_collection";
     
     private static final Logger LOG = Logger.getLogger(MyCollections.class.getName());
     
@@ -694,7 +694,7 @@ public class MyCollections extends GenericResource {
         return mgr.exist(title, _id);
     }
     
-     private Collection setCollection(HttpServletRequest request) {
+    private Collection setCollection(HttpServletRequest request) {
         Collection collection = new Collection(request.getParameter("title").trim(), Utils.getStatus(request.getParameter("status")), request.getParameter("description").trim());
         return collection;
     }
