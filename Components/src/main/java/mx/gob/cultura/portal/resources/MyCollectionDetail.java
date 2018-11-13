@@ -117,7 +117,7 @@ public class MyCollectionDetail extends GenericResource{
         request.setCharacterEncoding("UTF-8");
         List<Collection> collectionList = new ArrayList<>();
         if (SWBResourceURL.Action_EDIT.equals(response.getAction())) {
-            Collection collection = setCollection(request);
+            Collection collection = setCollection(request, false);
             if (null != user && user.isSigned() && !collection.isEmpty() && null != request.getParameter(IDENTIFIER)) {
                 collectionList = collectionList(user);
                 if (!mgr.exist(collection.getTitle(), request.getParameter(IDENTIFIER))) {
@@ -125,9 +125,9 @@ public class MyCollectionDetail extends GenericResource{
                         if (c.getId().equals(request.getParameter(IDENTIFIER))) {
                             c.setUserid(user.getId());
                             c.setTitle(collection.getTitle());
-                            c.setStatus(collection.getStatus());
                             c.setDescription(collection.getDescription());
                             c.setUserName(getAuthor(user.getId(), null, response));
+                            c.setStatus(Utils.getStatus(request.getParameter("status"), c.getStatus()));
                             Gson gson = new Gson();
                             response.setRenderParameter(COLLECTION_RENDER, gson.toJson(c));
                             mgr.updateCollection(c);
@@ -188,8 +188,8 @@ public class MyCollectionDetail extends GenericResource{
 	response.flushBuffer();
     }
     
-    private Collection setCollection(HttpServletRequest request) {
-        Collection collection = new Collection(request.getParameter("title").trim(), Utils.getStatus(request.getParameter("status")), request.getParameter("description").trim());
+    private Collection setCollection(HttpServletRequest request, boolean prevst) {
+        Collection collection = new Collection(request.getParameter("title").trim(), Utils.getStatus(request.getParameter("status"), prevst), request.getParameter("description").trim());
         return collection;
     }
     

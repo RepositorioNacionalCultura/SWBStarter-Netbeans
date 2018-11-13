@@ -68,7 +68,7 @@ public class FavoritesMgr extends GenericResource {
             if ((null == request.getParameter(IDENTIFIER) || request.getParameter(IDENTIFIER).isEmpty()) && null != request.getParameter("title")) {
                 String title = request.getParameter("title").trim();
                 if (!exist(title, null)) {
-                    c = new Collection(title, Utils.getStatus(request.getParameter("status")), "");
+                    c = new Collection(title, Utils.getStatus(request.getParameter("status"), false), "");
                     c.setUserid(user.getId());
                     //Integer id = collectionList.size()+1;
                     String id = mgr.insertCollection(c);

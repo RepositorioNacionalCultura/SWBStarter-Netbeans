@@ -132,7 +132,7 @@
                 <div class="row redes">
                     <a href="#" onclick="share('fb', '<%=c.getStatus()%>');"><span class="ion-social-facebook"></span> Compartir</a>
                     <a href="#"  _class="twitter-share-button" data-show-count="false" onclick="share('tw', '<%=c.getStatus()%>');"><span class="ion-social-twitter"></span> Tweet</a>
-                    <a href="#" onclick="add('<%=c.getId()%>');" class="rojo"><div id="favs"><span class="ion-heart rojo"></span> Favoritos (<%=favs%>)</a></div>l
+                    <a href="#" onclick="add('<%=c.getId()%>');" class="rojo"><div id="favs"><span class="ion-heart rojo"></span> Favoritos (<%=favs%>)</a></div>
                 </div>
                 <%
                     if (itemsList.isEmpty()) {
