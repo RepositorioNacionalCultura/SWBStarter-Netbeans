@@ -628,8 +628,8 @@ public class Utils {
         return format.toUpperCase();
     }
     
-    public static Boolean getStatus(String status) {
-         if (null == status || status.trim().isEmpty()) return COLLECTION_PUBLIC;
+    public static Boolean getStatus(String status, boolean prevst) {
+         if (null == status || status.trim().isEmpty()) return !prevst;
          if (status.equalsIgnoreCase("true")) return COLLECTION_PUBLIC;
          return COLLECTION_PRIVATE;
      }

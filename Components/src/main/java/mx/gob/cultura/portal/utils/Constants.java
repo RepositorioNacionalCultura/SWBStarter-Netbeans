@@ -43,7 +43,7 @@ public final class Constants {
     
     public static final Boolean COLLECTION_PUBLIC = true;
     public static final Boolean COLLECTION_PRIVATE = false;
-    public static final String COLLECTION_TYPE = "ct";
+    public static final String  COLLECTION_TYPE = "ct";
     public static final Integer COLLECTION_TYPE_OWN = 0;
     public static final Integer COLLECTION_TYPE_ALL = 1;
     public static final Integer COLLECTION_TYPE_FND = 2;
