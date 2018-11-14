@@ -99,7 +99,7 @@ public class AnnotationsMgr extends GenericAdmResource{
         String userid = null;
         //int currentPage = 1;
         //int totalPages = 1;
-        //String order = "";
+        String order = "modified";
         //String filter = "target";
         //String o = request.getParameter("o");
         //String f = request.getParameter("f");
@@ -124,8 +124,8 @@ public class AnnotationsMgr extends GenericAdmResource{
         
         Annotation annotation = null;
         if (user.isSigned()){
-            isAdmin=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "")));
-            isAnnotator=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", ""))); 
+            isAdmin=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "Administrador")));
+            isAnnotator=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", "Anotador"))); 
             /*if(isAdmin){                
                 annotationList= AnnotationMgr.getInstance().findByPaged(null,null,RECORDS_PER_PAGE, currentPage,order,1);
                 totalPages = AnnotationMgr.getInstance().countPages(null, null,RECORDS_PER_PAGE);
@@ -145,7 +145,7 @@ public class AnnotationsMgr extends GenericAdmResource{
             request.setAttribute("isAnnotator", isAnnotator);
 //            request.setAttribute("currentPage", currentPage);
 //            request.setAttribute("totalPages", totalPages);
-//            request.setAttribute("order", order);
+            request.setAttribute("order", order);
 //            request.setAttribute("filter", filter);
             dis.include(request, response);
         } catch (ServletException se) {
@@ -160,7 +160,7 @@ public class AnnotationsMgr extends GenericAdmResource{
         boolean isAnnotator = false;
         int currentPage = 1;
         int totalPages = 1;
-        String order = "";
+        String order = "created";
         String filter = "target";
         String o = request.getParameter("o");
         //String f = request.getParameter("f");
@@ -171,7 +171,7 @@ public class AnnotationsMgr extends GenericAdmResource{
         if (o!=null){
             switch(o){
                 case ORDER_DATE:
-                    order="modified";
+                    order="created";
                     break;
                 default:
                     order="target";
@@ -187,10 +187,10 @@ public class AnnotationsMgr extends GenericAdmResource{
             isAdmin=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "Administrador")));
             isAnnotator=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", "Anotador"))); 
             if(isAdmin){                
-                annotationList= AnnotationMgr.getInstance().findByPaged(null,null,RECORDS_PER_PAGE, currentPage,order,1);
+                annotationList= AnnotationMgr.getInstance().findByPaged(null,null,RECORDS_PER_PAGE, currentPage,order,-1);
                 totalPages = AnnotationMgr.getInstance().countPages(null, null,RECORDS_PER_PAGE);
             }else{            
-                annotationList= AnnotationMgr.getInstance().findByPaged(null,user.getId(),RECORDS_PER_PAGE, currentPage,order,1);
+                annotationList= AnnotationMgr.getInstance().findByPaged(null,user.getId(),RECORDS_PER_PAGE, currentPage,order,-1);
                 totalPages = AnnotationMgr.getInstance().countPages(null, user.getId(),RECORDS_PER_PAGE);
             }            
         }    

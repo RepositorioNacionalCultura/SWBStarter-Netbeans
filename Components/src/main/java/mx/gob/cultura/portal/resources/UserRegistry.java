@@ -521,6 +521,9 @@ public class UserRegistry extends GenericAdmResource {
         replaceString(body, "{username}", user.getFullName());
         replaceString(body, "{titlejob}", user.getSemanticObject().getRDFResource().getProperty(ont.createDatatypeProperty(UserRegistry.POSITION_TITLE_URI)).getString());
         replaceString(body, "{institution}", user.getSemanticObject().getRDFResource().getProperty(ont.createDatatypeProperty(UserRegistry.ORGANITATION_NAME_URI)).getString());
+        replaceString(body, "{email}", user.getEmail());
+        replaceString(body, "{telefono}", user.getSemanticObject().getRDFResource().getProperty(ont.createDatatypeProperty(UserRegistry.TELEPHONE_NUMBER_URI)).getString());
+        replaceString(body, "{areainteres}", user.getSemanticObject().getRDFResource().getProperty(ont.createDatatypeProperty(UserRegistry.AREA_INTEREST_URI)).getString());
 
         try {
             SWBUtils.EMAIL.sendBGEmail(this.getResourceBase().getAttribute("email", "anotador@cultura.gob.mx"),

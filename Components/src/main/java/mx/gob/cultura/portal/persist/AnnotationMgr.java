@@ -174,7 +174,7 @@ public class AnnotationMgr {
     public List<Annotation> findByTarget(String target, String creator){
         ArrayList<Annotation> list = new ArrayList<>();        
         BasicDBObject query = new BasicDBObject("target",target);      
-        BasicDBObject order = new BasicDBObject("modified",1);      
+        BasicDBObject order = new BasicDBObject("created",-1);      
         if(creator==null || creator.isEmpty()){ // del BIC y sean públicas
             query.put("moderator",new BasicDBObject("$exists",true).append("$ne",""));
         }else{ // del BIC y sean del usuario o públicas 
