@@ -28,6 +28,8 @@
     WebPage wpMng = paramRequest.getWebPage().getWebSite().getWebPage(paramRequest.getResourceBase().getAttribute("AnnMng", "AdmAnotaciones"));
     SWBResourceURLImp urlMng = new SWBResourceURLImp(request, resMng, wpMng, SWBResourceURL.UrlType_RENDER);
     urlMng.setMode(AnnotationsMgr.MODE_MANAGE);
+    urlMng.setParameter("o","date");
+    urlMng.setParameter("d","-1");
 
     if (user != null && user.isSigned() && isAnnotator) {
         SWBResourceURL saveURL = paramRequest.getRenderUrl();
