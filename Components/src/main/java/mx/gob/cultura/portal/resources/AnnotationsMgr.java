@@ -51,7 +51,7 @@ public class AnnotationsMgr extends GenericAdmResource{
     public static final String ORDER_DATE = "date"; 
     public static final String FILTER_ACCEPTED = "acp"; 
     public static final String FILTER_REJECTED = "rjc"; 
-    public static final int RECORDS_PER_PAGE= 4; 
+    public static final int RECORDS_PER_PAGE= 10; 
 
     private UserRepository userRepository;
     //public static final String DATE_PATTERN="yyyy-MM-dd";
