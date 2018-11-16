@@ -8,14 +8,11 @@
 <%@page import="org.bson.Document, mx.gob.cultura.portal.utils.Utils, org.semanticwb.model.Role, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.List"%>
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
-    boolean haveAccess = false;
-    List<Document> references = (List<Document>) request.getAttribute("PAGE_LIST");
+    List<Document> references = (List<Document>) request.getAttribute("FULL_LIST");
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     SWBResourceURL pageURL = paramRequest.getRenderUrl().setMode("PAGE");
     pageURL.setCallMethod(SWBParamRequest.Call_DIRECT);
-    Role admin = paramRequest.getWebPage().getWebSite().getUserRepository().getRole("Administrador");
-    if (null != paramRequest.getUser() && paramRequest.getUser().isSigned())
-        haveAccess = null != admin && paramRequest.getUser().hasRole(admin) ? true : false;
+    boolean haveAccess = null != request.getAttribute("haveAccess") ? (Boolean)request.getAttribute("haveAccess") : false;
 %>
 <script>
     function doPage(p) {
@@ -48,6 +45,13 @@
                     }  
                     for (Document exhibition : references) {
                         List<String> posters = Utils.getElements(exhibition, "posters");
+                        String portada = !posters.isEmpty() ? posters.get(0) : "";
+                        for (String post : posters) {
+                            if (post.contains("portada")) {
+				portada = post;
+				break;
+                            }
+			}
                 %>	
                         <div class="col-6 col-md-4 exhibi-pza">
                             <div class="borde-CCC">
@@ -56,11 +60,11 @@
                 <%
                                 if (posters.isEmpty()) {
                 %>                            				
-                                        <img src="/work/models/repositorio/img/empty.jpg"/>
+                                    <img src="/work/models/repositorio/img/empty.jpg"/>
                 <%
                                 }else {
                 %>
-                                        <img src="<%=posters.get(0)%>"/>
+                                    <img src="<%=portada%>"/>
                 <%
                                 }
                 %>
@@ -68,11 +72,11 @@
                                 </div>
                                 <p class="oswB rojo uppercase"><%=exhibition.getString("title")%></p>
                                 <p><%=exhibition.getString("author")%></p>
-                                <%  if (null != paramRequest.getUser() && paramRequest.getUser().isSigned()) { %>
-                                        <a href="#" onclick="del('<%=exhibition.getString("url")%>')"><span class="ion-trash-a"></span></a>
-                                        <a href="<%=exhibition.getString("url")%>?act=vEdit"><span class="ion-edit"></span></a>
+                                <% if (haveAccess) { %>
+                                    <a href="#" onclick="del('<%=exhibition.getString("url")%>')"><span class="ion-trash-a"></span></a>
+                                    <a href="<%=exhibition.getString("url")%>?act=vEdit"><span class="ion-edit"></span></a>
                                 <% }else { %>
-                                        <p><a href="<%=exhibition.getString("url")%>" class="vermas-1topexh uppercase">Visitar exposición</a></p>
+                                    <p><a href="<%=exhibition.getString("url")%>" class="vermas-1topexh uppercase">Visitar exposición</a></p>
                                 <% } %>
                             </div>
                         </div>

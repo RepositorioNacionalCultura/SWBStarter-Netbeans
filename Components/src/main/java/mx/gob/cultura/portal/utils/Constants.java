@@ -27,6 +27,8 @@ public final class Constants {
     public static final String COUNT_BY_STAT = "COUNT_BY_STAT";
     public static final String COUNT_BY_FAVS = "COUNT_BY_FAVS";
     public static final String COUNT_BY_REST = "COUNT_BY_REST";
+    public static final String COUNT_BY_THMS = "COUNT_BY_THMS";
+    public static final String COUNT_BY_ADVC = "COUNT_BY_ADVC";
     public static final String NUM_RECORDS_TOTAL = "NUM_RECORDS_TOTAL";
     public static final String NUM_RECORDS_VISIBLE = "NUM_RECORDS_VISIBLE";
     
@@ -48,6 +50,7 @@ public final class Constants {
     public static final Integer COLLECTION_TYPE_ALL = 1;
     public static final Integer COLLECTION_TYPE_FND = 2;
     public static final Integer COLLECTION_TYPE_FAV = 3;
+    public static final Integer COLLECTION_TYPE_ADV = 4;
     
     public static final Integer REQUIRED = 1;
     public static final Integer COMPLEMENTARY = 2;

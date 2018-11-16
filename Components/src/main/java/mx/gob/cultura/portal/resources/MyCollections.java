@@ -6,14 +6,14 @@
 package mx.gob.cultura.portal.resources;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
 import org.bson.Document;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import com.google.gson.Gson;
-import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -29,11 +29,14 @@ import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_REST;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_STAT;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_USER;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_FAVS;
+import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_THMS;
+import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_ADVC;
 
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PUBLIC;
 
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE;
+import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_ADV;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_ALL;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_FAV;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_FND;
@@ -58,11 +61,14 @@ import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_TOTAL;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_VISIBLE;
 
+import static mx.gob.cultura.portal.utils.Constants.THEME;
 import static mx.gob.cultura.portal.utils.Constants.PAGE_LIST;
 import static mx.gob.cultura.portal.utils.Constants.TOTAL_PAGES;
 import static mx.gob.cultura.portal.utils.Constants.PAGE_NUM_ROW;
 import static mx.gob.cultura.portal.utils.Constants.PAGE_JUMP_SIZE;
-import static mx.gob.cultura.portal.utils.Constants.THEME;
+
+import org.semanticwb.Logger;
+import org.semanticwb.SWBUtils;
 
 
 /**
@@ -87,10 +93,13 @@ public class MyCollections extends GenericResource {
     public static final String MODE_VIEW_MYALL = "VIEW_MYALL";
     public static final String MODE_VIEW_MYFAV = "VIEW_MYFAV";
     public static final String MODE_VIEW_THEME = "VIEW_THEME";
+    public static final String MODE_VIEW_SUGST = "VIEW_SUGST";
    
     public static final String COLLECTION_RENDER = "_collection";
     
-    private static final Logger LOG = Logger.getLogger(MyCollections.class.getName());
+    private static final Logger LOG = SWBUtils.getLogger(MyCollections.class);
+    
+    private static final HashMap<String, List<Collection>> props = new HashMap<>();
     
     CollectionMgr mgr = CollectionMgr.getInstance();
     UserCollectionMgr umr = UserCollectionMgr.getInstance();
@@ -119,6 +128,8 @@ public class MyCollections extends GenericResource {
             doViewMyFav(request, response, paramRequest);
         }else if (MODE_VIEW_THEME.equals(mode)) {
             doViewTheme(request, response, paramRequest);
+        }else if (MODE_VIEW_SUGST.equals(mode)) {
+            doViewAdvise(request, response, paramRequest);
         }else
             super.processRequest(request, response, paramRequest);
     }
@@ -144,7 +155,9 @@ public class MyCollections extends GenericResource {
             request.setAttribute(NUM_RECORDS_TOTAL, total);
             request.setAttribute(COUNT_BY_FAVS, favs);
             request.setAttribute(COUNT_BY_USER, total);
+            request.setAttribute(COUNT_BY_THMS, themes(paramRequest.getUser()));
             request.setAttribute(COUNT_BY_STAT, count(null, COLLECTION_PUBLIC).intValue());
+            request.setAttribute(COUNT_BY_ADVC, countByAdvice(getThemeCriteria(paramRequest)));
             init(request);
             rd.include(request, response);
         } catch (ServletException se) {
@@ -163,7 +176,12 @@ public class MyCollections extends GenericResource {
             request.setAttribute(PARAM_REQUEST, paramRequest);
             if (null != user && user.isSigned()) {
                 total = count(user.getId(), null).intValue();
-                favs = umr.countByUser(paramRequest.getUser().getId()).intValue();
+                try {
+                    favs = umr.countByUser(paramRequest.getUser().getId()).intValue();
+                }catch (com.mongodb.MongoTimeoutException toe) {
+                    LOG.info(toe.getMessage());
+                    favs = 0;
+                }
             }
             if (total > 0) {
                 path = "/swbadmin/jsp/rnc/collections/mycollections.jsp";
@@ -174,6 +192,8 @@ public class MyCollections extends GenericResource {
                 request.setAttribute(PARAM_REQUEST, paramRequest);
                 request.setAttribute(NUM_RECORDS_TOTAL, total);
                 request.setAttribute(COUNT_BY_USER, total);
+                request.setAttribute(COUNT_BY_THMS, themes(paramRequest.getUser()));
+                request.setAttribute(COUNT_BY_ADVC, countByAdvice(getThemeCriteria(paramRequest)));
                 init(request);
             }
             request.setAttribute(NUM_RECORDS_TOTAL, total);
@@ -205,6 +225,8 @@ public class MyCollections extends GenericResource {
             request.setAttribute(COUNT_BY_STAT, total);
             request.setAttribute(COUNT_BY_USER, count);
             request.setAttribute(COUNT_BY_FAVS, favs);
+            request.setAttribute(COUNT_BY_THMS, themes(paramRequest.getUser()));
+            request.setAttribute(COUNT_BY_ADVC, countByAdvice(getThemeCriteria(paramRequest)));
             request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_ALL);
             init(request);
             rd.include(request, response);
@@ -235,6 +257,11 @@ public class MyCollections extends GenericResource {
             total = umr.countByUser(paramRequest.getUser().getId()).intValue();
             collectionList = mgr.favorites(paramRequest.getUser().getId(), pagenum, NUM_ROW);
             request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_FAV);
+        } else if (Utils.toInt(request.getParameter(COLLECTION_TYPE)) == COLLECTION_TYPE_ADV) {
+            Document reference = getAdvise(paramRequest, pagenum, true);
+            total = (Integer)reference.get("records");
+            collectionList = (List<Collection>)reference.get("references");
+            request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_ADV);
         }  else {
             total = count(paramRequest.getUser().getId(), null).intValue();
             collectionList = collectionList(paramRequest.getUser(), pagenum, NUM_ROW);
@@ -243,7 +270,6 @@ public class MyCollections extends GenericResource {
         setAuthors(paramRequest, collectionList);
         setCovers(paramRequest, collectionList, 3);
         request.setAttribute(FULL_LIST, collectionList);
-        
         request.setAttribute(NUM_RECORDS_TOTAL, total);
         page(pagenum, request);
         String url = "/swbadmin/jsp/rnc/collections/rows.jsp";
@@ -268,10 +294,36 @@ public class MyCollections extends GenericResource {
             request.setAttribute(PARAM_REQUEST, paramRequest);
             request.setAttribute(NUM_RECORDS_TOTAL, results);
             request.setAttribute(COUNT_BY_REST, results);
+            request.setAttribute(COUNT_BY_THMS, themes(paramRequest.getUser()));
             request.setAttribute(COUNT_BY_STAT, count(null, COLLECTION_PUBLIC).intValue());
+            request.setAttribute(COUNT_BY_ADVC, countByAdvice(getThemeCriteria(paramRequest)));
             request.setAttribute(COUNT_BY_USER, count(paramRequest.getUser().getId(), null).intValue());
             request.setAttribute(COUNT_BY_FAVS, umr.countByUser(paramRequest.getUser().getId()).intValue());
             request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_FND);
+            init(request);
+            rd.include(request, response);
+        } catch (ServletException se) {
+            LOG.info(se.getMessage());
+        }
+    }
+    
+    public void doViewAdvise(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        response.setContentType("text/html; charset=UTF-8");
+        String path = "/swbadmin/jsp/rnc/collections/mycollections.jsp";
+        RequestDispatcher rd = request.getRequestDispatcher(path);
+        try {
+            Document reference = getAdvise(paramRequest, 1, true);
+            Integer results = (Integer)reference.get("records");
+            List<Collection> collectionList = (List<Collection>)reference.get("references");
+            request.setAttribute(FULL_LIST, collectionList);
+            request.setAttribute(PARAM_REQUEST, paramRequest);
+            request.setAttribute(NUM_RECORDS_TOTAL, results);
+            request.setAttribute(COUNT_BY_ADVC, results);
+            request.setAttribute(COUNT_BY_THMS, themes(paramRequest.getUser()));
+            request.setAttribute(COUNT_BY_STAT, count(null, COLLECTION_PUBLIC).intValue());
+            request.setAttribute(COUNT_BY_USER, count(paramRequest.getUser().getId(), null).intValue());
+            request.setAttribute(COUNT_BY_FAVS, umr.countByUser(paramRequest.getUser().getId()).intValue());
+            request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_ADV);
             init(request);
             rd.include(request, response);
         } catch (ServletException se) {
@@ -293,8 +345,10 @@ public class MyCollections extends GenericResource {
             request.setAttribute(PARAM_REQUEST, paramRequest);
             request.setAttribute(NUM_RECORDS_TOTAL, total);
             request.setAttribute(COUNT_BY_FAVS, total);
+            request.setAttribute(COUNT_BY_THMS, themes(paramRequest.getUser()));
             request.setAttribute(COUNT_BY_STAT, count(null, COLLECTION_PUBLIC).intValue());
             request.setAttribute(COUNT_BY_USER, count(paramRequest.getUser().getId(), null).intValue());
+            request.setAttribute(COUNT_BY_ADVC, countByAdvice(getThemeCriteria(paramRequest)));
             request.setAttribute(COLLECTION_TYPE, COLLECTION_TYPE_FAV);
             init(request);
             rd.include(request, response);
@@ -304,122 +358,26 @@ public class MyCollections extends GenericResource {
     }
     
     public void doViewTheme(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
-        String themes = "00000000";
         response.setContentType("text/html; charset=UTF-8");
         String path = "/swbadmin/jsp/rnc/collections/mycollections.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         List<Collection> collectionList = getThemes(paramRequest);
         String uels = "/"+paramRequest.getUser().getLanguage()+"/"+paramRequest.getWebPage().getWebSiteId()+"/resultados?word=*";
         try {
-            //Retrieve themes from user properties;
             request.setAttribute("uels", uels);
-            request.setAttribute(THEME, themes);
             request.setAttribute(NUM_RECORDS_TOTAL, 0);
             request.setAttribute(FULL_LIST, collectionList);
             request.setAttribute(PARAM_REQUEST, paramRequest);
+            request.setAttribute(COUNT_BY_THMS, themes(paramRequest.getUser()));
             request.setAttribute(COUNT_BY_STAT, count(null, COLLECTION_PUBLIC).intValue());
+            request.setAttribute(COUNT_BY_ADVC, countByAdvice(getThemeCriteria(paramRequest)));
             request.setAttribute(COUNT_BY_USER, count(paramRequest.getUser().getId(), null).intValue());
-            request.setAttribute(COUNT_BY_FAVS, umr.countByUser(paramRequest.getUser().getId()).intValue());
+            request.setAttribute(COUNT_BY_FAVS, countByUser(paramRequest.getUser().getId()).intValue());
             init(request);
             rd.include(request, response);
         } catch (ServletException se) {
             LOG.info(se.getMessage());
         }
-    }
-    
-    private List<Collection> getThemes(SWBParamRequest paramRequest) {
-        Collection c = null;
-        List<String> covers = null;
-        List<Collection> themes = new ArrayList<>();
-        String memorysound = "&resourcetype=Programa radiofónico::Grabación sonora::Concierto::Ópera::Partitura::cantos::Entrevista&holder=Radio Educación::Fonoteca Nacional::Centro Nacional de las Artes::Biblioteca Vasconcelos::Instituto Nacional de Estudios Históricos de las Revoluciones de México::Instituto Nacional de Bellas Artes::Instituto Nacional de Bellas Artes y Literatura::INBA Digital&theme=Memoria Sonora";
-        String memoryvisual = "&resourcetype=Fotografía::Programa de televisión::Documental::Cartel::Fotomontaje::Dibujo::Mapa::Video::Cápsula de video::Programa::Pintura::Obra gráfica&holder=Centro de la Imagen::Televisión Metropolitana S.A. de C.V.::Biblioteca de las Artes::Instituto Mexicano de Cinematografía::Dirección General de Culturas Populares::Instituto Nacional de Estudios Históricos de las Revoluciones de México::Instituto Nacional de Bellas Artes::Instituto Nacional de Bellas Artes y Literatura::INBA Digital::Instituto Nacional de Lenguas Indígenas::INALI::Museo Nacional del Virreinato::Instituto Nacional de Antropología e Historia::Mediateca::Museo Nacional de Historia::Museo de Arte Moderno&theme=Memoria Visual";
-        String release = "&resourcetype=Conferencia::Foro::Presentación::Mesa de diálogo::Seminario::Cápsula de video::Entrevista::Curso::Coloquio::Artículo de Revista::Capítulo de libro::Conversación::Guía turística::Cuaderno de trabajo::Estudio de público::Expediente técnico de denominación::Manual::Proyecto de restauración::Proyecto museográfico::Reporte de prácticas::Catálogo digital::Interactivo&holder=Centro Nacional de las Artes::Biblioteca Vasconcelos::Instituto Nacional de Estudios Históricos de las Revoluciones de México::Instituto Nacional de Bellas Artes::Instituto Nacional de Bellas Artes y Literatura::INBA Digital::Instituto Nacional de Lenguas Indígenas::INALI::Instituto Nacional de Antropología e Historia::Mediateca&theme=Memoria Visual";
-        String art = "&resourcetype=Danza::Busto::Cartel::Escultura::Estampa::Fotografía::Impreso::Manuscrito::Libro::Matriz::Ornamento::Pintura::Relieve::Alcancía::Ánfora::Capítulo de libro::Bastón::Batea::Baúl::Bolsa::Botellón::Candelero::Cartel::Cinturón::Falda::Florero::Fuete::Huarache::Jarra::Jícara::Juguete::Lazo::Mantel::Mecapal::Olla::Paragüero::Plato::Platón::Rebozo::Sarape::Sillón::Sombrero::Sopera::Taza::Tinaja::Trastero::Utensilio::Vasija::Animación::Documento::Grabación::Libro::Partitura::Presentación::Programa::Tesis::Video::Pintura de caballete::Pintura mural::Pintura mural moderna::Pintura mural novohispana::Elemento arquitectónico::Numismática::Pieza arqueológica::Pintura de caballete::Exvoto::Dibujo::Arte plumario::Cristalería::Enconchados::Vidrio::Instrumento musical::Obra gráfica::Gráfica::Obra escultórica&holder=Centro Nacional de las Artes::Museo Nacional de Arte::Instituto Nacional de Bellas Artes::Instituto Nacional de Bellas Artes y Literatura::INBA Digital::Instituto Nacional de Lenguas Indígenas::INALI::Instituto Nacional de Antropología e Historia::Mediateca::Museo Nacional del Virreinato::Museo Nacional de Historia::Museo Nacional de la Estampa::Museo de Arte Moderno::Museo Nacional de San Carlos&theme=Arte";
-        String documents ="&resourcetype=Libro::Revista::Manuscrito::Borrador::Capítulo de Libro::Documento::Tesis::Narrativa::Cuadernos de trabajo::Catálogo de exposición::Reseña::Artículo de revista::Editorial::Plano::Códice::Mapa::Número de revista::Número de revista&holder=Biblioteca de las Artes::Dirección General de Bibliotecas::Dirección General de Publicaciones::Museo Nacional de Arte::Instituto Nacional de Bellas Artes::Instituto Nacional de Bellas Artes y Literatura::INBA Digital::Instituto Nacional de Lenguas Indígenas::INALI::Instituto Nacional de Antropología e Historia::Mediateca&theme=Libros, textos y documentos";
-        String history = "&resourcetype=Curso::Coloquio::Fotografía::Programa de radio::Conferencia::Entrevista::Exposición::Foro::Premiación::Presentación::Seminario::Archivo histórico::Libro de coro::Acuerdo::Armas::Bandera::Cerámica::Códice::Contenedor::Elemento arquitectónico::Escultura::Heráldica::Herramienta::Indumentaria::Instrumento musical::Libro::Litografía::Mapa::Mapoteca::Maqueta::Máscara::Miniatura::Mobiliario::Numismática::Objeto de uso cotidiano::Objeto etnográfico::Objeto funerario::Objeto litúrgico::Ornamento::Pieza arqueológica::Pintura de caballete::Pintura mural novohispana::Plano::Resto geológico::Resto óseo::Textil::Vehículo::Vidrio::Arma::Elemento Arquitectónico::Equipo de oficina::Indumentaria::Instrumento musical::Joyería::Juguete::Miniatura::Mobiliario::Técnica Mixta::Utensilio::Vasija::Votivo::Costa del Golfo::Maya::Occidente::Aceitera::Árbol::Banca::Barreta::Barril::Baúl::Bieldo::Boletero::Bolsa::Cámara::Campana::Candado::Carrete::Coche::Cofre::Compás::Corneta::Cucharilla::Cucharón::Escatillón::Escudo::Extintor::Farola::Granada::Hielera::Inventario::Lámpara::Lechera::Llave::Locomotora::Machuelo::Manómetro::Microscopio::Modelo::Nivel::Parihuela::Pizarrón::Placa::Porta::Reloj::Resonador::Sello::Señal::Silbato::Taladro::Telegráfono::Tenaza::Teodolito::Velocímetro::Verificadora::Voltímetro&holder=Instituto Nacional de Estudios Históricos de las Revoluciones de México::Instituto Nacional de Antropología e Historia::Mediateca::Museo Nacional de Historia::Museo Nacional de Antropología::Museo Nacional de los Ferrocarriles&theme=Historia";
-        String anthropology = "&resourcetype=Ceremonia::Etnografía::Cuestionario::Elicitación::Léxico::Lista de Palabras::Transcripción::Gramática::Pintural mural prehispánica::Armas::Cerámica::Contenedor::Elemento arquitectónico::Escultura::Heráldica::Herramienta::Indumentaria::Instrumento musical::Maqueta::Mobiliario::Numismática::Objeto de uso cotidiano::Objeto de uso personal::Ornamento::Pieza arqueológica::Pintura mural prehispánica::Resto óseo::Resto vegetal::Textil::Fósil::Resto geológico::Costa del Golfo::Maya::Occidente&holder=Instituto Nacional de Lenguas Indígenas::INALI::Instituto Nacional de Antropología e Historia::Mediateca::Museo Nacional de Historia::Museo Nacional de Antropología&theme=Antropología";
-	String archeology = "&resourcetype=Ceremonia::Pieza arqueológica::Fósil::Resto geológico::Resto óseo::Herramienta::Arqueología&holder=Instituto Nacional de Lenguas Indígenas::INALI::Instituto Nacional de Antropología e Historia::Mediateca::Museo Nacional de Historia::Museo Nacional de Antropología&theme=Arqueología";
-        try {
-            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_memory_sound"), false, "");
-            c.setId(memorysound);
-            covers = new ArrayList<>();
-            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/ms.jpg");
-            c.setCovers(covers);
-            c.setDescription("1");
-            themes.add(c);
-            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_memory_visual"), false, "");
-            c.setId(memoryvisual);
-            covers = new ArrayList<>();
-            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/visual.jpg");
-            c.setCovers(covers);
-            c.setDescription("2");
-            themes.add(c);
-            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_divulgation"), false, "");
-            c.setId(release);
-            covers = new ArrayList<>();
-            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/divulgacion.jpg");
-            c.setCovers(covers);
-            c.setDescription("3");
-            themes.add(c);
-            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_art"), false, "");
-            c.setId(art);
-            covers = new ArrayList<>();
-            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/arte2.jpg");
-            c.setCovers(covers);
-            c.setDescription("4");
-            themes.add(c);
-            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_documents"), false, "");
-            c.setId(documents);
-            covers = new ArrayList<>();
-            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/libros3.jpg");
-            c.setCovers(covers);
-            c.setDescription("5");
-            themes.add(c);
-            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_history"), false, "");
-            c.setId(history);
-            covers = new ArrayList<>();
-            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/historia2.jpg");
-            c.setCovers(covers);
-            c.setDescription("6");
-            themes.add(c);
-            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_anthropology"), false, "");
-            c.setId(anthropology);
-            covers = new ArrayList<>();
-            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/antropologia2.jpg");
-            c.setCovers(covers);
-            c.setDescription("7");
-            themes.add(c);
-            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_archeology"), false, "");
-            c.setId(archeology);
-            covers = new ArrayList<>();
-            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/arqueologia.jpg");
-            c.setCovers(covers);
-            c.setDescription("8");
-            themes.add(c);
-        } catch (SWBResourceException ex) {
-            LOG.info(ex.getMessage());
-        }
-        return themes;
-    }
-    
-    private Document getReference(HttpServletRequest request, SWBParamRequest paramRequest, int page) {
-        Integer records = 0;
-        Document reference = new Document();
-        List<Collection> collectionList = new ArrayList<>();
-        try {
-            String criteria = null != request.getParameter("criteria") ? request.getParameter("criteria").trim() : "";
-            request.setAttribute("criteria", criteria);
-            if (!criteria.isEmpty()) records = mgr.countByCriteria(criteria).intValue();
-            if (records > 0) {
-                collectionList = mgr.findByCriteria(criteria, page, NUM_ROW);
-                setAuthors(paramRequest, collectionList);
-                setCovers(paramRequest, collectionList, 3);
-            }
-            reference.append("references", collectionList).append("records", records);
-        }catch (Exception se) {
-            LOG.info(se.getMessage());
-        }
-        return reference;
     }
     
     public void collectionById(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
@@ -521,16 +479,19 @@ public class MyCollections extends GenericResource {
                 request.getSession().setAttribute("mycollections", collectionList);
             }
         }else if (ACTION_STA.equals(response.getAction())) {
-            if (null != request.getParameter(IDENTIFIER) && null != request.getSession().getAttribute("mycollections")) {
-                //Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
-                collectionList = (List<Collection>)request.getSession().getAttribute("mycollections");
-                for (Collection c : collectionList) {
-                    if (c.getId().equals(request.getParameter(IDENTIFIER))) {
-                        c.setStatus(!c.getStatus());
-                        break;
-                    }
-                }
+            Collection c = new Collection("", false, "");
+            int idTh = Utils.toInt(request.getParameter(IDENTIFIER))-1;
+            if (idTh >= 0) {
+                String themes = getThemes(request.getParameter(IDENTIFIER), null != user.getProperty(THEME) && !user.getProperty(THEME).isEmpty() ? user.getProperty(THEME) : "00000000");
+                user.setProperty(THEME, themes);
             }
+            List<Collection> list = getThemes(null);
+            if (idTh < list.size())
+                c = list.get(idTh);
+            Gson gson = new Gson();
+            response.setRenderParameter(COLLECTION_RENDER, gson.toJson(c));
+            response.setMode(MODE_RES_ADD);
+            response.setCallMethod(SWBParamRequest.Call_DIRECT);
         }else if (ACTION_DEL_FAV.equals(response.getAction())) {
             if (null != request.getParameter(IDENTIFIER) && null != request.getParameter(ENTRY) /**&& null != request.getSession().getAttribute("mycollections")**/) {
                 //Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
@@ -583,6 +544,102 @@ public class MyCollections extends GenericResource {
             response.setCallMethod(SWBParamRequest.Call_DIRECT);
         }else
             super.processAction(request, response);
+    }
+    
+    private Document getReference(HttpServletRequest request, SWBParamRequest paramRequest, int page) {
+        Integer records = 0;
+        Document reference = new Document();
+        List<Collection> collectionList = new ArrayList<>();
+        try {
+            String criteria = null != request.getParameter("criteria") ? request.getParameter("criteria").trim() : "";
+            request.setAttribute("criteria", criteria);
+            if (!criteria.isEmpty()) records = mgr.countByCriteria(criteria).intValue();
+            if (records > 0) {
+                collectionList = mgr.findByCriteria(criteria, page, NUM_ROW);
+                setAuthors(paramRequest, collectionList);
+                setCovers(paramRequest, collectionList, 3);
+            }
+            reference.append("references", collectionList).append("records", records);
+        }catch (Exception se) {
+            LOG.info(se.getMessage());
+        }
+        return reference;
+    }
+    
+    private Document getAdvise(SWBParamRequest paramRequest, int page, boolean byCriteria) {
+        Integer records = 0;
+        String criteria = "";
+        Document reference = new Document();
+        List<Collection> collectionList = new ArrayList<>();
+        try {
+            criteria = getThemeCriteria(paramRequest);
+            if (byCriteria) records = countByAdvice(criteria);
+            if (records > 0) {
+                collectionList = mgr.findByCriteria(criteria, page, NUM_ROW);
+                setAuthors(paramRequest, collectionList);
+                setCovers(paramRequest, collectionList, 3);
+            }
+            reference.append("references", collectionList).append("records", records);
+        }catch (Exception se) {
+            LOG.info(se.getMessage());
+        }
+        return reference;
+    }
+    
+    private Document getFavsActivity() {
+        //Pending method after page impl
+        return null;
+    }
+    
+    private Integer countByAdvice(String criteria) {
+        if (null != criteria && !criteria.isEmpty()) return mgr.countByCriteria(criteria).intValue();
+        return 0;
+    }
+    
+    private String getThemeCriteria(SWBParamRequest paramRequest) {
+        Collection c = null;
+        String criteria = "";
+        List<Collection> themes = getThemes(paramRequest);
+        String ths = paramRequest.getUser().getProperty(THEME);
+            int id = ths.indexOf("1");
+            if (Utils.toInt(id) > 0) {
+                c = themes.get(id);
+                for (String item : c.getElements()) {
+                    criteria += " " + item;
+                }
+                criteria = criteria.trim();
+            }
+        return criteria;
+    }
+    
+    private String getThemes(String id, String theme) {
+        String tmp = "";
+        int position = Utils.toInt(id)-1;
+        if (position >= 0 && position < 8) {
+            for (int i=0; i<theme.length(); i++) {
+                String c = theme.substring(i, i+1);
+                if (position == i) {
+                    if (c.equalsIgnoreCase("0")) tmp += "1";
+                    else tmp += "0";
+                }else {
+                    tmp += c;
+                }
+            }
+        }
+        return tmp;
+    }
+    
+    private Integer themes(User user) {
+        int count = 0;
+        int fromIndex = 0;
+        String themes = user.getProperty(THEME);
+        while (fromIndex < themes.length()) {
+            fromIndex = themes.indexOf("1", fromIndex);
+            if (fromIndex == -1) break;
+            fromIndex++;
+            count++;
+        }
+        return count;
     }
     
     public void redirectJsonResponse(HttpServletRequest request, HttpServletResponse response) throws java.io.IOException {
@@ -669,15 +726,15 @@ public class MyCollections extends GenericResource {
         mgr.updateCollection(c);
     }
     
-     private List<Collection> collectionList(User user, Integer from, Integer leap) {
-         List<Collection> collection = new ArrayList<>();
+    private List<Collection> collectionList(User user, Integer from, Integer leap) {
+        List<Collection> collection = new ArrayList<>();
         if (null != user && user.isSigned())
             collection = mgr.collectionsByUserLimit(user.getId(), from, leap);
         else {
             collection = mgr.collectionsByStatusLimit(COLLECTION_PUBLIC, from, leap);
         }
         return collection;
-     }
+    }
     
     private List<Collection> collectionList(User user) {
         List<Collection> collection = new ArrayList<>();
@@ -790,6 +847,16 @@ public class MyCollections extends GenericResource {
         return count; 
     }
     
+    private Long countByUser(String userid) {
+        Long count = 0L;
+        try {
+            if (null != userid) count = umr.countByUser(userid);
+        }catch(Exception e) {
+            LOG.info(e.getMessage());
+        }
+        return count; 
+    }
+    
     private Collection find(String _id) {
         return mgr.findById(_id);
     }
@@ -828,5 +895,92 @@ public class MyCollections extends GenericResource {
         for (Collection c : list) {
             c.setCovers(getCovers(paramRequest, c.getElements(), baseUri, size, c));
         }
+    }
+    
+    private List<Collection> getThemes(SWBParamRequest paramRequest) {
+        if (null == paramRequest || props.containsKey("themes")) return props.get("themes");
+        Collection c = null;
+        List<String> covers = null;
+        List<Collection> themes = new ArrayList<>();
+        String memorysound = "radio::radiofónico::grabación::sonido::concierto::opera::partitura::cantos::entrevista::educación::fonoteca::audio";
+        String memoryvisual = "foto::fotografía::fotomontaje::televisión::documental::cartel::dibujo::mapa::video::programa::pintura::obra::gráfica::imagen::cine::cinematografía::digital::mediateca::visual";
+        String release = "conferencia::foro::presentación::diálogo::seminario::entrevista::curso::coloquio::artículo::revista::capítulo::libro::conversación::guía::turística::turismo::cuaderno::estudio::expediente::manual::proyecto::restauración::museográfico::reporte::prácticas::catálogo::digital::interactivo::mediateca::divulgación";
+        String art = "danza::busto::cartel::escultura::estampa::foto::fotografía::impreso::manuscrito::libro::matriz::ornamento::pintura::relieve::alcancía::anfora::capítulo::bastón::batea::baúl::bolsa::botellón::candelero::cartel::cinturón::falda::florero::fuete::huarache::jarra::jícara::juguete::lazo::mantel::mecapal::olla::paragüero::plato::platón::rebozo::sarape::sillón::sombrero::sopera::taza::tinaja::trastero::utensilio::vasija::animación::documento::grabación::partitura::presentación::programa::tesis::video::pintura::caballete::mural::moderna::novohispana::elemento::arquitectónico::numismática::pieza::arqueológica::exvoto::dibujo::plumario::cristalería::enconchados::vidrio::instrumento::obra::gráfica::escultórica::arte::INBA::mediateca::virreinato::estampa";
+        String documents ="libro::revista::manuscrito::borrador::capítulo::documento::tesis::narrativa::cuaderno::catálogo::exposición::reseña::artículo::editorial::plano::códice::mapa::biblioteca::publicaciones::literatura::mediateca::texto";
+        String history = "curso::coloquio::foto::fotografía::radio::conferencia::entrevista::exposición::foro::premiación::presentación::seminario::archivo::histórico::coro::acuerdo::armas::bandera::cerámica::códice::contenedor::arquitectónico::escultura::heráldica::herramienta::indumentaria::instrumento::libro::litografía::mapa::mapoteca::maqueta::máscara::miniatura::mobiliario::numismática::objeto::cotidiano::etnográfico::funerario::litúrgico::ornamento::arqueológica::pintura::mural::plano::resto::geológico::óseo::textil::vehículo::vidrio::arma::equipo::indumentaria::joyería::juguete::miniatura::mobiliario::técnica::utensilio::vasija::costa::maya::occidente::aceitera::árbol::banca::barreta::barril::baúl::bieldo::boletero::bolsa::cámara::campana::candado::carrete::coche::cofre::compás::corneta::cucharilla::cucharón::escatillón::escudo::extintor::farola::granada::hielera::inventario::lámpara::lechera::llave::locomotora::machuelo::manómetro::microscopio::modelo::nivel::parihuela::pizarrón::placa::porta::reloj::resonador::sello::señal::silbato::taladro::telegráfono::tenaza::teodolito::velocímetro::verificadora::voltímetro::estudios::históricos::revoluciones::México::historia::mediateca::ferrocarriles";
+        String anthropology = "ceremonia::etnografía::cuestionario::elicitación::léxico::palabras::transcripción::gramática::pintura::mural::prehispánica::armas::cerámica::contenedor::arquitectónico::escultura::heráldica::herramienta::indumentaria::instrumento::maqueta::mobiliario::numismática::objeto::cotidiano::ornamento::pieza::arqueológica::óseo::vegetal::textil::fósil::geológico::costa::maya::occidente::lenguas::indígenas::INALI::antropología";
+	String archeology = "ceremonia::pieza::arqueología::arqueológica::fósil::geológico::óseo::herramienta::arqueología::lenguas::indígenas::INALI::antropología";
+        try {
+            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_memory_sound"), false, "");
+            c.setId("1");
+            covers = new ArrayList<>();
+            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/ms.jpg");
+            c.setCovers(covers);
+            themes.add(c);
+            c.setElements(getElements(memorysound));
+            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_memory_visual"), false, "");
+            c.setId("2");
+            covers = new ArrayList<>();
+            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/visual.jpg");
+            c.setCovers(covers);
+            themes.add(c);
+            c.setElements(getElements(memoryvisual));
+            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_divulgation"), false, "");
+            c.setId("3");
+            covers = new ArrayList<>();
+            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/divulgacion.jpg");
+            c.setCovers(covers);
+            themes.add(c);
+            c.setElements(getElements(release));
+            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_art"), false, "");
+            c.setId("4");
+            covers = new ArrayList<>();
+            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/arte2.jpg");
+            c.setCovers(covers);
+            themes.add(c);
+            c.setElements(getElements(art));
+            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_documents"), false, "");
+            c.setId("5");
+            covers = new ArrayList<>();
+            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/libros3.jpg");
+            c.setCovers(covers);
+            themes.add(c);
+            c.setElements(getElements(documents));
+            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_history"), false, "");
+            c.setId("6");
+            covers = new ArrayList<>();
+            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/historia2.jpg");
+            c.setCovers(covers);
+            themes.add(c);
+            c.setElements(getElements(history));
+            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_anthropology"), false, "");
+            c.setId("7");
+            covers = new ArrayList<>();
+            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/antropologia2.jpg");
+            c.setCovers(covers);
+            themes.add(c);
+            c.setElements(getElements(anthropology));
+            c = new Collection(paramRequest.getLocaleString("usrmsg_view_search_archeology"), false, "");
+            c.setId("8");
+            covers = new ArrayList<>();
+            covers.add(0, "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/img/temas/arqueologia.jpg");
+            c.setCovers(covers);
+            themes.add(c);
+            c.setElements(getElements(archeology));
+        } catch (SWBResourceException ex) {
+            LOG.info(ex.getMessage());
+        }
+        props.put("themes", themes);
+        return themes;
+    }
+    
+    private List<String> getElements(String themes) {
+        List<String> elements = new ArrayList<>();
+        if (null == themes || themes.trim().isEmpty()) return elements;
+        String [] theme = themes.split("::");
+        for (int i=0; i<theme.length; i++) {
+            elements.add(theme[i]);
+        }
+        return elements;
     }
 }

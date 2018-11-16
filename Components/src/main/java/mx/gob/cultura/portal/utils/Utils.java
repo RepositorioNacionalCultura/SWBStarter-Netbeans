@@ -633,4 +633,14 @@ public class Utils {
          if (status.equalsIgnoreCase("true")) return COLLECTION_PUBLIC;
          return COLLECTION_PRIVATE;
      }
+    
+    public static Boolean isThmChk(String id, String prop) {
+        if (null == id || null == prop || id.trim().isEmpty() || prop.trim().isEmpty()) return false;
+        int fromIndex = toInt(id)-1;
+        if (fromIndex >=0 && fromIndex < prop.length()) {
+            String seq = prop.substring(fromIndex, fromIndex+1);
+            return seq.equalsIgnoreCase("1");
+        }
+        return false;
+    }
 }
