@@ -546,6 +546,56 @@ public class MyCollections extends GenericResource {
             super.processAction(request, response);
     }
     
+    public void redirectJsonResponse(HttpServletRequest request, HttpServletResponse response) throws java.io.IOException {
+        String json = request.getParameter(COLLECTION_RENDER);
+        response.setContentType("application/json");
+	response.setHeader("Cache-Control", "no-cache");
+	PrintWriter pw = response.getWriter();
+	pw.write(json);
+	pw.flush();
+	pw.close();
+	response.flushBuffer();
+    }
+    
+    public void doAdd(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
+        String path = "/swbadmin/jsp/rnc/collections/collection.jsp";
+        RequestDispatcher rd = request.getRequestDispatcher(path);
+        try {
+            request.setAttribute(PARAM_REQUEST, paramRequest);
+            request.setAttribute(COLLECTION, new Collection("", false, ""));
+            rd.include(request, response);
+        }catch (ServletException se) {
+            LOG.info(se.getMessage());
+        }
+    }
+    
+    public static List<String> getCovers(SWBParamRequest paramRequest, List<String> elements, String baseUri, int size) {
+        Entry entry = null;
+        List<String> covers = new ArrayList<>();
+        if (null == elements || elements.isEmpty()) return covers;
+        Iterator it = elements.iterator();
+        while (it.hasNext()) {
+            String uri = baseUri + "/api/v1/search?identifier=" + it.next();
+            GetBICRequest req = new GetBICRequest(uri);
+            try {
+                entry = req.makeRequest();
+            }catch (Exception e) {
+                entry = null;
+                LOG.info(e.getMessage());
+            }
+            if (null != entry) {
+                if (null != entry.getResourcethumbnail() && !entry.getResourcethumbnail().trim().isEmpty())
+                    covers.add(entry.getResourcethumbnail());
+                else {
+                    SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), size);
+                    covers.add(entry.getResourcethumbnail());
+                }
+            }
+            if (covers.size() >= size) break;
+        }
+        return covers;
+    }
+    
     private Document getReference(HttpServletRequest request, SWBParamRequest paramRequest, int page) {
         Integer records = 0;
         Document reference = new Document();
@@ -642,56 +692,6 @@ public class MyCollections extends GenericResource {
             count++;
         }
         return count;
-    }
-    
-    public void redirectJsonResponse(HttpServletRequest request, HttpServletResponse response) throws java.io.IOException {
-        String json = request.getParameter(COLLECTION_RENDER);
-        response.setContentType("application/json");
-	response.setHeader("Cache-Control", "no-cache");
-	PrintWriter pw = response.getWriter();
-	pw.write(json);
-	pw.flush();
-	pw.close();
-	response.flushBuffer();
-    }
-    
-    public void doAdd(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
-        String path = "/swbadmin/jsp/rnc/collections/collection.jsp";
-        RequestDispatcher rd = request.getRequestDispatcher(path);
-        try {
-            request.setAttribute(PARAM_REQUEST, paramRequest);
-            request.setAttribute(COLLECTION, new Collection("", false, ""));
-            rd.include(request, response);
-        }catch (ServletException se) {
-            LOG.info(se.getMessage());
-        }
-    }
-    
-    public static List<String> getCovers(SWBParamRequest paramRequest, List<String> elements, String baseUri, int size) {
-        Entry entry = null;
-        List<String> covers = new ArrayList<>();
-        if (null == elements || elements.isEmpty()) return covers;
-        Iterator it = elements.iterator();
-        while (it.hasNext()) {
-            String uri = baseUri + "/api/v1/search?identifier=" + it.next();
-            GetBICRequest req = new GetBICRequest(uri);
-            try {
-                entry = req.makeRequest();
-            }catch (Exception e) {
-                entry = null;
-                LOG.info(e.getMessage());
-            }
-            if (null != entry) {
-                if (null != entry.getResourcethumbnail() && !entry.getResourcethumbnail().trim().isEmpty())
-                    covers.add(entry.getResourcethumbnail());
-                else {
-                    SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), size);
-                    covers.add(entry.getResourcethumbnail());
-                }
-            }
-            if (covers.size() >= size) break;
-        }
-        return covers;
     }
     
     private List<String> getCovers(SWBParamRequest paramRequest, List<String> elements, String baseUri, int size, Collection c) {

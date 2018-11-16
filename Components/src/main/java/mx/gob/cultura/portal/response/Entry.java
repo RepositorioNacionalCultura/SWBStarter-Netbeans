@@ -97,11 +97,20 @@ public class Entry implements Serializable {
     private String culturalregion;
     private String technique;
     private String catalog;
+    private String culturaoaiid;
     
     private List<String> serie;
     private List<String> credits;
     private List<String> creatorgroup;
     private List<String> reccollection;
+
+    public String getCulturaoaiid() {
+        return culturaoaiid;
+    }
+
+    public void setCulturaoaiid(String culturaoaiid) {
+        this.culturaoaiid = culturaoaiid;
+    }
 
     public String getBictype() {
         return bictype;
