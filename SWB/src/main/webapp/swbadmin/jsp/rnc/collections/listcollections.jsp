@@ -3,6 +3,7 @@
     Created on : 12-oct-2018, 17:37:52
     Author     : juan.fernandez
 --%>
+<%@page import="org.semanticwb.model.WebPage"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.semanticwb.model.User, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.model.WebSite, mx.gob.cultura.portal.response.Collection, java.util.List"%>
 <%
@@ -26,13 +27,16 @@
     uper.setCallMethod(SWBParamRequest.Call_DIRECT);
     udel.setAction(SWBResourceURL.Action_REMOVE);
 
-    SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
-    uels.setCallMethod(SWBParamRequest.Call_CONTENT);
+//    SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
+//    uels.setCallMethod(SWBParamRequest.Call_CONTENT);
+    WebSite site = paramRequest.getWebPage().getWebSite();
+    WebPage wpdetail = site.getWebPage("Detalle_coleccion");
+    String uels = wpdetail.getUrl();
 
     SWBResourceURL wall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_MYALL);
     wall.setCallMethod(SWBParamRequest.Call_CONTENT);
 
-    WebSite site = paramRequest.getWebPage().getWebSite();
+
     String userLang = paramRequest.getUser().getLanguage();
 
     Integer allc = (Integer) request.getAttribute("COUNT_BY_STAT");

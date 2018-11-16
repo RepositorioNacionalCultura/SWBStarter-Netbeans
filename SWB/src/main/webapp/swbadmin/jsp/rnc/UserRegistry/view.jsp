@@ -21,9 +21,9 @@
     boolean editMode;  
     boolean isAnnotator = (boolean)request.getAttribute("isAnnotator");
     boolean toBeAnnotator =false;
-    boolean canChangePwd = user.getLogin().startsWith(SessionInitializer.FACEBOOK) || 
+    boolean canChangePwd = null!=user && user.getLogin()!=null && (user.getLogin().startsWith(SessionInitializer.FACEBOOK) || 
             user.getLogin().startsWith(SessionInitializer.GOOGLEP) ||
-            user.getLogin().startsWith(SessionInitializer.TWITTER) ? false : true;
+            user.getLogin().startsWith(SessionInitializer.TWITTER) ) ? false : true;
     
     if (user.isSigned()){
         url.setAction(SWBParamRequest.Action_EDIT);

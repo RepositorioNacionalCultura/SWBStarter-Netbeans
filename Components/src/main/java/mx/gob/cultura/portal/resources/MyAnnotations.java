@@ -73,12 +73,12 @@ public class MyAnnotations extends GenericAdmResource{
         
         List<Annotation> annotationList;
         if(user==null){
-            annotationList= AnnotationMgr.getInstance().findByTarget(id,null);
+            annotationList= AnnotationMgr.getInstance().findByTarget(id,null); //orderby modified direction 1 by default
+            //annotationList= AnnotationMgr.getInstance().findByTarget(id,null,"created",0); //orderby created direction 0
         }else{
             annotationList= AnnotationMgr.getInstance().findByTarget(id,user.getId());
         }    
-        
-        
+
         RequestDispatcher dis = request.getRequestDispatcher(path);
         try {
             request.setAttribute("paramRequest", paramRequest);

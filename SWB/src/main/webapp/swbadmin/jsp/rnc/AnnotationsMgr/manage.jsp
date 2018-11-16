@@ -236,22 +236,35 @@ console.log(element);
 <%  
         }
 %>                 
-                <div class="row anotacionesimg">                              
+                <!--<div class="row anotacionesimg">-->                              
 <%
     for(Map<String,String> annotation:annotations){
             String id=annotation.get("id");
+            String autho = annotation.get("moderator");
+            if(autho!=null&&autho.trim().isEmpty()) {
+                autho=null;
+            } 
+            String classAutorizado = "";
+            if(null!=autho){
+                classAutorizado=" autorizada";
+            }
      %>
-                  <div class="col-6 col-md-4 col-lg-3">
-                      <img src="<%=annotation.get("bicThumbnail")%>">
+                  <div class="anotalista<%=classAutorizado%>">
+                    <div class="anotalistaimg">
+                       <img src="<%=annotation.get("bicThumbnail")%>">
+                    </div>
+                    <div class="anotalistainfo">  
+                      <p class="anotacionp autoriza"><span class="ion-android-alert"></span>Autorización pendiente</p>
                       <p class="anotacionp fecha"><%=annotation.get("created")%></p>
-                      <p class="anotacionp bold"><%=annotation.get("bicTitle")%></p>
+                      <p class="anotacionp"><%=annotation.get("bicTitle")%></p>
                       <p class="anotacionp"><%=annotation.get("bicCreator")%></p>
-                      <p class="vermas vermas-1top vermas-rojo">
+                      <p class="">
                           <!--button class="btn-vermas" type="button" data-toggle="collapse" data-target="#vermas" aria-expanded="false" aria-controls="vermas">Ver anotación<span class="ion-plus-circled"></span>
                           </button-->
-                          <a href="<%=paramRequest.getWebPage().getUrl()%>?id=<%=annotation.get("id")%>" class="btn-vermas" ><%=paramRequest.getLocaleString("btn_see_more")%> <span class="ion-plus-circlVer anotacióned"></span></a>
+                          <a href="<%=paramRequest.getWebPage().getUrl()%>?id=<%=annotation.get("id")%>" class="" ><%=paramRequest.getLocaleString("btn_see_more")%> <span class="ion-plus-circlVer anotacióned"></span></a>
                           <!--span class="linea"></span-->
                        </p>
+                    </div>
                   </div>                
      
      
@@ -321,7 +334,7 @@ console.log(element);
 <%      
     }
 %>
-                </div>
+                <!--</div>-->
             </div>
             <div class="container paginacion">
                 <hr>
