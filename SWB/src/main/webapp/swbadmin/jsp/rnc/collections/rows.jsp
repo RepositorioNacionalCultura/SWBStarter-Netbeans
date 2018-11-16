@@ -4,13 +4,16 @@
     Author     : sergio.tellez
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, mx.gob.cultura.portal.response.Collection, java.util.List"%>
+<%@ page import="org.semanticwb.model.WebSite, org.semanticwb.model.WebPage, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, mx.gob.cultura.portal.response.Collection, java.util.List"%>
 <%
     List<Collection> boards = (List<Collection>)request.getAttribute("PAGE_LIST");
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
-    SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
-    uels.setCallMethod(SWBParamRequest.Call_CONTENT);
+//    SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
+//    uels.setCallMethod(SWBParamRequest.Call_CONTENT);
+
     WebSite site = paramRequest.getWebPage().getWebSite();
+    WebPage wpdetail = site.getWebPage("Detalle_coleccion");
+    String uels = wpdetail.getUrl();
 %>
 
     <div class="row mosaico-contenedor">
@@ -71,7 +74,7 @@
         <%              }else { %>
                             <span class="ion-unlocked rojo">
         <%              } %>
-                            </span><%=c.getTitle()%><
+                            </span><%=c.getTitle()%>
                         </p>
 			<p>Curada por: <%=c.getUserName()%></p>
                         <!--a href="#"><span class="ion-social-facebook"></span></a-->
