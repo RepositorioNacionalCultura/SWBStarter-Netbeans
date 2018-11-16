@@ -600,6 +600,7 @@ public class MyCollections extends GenericResource {
         Collection c = null;
         String criteria = "";
         List<Collection> themes = getThemes(paramRequest);
+        if (null == paramRequest.getUser().getProperty(THEME)) return "";
         String ths = paramRequest.getUser().getProperty(THEME);
             int id = ths.indexOf("1");
             if (Utils.toInt(id) > 0) {
@@ -632,6 +633,7 @@ public class MyCollections extends GenericResource {
     private Integer themes(User user) {
         int count = 0;
         int fromIndex = 0;
+        if (null == user.getProperty(THEME)) return 0;
         String themes = user.getProperty(THEME);
         while (fromIndex < themes.length()) {
             fromIndex = themes.indexOf("1", fromIndex);
