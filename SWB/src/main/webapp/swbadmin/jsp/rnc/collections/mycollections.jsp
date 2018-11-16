@@ -271,7 +271,7 @@
                 }
                 if (null!=boards && !boards.isEmpty()) {
                     for (Collection c : boards) {
-                        String username = null != c.getUserName() && !c.getUserName().trim().isEmpty() ? c.getUserName() : "Anonimo";
+                        String username = null != c.getUserName() && !c.getUserName().trim().isEmpty() ? c.getUserName() : "Anónimo";
             %>
                         <div class="col-6 col-md-4">
                             <%	if (c.getCovers().isEmpty()) {	%>

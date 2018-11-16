@@ -30,7 +30,7 @@
     String scriptFB = Utils.getScriptFBShare(request);
     User usr = site.getUserRepository().getUser(userid);
     Integer favs = null != c.getFavorites() ? c.getFavorites() : 0;
-    String username = null != c.getUserName() && !c.getUserName().trim().isEmpty() ? c.getUserName():"Anonimo";
+    String username = null != c.getUserName() && !c.getUserName().trim().isEmpty() ? c.getUserName():"Anónimo";
 %>
 <script type="text/javascript" src="/swbadmin/js/rnc/detail.js"></script>
 <%=scriptFB%>
