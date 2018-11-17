@@ -151,6 +151,7 @@
             
             <%=Utils.getTechData("collectionnote", holder, entry.getCollectionnote(), paramRequest.getLocaleString("usrmsg_view_detail_collection_note"), false, true)%>
             <%=Utils.getTechData("oaiid/identifier", holder, entry.getIdentifiers(), paramRequest.getLocaleString("usrmsg_view_detail_identifier"), true, true)%>
+            <%=Utils.getTechData("culturaoaiid", holder, entry.getCulturaoaiid(), paramRequest.getLocaleString("usrmsg_view_detail_identifier_culture"), true, true)%>
         </table>
         <table class="collapse" id="vermas-ficha">
         </table>
