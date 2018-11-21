@@ -27,11 +27,11 @@
     uper.setCallMethod(SWBParamRequest.Call_DIRECT);
     udel.setAction(SWBResourceURL.Action_REMOVE);
 
-//    SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
-//    uels.setCallMethod(SWBParamRequest.Call_CONTENT);
+    SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
+    uels.setCallMethod(SWBParamRequest.Call_CONTENT);
     WebSite site = paramRequest.getWebPage().getWebSite();
-    WebPage wpdetail = site.getWebPage("Detalle_coleccion");
-    String uels = wpdetail.getUrl();
+//    WebPage wpdetail = site.getWebPage("Detalle_coleccion");
+//    String uels = wpdetail.getUrl();
 
     SWBResourceURL wall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_MYALL);
     wall.setCallMethod(SWBParamRequest.Call_CONTENT);
