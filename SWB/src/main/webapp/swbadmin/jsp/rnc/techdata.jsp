@@ -71,18 +71,7 @@
             <%=Utils.getTechData("theme", holder, entry.getTheme(), paramRequest.getLocaleString("usrmsg_view_detail_theme"), false, true)%>
             <%=Utils.getTechData("synopsis", holder, entry.getSynopsis(), paramRequest.getLocaleString("usrmsg_view_detail_synopsis"), false, true)%>
             <% if (null !=  entry.getGenerator() && !entry.getGenerator().isEmpty()) { out.println(Utils.getTechData("generator", holder, Utils.concatLink(userLang, site.getId(), true, entry.getGenerator().toArray(new String[0])), paramRequest.getLocaleString("usrmsg_view_detail_collection"), true, true)); } %>
-            <%=Utils.getTechData("rights.rightstitle", holder, rights, paramRequest.getLocaleString("usrmsg_view_detail_rights"), true, true)%>
             <%
-                if (null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty() && null != entry.getRights() && null != entry.getRights().getDescription()) {
-                    String url = "";
-                    if (entry.getDigitalObject().get(0).getRights().getUrl().startsWith("http")) url = "<a href='" + entry.getDigitalObject().get(0).getRights().getUrl() + "'>";
-            %>
-                        <tr>
-                            <td><%=paramRequest.getLocaleString("usrmsg_view_detail_use_statement")%></td>
-                            <td><%=url%><%=entry.getRights().getDescription()%></a></td>
-                        </tr>
-            <%
-                }
                 if (null != entry.getLang() && entry.getLang().size() > 2) {
             %>
                     <tr>
@@ -148,10 +137,32 @@
             <%=Utils.getTechData("clase", holder, entry.getClase(), paramRequest.getLocaleString("usrmsg_view_detail_clase"), false, true)%>
             <%=Utils.getTechData("observations", holder, entry.getObservations(), paramRequest.getLocaleString("usrmsg_view_detail_observations"), false, true)%>
             <%=Utils.getTechData("biccustodyentity", holder, entry.getBiccustodyentity(), paramRequest.getLocaleString("usrmsg_view_detail_biccustodyentity"), false, true)%>
-            
             <%=Utils.getTechData("collectionnote", holder, entry.getCollectionnote(), paramRequest.getLocaleString("usrmsg_view_detail_collection_note"), false, true)%>
-            <%=Utils.getTechData("oaiid/identifier", holder, entry.getIdentifiers(), paramRequest.getLocaleString("usrmsg_view_detail_identifier"), true, true)%>
-            <%=Utils.getTechData("culturaoaiid", holder, entry.getCulturaoaiid(), paramRequest.getLocaleString("usrmsg_view_detail_identifier_culture"), true, true)%>
+            <%=Utils.getTechData("rights.rightstitle", holder, rights, paramRequest.getLocaleString("usrmsg_view_detail_rights"), true, true)%>
+            <%
+                String url = "";
+                if (null != entry.getDigitalObject() && !entry.getDigitalObject().isEmpty() && null != entry.getRights() && null != entry.getRights().getDescription()) {
+                    if (entry.getDigitalObject().get(0).getRights().getUrl().startsWith("http")) url = "<a href='" + entry.getDigitalObject().get(0).getRights().getUrl() + "'>";
+            %>
+                    <tr>
+                        <td><%=paramRequest.getLocaleString("usrmsg_view_detail_use_statement")%></td>
+                        <td><%=url%><%=entry.getRights().getDescription()%></a></td>
+                    </tr>
+            <%
+                }
+		if (null != entry.getCulturaoaiid() && !entry.getCulturaoaiid().isEmpty()) {
+                    out.println(Utils.getTechData("culturaoaiid", holder, entry.getCulturaoaiid(), paramRequest.getLocaleString("usrmsg_view_detail_identifier"), true, true));
+		}else {
+                    out.println(Utils.getTechData("oaiid/identifier", holder, entry.getIdentifiers(), paramRequest.getLocaleString("usrmsg_view_detail_identifier"), true, true));
+		}
+                if (null != entry.getUrl_mediateca() && entry.getUrl_mediateca().startsWith("http")) {
+                    url = "<a href='" + entry.getUrl_mediateca() + "' target='_blank'>";
+            %>
+                    <tr>
+			<td><%=paramRequest.getLocaleString("usrmsg_view_detail_url_mediateca")%></td>
+                        <td><%=url%><%=title%></a></td>
+                    </tr>
+            <%  } %>
         </table>
         <table class="collapse" id="vermas-ficha">
         </table>

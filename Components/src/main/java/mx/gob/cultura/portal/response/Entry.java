@@ -98,6 +98,7 @@ public class Entry implements Serializable {
     private String technique;
     private String catalog;
     private String culturaoaiid;
+    private String url_mediateca;
     
     private List<String> serie;
     private List<String> credits;
@@ -794,6 +795,14 @@ public class Entry implements Serializable {
 
     public void setCatalog(String catalog) {
         this.catalog = catalog;
+    }
+
+    public String getUrl_mediateca() {
+        return url_mediateca;
+    }
+
+    public void setUrl_mediateca(String url_mediateca) {
+        this.url_mediateca = url_mediateca;
     }
     
     @Override

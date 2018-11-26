@@ -24,6 +24,7 @@ import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
+import static com.mongodb.client.model.Filters.and;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
@@ -147,7 +148,7 @@ public class CollectionMgr {
         return list;
     }
     
-    public List<Collection> findByCriteria(String criteria, Integer from, Integer leap) {
+    public List<Collection> findByCriteria(String criteria, Boolean status, Integer from, Integer leap) {
         List<Collection> list = new ArrayList<>();
         if (null == criteria || criteria.trim().isEmpty()) return list;
         try {
@@ -159,7 +160,7 @@ public class CollectionMgr {
             };
             MongoCollection<Document> mongoCollection = getCollection();
             if (null != from && null != leap)
-                mongoCollection.find(Filters.text(criteria)).projection(Projections.metaTextScore("score")).sort(Sorts.metaTextScore("score")).skip(leap*(from-1)).limit(leap).forEach(c);
+                mongoCollection.find(and(Filters.text(criteria),eq("status", status))).projection(Projections.metaTextScore("score")).sort(Sorts.metaTextScore("score")).skip(leap*(from-1)).limit(leap).forEach(c);
             else mongoCollection.find(Filters.text(criteria)).projection(Projections.metaTextScore("score")).sort(Sorts.metaTextScore("score")).forEach(c);
         }catch (Exception u) {
             LOG.error(u);
@@ -190,10 +191,10 @@ public class CollectionMgr {
         return mongoCollection.count(Filters.eq("status", status));
     }
     
-    public Long countByCriteria(String criteria) {
+    public Long countByCriteria(String criteria, Boolean status) {
         if (null == criteria || criteria.trim().isEmpty()) return 0L;
         MongoCollection<Document> mongoCollection = getCollection();
-        return mongoCollection.count(Filters.text(criteria));
+        return mongoCollection.count(and(Filters.text(criteria),eq("status", status)));
     }
     
     public Long deleteCollection(String _id) {

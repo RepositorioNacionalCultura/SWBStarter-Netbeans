@@ -381,6 +381,7 @@ public class Biblio {
         inah.put("technique", COMPLEMENTARY);
         inah.put("media", COMPLEMENTARY);
         inah.put("format", COMPLEMENTARY);
+        inah.put("url_mediateca", COMPLEMENTARY);
     }
     
     static {
