@@ -63,7 +63,6 @@
             <%=Utils.getTechData("recordtitle", holder, title+subtile, paramRequest.getLocaleString("usrmsg_view_detail_title"), true, true)%>
             <%=Utils.getTechData("creator", holder, Utils.getCreator(entry.getCreator()), paramRequest.getLocaleString("usrmsg_view_detail_artist"), true, true)%>
             <%=Utils.getTechData("datecreated", holder, null != entry.getDatecreated() ? entry.getDatecreated().getNote() : "", paramRequest.getLocaleString("usrmsg_view_detail_date"), true, true)%>
-            <%=Utils.getTechData("bictype", holder, Utils.concatFilter(userLang, site.getId(), "bictype", Utils.getList(entry.getBictype())), paramRequest.getLocaleString("usrmsg_view_detail_type_object"), false, false)%>
             <%=Utils.getTechData("resourcetype", holder, Utils.concatFilter(userLang, site.getId(), "resourcetype", entry.getResourcetype()), paramRequest.getLocaleString("usrmsg_view_detail_type_object"), true, true)%>
             <%=Utils.getTechData("holder", holder, urlholder, paramRequest.getLocaleString("usrmsg_view_detail_institution"), true, true)%>
             <%=Utils.getTechData("publisher", holder, entry.getPublisher(), paramRequest.getLocaleString("usrmsg_view_detail_publisher"), false, true)%>

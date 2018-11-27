@@ -4,9 +4,8 @@
     Author     : sergio.tellez
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="org.semanticwb.SWBPortal, org.semanticwb.model.WebPage, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.model.WebSite, mx.gob.cultura.portal.response.Collection, java.util.List"%>
+<%@ page import="mx.gob.cultura.portal.utils.Utils, org.semanticwb.SWBPortal, org.semanticwb.model.WebPage, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, mx.gob.cultura.portal.resources.MyCollections, org.semanticwb.model.WebSite, mx.gob.cultura.portal.response.Collection, java.util.List, java.util.ArrayList"%>
 <%
-    List<Collection> boards = (List<Collection>)request.getAttribute("PAGE_LIST");
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     //Use in dialog
     SWBResourceURL saveURL = paramRequest.getActionUrl();
@@ -21,11 +20,14 @@
 
     SWBResourceURL uper = paramRequest.getActionUrl();
     SWBResourceURL udel = paramRequest.getActionUrl();
+    
     uper.setAction(MyCollections.ACTION_STA);
     uper.setCallMethod(SWBParamRequest.Call_DIRECT);
     udel.setAction(SWBResourceURL.Action_REMOVE);
 
     WebSite site = paramRequest.getWebPage().getWebSite();
+    String userLang = paramRequest.getUser().getLanguage();
+    
     WebPage wpdetail = site.getWebPage("Detalle_coleccion");
     String uels = wpdetail.getUrl();
     
@@ -34,8 +36,6 @@
 
     SWBResourceURL wall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_MYALL);
     wall.setCallMethod(SWBParamRequest.Call_CONTENT);
-    
-    String userLang = paramRequest.getUser().getLanguage();
         
     SWBResourceURL uall = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_ALL);
     uall.setCallMethod(SWBParamRequest.Call_CONTENT);
@@ -46,23 +46,43 @@
     SWBResourceURL favs = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_MYFAV);
     favs.setCallMethod(SWBParamRequest.Call_CONTENT);
     
-    Integer allc = (Integer)request.getAttribute("COUNT_BY_STAT");
-    Integer cusr = (Integer)request.getAttribute("COUNT_BY_USER");
-    Integer cfav = (Integer)request.getAttribute("COUNT_BY_FAVS");
+    SWBResourceURL them = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_THEME);
+    them.setCallMethod(SWBParamRequest.Call_CONTENT);
+    
+    SWBResourceURL advc = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_SUGST);
+    advc.setCallMethod(SWBParamRequest.Call_CONTENT);
+    
+    Integer allc = null != request.getAttribute("COUNT_BY_STAT") ? (Integer)request.getAttribute("COUNT_BY_STAT") : 0;
+    Integer cusr = null != request.getAttribute("COUNT_BY_USER") ? (Integer)request.getAttribute("COUNT_BY_USER") : 0;
+    Integer cfav = null != request.getAttribute("COUNT_BY_FAVS") ? (Integer)request.getAttribute("COUNT_BY_FAVS") : 0;
+    Integer cths = null != request.getAttribute("COUNT_BY_THMS") ? (Integer)request.getAttribute("COUNT_BY_THMS") : 0;
+    Integer cadv = null != request.getAttribute("COUNT_BY_ADVC") ? (Integer)request.getAttribute("COUNT_BY_ADVC") : 0;
     
     String f = null != request.getAttribute("criteria") ? "&criteria=" + (String)request.getAttribute("criteria") : "";
+    if (MyCollections.MODE_VIEW_THEME.equalsIgnoreCase(paramRequest.getMode())) uels = (String)request.getAttribute("uels");
+    List<Collection> boards = null != request.getAttribute("PAGE_LIST") ? (List<Collection>)request.getAttribute("PAGE_LIST") : new ArrayList();
 %>
+<style>
+	.theme input {
+	  display: block;
+	  margin-top: -150px;
+	  margin-left: 170px;
+	  position: relative;
+	}
+</style>
+<script>
+	dojo.require("dijit.dijit"); // loads the optimized dijit layer
+	dojo.require('dijit.Dialog');
+</script>
 <script>
     $(document).ready(function () {
         $("#alertSuccess").on('hidden.bs.modal', function () {
             window.location.replace('<%=wall%>');
         });
+        $("#alertThemes").on('hidden.bs.modal', function () {
+            window.location.replace('<%=them%>');
+        });
     });
-</script>
-<script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
-<script>
-	dojo.require("dijit.dijit"); // loads the optimized dijit layer
-	dojo.require('dijit.Dialog');
 </script>
 <script type="text/javascript">
     function addByForm() {
@@ -75,11 +95,9 @@
         var leftPosition = (screen.width) ? (screen.width - 480) / 3 : 0;
         var topPosition = (screen.height) ? (screen.height - 441) / 3 : 0;
         popCln = window.open(
-                url, 'popCln', 'height=441,width=480,left=' + leftPosition + ',top=' + topPosition + ',resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no')
+            url, 'popCln', 'height=441,width=480,left=' + leftPosition + ',top=' + topPosition + ',resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no')
     }
     function editByForm(id) {
-        //document.getElementById("addCollForm").action = '<%=uedt.toString()%>?id='+id;
-        //document.getElementById("addCollForm").submit();
         dojo.xhrPost({
             url: '<%=uedt.toString()%>?id=' + id,
             load: function (data) {
@@ -134,15 +152,6 @@
         xhttp.open("POST", url, true);
 	xhttp.send();
     }
-    function changeStatus(id) {
-        dojo.xhrPost({
-            url: '<%=uper%>?id=' + id,
-            load: function (data) {
-                dojo.byId('references').innerHTML = data;
-                location.href = '#showPage';
-            }
-        });
-    }
     function doPage(p,t) {
         dojo.xhrPost({
             url: '<%=pageURL%>?p='+p+'&ct='+t+'<%=f%>',
@@ -151,6 +160,23 @@
 		location.href = '#showPage';
             }
         });
+    }
+    function messageConfirm(msg, id) {
+	var entry = "'"+id+"'";
+	var html =
+            '<div id="messageDialgopC" name="messageDialgopC" style="width:350px; border:1px solid #b7b7b7; background:#fff; padding:8px; margin:0 auto; height:150px; overflow:auto;">' +
+                '<p style="color:#999;">'+ msg +'</p>'+
+                '<table><tr>' + 
+                    '<td style="width:50%; align="center"><input id="btnRenv" class="btn btn-sm rojo" type="button" name="btnRenv" onClick="del('+entry+')" value="Aceptar"/></td>' +
+                    '<td style="width:50%; align="center"><input id="btnCanc" class="btn btn-sm rojo" type="button" name="btnCanc" onClick="dialogMsgConfirm.hide();" value="Cancelar"/></td>' +
+                '</tr></table>' +
+            '</div>';
+	dialogMsgConfirm = new dijit.Dialog({
+            content: html,
+	    style: "width:300px;",
+            showTitle: false, draggable : false, closable : false,
+	});	
+	dialogMsgConfirm.show();
     }
 </script>
 <script type="text/javascript">
@@ -187,22 +213,17 @@
         }
         return true;
     }
-    function messageConfirm(msg, id) {
-	var entry = "'"+id+"'";
-	var html =
-            '<div id="messageDialgopC" name="messageDialgopC" style="width:350px; border:1px solid #b7b7b7; background:#fff; padding:8px; margin:0 auto; height:150px; overflow:auto;">' +
-                '<p style="color:#999;">'+ msg +'</p>'+
-                '<table><tr>' + 
-                    '<td style="width:50%; align="center"><input id="btnRenv" class="btn btn-sm rojo" type="button" name="btnRenv" onClick="del('+entry+')" value="Aceptar"/></td>' +
-                    '<td style="width:50%; align="center"><input id="btnCanc" class="btn btn-sm rojo" type="button" name="btnCanc" onClick="dialogMsgConfirm.hide();" value="Cancelar"/></td>' +
-                '</tr></table>' +
-            '</div>';
-	dialogMsgConfirm = new dijit.Dialog({
-            content: html,
-	    style: "width:300px;",
-            showTitle: false, draggable : false, closable : false,
-	});	
-	dialogMsgConfirm.show();
+    function addThm(id) {
+        dojo.xhrPost({
+            url: '<%=uper%>?id='+id,
+            load: function(data) {
+		var res =  dojo.fromJson(data);
+		if (res.id) {
+                    jQuery("#dialog-theme").text("Se actualizó correctamente su selección.");
+                    $('#alertThemes').modal('show');
+		}
+            }
+        });
     }
 </script>
 <a name="showPage"></a>
@@ -233,22 +254,40 @@
     %>
             Mis colecciones (<%=cusr%>)
             <a href="<%=favs%>" class="selected">Mis favoritos (<%=cfav%>)</a>
+            <a href="<%=advc%>" class="selected">Recomendados (<%=cadv%>)</a>
             <a href="<%=uall%>" class="selected">Todos (<%=allc%>)</a>
+            <a href="<%=them%>" class="selected">Temas (<%=cths%>)</a>
     <% }else if (MyCollections.MODE_VIEW_FIND.equalsIgnoreCase(paramRequest.getMode())) { %>
             <a href="<%=wall%>" class="selected">Mis colecciones(<%=cusr%>)</a>
             <a href="<%=favs%>" class="selected">Mis favoritos (<%=cfav%>)</a>
+            <a href="<%=advc%>" class="selected">Recomendados (<%=cadv%>)</a>
             <a href="<%=uall%>" class="selected">Todos (<%=allc%>)</a>
+            <a href="<%=them%>" class="selected">Temas (<%=cths%>)</a>
     <% }else if (MyCollections.MODE_VIEW_MYFAV.equalsIgnoreCase(paramRequest.getMode())) { %>
             <a href="<%=wall%>" class="selected">Mis colecciones(<%=cusr%>)</a>
             <a href="#" class="">Mis favoritos (<%=cfav%>)</a>
+            <a href="<%=advc%>" class="selected">Recomendados (<%=cadv%>)</a>
             <a href="<%=uall%>" class="selected">Todos (<%=allc%>)</a>
+            <a href="<%=them%>" class="selected">Temas (<%=cths%>)</a>
+    <% }else if (MyCollections.MODE_VIEW_THEME.equalsIgnoreCase(paramRequest.getMode())) { %>
+	<a href="<%=wall%>" class="selected">Mis colecciones(<%=cusr%>)</a>
+        <a href="<%=favs%>" class="selected">Mis favoritos (<%=cfav%>)</a>
+        <a href="<%=advc%>" class="selected">Recomendados (<%=cadv%>)</a>
+        <a href="<%=uall%>" class="selected">Todos (<%=allc%>)</a>
+        <a href="#" class="">Temas (<%=cths%>)</a>
+    <% }else if (MyCollections.MODE_VIEW_SUGST.equalsIgnoreCase(paramRequest.getMode())) { %>
+        <a href="<%=wall%>" class="selected">Mis colecciones(<%=cusr%>)</a>
+        <a href="<%=favs%>" class="selected">Mis favoritos (<%=cfav%>)</a>
+        <a href="#" class="">Recomendados (<%=cadv%>)</a>
+        <a href="<%=uall%>" class="selected">Todos (<%=allc%>)</a>
+        <a href="<%=them%>" class="selected">Temas (<%=cths%>)</a>
     <% }else { %> 
             <a href="<%=wall%>" class="selected">Mis colecciones(<%=cusr%>)</a>
             <a href="<%=favs%>" class="selected">Mis favoritos (<%=cfav%>)</a>
+            <a href="<%=advc%>" class="selected">Recomendados (<%=cadv%>)</a>
             Todos (<%=allc%>)
+            <a href="<%=them%>" class="selected">Temas (<%=cths%>)</a>
     <%  } %>
-    <!--a href="#" class="selected">Recomendados (20)</a-->
-    <!--a href="#" class="">Temas (1)</a-->
 </div>
 <div class="container">
     <div id="references">
@@ -269,9 +308,10 @@
                    </div>
             <%
                 }
-                if (null!=boards && !boards.isEmpty()) {
+                if (!boards.isEmpty()) {
                     for (Collection c : boards) {
-                        String username = null != c.getUserName() && !c.getUserName().trim().isEmpty() ? c.getUserName() : "Anónimo";
+                        boolean isTheme = MyCollections.MODE_VIEW_THEME.equalsIgnoreCase(paramRequest.getMode());
+                        String username = null != c.getUserName() && !c.getUserName().trim().isEmpty() ? c.getUserName() : paramRequest.getLocaleString("usrmsg_view_collections_anonymous");
             %>
                         <div class="col-6 col-md-4">
                             <%	if (c.getCovers().isEmpty()) {	%>
@@ -279,6 +319,15 @@
 					<a href="<%=uels%>?id=<%=c.getId()%>">
                                             <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
 					</a>
+                                    </div>
+                            <%	}else if (c.getCovers().size() == 1 && isTheme) { %>
+                                    <div class="mosaico mosaico1 radius-overflow">
+					<label for="checkbox">
+                                            <img src="<%=c.getCovers().get(0)%>">
+					</label>
+					<span class="theme">
+                                            <input type="checkbox" name="edithm" onclick="addThm(<%=c.getId()%>);" <% if (Utils.isThmChk(c.getId(), paramRequest.getUser().getProperty("theme"))) out.println(" checked"); %> />
+					</span>
                                     </div>
                             <%  }else if (c.getCovers().size() < 3) { %>
                                     <div class="mosaico mosaico1 radius-overflow">
@@ -305,9 +354,11 @@
                             <% } %>
                             <div class="mosaico-txt ">
                                 <p>
-                                    <% if (!c.getStatus()) { %><span class="ion-locked rojo"><% } else { %><span class="ion-unlocked rojo"><% }%>
-                                        </span><%=c.getTitle()%></p>
-                                <p>Curada por: <%=username%></p>
+                                    <%  if (isTheme) {out.println(c.getTitle()+"</p>");
+					}else { if (!c.getStatus()) { %><span class="ion-locked rojo"><% }else { %><span class="ion-unlocked rojo"><% } %></span><%=c.getTitle()%>
+                                            </p>
+                                            <p>Curada por: <%=username%></p>
+                                    <% } %>
                                 <!--a href="#"><span class="ion-social-facebook"></span></a-->
                                 <!--a href="#"><span class="ion-social-twitter"></span></a-->
                                 <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned() && paramRequest.getUser().getId().equalsIgnoreCase(c.getUserid())) {%>
@@ -418,6 +469,23 @@
             </div>
             <div class="modal-footer">
                 <button type="button" id="closeAlert" class="btn btn-sm rojo" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="alertThemes" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Éxito</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="dialog-theme"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="closeTheme" class="btn btn-sm rojo" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
