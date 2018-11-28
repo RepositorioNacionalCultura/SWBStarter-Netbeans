@@ -35,7 +35,9 @@
 	<%
             }
             if (!boards.isEmpty()) {
+                
 		for (Collection c : boards) {
+                    String username = null != c.getUserName() && !c.getUserName().trim().isEmpty() ? c.getUserName():"Anónimo";
 	%>
                     <div class="col-6 col-md-4">
         <%          if (c.getCovers().isEmpty()) {	%>
@@ -76,7 +78,7 @@
         <%              } %>
                             </span><%=c.getTitle()%>
                         </p>
-			<p>Curada por: <%=c.getUserName()%></p>
+			<p>Curada por: <%=username%></p>
                         <!--a href="#"><span class="ion-social-facebook"></span></a-->
                         <!--a href="#"><span class="ion-social-twitter"></span></a-->
                         <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned() && paramRequest.getUser().getId().equalsIgnoreCase(c.getUserid())) {%>
