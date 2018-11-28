@@ -8,17 +8,17 @@
 
 <script type="text/javascript" src="/swbadmin/js/dojo/dojo/dojo.js" djConfig="parseOnLoad: true, isDebug: false, locale: 'en'"></script>
 <%
-    String msg = "Agregar colección";
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     SWBResourceURL saveURL = paramRequest.getActionUrl();
     saveURL.setMode(SWBResourceURL.Mode_VIEW);
     saveURL.setAction(MyCollections.ACTION_ADD);
     Collection c = (Collection) request.getAttribute("collection");
+    String msg = paramRequest.getLocaleString("usrmsg_view_collections_add");
     if (c == null) {
         c = new Collection("", false, "");
-        msg = "No se encontró la colección solicitada";
+        msg = paramRequest.getLocaleString("usrmsg_view_collections_not_exist");
     } else if (null != c.getId()) {
-        msg = "Editar colección";
+        msg = paramRequest.getLocaleString("usrmsg_view_collections_edit");
         saveURL.setAction(SWBResourceURL.Action_EDIT);
         saveURL.setParameter(MyCollections.IDENTIFIER, c.getId().toString());
     }
@@ -34,7 +34,7 @@
             </div>
             <div class="col-8 col-sm-7 modal-col2">
                 <div class="modal-header">
-                    <h4 class="modal-title oswM rojo">EDITAR COLECCIÓN</h4>
+                    <h4 class="modal-title oswM rojo"><%=paramRequest.getLocaleString("usrmsg_view_collections_edit").toUpperCase()%></h4>
                     <button type="button" class="close" data-dismiss="modal">
                         <span class="ion-ios-close-outline"></span>
                     </button>
@@ -42,16 +42,16 @@
                 <div class="modal-body">
                     <form id="saveCollForm" action="<%=saveURL.toString()%>" method="post">
                         <div class="form-group">
-                            <label for="crearNombre">Nombre</label>
+                            <label for="crearNombre"><%=paramRequest.getLocaleString("usrmsg_view_collections_name")%></label>
                             <input type="text" name="title" maxlength="100" value="<%=c.getTitle()%>" id="crearNombre" class="form-control" placeholder="60" aria-label="Recipient's username" aria-describedby="basic-addon2"/><div id="dialog-msg-edit"></div>
-                            <label for="crearDescr">Descripción (opcional)</label>
+                            <label for="crearDescr"><%=paramRequest.getLocaleString("usrmsg_view_collections_desc_opt")%></label>
                             <textarea name="description" id="crearDescr" placeholder="250"><%=c.getDescription()%></textarea>        
                             <label for="selprivado" class="selPrivado">
-                                <input name="status" <% /**if (c.getStatus())**/ out.println(" checked"); %> id="selprivado" type="checkbox" aria-label="Checkbox for following text input"/>
-                                <% if (!c.getStatus()) { %><span class="ion-locked">Privado<% }else { %><span class="ion-unlocked">Público<% } %></span>
+                                <input name="status" value="<% out.println(c.getStatus()); %>" id="selprivado" type="checkbox" checked aria-label="Checkbox for following text input"/>
+                                <% if (!c.getStatus()) { %><span class="ion-locked"><%=paramRequest.getLocaleString("usrmsg_view_collections_private")%><% }else { %><span class="ion-unlocked"><%=paramRequest.getLocaleString("usrmsg_view_collections_public")%><% } %></span>
                             </label>
                         </div>
-                        <button type="button" onclick="saveEdit('<%=saveURL.toString()%>');" class="btn-cultura btn-rojo btn-mayus">Guardar</button>
+                        <button type="button" onclick="saveEdit('<%=saveURL.toString()%>');" class="btn-cultura btn-rojo btn-mayus"><%=paramRequest.getLocaleString("usrmsg_view_collections_save")%></button>
                     </form>
                 </div>
             </div>

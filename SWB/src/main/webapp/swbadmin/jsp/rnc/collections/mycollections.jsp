@@ -118,12 +118,12 @@
                     if (null != res.id) {
                         //alert('Se guardó correctamente su colección');
                         $('#modalExh').modal('hide');
-                        jQuery("#dialog-text").text("Se guardó correctamente en su colección.");
+                        jQuery("#dialog-text").text('<%=paramRequest.getLocaleString("usrmsg_view_collections_save_correct")%>');
                         $('#alertSuccess').modal('show');
                         //window.location.replace('/swb/<%=site.getId()%>/colecciones');
                     } else {
                         //alert('Ya tiene una colección con éste nombre');
-                        jQuery("#dialog-msg").text("Ya tiene una colección con éste nombre.");
+                        jQuery("#modal-msg").text('<%=paramRequest.getLocaleString("usrmsg_view_collections_used_title")%>');
                         //$("#dialog-message" ).dialog( "open" );
                     }
                 }
@@ -133,7 +133,7 @@
     function validateData() {
         if (document.forms.addCollForm.title.value === '') {
             //alert("Favor de proporcionar nombre de colección.");	
-            jQuery("#dialog-msg").text("Favor de proporcionar nombre de colección.");
+            jQuery("#modal-msg").text('<%=paramRequest.getLocaleString("usrmsg_view_collections_title_required")%>');
             //$("#dialog-message" ).dialog( "open" );
             return false;
         }
@@ -145,7 +145,7 @@
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 dialogMsgConfirm.hide();
-                jQuery("#dialog-text").text("Se actualizó correctamente en su colección.");
+                jQuery("#dialog-text").text('<%=paramRequest.getLocaleString("usrmsg_view_collections_update_correct")%>');
 		$('#alertSuccess').modal('show');
             }
 	};
@@ -167,8 +167,8 @@
             '<div id="messageDialgopC" name="messageDialgopC" style="width:350px; border:1px solid #b7b7b7; background:#fff; padding:8px; margin:0 auto; height:150px; overflow:auto;">' +
                 '<p style="color:#999;">'+ msg +'</p>'+
                 '<table><tr>' + 
-                    '<td style="width:50%; align="center"><input id="btnRenv" class="btn btn-sm rojo" type="button" name="btnRenv" onClick="del('+entry+')" value="Aceptar"/></td>' +
-                    '<td style="width:50%; align="center"><input id="btnCanc" class="btn btn-sm rojo" type="button" name="btnCanc" onClick="dialogMsgConfirm.hide();" value="Cancelar"/></td>' +
+                    '<td style="width:50%; align="center"><input id="btnRenv" class="btn btn-sm rojo" type="button" name="btnRenv" onClick="del('+entry+')" value="<%=paramRequest.getLocaleString("usrmsg_view_collections_agree")%>"/></td>' +
+                    '<td style="width:50%; align="center"><input id="btnCanc" class="btn btn-sm rojo" type="button" name="btnCanc" onClick="dialogMsgConfirm.hide();" value="<%=paramRequest.getLocaleString("usrmsg_view_collections_cancel")%>"/></td>' +
                 '</tr></table>' +
             '</div>';
 	dialogMsgConfirm = new dijit.Dialog({
@@ -192,12 +192,12 @@
                     if (null != res.id) {
                         //alert('Se guardó correctamente en su colección');
                         $('#editCollection').modal('hide');
-                        jQuery("#dialog-text").text("Se actualizó correctamente en su colección.");
+                        jQuery("#dialog-text").text('<%=paramRequest.getLocaleString("usrmsg_view_collections_update_correct")%>');
                         $('#alertSuccess').modal('show');
                         //window.location.replace('/swb/<%=site.getId()%>/colecciones');
                     } else {
                         //alert('Ya tiene una colección con éste nombre');
-                        jQuery("#dialog-msg-edit").text("Ya tiene una colección con éste nombre.");
+                        jQuery("#dialog-msg-edit").text('<%=paramRequest.getLocaleString("usrmsg_view_collections_used_title")%>');
                         //$("#dialog-message" ).dialog( "open" );
                     }
                 }
@@ -207,7 +207,7 @@
     function validateEdit() {
         if (document.forms.saveCollForm.title.value === '') {
             //alert("Favor de proporcionar nombre de colección.");	
-            jQuery("#dialog-msg-edit").text("Favor de proporcionar nombre de colección.");
+            jQuery("#dialog-msg-edit").text('<%=paramRequest.getLocaleString("usrmsg_view_collections_title_required")%>');
             //$("#dialog-message" ).dialog( "open" );
             return false;
         }
@@ -219,7 +219,7 @@
             load: function(data) {
 		var res =  dojo.fromJson(data);
 		if (res.id) {
-                    jQuery("#dialog-theme").text("Se actualizó correctamente su selección.");
+                    jQuery("#dialog-theme").text('<%=paramRequest.getLocaleString("usrmsg_view_collections_update_correct")%>');
                     $('#alertThemes').modal('show');
 		}
             }
@@ -238,13 +238,13 @@
         <div>
             <h2 class="oswM nombre"><%=null!=paramRequest.getUser() ? paramRequest.getUser().getFullName():""%></h2>
             <p class="subnombre"></p>
-            <button class="btn-cultura btn-blanco" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/Registro');">EDITAR PERFIL</button>
+            <button class="btn-cultura btn-blanco" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/Registro');"><%=paramRequest.getLocaleString("usrmsg_view_collections_edit_profile").toUpperCase()%></button>
         </div>
     </div>
     <div class="buscacol">
 	<form action="<%=find%>">
             <button class="" type="submit"><span class="ion-search"></span></button>
-            <input name="criteria" id="buscaColeccion" class="form-control" type="text" placeholder="BUSCA EN LAS COLECCIONES... " aria-label="Search">
+            <input name="criteria" id="buscaColeccion" class="form-control" type="text" placeholder="<%=paramRequest.getLocaleString("usrmsg_view_collections_search").toUpperCase()%>" aria-label="Search">
 	</form>
     </div>
 </div>
@@ -252,41 +252,41 @@
     <%
         if (MyCollections.MODE_VIEW_MYALL.equalsIgnoreCase(paramRequest.getMode()) || SWBResourceURL.Mode_VIEW.equalsIgnoreCase(paramRequest.getMode())) {
     %>
-            Mis colecciones (<%=cusr%>)
-            <a href="<%=favs%>" class="selected">Mis favoritos (<%=cfav%>)</a>
-            <a href="<%=advc%>" class="selected">Recomendados (<%=cadv%>)</a>
-            <a href="<%=uall%>" class="selected">Todos (<%=allc%>)</a>
-            <a href="<%=them%>" class="selected">Temas (<%=cths%>)</a>
+            <%=paramRequest.getLocaleString("usrmsg_view_collections_mine")%> (<%=cusr%>)
+            <a href="<%=favs%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_my_favourites")%> (<%=cfav%>)</a>
+            <a href="<%=advc%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_recommended")%> (<%=cadv%>)</a>
+            <a href="<%=uall%>"	class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_all")%> (<%=allc%>)</a>
+            <a href="<%=them%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_themes")%> (<%=cths%>)</a>
     <% }else if (MyCollections.MODE_VIEW_FIND.equalsIgnoreCase(paramRequest.getMode())) { %>
-            <a href="<%=wall%>" class="selected">Mis colecciones(<%=cusr%>)</a>
-            <a href="<%=favs%>" class="selected">Mis favoritos (<%=cfav%>)</a>
-            <a href="<%=advc%>" class="selected">Recomendados (<%=cadv%>)</a>
-            <a href="<%=uall%>" class="selected">Todos (<%=allc%>)</a>
-            <a href="<%=them%>" class="selected">Temas (<%=cths%>)</a>
+            <a href="<%=wall%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_mine")%> (<%=cusr%>)</a>
+            <a href="<%=favs%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_my_favourites")%> (<%=cfav%>)</a>
+            <a href="<%=advc%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_recommended")%> (<%=cadv%>)</a>
+            <a href="<%=uall%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_all")%> (<%=allc%>)</a>
+            <a href="<%=them%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_themes")%> (<%=cths%>)</a>
     <% }else if (MyCollections.MODE_VIEW_MYFAV.equalsIgnoreCase(paramRequest.getMode())) { %>
-            <a href="<%=wall%>" class="selected">Mis colecciones(<%=cusr%>)</a>
-            <a href="#" class="">Mis favoritos (<%=cfav%>)</a>
-            <a href="<%=advc%>" class="selected">Recomendados (<%=cadv%>)</a>
-            <a href="<%=uall%>" class="selected">Todos (<%=allc%>)</a>
-            <a href="<%=them%>" class="selected">Temas (<%=cths%>)</a>
+            <a href="<%=wall%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_mine")%> (<%=cusr%>)</a>
+            <a href="#" class=""><%=paramRequest.getLocaleString("usrmsg_view_collections_my_favourites")%> (<%=cfav%>)</a>
+            <a href="<%=advc%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_recommended")%> (<%=cadv%>)</a>
+            <a href="<%=uall%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_all")%> (<%=allc%>)</a>
+            <a href="<%=them%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_themes")%> (<%=cths%>)</a>
     <% }else if (MyCollections.MODE_VIEW_THEME.equalsIgnoreCase(paramRequest.getMode())) { %>
-	<a href="<%=wall%>" class="selected">Mis colecciones(<%=cusr%>)</a>
-        <a href="<%=favs%>" class="selected">Mis favoritos (<%=cfav%>)</a>
-        <a href="<%=advc%>" class="selected">Recomendados (<%=cadv%>)</a>
-        <a href="<%=uall%>" class="selected">Todos (<%=allc%>)</a>
-        <a href="#" class="">Temas (<%=cths%>)</a>
+            <a href="<%=wall%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_mine")%>(<%=cusr%>)</a>
+            <a href="<%=favs%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_my_favourites")%> (<%=cfav%>)</a>
+            <a href="<%=advc%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_recommended")%> (<%=cadv%>)</a>
+            <a href="<%=uall%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_all")%> (<%=allc%>)</a>
+            <a href="#" class=""><%=paramRequest.getLocaleString("usrmsg_view_collections_themes")%> (<%=cths%>)</a>
     <% }else if (MyCollections.MODE_VIEW_SUGST.equalsIgnoreCase(paramRequest.getMode())) { %>
-        <a href="<%=wall%>" class="selected">Mis colecciones(<%=cusr%>)</a>
-        <a href="<%=favs%>" class="selected">Mis favoritos (<%=cfav%>)</a>
-        <a href="#" class="">Recomendados (<%=cadv%>)</a>
-        <a href="<%=uall%>" class="selected">Todos (<%=allc%>)</a>
-        <a href="<%=them%>" class="selected">Temas (<%=cths%>)</a>
+            <a href="<%=wall%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_mine")%> (<%=cusr%>)</a>
+            <a href="<%=favs%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_my_favourites")%> (<%=cfav%>)</a>
+            <a href="#" class=""><%=paramRequest.getLocaleString("usrmsg_view_collections_recommended")%> (<%=cadv%>)</a>
+            <a href="<%=uall%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_all")%> (<%=allc%>)</a>
+            <a href="<%=them%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_themes")%> (<%=cths%>)</a>
     <% }else { %> 
-            <a href="<%=wall%>" class="selected">Mis colecciones(<%=cusr%>)</a>
-            <a href="<%=favs%>" class="selected">Mis favoritos (<%=cfav%>)</a>
-            <a href="<%=advc%>" class="selected">Recomendados (<%=cadv%>)</a>
-            Todos (<%=allc%>)
-            <a href="<%=them%>" class="selected">Temas (<%=cths%>)</a>
+            <a href="<%=wall%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_mine")%> (<%=cusr%>)</a>
+            <a href="<%=favs%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_my_favourites")%> (<%=cfav%>)</a>
+            <a href="<%=advc%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_recommended")%> (<%=cadv%>)</a>
+            <%=paramRequest.getLocaleString("usrmsg_view_collections_all")%> (<%=allc%>)
+            <a href="<%=them%>" class="selected"><%=paramRequest.getLocaleString("usrmsg_view_collections_themes")%> (<%=cths%>)</a>
     <%  } %>
 </div>
 <div class="container">
@@ -302,7 +302,7 @@
                             </a>
                         </div>
                         <div class="mosaico-txt ">
-                            <p><span class="ion-locked rojo"></span> Crear colección</p>
+                            <p><span class="ion-locked rojo"></span> <%=paramRequest.getLocaleString("usrmsg_view_collections_create")%></p>
                             <p></p>
                         </div>
                    </div>
@@ -357,12 +357,12 @@
                                     <%  if (isTheme) {out.println(c.getTitle()+"</p>");
 					}else { if (!c.getStatus()) { %><span class="ion-locked rojo"><% }else { %><span class="ion-unlocked rojo"><% } %></span><%=c.getTitle()%>
                                             </p>
-                                            <p>Curada por: <%=username%></p>
+                                            <p><%=paramRequest.getLocaleString("usrmsg_view_collections_curate_by")%>: <%=username%></p>
                                     <% } %>
                                 <!--a href="#"><span class="ion-social-facebook"></span></a-->
                                 <!--a href="#"><span class="ion-social-twitter"></span></a-->
                                 <% if (null != paramRequest.getUser() && paramRequest.getUser().isSigned() && paramRequest.getUser().getId().equalsIgnoreCase(c.getUserid())) {%>
-                                    <a href="#" onclick="messageConfirm('¿Está usted seguro de eliminar la colección?', '<%=c.getId()%>');"><span class="ion-trash-a"></span></a>
+                                    <a href="#" onclick="messageConfirm('<%=paramRequest.getLocaleString("usrmsg_view_collections_delete")%>', '<%=c.getId()%>');"><span class="ion-trash-a"></span></a>
                                     <a href="#" onclick="editByForm('<%=c.getId()%>');"><span class="ion-edit"></span></a>
                                 <% } %>
                             </div>
@@ -379,8 +379,8 @@
     <div class="agregarColecc ">
         <a href="#" onclick="javascript:location.replace('/<%=userLang%>/<%=site.getId()%>/explorar');">
             <span class="ion-ios-plus"></span>
-            <em class="oswM">Agregar  desde la colección</em>
-            <span class="btn-cultura">Explorar <span class="ion-chevron-right"></span></span>
+            <em class="oswM"><%=paramRequest.getLocaleString("usrmsg_view_collections_add_from")%></em>
+            <span class="btn-cultura"><%=paramRequest.getLocaleString("usrmsg_view_collections_explore")%> <span class="ion-chevron-right"></span></span>
         </a>
         <div>
             <img src="/work/models/repositorio/img/cabecera-carranza.jpg">
@@ -399,7 +399,7 @@
                 </div>
                 <div class="col-8 col-sm-7 modal-col2">
                     <div class="modal-header">
-                        <h4 class="modal-title oswM rojo">CREAR NUEVA COLECCIÓN</h4>
+                        <h4 class="modal-title oswM rojo"><%=paramRequest.getLocaleString("usrmsg_view_collections_create_new").toUpperCase()%></h4>
                         <button type="button" class="close" data-dismiss="modal">
                             <span class="ion-ios-close-outline"></span>
                         </button>
@@ -407,16 +407,16 @@
                     <div class="modal-body">
                         <form id="addCollForm" action="<%=saveURL.toString()%>" method="post">
                             <div class="form-group">
-                                <label for="crearNombre">Nombre</label>
+                                <label for="crearNombre"><%=paramRequest.getLocaleString("usrmsg_view_collections_name")%></label>
                                 <input type="text" name="title" maxlength="100" value="" id="crearNombre" class="form-control" placeholder="60" aria-label="Recipient's username" aria-describedby="basic-addon2"/>
-                                <label for="crearDescr">Descripción (opcional)</label>
+                                <label for="crearDescr"><%=paramRequest.getLocaleString("usrmsg_view_collections_desc_opt")%></label>
                                 <textarea name="description" id="crearDescr" placeholder="250"></textarea>        
                                 <label for="selprivado" class="selPrivado">
                                     <input name="status" value="false" id="selprivado" type="checkbox" aria-label="Checkbox for following text input"/>
-                                    <span class="ion-locked"> Privado</span>
+                                    <span class="ion-locked"> <%=paramRequest.getLocaleString("usrmsg_view_collections_private")%></span>
                                 </label>
                             </div>
-                            <button type="button" onclick="save();" class="btn-cultura btn-rojo btn-mayus">Crear colección</button>
+                            <button type="button" onclick="save();" class="btn-cultura btn-rojo btn-mayus"><%=paramRequest.getLocaleString("usrmsg_view_collections_create")%></button>
                         </form>
                     </div>
                 </div>
@@ -429,7 +429,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Agregar colección</h4>
+                <h4 class="modal-title"><%=paramRequest.getLocaleString("usrmsg_view_collections_add")%></h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -437,21 +437,21 @@
                     <form id="addCollForm" action="<%=saveURL.toString()%>" method="post">
                         <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 car-img2">
                             <div class="card-body">
-                                <span class="card-title">* Nombre: </span><input type="text" name="title" maxlength="100" size="40" value=""/><div id="dialog-msg"></div>
+                                <span class="card-title">* <%=paramRequest.getLocaleString("usrmsg_view_collections_name")%>: </span><input type="text" name="title" maxlength="100" size="40" value=""/><div id="dialog-msg"></div>
                             </div>
                             <div class="card-body">
-                                <span class="card-title">Descripción: </span><textarea name="description" rows="4" cols="40" maxlength="500" wrap="hard"></textarea>
+                                <span class="card-title"><%=paramRequest.getLocaleString("usrmsg_view_collections_desc")%>: </span><textarea name="description" rows="4" cols="40" maxlength="500" wrap="hard"></textarea>
                             </div>
                             <div class="card-body">
-                                <span class="card-title">Público: </span><input type="checkbox" name="status" value="true"/>
+                                <span class="card-title"><%=paramRequest.getLocaleString("usrmsg_view_collections_public")%>: </span><input type="checkbox" name="status" value="true"/>
                             </div>
                         </div>
                     </form>
                 </p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm rojo" data-dismiss="modal">Cerrar</button>
-                <button type="button" onclick="save();" class="btn btn-sm rojo">Guardar</button>
+                <button type="button" class="btn btn-sm rojo" data-dismiss="modal"><%=paramRequest.getLocaleString("usrmsg_view_collections_close")%></button>
+                <button type="button" onclick="save();" class="btn btn-sm rojo"><%=paramRequest.getLocaleString("usrmsg_view_collections_save")%></button>
             </div>
         </div>
     </div>
@@ -461,14 +461,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Éxito</h4>
+                <h4 class="modal-title"><%=paramRequest.getLocaleString("usrmsg_view_collections_success")%></h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 <div id="dialog-text"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="closeAlert" class="btn btn-sm rojo" data-dismiss="modal">Cerrar</button>
+                <button type="button" id="closeAlert" class="btn btn-sm rojo" data-dismiss="modal"><%=paramRequest.getLocaleString("usrmsg_view_collections_close")%></button>
             </div>
         </div>
     </div>
@@ -478,14 +478,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Éxito</h4>
+                <h4 class="modal-title"><%=paramRequest.getLocaleString("usrmsg_view_collections_success")%></h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 <div id="dialog-theme"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="closeTheme" class="btn btn-sm rojo" data-dismiss="modal">Cerrar</button>
+                <button type="button" id="closeTheme" class="btn btn-sm rojo" data-dismiss="modal"><%=paramRequest.getLocaleString("usrmsg_view_collections_close")%></button>
             </div>
         </div>
     </div>
