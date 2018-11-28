@@ -63,7 +63,7 @@
             <%=Utils.getTechData("recordtitle", holder, title+subtile, paramRequest.getLocaleString("usrmsg_view_detail_title"), true, true)%>
             <%=Utils.getTechData("creator", holder, Utils.getCreator(entry.getCreator()), paramRequest.getLocaleString("usrmsg_view_detail_artist"), true, true)%>
             <%=Utils.getTechData("datecreated", holder, null != entry.getDatecreated() ? entry.getDatecreated().getNote() : "", paramRequest.getLocaleString("usrmsg_view_detail_date"), true, true)%>
-            <%=Utils.getTechData("resourcetype", holder, Utils.concatFilter(userLang, site.getId(), "resourcetype", entry.getResourcetype()), paramRequest.getLocaleString("usrmsg_view_detail_type_object"), true, true)%>
+            <%=Utils.getTechData("resourcetype", holder, Utils.concatFilter(userLang, site.getId(), "resourcetype", entry.getResourcetype()), paramRequest.getLocaleString("usrmsg_view_detail_type_object"), false, true)%>
             <%=Utils.getTechData("holder", holder, urlholder, paramRequest.getLocaleString("usrmsg_view_detail_institution"), true, true)%>
             <%=Utils.getTechData("publisher", holder, entry.getPublisher(), paramRequest.getLocaleString("usrmsg_view_detail_publisher"), false, true)%>
             <%=Utils.getTechData("invited", holder, entry.getInvited(), paramRequest.getLocaleString("usrmsg_view_detail_invited"), false, true)%>
@@ -80,7 +80,6 @@
             <%
                 }
             %>
-            <%=Utils.getTechData("resourcetype", holder, Utils.concatFilter(userLang, site.getId(), "resourcetype", entry.getResourcetype()), paramRequest.getLocaleString("usrmsg_view_detail_type_object"), false, true)%>
             <%=Utils.getTechData("lugar", holder, entry.getLugar(), paramRequest.getLocaleString("usrmsg_view_detail_place"), false, true)%>
             <%=Utils.getTechData("reference", holder, entry.getReference(), paramRequest.getLocaleString("usrmsg_view_detail_reference"), false, true)%>
             <%=Utils.getTechData("reccollection", holder, Utils.getRowData(entry.getReccollection(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_collection"), false, true)%>
@@ -155,11 +154,11 @@
                     out.println(Utils.getTechData("oaiid/identifier", holder, entry.getIdentifiers(), paramRequest.getLocaleString("usrmsg_view_detail_identifier"), true, true));
 		}
                 if (null != entry.getUrl_mediateca() && entry.getUrl_mediateca().startsWith("http")) {
-                    url = "<a href='" + entry.getUrl_mediateca() + "' target='_blank'>";
+                    url = "<a href='" + entry.getUrl_mediateca() + "' target='_blank'>"+entry.getUrl_mediateca();
             %>
                     <tr>
 			<td><%=paramRequest.getLocaleString("usrmsg_view_detail_url_mediateca")%></td>
-                        <td><%=url%><%=title%></a></td>
+                        <td><%=url%></a></td>
                     </tr>
             <%  } %>
         </table>
