@@ -15,6 +15,10 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
 import java.io.BufferedInputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import java.text.Format;
 import java.text.DecimalFormat;
@@ -31,7 +35,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 
-import java.util.logging.Logger;
+import org.semanticwb.Logger;
 import org.semanticwb.model.WebSite;
 import org.semanticwb.model.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +51,7 @@ import mx.gob.cultura.portal.response.Aggregation;
 import mx.gob.cultura.portal.response.DigitalObject;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PRIVATE;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PUBLIC;
+import org.semanticwb.SWBUtils;
 
 import org.w3c.dom.Element;
 
@@ -61,7 +66,7 @@ public class Utils {
     
     protected static final Map m = new HashMap();
     
-    private static final Logger LOG = Logger.getLogger(Utils.class.getName());
+    private static final Logger LOG = SWBUtils.getLogger(Utils.class);
 	
     static {
 	m.put(34, "");   // ""
@@ -379,6 +384,24 @@ public class Utils {
         return builder.toString();
     }
     
+    public static String getRowHold(List<String> list, int size, boolean all) {
+        StringBuilder builder = new StringBuilder();
+        if (null == list || list.isEmpty()) return "";
+        if (all) {
+            for (String s : list) {
+                if (null != s && !s.trim().isEmpty()) builder.append(Utils.clder(s)).append(", ");
+            }
+            if (builder.length() > 0) builder.deleteCharAt(builder.length() - 2);
+        }else {
+            if (null != list.get(0) && !list.get(0).trim().isEmpty()) {
+                String data = Utils.clder(list.get(0));
+                if (size > 0 && data.length() > size) data = data.substring(0, size)+"...";
+                builder.append(data);
+            }
+        }
+        return builder.toString();
+    }
+    
     public static String getTitle(List<Title> titles, int size) {
         List<String> list = new ArrayList<>();
         if (null == titles || titles.isEmpty()) return "";
@@ -413,6 +436,38 @@ public class Utils {
                     if (chdFtr(filter, resourcetype, r.getName()))
                         cde.append("checked");
                     cde.append("><span>").append(r.getName()).append("</span><span> ");
+                    if (showcount) cde.append(Utils.decimalFormat("###,###", r.getCount()));
+                    cde.append("</span><span class=\"checkmark\"></span></label></li>");
+                }
+            }
+            cde.append("</div>");
+	}
+        return cde.toString();
+    }
+    
+    public static String chdFtrHold(List<CountName> resourcetypes, String filter, String resourcetype, String moretypes, boolean showcount) {
+        int i = 0;
+        StringBuilder cde = new StringBuilder();
+        for (CountName r : resourcetypes) {
+            cde.append("<li><label class=\"form-check-label\"><input class=\"form-check-input\" type=\"checkbox\" onclick=\"filter()\" name=\"").append(resourcetype).append("\" value=\"").append(r.getName()).append("\"");
+            if (chdFtr(filter, resourcetype, r.getName())) 
+                cde.append("checked");
+            cde.append("><span>").append(Utils.clder(r.getName())).append("</span><span> ");
+            if (showcount) cde.append(Utils.decimalFormat("###,###", r.getCount()));
+            cde.append("</span><span class=\"checkmark\"></span></label></li>");
+            if (i>3) break; 
+            else i++; 
+        }
+	if (i<resourcetypes.size()) {
+            cde.append("<div class=\"collapse\" id=\"").append(moretypes).append("\">");
+            int j=0;
+            for (CountName r : resourcetypes) {
+		if (j<=i) {j++;} 
+		else { 
+                    cde.append("<li><label class=\"form-check-label\"><input class=\"form-check-input\" type=\"checkbox\" onclick=\"filter()\" name=\"").append(resourcetype).append("\" value=\"").append(r.getName()).append("\"");
+                    if (chdFtr(filter, resourcetype, r.getName()))
+                        cde.append("checked");
+                    cde.append("><span>").append(Utils.clder(r.getName())).append("</span><span> ");
                     if (showcount) cde.append(Utils.decimalFormat("###,###", r.getCount()));
                     cde.append("</span><span class=\"checkmark\"></span></label></li>");
                 }
@@ -642,5 +697,22 @@ public class Utils {
             return seq.equalsIgnoreCase("1");
         }
         return false;
+    }
+    
+    public static String clder(String holder) {
+        if (null == holder || holder.trim().isEmpty()) return "";
+        if (!holder.equalsIgnoreCase("Instituto Mexicano de Cinematografía")) return holder;
+        String cl = "";
+        try {
+            cl += URLEncoder.encode(holder, StandardCharsets.UTF_8.name());
+            if (cl.contains("%C2%A0")) {
+                cl = cl.replaceAll("%C2%A0", " ");
+                cl = URLDecoder.decode(cl, StandardCharsets.UTF_8.name());
+            }
+            else return holder;
+        } catch (UnsupportedEncodingException uex) {
+            cl = holder;
+        }
+        return cl;
     }
 }

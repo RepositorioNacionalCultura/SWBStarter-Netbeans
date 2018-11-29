@@ -81,7 +81,7 @@
                         for (Entry reference : references) {
                             String title =  Utils.getTitle(reference.getRecordtitle(), 50);
                             Document desc = Utils.getDescription(reference.getDescription(), 240);
-                            String holder = Utils.getRowData(reference.getHolder(), 0, false);
+                            String holder = Utils.getRowHold(reference.getHolder(), 0, false);
                             String creator = Utils.getRowData(reference.getCreator(), 0, false);
                     %>
                             <div class="pieza-res card">

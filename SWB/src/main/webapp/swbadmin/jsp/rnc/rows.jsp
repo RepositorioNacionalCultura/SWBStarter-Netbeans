@@ -12,7 +12,7 @@
     Integer t = (Integer)request.getAttribute("NUM_RECORDS_TOTAL");
     String word = null != request.getAttribute("word") ? Utils.suprXSS((String)request.getAttribute("word")) : "";
     if (null != request.getAttribute("theme")) wxss = Utils.suprXSS((String)request.getAttribute("theme"));
-	else wxss = Utils.suprXSS(word);
+    else wxss = Utils.suprXSS(word);
     String uri = !word.isEmpty() ? "&word="+word+"&leap="+first : "";
     String fs = null != request.getAttribute("filters") ? "&fs="+request.getAttribute("filters") : "";
     String f = null != request.getAttribute("sort") ? "&sort="+request.getAttribute("sort") : "";
@@ -21,19 +21,19 @@
 	<!--div id="references"-->
 		<jsp:include page="filters.jsp" flush="true"/>
 		<div class="ruta-resultado row" id="ruta-resultado">
-			<% if (null != wxss) { %>
-				<p class="oswL"><%=Utils.decimalFormat("###,###", t)%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
-			<% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
+                    <% if (null != wxss) { %>
+			<p class="oswL"><%=Utils.decimalFormat("###,###", t)%> <%=paramRequest.getLocaleString("usrmsg_view_search_results")%> <%=paramRequest.getLocaleString("usrmsg_view_search_of")%> <span class="oswB rojo"><%=wxss%></span></p>
+                    <% }else { out.println(paramRequest.getLocaleString("usrmsg_view_search_empty_criteria")); } %>
 		</div>
 		<div id="contenido">
-			<div id="resultados" class="<%=mode%>">
-			<%  
-				for (Entry reference : references) {
-					String title =  Utils.getTitle(reference.getRecordtitle(), 50);
-                    Document desc = Utils.getDescription(reference.getDescription(), 240);
-                    String holder = Utils.getRowData(reference.getHolder(), 0, false);
-                    String creator = Utils.getRowData(reference.getCreator(), 0, false);
-			%>
+                    <div id="resultados" class="<%=mode%>">
+                    <%  
+			for (Entry reference : references) {    
+                            String title =  Utils.getTitle(reference.getRecordtitle(), 50);
+                            Document desc = Utils.getDescription(reference.getDescription(), 240);
+                            String holder = Utils.getRowHold(reference.getHolder(), 0, false);
+                            String creator = Utils.getRowData(reference.getCreator(), 0, false);
+                    %>
 					<div class="pieza-res card">
 						<a class="pieza-res-img" href="/<%=paramRequest.getUser().getLanguage()%>/<%=site.getId()%>/detalle?id=<%=reference.getId()%>&r=<%=reference.getPosition()%>&t=<%=t%><%=fs%><%=f%><%=uri%>">
 							<img src="<%=reference.getResourcethumbnail()%>" />

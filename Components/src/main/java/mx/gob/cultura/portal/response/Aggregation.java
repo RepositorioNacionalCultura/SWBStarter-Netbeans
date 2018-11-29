@@ -98,6 +98,6 @@ public class Aggregation implements Serializable {
 
     @Override
     public String toString() {
-        return "Aggregation{" + "languages=" + languages + ", rightsmedia=" + rightsmedia + '}';
+        return "Aggregation{" + "holders=" + holders + '}';
     }
 }

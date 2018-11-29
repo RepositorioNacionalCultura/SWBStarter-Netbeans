@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Collection;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION;
+import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PUBLIC;
 
 import static mx.gob.cultura.portal.utils.Constants.FULL_LIST;
 import static mx.gob.cultura.portal.utils.Constants.PARAM_REQUEST;
@@ -44,11 +45,10 @@ public class InCollections extends MyCollections {
         String path = "/swbadmin/jsp/rnc/collections/pbcollections.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
-            List<Collection> collectionList = collectionList(Boolean.FALSE);
+            List<Collection> collectionList = collectionList(COLLECTION_PUBLIC);
             setCovers(paramRequest, collectionList, 3);
             request.setAttribute(FULL_LIST, collectionList);
             request.setAttribute(PARAM_REQUEST, paramRequest);
-            request.setAttribute("mycollections", collectionList);
             request.setAttribute(NUM_RECORDS_TOTAL, collectionList.size());
             init(request);
             rd.include(request, response);
