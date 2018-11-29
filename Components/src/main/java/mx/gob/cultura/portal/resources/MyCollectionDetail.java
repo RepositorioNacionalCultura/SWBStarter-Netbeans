@@ -156,19 +156,24 @@ public class MyCollectionDetail extends GenericResource{
         }else if (ACTION_ADD_CLF.equals(response.getAction()) && null != request.getParameter(IDENTIFIER) && !request.getParameter(IDENTIFIER).trim().isEmpty()) {
             Gson gson = new Gson();
             Collection c = mgr.findById(request.getParameter(IDENTIFIER));
-            if (!umr.exist(user.getId(), request.getParameter(IDENTIFIER))) {
-                UserCollection uc = new UserCollection(user.getId(), request.getParameter(IDENTIFIER));
-                String _id = umr.insertUserCollection(uc);
-                if (null != _id) {
-                    c.setId(_id);
-                    c.setFavorites(umr.countByCollection(request.getParameter(IDENTIFIER)).intValue());
+            if (null != user && null != user.getId()) {
+                if (!umr.exist(user.getId(), request.getParameter(IDENTIFIER))) {
+                    UserCollection uc = new UserCollection(user.getId(), request.getParameter(IDENTIFIER));
+                    String _id = umr.insertUserCollection(uc);
+                    if (null != _id) {
+                        c.setId(_id);
+                        c.setFavorites(umr.countByCollection(request.getParameter(IDENTIFIER)).intValue());
+                    }
+                }else {
+                    UserCollection uc = umr.findUserCollection(user.getId(), request.getParameter(IDENTIFIER));
+                    if (null != uc) {
+                        Long result = umr.deleteUserCollection(uc.getId());
+                        if (result > 0) c.setFavorites(umr.countByCollection(request.getParameter(IDENTIFIER)).intValue());
+                    }
                 }
             }else {
-                UserCollection uc = umr.findUserCollection(user.getId(), request.getParameter(IDENTIFIER));
-                if (null != uc) {
-                    Long result = umr.deleteUserCollection(uc.getId());
-                    if (result > 0) c.setFavorites(umr.countByCollection(request.getParameter(IDENTIFIER)).intValue());
-                }
+                c.setId(null);
+                c.setUserid(null);
             }
             response.setRenderParameter(COLLECTION_RENDER, gson.toJson(c));
             response.setMode(MODE_RES_ADD);

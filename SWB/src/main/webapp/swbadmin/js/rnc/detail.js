@@ -117,8 +117,11 @@ function share(op, status) {
     } else {
         if (op == 'fb') {
             fbShare();
-        } else {
-            window.open(url2Share, '', 'width=500,height=500');
+        }else if (op == 'fv') {
+            jQuery("#dialog-share").text("Regístrate o inicia sesión para agregar favoritos.");
+            $('#alertShare').modal('show');
+        }else {
+            window.open(url2Share,'', 'width=500,height=500');
         }
     }
 }
