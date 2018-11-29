@@ -71,7 +71,7 @@ public class MyCollectionDetail extends GenericResource{
         String path = "/swbadmin/jsp/rnc/collections/elements.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
-            if (null != user && user.isSigned() && null != request.getParameter(IDENTIFIER) /**&& !collectionList.isEmpty()**/) {
+            if (null != request.getParameter(IDENTIFIER) ) {  /** null != user && user.isSigned() &&  && !collectionList.isEmpty()**/
                 collection = mgr.findById(request.getParameter(IDENTIFIER));
             }
             if (null != collection && null != collection.getElements()) {
