@@ -15,8 +15,11 @@ import static mx.gob.cultura.portal.utils.Constants.COLLECTION;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PUBLIC;
 
 import static mx.gob.cultura.portal.utils.Constants.FULL_LIST;
+import static mx.gob.cultura.portal.utils.Constants.NUM_PAGE_LIST;
 import static mx.gob.cultura.portal.utils.Constants.PARAM_REQUEST;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_TOTAL;
+import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
+import static mx.gob.cultura.portal.utils.Constants.PAGE_NUM_ROW;
 
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceException;
@@ -45,14 +48,41 @@ public class InCollections extends MyCollections {
         String path = "/swbadmin/jsp/rnc/collections/pbcollections.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
-            List<Collection> collectionList = collectionList(COLLECTION_PUBLIC);
+            Integer total = count(null, COLLECTION_PUBLIC).intValue();
+            List<Collection> collectionList = collectionList(null, 1, NUM_ROW);
             setCovers(paramRequest, collectionList, 3);
             request.setAttribute(FULL_LIST, collectionList);
             request.setAttribute(PARAM_REQUEST, paramRequest);
-            request.setAttribute(NUM_RECORDS_TOTAL, collectionList.size());
+            request.setAttribute(NUM_RECORDS_TOTAL, total);
             init(request);
             rd.include(request, response);
         } catch (ServletException se) {
+            LOG.info(se.getMessage());
+        }
+    }
+    
+    @Override
+    public void doPage(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
+        int pagenum = 0;
+        Integer total = 0;
+        String p = request.getParameter("p");
+        List<Collection> collectionList = null;
+        if (null != p)  pagenum = Integer.parseInt(p);
+        if (pagenum<=0) pagenum = 1;
+        request.setAttribute(NUM_PAGE_LIST, pagenum);
+        request.setAttribute(PAGE_NUM_ROW, NUM_ROW);
+        total = count(null, COLLECTION_PUBLIC).intValue();
+        collectionList = collectionList(null, pagenum, NUM_ROW);
+        setCovers(paramRequest, collectionList, 3);
+        request.setAttribute(FULL_LIST, collectionList);
+        request.setAttribute(NUM_RECORDS_TOTAL, total);
+        page(pagenum, request);
+        String url = "/swbadmin/jsp/rnc/collections/rows.jsp";
+        RequestDispatcher rd = request.getRequestDispatcher(url);
+        try {
+            request.setAttribute(PARAM_REQUEST, paramRequest);
+            rd.include(request, response);
+        }catch (ServletException se) {
             LOG.info(se.getMessage());
         }
     }

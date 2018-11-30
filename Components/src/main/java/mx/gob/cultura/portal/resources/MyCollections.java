@@ -599,6 +599,27 @@ public class MyCollections extends GenericAdmResource {
         return covers;
     }
     
+    protected Long count(String userid, Boolean status) {
+        Long count = 0L;
+        try {
+            if (null != userid) count = mgr.countByUser(userid);
+            else count = mgr.countAllByStatus(status);
+        }catch(Exception e) {
+            LOG.info(e.getMessage());
+        }
+        return count; 
+    }
+    
+    protected List<Collection> collectionList(User user, Integer from, Integer leap) {
+        List<Collection> collection = new ArrayList<>();
+        if (null != user && user.isSigned())
+            collection = mgr.collectionsByUserLimit(user.getId(), from, leap);
+        else {
+            collection = mgr.collectionsByStatusLimit(COLLECTION_PUBLIC, from, leap);
+        }
+        return collection;
+    }
+    
     private Document getReference(HttpServletRequest request, SWBParamRequest paramRequest, int page) {
         Integer records = 0;
         Document reference = new Document();
@@ -780,16 +801,6 @@ public class MyCollections extends GenericAdmResource {
         mgr.updateCollection(c);
     }
     
-    private List<Collection> collectionList(User user, Integer from, Integer leap) {
-        List<Collection> collection = new ArrayList<>();
-        if (null != user && user.isSigned())
-            collection = mgr.collectionsByUserLimit(user.getId(), from, leap);
-        else {
-            collection = mgr.collectionsByStatusLimit(COLLECTION_PUBLIC, from, leap);
-        }
-        return collection;
-    }
-    
     private List<Collection> collectionList(User user) {
         List<Collection> collection = new ArrayList<>();
         if (null != user && user.isSigned())
@@ -888,17 +899,6 @@ public class MyCollections extends GenericAdmResource {
     
     private long update(Collection c) {
         return mgr.updateCollection(c);
-    }
-    
-    private Long count(String userid, Boolean status) {
-        Long count = 0L;
-        try {
-            if (null != userid) count = mgr.countByUser(userid);
-            else count = mgr.countAllByStatus(status);
-        }catch(Exception e) {
-            LOG.info(e.getMessage());
-        }
-        return count; 
     }
     
     private Long countByUser(String userid) {
