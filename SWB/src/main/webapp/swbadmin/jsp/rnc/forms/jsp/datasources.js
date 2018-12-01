@@ -595,3 +595,18 @@ eng.dataSources["Tiposdeagente"] = {
        {name: "descripcion", title: "Descripción", required: true, type: "string", required: false},
     ]
 };
+
+eng.dataSources["composing"] = {
+    scls: "composing",
+    modelid: "front",
+    dataStore: "mongodb",
+    displayField: "title",
+    fields: [
+       {name: "title", title: "Nombre",  type: "string"},
+       {name: "description", title: "Descripción",  type: "string"},
+       {name: "status", title: "Publica",  type: "boolean"},
+       {name: "userid", title: "Id usuarios",  type: "string"},
+       {name: "username", title: "Nombre usuario",  type: "string"},
+       {name: "elements", title: "Elementos",  type: "string", multiple: true}
+    ]
+};
