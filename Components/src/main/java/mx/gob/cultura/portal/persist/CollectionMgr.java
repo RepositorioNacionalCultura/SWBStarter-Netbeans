@@ -24,12 +24,12 @@ import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
-import static com.mongodb.client.model.Filters.and;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import mx.gob.cultura.portal.response.Collection;
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.and;
 import mx.gob.cultura.portal.response.UserCollection;
 
 /**
@@ -146,6 +146,33 @@ public class CollectionMgr {
             LOG.error(u);
         }
         return list;
+    }
+    
+    public List<Collection> collectionsByFilteredLimit(Boolean status, List<String> dictionary, Integer from, Integer leap) {
+        List<Collection> list = new ArrayList<>();
+        try {
+            Block<Document> c = new Block<Document>() {
+                @Override
+                public void apply(final Document document) {
+                    list.add(getCollection(document));
+                }
+            };
+            MongoCollection<Document> mongoCollection = getCollection();
+            if (null != from && null != leap)
+                mongoCollection.find(eq("status", status)).sort(getSort()).skip(leap*(from-1)).limit(leap).forEach(c);
+            else mongoCollection.find(eq("status", status)).sort(getSort()).forEach(c);
+        }catch (Exception u) {
+            LOG.error(u);
+        }
+        return list;
+    }
+    
+    private List<Document> exclude(List<String> dictionary) {
+        List<Document> filters = new ArrayList<>();
+        for (String word : dictionary) {
+            Document bson = new Document("title", "/^Ching.*/");
+        }
+        return filters;
     }
     
     public List<Collection> findByCriteria(String criteria, Boolean status, Integer from, Integer leap) {

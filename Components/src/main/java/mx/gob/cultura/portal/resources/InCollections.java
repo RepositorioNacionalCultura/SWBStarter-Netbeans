@@ -21,6 +21,7 @@ import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_TOTAL;
 import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
 import static mx.gob.cultura.portal.utils.Constants.PAGE_NUM_ROW;
 
+import org.semanticwb.model.User;
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceException;
 
@@ -59,6 +60,17 @@ public class InCollections extends MyCollections {
         } catch (ServletException se) {
             LOG.info(se.getMessage());
         }
+    }
+    
+    @Override
+    protected List<Collection> collectionList(User user, Integer from, Integer leap) {
+        List<Collection> collection = new ArrayList<>();
+        if (null != user && user.isSigned())
+            collection = mgr.collectionsByUserLimit(user.getId(), from, leap);
+        else {
+            collection = mgr.collectionsByStatusLimit(COLLECTION_PUBLIC, from, leap);
+        }
+        return collection;
     }
     
     @Override
