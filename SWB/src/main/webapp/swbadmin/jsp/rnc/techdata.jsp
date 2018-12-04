@@ -47,11 +47,11 @@
 %>
 <div id="tchdta" class="col-12 col-sm-12 col-md-9 col-lg-9 order-md-2 order-sm-1 order-1 ficha ">
     <h3 class="oswM"><%=title%></h3>
-    <%  if (null != desc) { %>
-            <a name="showPage"></a>
-            <!--p id="shortdesc"><%=desc.get("short")%></p-->
-            <p id="moredesc" style="display:block;"><%=fdesc%></p>
-            <!--hr-->
+    <% if (null != desc && !holder.contains("Museo Nacional de Antropolog")) { %>
+        <a name="showPage"></a>
+        <!--p id="shortdesc"><%=desc.get("short")%></p-->
+        <p id="moredesc" style="display:block;"><%=fdesc%></p>
+        <!--hr-->
     <% } if (false && !fdesc.isEmpty()) { %>
 	<p class="vermas"><a href="#showPage" onclick="moreDesc()"><%=paramRequest.getLocaleString("usrmsg_view_detail_show_more")%> <span class="ion-plus-circled"></span></a></p>
     <% } %>

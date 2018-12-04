@@ -106,22 +106,23 @@ function go2Collection(id, url) {
     $("#dialog-go-tree" ).dialog( "open" );
 }
 
-function share(op, status) {
-    if (status == 'false') {
+function share(op, status, urishare) {
+    if (status=='false') {
         if (op == 'fb') {
             jQuery("#dialog-share").text("La colección debe ser pública para poder compartir en facebook.");
-        } else {
+        }else {
             jQuery("#dialog-share").text("La colección debe ser pública para poder compartir en twitter.");
         }
         $('#alertShare').modal('show');
-    } else {
+    }else {
         if (op == 'fb') {
-            fbShare();
+            fbCln(urishare);
         }else if (op == 'fv') {
             jQuery("#dialog-share").text("Regístrate o inicia sesión para agregar favoritos.");
             $('#alertShare').modal('show');
         }else {
-            window.open(url2Share,'', 'width=500,height=500');
+            var uri2cln = "https://twitter.com/intent/tweet?original_referer=" + encodeURIComponent(urishare) + "&url=" + encodeURIComponent(urishare);
+            window.open(uri2cln,'', 'width=500,height=500');
         }
     }
 }

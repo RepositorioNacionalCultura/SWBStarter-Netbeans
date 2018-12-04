@@ -28,8 +28,6 @@ import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Collection;
 import mx.gob.cultura.portal.request.GetBICRequest;
 import mx.gob.cultura.portal.response.UserCollection;
-import static mx.gob.cultura.portal.utils.Constants.ADVICE_BY_ACVTVY;
-import static mx.gob.cultura.portal.utils.Constants.ADVICE_BY_THEMES;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_REST;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_STAT;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_USER;
@@ -46,6 +44,9 @@ import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_ALL;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_FAV;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_FND;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_TYPE_OWN;
+
+import static mx.gob.cultura.portal.utils.Constants.ADVICE_BY_ACVTVY;
+import static mx.gob.cultura.portal.utils.Constants.ADVICE_BY_THEMES;
 
 import org.semanticwb.model.User;
 import org.semanticwb.SWBPlatform;

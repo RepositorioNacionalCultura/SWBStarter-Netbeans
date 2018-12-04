@@ -102,7 +102,7 @@
 		if (null != res.id) {
                     dojo.byId('favs').innerHTML="<span class='ion-heart rojo'></span> Favoritos ("+res.favorites+")</a></div>";
 		}else {
-                    share('fv', 'true');
+                    share('fv', 'true', '');
 		}
             }
         });
@@ -134,8 +134,8 @@
                 <p><%=c.getDescription()%></p>
                 <hr class="rojo">
                 <div class="row redes">
-                    <a href="#" onclick="share('fb', '<%=c.getStatus()%>');"><span class="ion-social-facebook"></span> Compartir</a>
-                    <a href="#"  _class="twitter-share-button" data-show-count="false" onclick="share('tw', '<%=c.getStatus()%>');"><span class="ion-social-twitter"></span> Tweet</a>
+                    <a href="#" onclick="share('fb', '<%=c.getStatus()%>', 'id=<%=c.getId()%>');"><span class="ion-social-facebook"></span> Compartir</a>
+                    <a href="#"  _class="twitter-share-button" data-show-count="false" onclick="share('tw', '<%=c.getStatus()%>', '<%=site.getModelProperty("host_media")+paramRequest.getWebPage().getUrl()+"?id="%><%=c.getId()%>');"><span class="ion-social-twitter"></span> Tweet</a>
                     <a href="#" onclick="add('<%=c.getId()%>');" class="rojo"><div id="favs"><span class="ion-heart rojo"></span> Favoritos (<%=favs%>)</a></div>
                 </div>
                 <%

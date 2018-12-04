@@ -604,6 +604,25 @@ public class Utils {
         return ret.toString();
     }
     
+    public static String scriptFBCln(HttpServletRequest request) {
+        
+        StringBuilder ret = new StringBuilder(128);
+        ret.append("<script>\n");
+        ret.append("  function fbCln(qs) {\n");
+        ret.append("    FB.ui({\n");
+        ret.append("      method: 'share',\n");
+        ret.append("      display: 'popup',\n");
+        ret.append("      href: '");
+        ret.append(request.getRequestURL());
+        ret.append("?'+qs");
+        ret.append(",\n");
+        ret.append("    }, function(response){});\n");
+        ret.append("  }\n");
+        ret.append("  </script>\n");
+        
+        return ret.toString();
+    }
+    
     /**
      * Sustituye en la URL recibida, el identificador del recurso a ejecutar
      * con el identificador de un recurso activo cuya clase sea la indicada por {@code objectClass}

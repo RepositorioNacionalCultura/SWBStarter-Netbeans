@@ -30,7 +30,9 @@ import com.mongodb.client.result.UpdateResult;
 import mx.gob.cultura.portal.response.Collection;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.not;
 import mx.gob.cultura.portal.response.UserCollection;
+import org.bson.conversions.Bson;
 
 /**
  *
@@ -121,8 +123,8 @@ public class CollectionMgr {
             };
             MongoCollection<Document> mongoCollection = getCollection();
             if (null != from && null != leap)
-                mongoCollection.find(eq("userid", userId)).skip(leap*(from-1)).limit(leap).forEach(c);
-            else mongoCollection.find(eq("userid", userId)).forEach(c);
+                mongoCollection.find(eq("userid", userId)).sort(getSort()).skip(leap*(from-1)).limit(leap).forEach(c);
+            else mongoCollection.find(eq("userid", userId)).sort(getSort()).forEach(c);
         }catch (Exception u) {
             LOG.error(u);
         }
@@ -167,12 +169,11 @@ public class CollectionMgr {
         return list;
     }
     
-    private List<Document> exclude(List<String> dictionary) {
-        List<Document> filters = new ArrayList<>();
+    private Bson exclude(List<String> dictionary) {
         for (String word : dictionary) {
             Document bson = new Document("title", "/^Ching.*/");
         }
-        return filters;
+        return not(eq("title", "/^Ching.*/"));
     }
     
     public List<Collection> findByCriteria(String criteria, Boolean status, Integer from, Integer leap) {
