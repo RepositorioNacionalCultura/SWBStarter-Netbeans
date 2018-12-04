@@ -4,44 +4,170 @@
         <title>SWB Portal</title>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
         <meta content="width=device-width, initial-scale=1" name="viewport">
+        <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Oswald:200,500,600" rel="stylesheet">
         <link href="images/config.css" rel="stylesheet" type="text/css">
+        <script language="JavaScript" type="text/javascript" src="/swbadmin/js/crypto/jsbn.js"></script>
+        <script language="JavaScript" type="text/javascript" src="/swbadmin/js/crypto/prng4.js"></script>
+        <script language="JavaScript" type="text/javascript" src="/swbadmin/js/crypto/rng.js"></script>
+        <script language="JavaScript" type="text/javascript" src="/swbadmin/js/crypto/rsa.js"></script>
+
+        <script src="https://apis.google.com/js/platform.js?onload=initGP" async defer></script>
+        <script>
+            var googleUser = {};
+            function initGP() {
+                console.log("Iniciando api de G+");
+                gapi.load('auth2', function () {
+                    auth2 = gapi.auth2.init({
+                        client_id: '450714246948-2pgsd24vh04da4rhvdgm4l4tkmb2ciaa.apps.googleusercontent.com'
+                    });
+                });
+
+            }
+
+            function loginGPByClick() {
+                var auth2 = gapi.auth2.getAuthInstance();
+                if (!auth2) {
+                    console.log("No hay instancia de gapi.Authentication!");
+                }
+                auth2.signIn({
+                    prompt: 'select_account'
+                }).then(function (googleUser) {
+                    var user = {
+                        id: googleUser.getBasicProfile().getId(),
+                        name: googleUser.getBasicProfile().getName(),
+                        email: googleUser.getBasicProfile().getEmail()
+                    };
+                    console.log('Usuario firmado!\n' + JSON.stringify(googleUser));
+                    alert('antes de enviar peticion a SWB - user token: ' + googleUser.getAuthResponse().id_token);
+                    openSWBSession(user, 'googleP');
+                });
+            }
+            function loginGoogleUser(element) {
+                console.log("sobre el elemento: " + element.id);
+                var auth2 = gapi.auth2.getAuthInstance();
+                if (auth2) {
+                    auth2.attachClickHandler(element,
+                            {},
+                            function (googleUser) {
+                                alert('Usuario firmado!\n' + JSON.stringify(googleUser));
+                                var user = {
+                                    id: googleUser.getBasicProfile().getId(),
+                                    name: googleUser.getBasicProfile().getName(),
+                                    email: googleUser.getBasicProfile().getEmail()
+                                };
+                                console.log('Usuario firmado!\n' + JSON.stringify(googleUser));
+                                openSWBSession(user, 'googleP');
+                            },
+                            function (error) {
+                                alert(JSON.stringify(error, undefined, 2));
+                            });
+                } else {
+                    console.log('*** auth2 = null');
+                }
+                alert("Listo!!!");
+            }
+
+            (function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) {
+                    return;
+                }
+                js = d.createElement(s);
+                js.id = id;
+                js.src = "https://connect.facebook.net/es_MX/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+            window.fbAsyncInit = function () {
+                FB.init({
+                    appId: '1710119155731037',
+                    cookie: true,
+                    xfbml: true,
+                    version: 'v2.11'
+                });
+                FB.getLoginStatus(function (response) {
+                    mystatusChangeCallback(response);
+                });
+            };
+            function mystatusChangeCallback(response) {
+
+                if (response.status && response.status === 'connected') {
+                    FB.logout();
+                }
+            }
+            function openSWBSession(user, source) {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState === 4 && this.status === 200) {
+                        location.reload();
+                    } else {
+                        console.log("status del envio: " + this.status);
+                    }
+                };
+                xhttp.open("POST", "/es/repositorio/home/_aid/101/_mto/3/_act/openSession", false); //false = sincrona
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
+                xhttp.send("id=" + user.id + "&email=" + user.email + "&name=" + user.name + "&source=" + source);
+            }
+            function faceLogin() {
+                FB.login(function (response) {
+                    if (response.authResponse) {
+                        FB.api('/me', function (response) {
+                            var user = {
+                                id: response.id ? response.id : '',
+                                name: response.name ? response.name : '',
+                                email: response.email ? response.email : ''
+                            };
+                            openSWBSession(user, 'facebook');
+                        });
+                    }
+                });
+            }
+            var userRegistered = false;
+            window.originalContent = "";
+
+            function checkIfUsed() {
+                if (userRegistered) {
+                    document.getElementsByClassName("modal-content")[0].innerHTML = window.originalContent;
+                    userRegistered = false;
+                }
+            }
+        </script>
+
     </head>
     <body onload="document.login.wb_username.focus();">
-        <div class="x"></div>
-        <div class="contenedor login">
-            <img src="swb-portal.png">
-            <h1>SWB Portal</h1>
+        <div class="login">
             <form name="login" action="" method="post">
+                <img src="images/logotipo.svg">
+                <h3 class="oswM">Inicia sesi&oacute;n con tu cuenta</h3>
+
                 <div>
-                    <label for="usr">Usuario</label>
-                    <input id="usr" type="text" name="wb_username" autocomplete="off">
+                    <span class="ion-android-mail"></span>
+                    <input id="usr" type="text" name="wb_username" autocomplete="off" placeholder="Ingresa tu correo electr&oacute;nico">
                 </div>
                 <div>
-                    <label for="pass">Contrase&ntilde;a</label>
-                    <input id="pass" type="password" name="wb_password" autocomplete="off">
+                    <span class="ion-android-lock"></span>
+                    <input id="pass" type="password" name="wb_password" autocomplete="off" placeholder="Ingresa tu contrase&ntilde;a">
                 </div>
-<!--                
-                <div class="rec">
-                    <input id="rec" type="checkbox" name="wb_password" autocomplete="off">
-                    <label for="rec">Recu&eacute;rdame</label>
+                <div class="form-ses-03">
+                    <button name="Submit2" type="submit" class="btn-cultura btn-rojo">Iniciar</button>
+
+                    <a href="/es/repositorio/recuperar_contrasena" class="modal-olvidaste">¿Olvidaste tu contraseña?</a>
+
                 </div>
+
+                <!--                <div>
+                                    <input name="Submit2" type="submit" value="Entrar">
+                                </div>-->
+<!--                <div class="iniciaFace"><a href="#" onclick="javascript:faceLogin();">Inicia sesi&oacute;n con Facebook <span class="ion-social-facebook"></span></a></div>
+
+                <div class="iniciaTwit"><a href="/es/repositorio/home/_rid/198/_mto/3">Inicia sesi&oacute;n con Twitter <span class="ion-social-twitter"></span></a></div>
 -->
-                <div>
-                    <input name="Submit2" type="submit" value="Entrar">
-                </div>
-<!--                
-                <hr>                
-                <div>
-                    <a href="#" class="olvido">Olvid&eacute; mi contrase&ntilde;a</a>
-                </div>
--->
+
+
             </form>
-            <div class="pie">
-                <img src="images/SemanticWebBuilder.png" width="400">
-                <p><a href="http://semanticwebbuilder.org.mx/SWBPortal" target="_blank">SWB Portal</a> y <a href="http://www.semanticwebbuilder.org.mx" target="_blank">SemanticWebBuilder</a> son marcas registradas</p> 
-                <p>Todos los derechos reservados 2009-2016</p>
-            </div>
+
         </div>
-        <SWBSECURITY>
+    <SWBSECURITY>
     </body>
 </html>
