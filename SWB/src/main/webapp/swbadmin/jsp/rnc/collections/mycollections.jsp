@@ -29,7 +29,7 @@
     String userLang = paramRequest.getUser().getLanguage();
     
     WebPage wpdetail = site.getWebPage("Detalle_coleccion");
-    String uels = wpdetail.getUrl();
+    String uels = wpdetail.getUrl()+"?p=1&id=";
     
     //SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
     //uels.setCallMethod(SWBParamRequest.Call_CONTENT);
@@ -316,7 +316,7 @@
                         <div class="col-6 col-md-4">
                             <%	if (c.getCovers().isEmpty()) {	%>
                                     <div class="mosaico mosaico1 radius-overflow">
-					<a href="<%=uels%>?id=<%=c.getId()%>">
+					<a href="<%=uels%><%=c.getId()%>">
                                             <img src="/work/models/<%=site.getId()%>/img/empty.jpg">
 					</a>
                                     </div>
@@ -337,7 +337,7 @@
                                     </div>
                             <%  }else { %>
                                     <div class="mosaico mosaico3 radius-overflow">
-					<a href="<%=uels%>?id=<%=c.getId()%>">
+					<a href="<%=uels%><%=c.getId()%>">
                                             <div class="mosaico3a">
 						<img src="<%=c.getCovers().get(0)%>">
                                             </div>
