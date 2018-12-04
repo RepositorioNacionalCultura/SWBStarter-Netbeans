@@ -14,7 +14,7 @@
     //SWBResourceURL uels = paramRequest.getRenderUrl().setMode(MyCollections.MODE_VIEW_USR);
     WebPage wpdetail = site.getWebPage("Detalle_coleccion");
     String uels = wpdetail.getUrl();
-    String _msg = null != request.getParameter("_msg") && "2".equals(request.getParameter("_msg")) ? "Se actualizó correctamente en su colección." : "";
+   
     WebPage detail = site.getWebPage("detalle");
     String uri = detail.getRealUrl(paramRequest.getUser().getLanguage());
     
@@ -31,6 +31,8 @@
     User usr = site.getUserRepository().getUser(userid);
     Integer favs = null != c.getFavorites() ? c.getFavorites() : 0;
     String username = null != c.getUserName() && !c.getUserName().trim().isEmpty() ? c.getUserName():"Anónimo";
+    boolean back = null != request.getParameter("p");
+    String _msg = null != request.getParameter("_msg") && "2".equals(request.getParameter("_msg")) ? "Se actualizó correctamente en su colección." : "";
 %>
 <script type="text/javascript" src="/swbadmin/js/rnc/detail.js"></script>
 <%=scriptFB%>
@@ -110,9 +112,11 @@
 </script>
 <div class="container miscolec">
     <div class="regresar">
-        <button class="btn btn-rojo" onclick="javascript:history.go(-1)">
-            <span class="ion-chevron-left"></span>Regresar
-        </button>
+        <% if (back) { %>
+            <button class="btn btn-rojo" onclick="javascript:history.go(-1)">
+                <span class="ion-chevron-left"></span>Regresar
+            </button>
+        <% } %>
     </div>
 </div>
 <div class="container coleccionSecc">
