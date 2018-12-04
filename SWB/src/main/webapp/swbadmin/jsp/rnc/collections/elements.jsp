@@ -104,7 +104,7 @@
 		if (null != res.id) {
                     dojo.byId('favs').innerHTML="<span class='ion-heart rojo'></span> Favoritos ("+res.favorites+")</a></div>";
 		}else {
-                    share('fv', 'true', '');
+                    share('fv', 'true', '/<%=userLang%>/<%=site.getId()%>/Registro');
 		}
             }
         });

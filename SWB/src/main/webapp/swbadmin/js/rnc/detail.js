@@ -118,7 +118,7 @@ function share(op, status, urishare) {
         if (op == 'fb') {
             fbCln(urishare);
         }else if (op == 'fv') {
-            jQuery("#dialog-share").text("Regístrate o inicia sesión para agregar favoritos.");
+            jQuery("#dialog-share").html("<a href='"+urishare+"'>Regístrate o inicia sesión para agregar favoritos.</a>");
             $('#alertShare').modal('show');
         }else {
             var uri2cln = "https://twitter.com/intent/tweet?original_referer=" + encodeURIComponent(urishare) + "&url=" + encodeURIComponent(urishare);
