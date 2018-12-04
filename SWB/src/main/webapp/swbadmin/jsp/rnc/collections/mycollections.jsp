@@ -331,7 +331,7 @@
                                     </div>
                             <%  }else if (c.getCovers().size() < 3) { %>
                                     <div class="mosaico mosaico1 radius-overflow">
-					<a href="<%=uels%>?id=<%=c.getId()%>">
+					<a href="<%=uels%><%=c.getId()%>">
                                             <img src="<%=c.getCovers().get(0)%>">
 					</a>
                                     </div>
