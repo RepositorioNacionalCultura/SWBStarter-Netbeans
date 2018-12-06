@@ -118,11 +118,16 @@ function share(op, status, urishare) {
         if (op == 'fb') {
             fbCln(urishare);
         }else if (op == 'fv') {
-            jQuery("#dialog-share").html("<a href='"+urishare+"'>Regístrate o inicia sesión para agregar favoritos.</a>");
+            jQuery("#dialog-share").html("<button class='btn-sesion' data-toggle='modal' data-target='#modal-sesion' onclick='javascript:closeDlgShr();'><span class='ion-person'></span><i>Iniciar sesi\xF3n</i></button>");
             $('#alertShare').modal('show');
         }else {
             var uri2cln = "https://twitter.com/intent/tweet?original_referer=" + encodeURIComponent(urishare) + "&url=" + encodeURIComponent(urishare);
             window.open(uri2cln,'', 'width=500,height=500');
         }
     }
+}
+
+function closeDlgShr() {
+    $('#alertShare').modal('hide');
+    checkIfUsed();
 }
