@@ -42,7 +42,7 @@ public class Themes extends GenericResource {
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         response.setContentType("text/html; charset=UTF-8");
-        String path = "/swbadmin/jsp/rnc/themes/themes.jsp";
+        String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/themes/themes.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
             //TODO calcular los aggs de una busqueda todo *

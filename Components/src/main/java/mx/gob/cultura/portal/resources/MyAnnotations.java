@@ -5,9 +5,9 @@
  */
 package mx.gob.cultura.portal.resources;
 
+import java.util.List;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -54,31 +54,25 @@ public class MyAnnotations extends GenericAdmResource{
 
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
-        String oid=request.getParameter("id");  
         String id="";
+        String oid=request.getParameter("id");  
         boolean isAnnotator= false;
-        if (oid!=null&&!oid.isEmpty()){
+        if (null != oid && !oid.isEmpty()) {
             Entry entry = getEntry(oid);
-            if (entry!=null&&entry.getIdentifier()!=null && entry.getIdentifier().size()>0){                
-                id= entry.getIdentifier().get(0).getValue(); 
-            }
+            if (null != entry && null != entry.getIdentifier() && !entry.getIdentifier().isEmpty()) id= entry.getIdentifier().get(0).getValue(); 
         }
         User user = paramRequest.getUser();
-        if (user!=null && user.isSigned()){
-            isAnnotator=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", "Anotador")));          
-        }
+        if (null != user  && user.isSigned()) isAnnotator = user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", "Anotador")));          
         response.setContentType("text/html; charset=UTF-8");
-       // String basePath = "/work/models/" + paramRequest.getWebPage().getWebSite().getId() + "/jsp/" + this.getClass().getSimpleName() + "/";
-        String path = "/swbadmin/jsp/rnc/"+this.getClass().getSimpleName()+"/view.jsp";
-        
+        String site = paramRequest.getWebPage().getWebSite().getId();
+        String path = "/work/models/" + site + "/jsp/rnc/" + this.getClass().getSimpleName()+"/view.jsp";
         List<Annotation> annotationList;
-        if(user==null){
-            annotationList= AnnotationMgr.getInstance().findByTarget(id,null); //orderby modified direction 1 by default
+        if (user == null) {
+            annotationList = AnnotationMgr.getInstance().findByTarget(id, null, site); //orderby modified direction 1 by default
             //annotationList= AnnotationMgr.getInstance().findByTarget(id,null,"created",0); //orderby created direction 0
-        }else{
-            annotationList= AnnotationMgr.getInstance().findByTarget(id,user.getId());
-        }    
-
+        }else {
+            annotationList = AnnotationMgr.getInstance().findByTarget(id, user.getId(), site);
+        }
         RequestDispatcher dis = request.getRequestDispatcher(path);
         try {
             request.setAttribute("paramRequest", paramRequest);
@@ -91,26 +85,23 @@ public class MyAnnotations extends GenericAdmResource{
         }        
     }
     public void doAdd(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
+        Annotation annotation = null;
+        User user = paramRequest.getUser();
         String target = request.getParameter("id");
-        String bodyValue = request.getParameter("bodyValue");
-        User user = paramRequest.getUser(); 
-
-        UserRepository ur=paramRequest.getWebPage().getWebSite().getUserRepository();
-        //String userId = null;
-        Annotation annotation=null;
-        if (user!=null && user.isSigned()){
-            //userId = user.getId();
-            if (target!=null&& !target.isEmpty()&&
-                bodyValue!=null&& !bodyValue.isEmpty()){           
-                annotation =new Annotation(bodyValue,target,user.getId());
-                annotation=AnnotationMgr.getInstance().addAnnotation(annotation);
+        String bodyValue = request.getParameter("bodyValue"); 
+        UserRepository ur = paramRequest.getWebPage().getWebSite().getUserRepository();
+        if (null != user && user.isSigned()) {
+            if (null != target && !target.isEmpty()&& null != bodyValue && !bodyValue.isEmpty()) {           
+                annotation = new Annotation(bodyValue,target,user.getId());
+                annotation.setSite(paramRequest.getWebPage().getWebSite().getId());
+                annotation = AnnotationMgr.getInstance().addAnnotation(annotation);
             }            
         }
         PrintWriter out = response.getWriter();
         response.setHeader("Cache-Control", "no-cache");
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Content-Type", "application/json");
-        if(annotation ==null){
+        if (annotation == null) {
             response.sendError(123, "No se pudo agregar");
         }else{
             //List<Annotation> annotationList = AnnotationMgr.getInstance().findByTarget(target,userId);
@@ -122,14 +113,13 @@ public class MyAnnotations extends GenericAdmResource{
             sb.append(annotation.getBodyValue().replace("\n","\\n"));
             sb.append("\",\"creatorName\":\"");
             String creatorName="";
-            if(ur.getUser(annotation.getCreator())!=null){
-                creatorName=ur.getUser(annotation.getCreator()).getFullName();
-            }  
+            if (null != ur.getUser(annotation.getCreator())) creatorName=ur.getUser(annotation.getCreator()).getFullName();
             sb.append(creatorName);
             sb.append("\"}");
             out.print(sb.toString());            
         }    
     }
+    
     private Entry getEntry(String id) throws IOException {
         String baseUri = getResourceBase().getWebSite().getModelProperty("search_endPoint");
         if (null == baseUri || baseUri.isEmpty()) {

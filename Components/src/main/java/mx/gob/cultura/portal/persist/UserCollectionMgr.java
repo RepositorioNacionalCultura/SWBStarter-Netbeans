@@ -12,10 +12,10 @@ import org.semanticwb.SWBPlatform;
 import mx.gob.cultura.portal.utils.Utils;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
-import static com.mongodb.client.model.Filters.and;
 import com.mongodb.client.result.UpdateResult;
-import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.result.DeleteResult;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.and;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -141,9 +141,10 @@ public class UserCollectionMgr {
         return getUserCollection(find(_id));
     }
     
-    public Long countByUser(String userid) {
+    public Long countByUser(String siteid, String userid) {
         MongoCollection<Document> mongoCollection = MongoAccess.getCollection(mHost, mPort, mSource, mCollection);
-        return mongoCollection.count(Filters.eq("userid", userid));
+        //return mongoCollection.count(Filters.eq("userid", userid));
+        return mongoCollection.count(Filters.and(eq("siteid", siteid), eq("userid", userid)));
     }
     
     public Long countByCollection(String collectionid) {
@@ -151,7 +152,7 @@ public class UserCollectionMgr {
         return mongoCollection.count(Filters.eq("collectionid", collectionid));
     }
     
-    public List<UserCollection> collectionsByUserLimit(String userid, Integer from, Integer leap) {
+    public List<UserCollection> collectionsByUserLimit(String siteid, String userid, Integer from, Integer leap) {
         List<UserCollection> list = new ArrayList<>();
         try {
             Block<Document> c = new Block<Document>() {
@@ -162,8 +163,8 @@ public class UserCollectionMgr {
             };
             MongoCollection<Document> mongoCollection = MongoAccess.getCollection(mHost, mPort, mSource, mCollection);
             if (null != from && null != leap)
-                mongoCollection.find(eq("userid", userid)).skip(leap*(from-1)).limit(leap).forEach(c);
-            else mongoCollection.find(eq("userid", userid)).forEach(c);
+                mongoCollection.find(and(eq("siteid", siteid), eq("userid", userid))).skip(leap*(from-1)).limit(leap).forEach(c);
+            else mongoCollection.find(and(eq("siteid", siteid), eq("userid", userid))).forEach(c);
         }catch (Exception u) {
             LOG.error(u);
         }
@@ -187,13 +188,13 @@ public class UserCollectionMgr {
     }
     
     private Document getBson(UserCollection uc) {
-        Document bson = new Document("userid", uc.getUserid()).append("collectionid", uc.getCollectionid());
+        Document bson = new Document("userid", uc.getUserid()).append("siteid", uc.getSiteid()).append("collectionid", uc.getCollectionid());
         return bson;
     }
     
     private UserCollection getUserCollection(Document bson) {
         if (null == bson) return null;
-        UserCollection uc = new UserCollection(bson.getString("userid"), bson.getString("collectionid"));
+        UserCollection uc = new UserCollection(bson.getString("userid"), bson.getString("siteid"), bson.getString("collectionid"));
         ObjectId id = (ObjectId)bson.get("_id");
         uc.setId(id.toString());
         return uc;

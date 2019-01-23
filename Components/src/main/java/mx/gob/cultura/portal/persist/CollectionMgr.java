@@ -76,7 +76,6 @@ public class CollectionMgr {
             MongoCollection<Document> mongoCollection = getCollection();
             if (null != mongoCollection) {
                 Document document = getBson(collection);
-                document.append("userid", collection.getUserid());
                 mongoCollection.insertOne(document);
                 ObjectId id = (ObjectId)document.get("_id");
                 return id.toString();
@@ -104,15 +103,15 @@ public class CollectionMgr {
         return getCollection(find(_id));
     }
     
-    public List<Collection> collections(String userId) {
-        return collectionsByUserLimit(userId, null, null);
+    public List<Collection> collections(String siteid, String userid) {
+        return collectionsByUserLimit(siteid, userid, null, null);
     }
     
-    public List<Collection> collectionsByStatus(Boolean status) {
-        return collectionsByStatusLimit(status, null, null);
+    public List<Collection> collectionsByStatus(String siteid, Boolean status) {
+        return collectionsByStatusLimit(siteid, status, null, null);
     }
     
-    public List<Collection> collectionsByUserLimit(String userId, Integer from, Integer leap) {
+    public List<Collection> collectionsByUserLimit(String siteid, String userid, Integer from, Integer leap) {
         List<Collection> list = new ArrayList<>();
         try {
             Block<Document> c = new Block<Document>() {
@@ -123,15 +122,15 @@ public class CollectionMgr {
             };
             MongoCollection<Document> mongoCollection = getCollection();
             if (null != from && null != leap)
-                mongoCollection.find(eq("userid", userId)).sort(getSort()).skip(leap*(from-1)).limit(leap).forEach(c);
-            else mongoCollection.find(eq("userid", userId)).sort(getSort()).forEach(c);
+                mongoCollection.find(and(eq("siteid", siteid), eq("userid", userid))).sort(getSort()).skip(leap*(from-1)).limit(leap).forEach(c);
+            else mongoCollection.find(and(eq("siteid", siteid), eq("userid", userid))).sort(getSort()).forEach(c);
         }catch (Exception u) {
             LOG.error(u);
         }
         return list;
     }
     
-    public List<Collection> collectionsByStatusLimit(Boolean status, Integer from, Integer leap) {
+    public List<Collection> collectionsByStatusLimit(String siteid, Boolean status, Integer from, Integer leap) {
         List<Collection> list = new ArrayList<>();
         try {
             Block<Document> c = new Block<Document>() {
@@ -142,8 +141,8 @@ public class CollectionMgr {
             };
             MongoCollection<Document> mongoCollection = getCollection();
             if (null != from && null != leap)
-                mongoCollection.find(eq("status", status)).sort(getSort()).skip(leap*(from-1)).limit(leap).forEach(c);
-            else mongoCollection.find(eq("status", status)).sort(getSort()).forEach(c);
+                mongoCollection.find(and(eq("siteid", siteid), eq("status", status))).sort(getSort()).skip(leap*(from-1)).limit(leap).forEach(c);
+            else mongoCollection.find(and(eq("siteid", siteid), eq("status", status))).sort(getSort()).forEach(c);
         }catch (Exception u) {
             LOG.error(u);
         }
@@ -196,10 +195,10 @@ public class CollectionMgr {
         return list;
     }
     
-    public List<Collection> favorites(String userid, Integer from, Integer leap) {
+    public List<Collection> favorites(String siteid, String userid, Integer from, Integer leap) {
         List<Collection> list = new ArrayList<>();
         if (null != userid && !userid.trim().isEmpty()) {
-            List<UserCollection> lst = umr.collectionsByUserLimit(userid, from, leap);
+            List<UserCollection> lst = umr.collectionsByUserLimit(siteid, userid, from, leap);
             if (null != lst && !lst.isEmpty()) {
                 for (UserCollection uc : lst) {
                     list.add(this.findById(uc.getCollectionid()));
@@ -209,14 +208,14 @@ public class CollectionMgr {
         return list;
     }
 
-    public Long countByUser(String userId) {
+    public Long countByUser(String siteid, String userid) {
         MongoCollection<Document> mongoCollection = getCollection();
-        return mongoCollection.count(Filters.eq("userid", userId));
+        return mongoCollection.count(Filters.and(eq("siteid", siteid), eq("userid", userid)));
     } 
     
-    public Long countAllByStatus(Boolean status) {
+    public Long countAllByStatus(String siteid, Boolean status) {
         MongoCollection<Document> mongoCollection = getCollection();
-        return mongoCollection.count(Filters.eq("status", status));
+        return mongoCollection.count(Filters.and(eq("siteid", siteid), eq("status", status)));
     }
     
     public Long countByCriteria(String criteria, Boolean status) {
@@ -257,7 +256,7 @@ public class CollectionMgr {
     private Document getBson(Collection collection) {
         Document bson = new Document("title", collection.getTitle())
             .append("status", collection.getStatus()).append("description", collection.getDescription()).append("userid", collection.getUserid())
-            .append ("favorites", collection.getFavorites()).append("username", collection.getUserName()).append("elements", collection.getElements());
+            .append("siteid", collection.getSiteid()).append ("favorites", collection.getFavorites()).append("username", collection.getUserName()).append("elements", collection.getElements());
         return bson;
     }
     
@@ -271,6 +270,7 @@ public class CollectionMgr {
         ObjectId id = (ObjectId)bson.get("_id");
         collection.setId(id.toString());
         collection.setDate(id.getDate());
+        collection.setSiteid(bson.getString("siteid"));
         collection.setUserid(bson.getString("userid"));
         collection.setUserName(bson.getString("username"));
         collection.setFavorites(bson.getInteger("favorites"));
@@ -299,11 +299,11 @@ public class CollectionMgr {
         return record;
     }
     
-    public boolean exist(String title, String _id) {
+    public boolean exist(String siteid, String title, String _id) {
         List<Document> list = new ArrayList<>();
         try {
             MongoCollection<Document> mongoCollection = getCollection();
-            mongoCollection.find(eq("title", title)).forEach((Block<Document>) record -> {
+            mongoCollection.find(and(eq("siteid", siteid), eq("title", title))).forEach((Block<Document>) record -> {
                 if (record.getString("title").equalsIgnoreCase(title)) {
                     ObjectId id = (ObjectId)record.get("_id");
                     if (null == _id || _id.isEmpty() || !id.toString().equals(_id)) {

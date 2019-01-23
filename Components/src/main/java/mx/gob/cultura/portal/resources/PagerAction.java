@@ -71,7 +71,8 @@ public class PagerAction extends GenericResource {
     }
 
     public void doPages(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
-        String url = "/swbadmin/jsp/rnc/pager.jsp";
+        //String url = "/swbadmin/jsp/rnc/pager.jsp";
+        String url = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/search/pager.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
             rd.include(request, response);
@@ -82,7 +83,8 @@ public class PagerAction extends GenericResource {
     
     public void doPage(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
         page(getPage(request), request);
-        String url = "/swbadmin/jsp/rnc/rows.jsp";
+        //String url = "/swbadmin/jsp/rnc/rows.jsp";
+        String url = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/search/rows.jsp";
         if (null != request.getParameter("m") && "l".equalsIgnoreCase(request.getParameter("m")))
             request.setAttribute("mode", "row lista");
         else request.setAttribute("mode", "card-columns");
@@ -97,7 +99,8 @@ public class PagerAction extends GenericResource {
     }
 
     public void doSort(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
-        String url = "/swbadmin/jsp/rnc/rows.jsp";
+        //String url = "/swbadmin/jsp/rnc/rows.jsp";
+        String url = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/search/rows.jsp";
         request.setAttribute("mode", "card-columns");
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {

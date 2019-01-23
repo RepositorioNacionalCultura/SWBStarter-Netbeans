@@ -49,7 +49,8 @@ public class ExhibitionResource extends GenericResource {
     
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
-        String path = "/swbadmin/jsp/rnc/exhibitions/resource.jsp";
+        //String path = "/swbadmin/jsp/rnc/exhibitions/resource.jsp";
+        String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/exhibitions/resource.jsp";
         try {
            request.setAttribute("tmpls", editorTemplateList(paramRequest.getWebPage().getWebSite(), getResourceBase().getAttribute("idGroupTemplate","")));
 	   request.setAttribute("paramRequest", paramRequest);

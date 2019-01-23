@@ -19,8 +19,7 @@ public class Annotation implements Serializable{
    
     //private String context="http://www.w3.org/ns/anno.jsonld";
     private String id; //"http://example.org/anno1",
-    //private String type; //"type": "Annotation",
-    //private String body; //"body": "http://example.org/post1",
+    private String site;
     private String bodyValue; //"bodyValue": "Comment text"
     private String target; //"target": "http://example.com/page1"
     private String creator; //"creator": "http://example.org/user1",
@@ -42,6 +41,7 @@ public class Annotation implements Serializable{
     public Annotation(Document doc) {
         ObjectId oid = (ObjectId)doc.get("_id");
         this.id = oid.toString();
+        this.site = doc.getString("site");
         this.bodyValue = doc.getString("bodyValue").replaceAll("[^a-zA-ZñÑáéíóúÁÉÍÓÚ\\s:,;.\\/()\"]","");
         this.target = doc.getString("target");
         this.creator = doc.getString("creator");
@@ -109,29 +109,37 @@ public class Annotation implements Serializable{
     public Boolean isModerated() {
         return this.moderator!=null && !this.moderator.isEmpty();
     }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
     
     @Override
     public String toString() {
         StringBuilder sb=new StringBuilder("{");
-        if (id != null) {
+        if (null != id) {
             sb.append("\"id\":\"").append(id).append("\",");
         }
-        if (bodyValue != null) {
+        if (null != bodyValue) {
             sb.append("\"bodyValue\":\"").append(bodyValue).append("\",");
         }
-        if (target != null) {
+        if (null != target) {
             sb.append("\"target\":\"").append(target).append("\",");
         }
-        if (creator != null) {
+        if (null != creator) {
             sb.append("\"creator\":\"").append(creator).append("\",");
         }
-        if (created != null) {
+        if (null != created) {
             sb.append("\"created\":\"").append(created).append("\",");
         }
-        if (modified != null) {
+        if (null != modified) {
             sb.append("\"modified\":\"").append(modified).append("\",");
         }
-        if (moderator != null) {
+        if (null != moderator) {
             sb.append("\"moderator\":\"").append(moderator).append("\"");
         }
         if(',' == sb.charAt(sb.length()-1)){

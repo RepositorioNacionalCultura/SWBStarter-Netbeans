@@ -5,25 +5,29 @@
  */
 package mx.gob.cultura.portal.persist;
 
+import java.util.List;
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.function.Consumer;
+
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.FindOneAndUpdateOptions;
-import com.mongodb.client.model.ReturnDocument;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.function.Consumer;
-import mx.gob.cultura.commons.Util;
+
 import org.semanticwb.Logger;
 import org.semanticwb.SWBUtils;
-import mx.gob.cultura.portal.response.Annotation;
 import org.semanticwb.SWBPlatform;
-import mx.gob.cultura.portal.utils.Utils;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import mx.gob.cultura.commons.Util;
+import mx.gob.cultura.portal.utils.Utils;
+import mx.gob.cultura.portal.response.Annotation;
+
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.ReturnDocument;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
 
 
 
@@ -70,9 +74,10 @@ public class AnnotationMgr {
             if (null != mongoCollection) {
                 Date now= new Date();
                 Document document = new Document("bodyValue", annotation.getBodyValue())
+                .append("site", annotation.getSite())
                 .append("target",annotation.getTarget())
                 .append("creator", annotation.getCreator())
-                .append("created", now)  
+                .append("created", now) 
                 .append("modified", now );                
                 mongoCollection.insertOne(document);
                 //ObjectId id = (ObjectId)document.get("_id");
@@ -84,8 +89,8 @@ public class AnnotationMgr {
         return null;
     
     }
-    public Annotation acceptAnnotation(String id, String moderator){
-
+    
+    public Annotation acceptAnnotation(String id, String moderator) {
         Annotation ret=null;
         Date now= new Date();
         BasicDBObject query = new BasicDBObject("_id", new ObjectId(id));   
@@ -103,6 +108,7 @@ public class AnnotationMgr {
         }
         return ret;    
     }
+    
     public Annotation rejectAnnotation(String id){
         Annotation ret=null;
         Date now= new Date();
@@ -119,24 +125,28 @@ public class AnnotationMgr {
         }
         return ret;      
     }
-    public Annotation updateAnnotation(String id, String bodyValue){
+    
+    public Annotation updateAnnotation(String id, String bodyValue, String site) {
         Annotation ret=null;
         Date now= new Date();
         BasicDBObject query = new BasicDBObject("_id", new ObjectId(id));   
         BasicDBObject update;
-        BasicDBObject doc = new BasicDBObject("bodyValue",bodyValue); 
+        BasicDBObject doc = new BasicDBObject("bodyValue", bodyValue); 
         FindOneAndUpdateOptions opt = new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER);
-        doc.append("modified", now );      
-        update=new BasicDBObject("$set",doc);
+        doc.append("modified", now);
+        if (null != site && !site.isEmpty())
+            doc.append("site", site);
+        update=new BasicDBObject("$set", doc);
         try {
             MongoCollection<Document> mongoCollection = getCollection();
-            Document docAnnotation = mongoCollection.findOneAndUpdate(query,update,opt);
+            Document docAnnotation = mongoCollection.findOneAndUpdate(query, update, opt);
             ret=new Annotation(docAnnotation);
         }catch (Exception u) {
             LOG.error(u);
         }
         return ret;    
     }
+    
     public boolean deleteAnnotation(String id){
         boolean ret = false;
         BasicDBObject query = new BasicDBObject("_id", new ObjectId(id));      
@@ -150,16 +160,16 @@ public class AnnotationMgr {
         return ret;      
     }
 
-    public Annotation findById(String id, String user, boolean isAdmin){   
+    public Annotation findById(String id, String user, boolean isAdmin) {   
         BasicDBObject query = new BasicDBObject("_id", new ObjectId(id));  
         Annotation annotation=null;        
-        if(user==null || user.isEmpty()){ //  y públicas 
-            query.put("moderator",new BasicDBObject("$exists",true).append("$ne",""));
-        }else if(!isAdmin){ //  y sean del usuario o públicas 
+        if (user == null || user.isEmpty()) { //  y públicas 
+            query.put("moderator", new BasicDBObject("$exists", true).append("$ne", ""));
+        }else if(!isAdmin) { //  y sean del usuario o públicas 
             BasicDBList orClause = new BasicDBList();
-            orClause.add(new BasicDBObject("creator",user));
-            orClause.add(new BasicDBObject("moderator",new BasicDBObject("$exists",true).append("$ne","")));
-            query.put("$or",orClause);
+            orClause.add(new BasicDBObject("creator", user));
+            orClause.add(new BasicDBObject("moderator", new BasicDBObject("$exists", true).append("$ne", "")));
+            query.put("$or", orClause);
         }
         try {
             MongoCollection<Document> mongoCollection = getCollection();
@@ -171,50 +181,42 @@ public class AnnotationMgr {
         return annotation;
     }
         
-    public List<Annotation> findByTarget(String target, String creator){
+    public List<Annotation> findByTarget(String target, String creator, String site) {
         ArrayList<Annotation> list = new ArrayList<>();        
-        BasicDBObject query = new BasicDBObject("target",target);      
-        BasicDBObject order = new BasicDBObject("created",-1);      
-        if(creator==null || creator.isEmpty()){ // del BIC y sean públicas
-            query.put("moderator",new BasicDBObject("$exists",true).append("$ne",""));
-        }else{ // del BIC y sean del usuario o públicas 
+        BasicDBObject query = new BasicDBObject("target", target);      
+        BasicDBObject order = new BasicDBObject("created", -1); 
+        if (null != site) query.put("site", site);
+        if (creator == null || creator.isEmpty()) { // del BIC y sean públicas
+            query.put("moderator", new BasicDBObject("$exists", true).append("$ne", ""));
+        }else { // del BIC y sean del usuario o públicas 
             BasicDBList orClause = new BasicDBList();
-            orClause.add(new BasicDBObject("creator",creator));
-            orClause.add(new BasicDBObject("moderator",new BasicDBObject("$exists",true).append("$ne","")));
-            query.put("$or",orClause);
+            orClause.add(new BasicDBObject("creator", creator));
+            orClause.add(new BasicDBObject("moderator", new BasicDBObject("$exists", true).append("$ne", "")));
+            query.put("$or", orClause);
         }
         try {
             MongoCollection<Document> mongoCollection = getCollection();
             mongoCollection.find(query).sort(order).forEach((Consumer<Document>) doc -> list.add(new Annotation(doc)));
         }catch (Exception u) {
-            LOG.error("findByTarget",u);
+            LOG.error("findByTarget", u);
         }
         return list;
     }
     
-    public List<Annotation> findByPaged(String target, String creator,int pagSize, int pag, String orderBy,int direction ){                
+    public List<Annotation> findByPaged(String target, String creator, int pagSize, int pag, String orderBy, int direction, String site){                
         int offset=0;
         int page=pag-1;
         int pageSize=pagSize;
         ArrayList<Annotation> list = new ArrayList<>(); 
         BasicDBObject query = new BasicDBObject();      
         BasicDBObject order = new BasicDBObject();      
-        if (target!=null && !target.isEmpty()){
-            query.append("target",target);      
-        }
-        if (orderBy!=null && !orderBy.isEmpty() && direction != 0 ){
-            order.append(orderBy,direction);      
-        }
-        if (pageSize<0){
-            pageSize=1;
-        }
-        if (page<0){
-            page=0;
-        }
+        if (null != target && !target.isEmpty()) query.append("target", target);      
+        if (null != orderBy && !orderBy.isEmpty() && direction != 0 ) order.append(orderBy, direction);      
+        if (pageSize<0) pageSize=1;
+        if (page<0) page=0;
         offset = pageSize*page;
-        if(creator!=null && !creator.isEmpty()){ 
-            query.append("creator",creator);
-        }
+        if (null != creator && !creator.isEmpty()) query.append("creator", creator);
+        if (null != site && !site.isEmpty()) query.append("site", site);
         try {
             MongoCollection<Document> mongoCollection = getCollection();
             mongoCollection.find(query).sort(order).skip(offset).limit(pageSize).forEach((Consumer<Document>) doc -> list.add(new Annotation(doc)));
@@ -223,6 +225,7 @@ public class AnnotationMgr {
         }
         return list;
     }
+    
     public int countPages(String target, String creator,int pagSize){                
         Long pages = 1l; // 1 long
         ArrayList<Annotation> list = new ArrayList<>(); 

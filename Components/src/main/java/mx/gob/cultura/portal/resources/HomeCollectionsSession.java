@@ -21,13 +21,14 @@ public class HomeCollectionsSession extends GenericResource {
     
     private static final Logger LOG = Logger.getLogger(HomeCollectionsSession.class.getName());
 
-    public void doView(HttpServletRequest request, HttpServletResponse response,
-            SWBParamRequest paramsRequest) throws IOException {
+    @Override
+    public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
         
-        String url = "/swbadmin/jsp/rnc/homeCollectionsSession.jsp";
+        //String url = "/swbadmin/jsp/rnc/homeCollectionsSession.jsp";
+        String url = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/homeCollectionsSession.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
-            request.setAttribute("paramsRequest", (Object)paramsRequest);
+            request.setAttribute("paramsRequest", (Object)paramRequest);
             rd.include((ServletRequest)request, (ServletResponse)response);
         }
         catch (ServletException se) {

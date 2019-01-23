@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import mx.gob.cultura.portal.persist.CollectionMgr;
-import static mx.gob.cultura.portal.utils.Constants.COLLECTION;
 import mx.gob.cultura.portal.response.Collection;
 
 /**
@@ -26,7 +25,6 @@ public class SocialTags extends GenericAdmResource {
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-//        System.out.println("SocialTags..."+request.getRequestURL());
         String oId = request.getParameter("id");
         if (paramRequest.getCallMethod() == SWBParamRequest.Call_STRATEGY && null != oId) {
 

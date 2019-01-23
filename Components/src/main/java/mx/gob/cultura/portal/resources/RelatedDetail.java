@@ -43,7 +43,8 @@ public class RelatedDetail extends GenericResource {
     
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
-        String path = "/swbadmin/jsp/rnc/resources/related.jsp";
+        //String path = "/swbadmin/jsp/rnc/resources/related.jsp";
+        String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/resources/related.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
             StringBuilder base = new StringBuilder(endpoint(paramRequest));

@@ -3,11 +3,14 @@ package mx.gob.cultura.portal.resources;
 import com.hp.hpl.jena.ontology.OntModel;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.util.Iterator;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import org.semanticwb.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -81,15 +84,15 @@ public class SessionInitializer extends GenericResource {
      * @throws SWBResourceException si se genera algun problema en la ejecucion 
      *         de las solicitudes a la API de SWB
      */
-    private void showStrategyView(HttpServletRequest request, HttpServletResponse response,
-            SWBParamRequest paramsRequest) throws SWBResourceException {
+    private void showStrategyView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException {
         
-        String url = "/swbadmin/jsp/rnc/sessionInitializerMenu.jsp";
+        //String url = "/swbadmin/jsp/rnc/sessionInitializerMenu.jsp";
+        String url = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/sessionInitializerMenu.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
-            request.setAttribute("paramRequest", paramsRequest);
+            request.setAttribute("paramRequest", paramRequest);
             rd.include(request, response);
-        } catch (Exception se) {
+        } catch (IOException | ServletException se) {
             se.printStackTrace(System.err);
         }
     }
@@ -236,7 +239,7 @@ public class SessionInitializer extends GenericResource {
 //            System.out.println("checkCredential: " + id);
             try {
                 user.checkCredential(id.toCharArray());
-            } catch (Exception e) {
+            } catch (NoSuchAlgorithmException | LoginException e) {
                 e.printStackTrace(System.err);
             }
             

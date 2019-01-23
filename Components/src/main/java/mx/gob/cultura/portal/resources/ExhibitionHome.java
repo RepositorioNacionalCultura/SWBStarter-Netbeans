@@ -47,6 +47,7 @@ import static mx.gob.cultura.portal.utils.Constants.PAGE_JUMP_SIZE;
 import static mx.gob.cultura.portal.utils.Constants.STR_JUMP_SIZE;
 import static mx.gob.cultura.portal.utils.Constants.TOTAL_PAGES;
 import org.semanticwb.model.Role;
+import org.semanticwb.model.WebSite;
 
 /**
  *
@@ -71,7 +72,9 @@ public class ExhibitionHome extends GenericAdmResource {
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         response.setContentType("text/html; charset=UTF-8");
-        String jsppath = "/swbadmin/jsp/rnc/exhibitions/tematic/init.jsp";
+        WebSite site = paramRequest.getWebPage().getWebSite();
+        //String jsppath = "/swbadmin/jsp/rnc/exhibitions/tematic/init.jsp";
+        String jsppath = "/work/models/"+site.getId()+"/jsp/rnc/exhibitions/tematic/init.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(jsppath);
         try {
             request.setAttribute(PARAM_REQUEST, paramRequest);
@@ -95,7 +98,8 @@ public class ExhibitionHome extends GenericAdmResource {
         request.setAttribute(NUM_PAGE_LIST, pagenum);
         request.setAttribute(PAGE_NUM_ROW, NUM_ROW);
         page(pagenum, request);
-        String url = "/swbadmin/jsp/rnc/exhibitions/tematic/rows.jsp";
+        //String url = "/swbadmin/jsp/rnc/exhibitions/tematic/rows.jsp";
+        String url = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/exhibitions/tematic/rows.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
             request.setAttribute(PARAM_REQUEST, paramRequest);

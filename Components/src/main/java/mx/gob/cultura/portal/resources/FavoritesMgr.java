@@ -63,19 +63,19 @@ public class FavoritesMgr extends GenericResource {
         User user = response.getUser();
         request.setCharacterEncoding("UTF-8");
         Favorite fav = new Favorite(null, null);
-        List<Collection> collectionList = new ArrayList<>();
+        //List<Collection> collectionList = new ArrayList<>();
         if (null != user && user.isSigned() && ACTION_ADD_FAV.equals(response.getAction())) {
             if ((null == request.getParameter(IDENTIFIER) || request.getParameter(IDENTIFIER).isEmpty()) && null != request.getParameter("title")) {
                 String title = request.getParameter("title").trim();
-                if (!exist(title, null)) {
+                if (!exist(response.getWebPage().getWebSiteId(), title, null)) {
                     c = new Collection(title, Utils.getStatus(request.getParameter("status"), false), "");
                     c.setUserid(user.getId());
-                    //Integer id = collectionList.size()+1;
+                    c.setSiteid(response.getWebPage().getWebSiteId());
+                    c.setUserName(MyCollections.getAuthor(user.getId(), null, response));
                     String id = mgr.insertCollection(c);
                     if (null != id) c.setId(id);
-                    //c.setId(id.toString());
-                    collectionList.add(c);
-                    request.getSession().setAttribute("mycollections", collectionList);
+                    //collectionList.add(c);
+                    //request.getSession().setAttribute("mycollections", collectionList);
                 }
             }else if (/**!collectionList.isEmpty() && **/null != request.getParameter(IDENTIFIER)) {
                 /**Integer id = Integer.valueOf(request.getParameter(IDENTIFIER));
@@ -117,13 +117,14 @@ public class FavoritesMgr extends GenericResource {
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         response.setContentType("text/html; charset=UTF-8");
-        String path = "/swbadmin/jsp/rnc/collections/treecollection.jsp";
+        String siteid = paramRequest.getWebPage().getWebSite().getId();
+        String path = "/work/models/"+siteid+"/jsp/rnc/collections/treecollection.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         List<Collection> collectionList = new ArrayList<>();
         try {
             User user = paramRequest.getUser();
             if (null != user && user.isSigned()) {
-                collectionList = mgr.collections(user.getId());
+                collectionList = mgr.collections(siteid, user.getId());
                 setCovers(paramRequest, collectionList, 1);
             }
             request.setAttribute("paramRequest", paramRequest);
@@ -136,7 +137,8 @@ public class FavoritesMgr extends GenericResource {
     }
     
     public void doDialog(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
-        String path = "/swbadmin/jsp/rnc/collections/newcollection.jsp";
+        //String path = "/swbadmin/jsp/rnc/collections/newcollection.jsp";
+        String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/collections/newcollection.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
             request.setAttribute("paramRequest", paramRequest);
@@ -156,7 +158,7 @@ public class FavoritesMgr extends GenericResource {
         }
     }
     
-    private boolean exist(String title, String _id) {
-        return mgr.exist(title, _id);
+    private boolean exist(String siteid, String title, String _id) {
+        return mgr.exist(siteid, title, _id);
     }
 }

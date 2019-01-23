@@ -30,6 +30,8 @@ public class Collection implements Serializable {
     
     private Date date;
     
+    private String siteid;
+    
     private String userName;
     
     private Integer favorites;
@@ -127,6 +129,14 @@ public class Collection implements Serializable {
         this.favorites = favorites;
     }
 
+    public String getSiteid() {
+        return siteid;
+    }
+
+    public void setSiteid(String siteid) {
+        this.siteid = siteid;
+    }
+    
     @Override
     public String toString() {
         return "Collection{" + "id=" + id + ", title=" + title + ", userid=" + userid + ", description=" + description + ", elements=" + elements + '}';

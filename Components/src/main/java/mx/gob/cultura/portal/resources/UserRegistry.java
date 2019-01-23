@@ -1,19 +1,20 @@
 package mx.gob.cultura.portal.resources;
 
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.rdf.model.Property;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.File;
 import java.net.SocketException;
 import java.net.URLEncoder;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import javax.security.auth.Subject;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Property;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
@@ -36,7 +37,6 @@ import org.semanticwb.portal.api.SWBResourceException;
 import org.semanticwb.portal.api.SWBResourceURL;
 import org.semanticwb.portal.api.SWBResourceURLImp;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-//import org.semanticwb.base.util.ImageResizer;
 
 /**
  * Realiza la visualizacion y cambios en la informacion del perfil de usuarios
@@ -84,19 +84,17 @@ public class UserRegistry extends GenericAdmResource {
     }
 
     @Override
-    public void doView(HttpServletRequest request, HttpServletResponse response,
-            SWBParamRequest paramsRequest) throws IOException {
-
-        //String url = "/swbadmin/jsp/rnc/userRegistry.jsp";
-        String url = "/swbadmin/jsp/rnc/" + this.getClass().getSimpleName() + "/view.jsp";
-        User user = paramsRequest.getUser();
+    public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
+        //String url = "/swbadmin/jsp/rnc/" + this.getClass().getSimpleName() + "/view.jsp";
+        String url = "/work/models/" + paramRequest.getWebPage().getWebSite().getId() + "/jsp/rnc/" + this.getClass().getSimpleName()+"/view.jsp";
+        User user = paramRequest.getUser();
         boolean isAnnotator = false;
         if (user != null && user.isSigned()) {
             isAnnotator = user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", "")));
         }
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
-            request.setAttribute("paramsRequest", paramsRequest);
+            request.setAttribute("paramsRequest", paramRequest);
             request.setAttribute("isAnnotator", isAnnotator);
             rd.include(request, response);
         } catch (ServletException se) {
@@ -105,20 +103,16 @@ public class UserRegistry extends GenericAdmResource {
     }
 
     @Override
-    public void processAction(HttpServletRequest request, SWBActionResponse response)
-            throws SWBResourceException, IOException {
+    public void processAction(HttpServletRequest request, SWBActionResponse response) throws SWBResourceException, IOException {
 
-        String action = response.getAction();
         String alert = null;
         String nextMode = null;
-        System.out.println("Referer: " + request.getHeader("Referer"));
+        String action = response.getAction();
 
-        if (ACTION_REGISTER.equals(action)
-                || ACTION_ASYN_REGISTER.equals(action)) {
+        if (ACTION_REGISTER.equals(action) || ACTION_ASYN_REGISTER.equals(action)) {
             User created = this.createProfile(request);
             if (null == created) {
-                response.setRenderParameter("condition",
-                        (String) request.getAttribute("condition"));
+                response.setRenderParameter("condition", (String) request.getAttribute("condition"));
                 System.out.println("USUARIO NO CREADO");
             } else {
                 if (null == this.confirmationActionUrl) {
@@ -310,9 +304,7 @@ public class UserRegistry extends GenericAdmResource {
         }
     }
 
-    private void confirmRegistry(HttpServletRequest request, HttpServletResponse response,
-            SWBParamRequest paramsRequest) throws SWBResourceException, IOException {
-
+    private void confirmRegistry(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramsRequest) throws SWBResourceException, IOException {
         try {
             response.setContentType("text/html");
             PrintWriter out = response.getWriter();
@@ -327,9 +319,7 @@ public class UserRegistry extends GenericAdmResource {
         }
     }
 
-    private void confirmAsyncRegistry(HttpServletRequest request, HttpServletResponse response,
-            SWBParamRequest paramsRequest) throws SWBResourceException, IOException {
-
+    private void confirmAsyncRegistry(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramsRequest) throws SWBResourceException, IOException {
         try {
             response.setContentType("text/plain");
             PrintWriter out = response.getWriter();
@@ -380,7 +370,6 @@ public class UserRegistry extends GenericAdmResource {
                 }
                 newUser.setEmail(email);
                 System.out.println("Contraseña para nuevo usuario: " + password);
-                //newUser.setActive(true);
                 SemanticObject obj = newUser.getSemanticObject();
                 OntModel ont = SWBPlatform.getSemanticMgr().getSchema().getRDFOntModel();
                 obj.getRDFResource().addLiteral(ont.createDatatypeProperty(

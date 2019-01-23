@@ -64,11 +64,12 @@ public class MyCollectionDetail extends GenericResource{
     
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
-        User user = paramRequest.getUser();
+        //User user = paramRequest.getUser();
         Collection collection = null;
         List<Collection> list = new ArrayList<>();
         List<Entry> favorites = new ArrayList<>();
-        String path = "/swbadmin/jsp/rnc/collections/elements.jsp";
+        //String path = "/swbadmin/jsp/rnc/collections/elements.jsp";
+        String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/collections/elements.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
             if (null != request.getParameter(IDENTIFIER) ) {  /** null != user && user.isSigned() &&  && !collectionList.isEmpty()**/
@@ -97,7 +98,8 @@ public class MyCollectionDetail extends GenericResource{
     
     @Override
     public void doEdit(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
-        String path = "/swbadmin/jsp/rnc/collections/collection.jsp";
+        //String path = "/swbadmin/jsp/rnc/collections/collection.jsp";
+        String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/collections/collection.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         if (null != request.getParameter(IDENTIFIER)) {
             Collection c = mgr.findById(request.getParameter(IDENTIFIER));
@@ -116,11 +118,12 @@ public class MyCollectionDetail extends GenericResource{
         User user = response.getUser();
         request.setCharacterEncoding("UTF-8");
         List<Collection> collectionList = new ArrayList<>();
+        String siteid = response.getWebPage().getWebSiteId();
         if (SWBResourceURL.Action_EDIT.equals(response.getAction())) {
             Collection collection = setCollection(request, false);
             if (null != user && user.isSigned() && !collection.isEmpty() && null != request.getParameter(IDENTIFIER)) {
-                collectionList = collectionList(user);
-                if (!mgr.exist(collection.getTitle(), request.getParameter(IDENTIFIER))) {
+                collectionList = collectionList(siteid, user);
+                if (!mgr.exist(siteid, collection.getTitle(), request.getParameter(IDENTIFIER))) {
                     for (Collection c : collectionList) {
                         if (c.getId().equals(request.getParameter(IDENTIFIER))) {
                             c.setUserid(user.getId());
@@ -158,7 +161,7 @@ public class MyCollectionDetail extends GenericResource{
             Collection c = mgr.findById(request.getParameter(IDENTIFIER));
             if (null != user && null != user.getId()) {
                 if (!umr.exist(user.getId(), request.getParameter(IDENTIFIER))) {
-                    UserCollection uc = new UserCollection(user.getId(), request.getParameter(IDENTIFIER));
+                    UserCollection uc = new UserCollection(siteid, user.getId(), request.getParameter(IDENTIFIER));
                     String _id = umr.insertUserCollection(uc);
                     if (null != _id) {
                         c.setId(_id);
@@ -198,12 +201,12 @@ public class MyCollectionDetail extends GenericResource{
         return collection;
     }
     
-    private List<Collection> collectionList(User user) {
+    private List<Collection> collectionList(String siteid, User user) {
         List<Collection> collection = new ArrayList<>();
         if (null != user && user.isSigned())
-            collection = mgr.collections(user.getId());
+            collection = mgr.collections(siteid, user.getId());
         else {
-            collection = mgr.collectionsByStatus(COLLECTION_PUBLIC);
+            collection = mgr.collectionsByStatus(siteid, COLLECTION_PUBLIC);
         }
         return collection;
     }

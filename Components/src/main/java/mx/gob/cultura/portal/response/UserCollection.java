@@ -18,11 +18,14 @@ public class UserCollection implements Serializable {
     private String id;
     
     private String userid;
+    
+    private String siteid;
 
     private String collectionid;
     
-    public UserCollection(String userid, String collectionid) {
+    public UserCollection(String siteid, String userid, String collectionid) {
         this.userid = userid;
+        this.siteid = siteid;
         this.collectionid = collectionid;
     }
 
@@ -48,5 +51,13 @@ public class UserCollection implements Serializable {
 
     public void setCollectionid(String collectionid) {
         this.collectionid = collectionid;
+    }
+
+    public String getSiteid() {
+        return siteid;
+    }
+
+    public void setSiteid(String siteid) {
+        this.siteid = siteid;
     }
 }

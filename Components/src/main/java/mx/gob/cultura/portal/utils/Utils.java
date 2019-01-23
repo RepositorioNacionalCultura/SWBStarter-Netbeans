@@ -13,12 +13,13 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import java.net.URL;
-import java.net.URLConnection;
-import java.io.BufferedInputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.net.URLConnection;
+import java.io.BufferedInputStream;
 import java.nio.charset.StandardCharsets;
+import java.io.UnsupportedEncodingException;
+
 
 import java.text.Format;
 import java.text.DecimalFormat;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 
 import org.semanticwb.Logger;
+import org.semanticwb.SWBUtils;
 import org.semanticwb.model.WebSite;
 import org.semanticwb.model.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -51,11 +53,9 @@ import mx.gob.cultura.portal.response.Aggregation;
 import mx.gob.cultura.portal.response.DigitalObject;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PRIVATE;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION_PUBLIC;
-import org.semanticwb.SWBUtils;
-
-import org.w3c.dom.Element;
 
 import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**

@@ -25,11 +25,11 @@ public class MostSeen extends GenericAdmResource {
     private static final Logger LOG = Logger.getLogger(MostSeen.class.getName());
 
     @Override
-    public void doView(HttpServletRequest request, HttpServletResponse response,
-                       SWBParamRequest paramRequest) throws java.io.IOException {
+    public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
 
         List<Entry> references;
-        String url = "/swbadmin/jsp/rnc/mostSeenCarousel.jsp";
+        //String url = "/swbadmin/jsp/rnc/mostSeenCarousel.jsp";
+        String url = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/resources/mostSeenCarousel.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
             references = getReferences(paramRequest.getWebPage().getWebSite());

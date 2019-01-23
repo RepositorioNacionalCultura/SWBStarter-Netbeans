@@ -5,12 +5,9 @@
  */
 package mx.gob.cultura.portal.resources;
 
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.rdf.model.Statement;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,16 +16,19 @@ import java.util.Map;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Statement;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import mx.gob.cultura.portal.persist.AnnotationMgr;
-import mx.gob.cultura.portal.request.GetBICRequest;
-import mx.gob.cultura.portal.request.ListBICRequest;
-import mx.gob.cultura.portal.response.Annotation;
-import mx.gob.cultura.portal.response.Document;
+
+import mx.gob.cultura.portal.utils.Utils;
 import mx.gob.cultura.portal.response.Entry;
+import mx.gob.cultura.portal.response.Document;
+import mx.gob.cultura.portal.response.Annotation;
+import mx.gob.cultura.portal.persist.AnnotationMgr;
+import mx.gob.cultura.portal.request.ListBICRequest;
+
 import org.semanticwb.SWBPlatform;
-import org.semanticwb.SWBUtils;
 import org.semanticwb.model.User;
 import org.semanticwb.model.UserRepository;
 import org.semanticwb.portal.api.GenericAdmResource;
@@ -39,7 +39,7 @@ import org.semanticwb.portal.api.SWBResourceException;
  *
  * @author rene.jara
  */
-public class AnnotationsMgr extends GenericAdmResource{
+public class AnnotationsMgr extends GenericAdmResource {
     public static final Logger LOG = Logger.getLogger(AnnotationsMgr.class.getName());
     
     public static final String ASYNC_ACCEPT = "acp";
@@ -90,7 +90,6 @@ public class AnnotationsMgr extends GenericAdmResource{
         }                     
     }    
 
-
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         User user = paramRequest.getUser();
@@ -119,11 +118,10 @@ public class AnnotationsMgr extends GenericAdmResource{
         }*/
         
         response.setContentType("text/html; charset=UTF-8");
-        // String basePath = "/work/models/" + paramRequest.getWebPage().getWebSite().getId() + "/jsp/" + this.getClass().getSimpleName() + "/";
-        String path = "/swbadmin/jsp/rnc/"+this.getClass().getSimpleName()+"/view.jsp";
-        
+        //String path = "/swbadmin/jsp/rnc/"+this.getClass().getSimpleName()+"/view.jsp";
+        String path = "/work/models/" + paramRequest.getWebPage().getWebSite().getId() + "/jsp/rnc/" + this.getClass().getSimpleName()+"/view.jsp";
         Annotation annotation = null;
-        if (user.isSigned()){
+        if (user.isSigned()) {
             isAdmin=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "Administrador")));
             isAnnotator=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", "Anotador"))); 
             /*if(isAdmin){                
@@ -133,9 +131,9 @@ public class AnnotationsMgr extends GenericAdmResource{
                 annotationList= AnnotationMgr.getInstance().findByPaged(null,user.getId(),RECORDS_PER_PAGE, currentPage,order,1);
                 totalPages = AnnotationMgr.getInstance().countPages(null, user.getId(),RECORDS_PER_PAGE);
             } */ 
-            userid= user.getId();
+            userid = user.getId();
         } 
-        String lang=user.getLanguage();
+        String lang = user.getLanguage();
         annotation = AnnotationMgr.getInstance().findById(id, userid, isAdmin);
         RequestDispatcher dis = request.getRequestDispatcher(path);
         try {
@@ -143,33 +141,28 @@ public class AnnotationsMgr extends GenericAdmResource{
             request.setAttribute("annotation", annotationToMap(annotation, user.getId(),lang));
             request.setAttribute("isAdmin", isAdmin);
             request.setAttribute("isAnnotator", isAnnotator);
-//            request.setAttribute("currentPage", currentPage);
-//            request.setAttribute("totalPages", totalPages);
             request.setAttribute("order", order);
-//            request.setAttribute("filter", filter);
             dis.include(request, response);
         } catch (ServletException se) {
             LOG.severe(se.getMessage());
         }        
     }
     
-    
     public void doManage(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
-        User user = paramRequest.getUser();
-        boolean isAdmin = false;
-        boolean isAnnotator = false;
         int currentPage = 1;
         int totalPages = 1;
         String order = "created";
         String filter = "target";
+        boolean isAdmin = false;
+        boolean isAnnotator = false;
+        User user = paramRequest.getUser();
         String o = request.getParameter("o");
-        //String f = request.getParameter("f");
-        try{
+        try {
             currentPage=Integer.parseInt(request.getParameter("p"));
         }catch (NumberFormatException ignore){        
         }
-        if (o!=null){
-            switch(o){
+        if (null != o) {
+            switch(o) {
                 case ORDER_DATE:
                     order="created";
                     break;
@@ -177,29 +170,26 @@ public class AnnotationsMgr extends GenericAdmResource{
                     order="target";
             }   
         }
-        
         response.setContentType("text/html; charset=UTF-8");
-        // String basePath = "/work/models/" + paramRequest.getWebPage().getWebSite().getId() + "/jsp/" + this.getClass().getSimpleName() + "/";
-        String path = "/swbadmin/jsp/rnc/"+this.getClass().getSimpleName()+"/manage.jsp";
-        
+        String site = paramRequest.getWebPage().getWebSite().getId();
+        String path = "/work/models/" + site + "/jsp/rnc/" + this.getClass().getSimpleName()+"/manage.jsp";
         List<Annotation> annotationList = new ArrayList<>();
-        if (user!=null && user.isSigned()){
+        if (null != user && user.isSigned()) {
             isAdmin=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "Administrador")));
-            isAnnotator=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", "Anotador"))); 
-            if(isAdmin){                
-                annotationList= AnnotationMgr.getInstance().findByPaged(null,null,RECORDS_PER_PAGE, currentPage,order,-1);
+            isAnnotator=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", "Anotador")));
+            //TO DO: findBySite
+            if (isAdmin) {                
+                annotationList= AnnotationMgr.getInstance().findByPaged(null,null,RECORDS_PER_PAGE, currentPage,order,-1, site);//TO DO: set site admin user
                 totalPages = AnnotationMgr.getInstance().countPages(null, null,RECORDS_PER_PAGE);
             }else{            
-                annotationList= AnnotationMgr.getInstance().findByPaged(null,user.getId(),RECORDS_PER_PAGE, currentPage,order,-1);
+                annotationList= AnnotationMgr.getInstance().findByPaged(null, user.getId(), RECORDS_PER_PAGE, currentPage, order, -1, site);
                 totalPages = AnnotationMgr.getInstance().countPages(null, user.getId(),RECORDS_PER_PAGE);
             }            
-        }    
-        String lang=user.getLanguage();
-       
+        }
         RequestDispatcher dis = request.getRequestDispatcher(path);
         try {
             request.setAttribute("paramRequest", paramRequest);
-            request.setAttribute("annotations", annotationsToList(annotationList,user.getId(),lang));
+            request.setAttribute("annotations", annotationsToList(annotationList,paramRequest.getUser().getId(),paramRequest.getUser().getLanguage()));
             request.setAttribute("isAdmin", isAdmin);
             request.setAttribute("isAnnotator", isAnnotator);
             request.setAttribute("currentPage", currentPage);
@@ -211,55 +201,19 @@ public class AnnotationsMgr extends GenericAdmResource{
             LOG.severe(se.getMessage());
         }        
     }
-
-    /*public void doList(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException{
-        
-System.out.println("********************doList");       
-        int currentPage = 0;
-        
-        try {
-            currentPage=Integer.parseInt(request.getParameter("cp"));
-        } catch (Exception ignore) {
-        }
-        
-System.out.println("currentPage:"+currentPage);
-        boolean isAdmin = false;
-        User user = paramRequest.getUser(); 
-        
-System.out.println("user:"+user);  
-        
-        List<Annotation> annotationList = new ArrayList<>();
-        if (user.isSigned()){
-            isAdmin=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "")));
-            if(isAdmin){
-                annotationList= AnnotationMgr.getInstance().findByPaged(null,null,RECORDS_PER_PAGE, currentPage ,"target",1);
-            }else{            
-                annotationList= AnnotationMgr.getInstance().findByPaged(null,user.getId(),RECORDS_PER_PAGE, currentPage,"target",1);
-            }            
-        }  
-
-        PrintWriter out = response.getWriter();
-        response.setHeader("Cache-Control", "no-cache");
-        response.setHeader("Pragma", "no-cache");
-        response.setHeader("Content-Type", "application/json");
-        //String str = annotationsToJson(annotationList, ur).toString();
-        //String str = annotationsToJsonString(annotationList,user.getId());
-//System.out.println(str);        
-//        out.print(str);
-            
-    }*/
     
     public void asyAccept(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException{
         String id = request.getParameter("id");
         User user = paramRequest.getUser();  
-        String lang=user.getLanguage();
-        if(user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "")))){
+        String lang = user.getLanguage();
+        if (user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "")))) {
+            //TO DO: findBySite
             Annotation a = AnnotationMgr.getInstance().acceptAnnotation(id, user.getId());        
             PrintWriter out = response.getWriter();
             response.setHeader("Cache-Control", "no-cache");
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Content-Type", "application/json");
-            String s=mapToStringBuilder(annotationToMap(a,user.getId(),lang)).toString();
+            String s = mapToStringBuilder(annotationToMap(a,user.getId(),lang)).toString();
             out.print(s);
         }            
     }
@@ -267,10 +221,10 @@ System.out.println("user:"+user);
     public void asyReject(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         String id = request.getParameter("id");
         User user = paramRequest.getUser();
-        String lang=user.getLanguage();
-        if(user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "")))){                        
+        String lang = user.getLanguage();
+        if (user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "")))) {  
+            //TO DO: findBySite
             Annotation a = AnnotationMgr.getInstance().rejectAnnotation(id);
-
             PrintWriter out = response.getWriter();
             response.setHeader("Cache-Control", "no-cache");
             response.setHeader("Pragma", "no-cache");
@@ -281,19 +235,16 @@ System.out.println("user:"+user);
     }
     
     public void asyModify(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
-        String id = request.getParameter("id");
-        String bodyValue = request.getParameter("bodyValue");
-        
-//System.out.println(bodyValue); 
         User user = paramRequest.getUser(); 
-        String lang=user.getLanguage();
-        Annotation a = AnnotationMgr.getInstance().updateAnnotation(id,bodyValue);
-      
+        String lang = user.getLanguage();
+        String id = request.getParameter("id");
+        String bodyValue = null != request.getParameter("bodyValue") && !request.getParameter("bodyValue").trim().isEmpty() ? request.getParameter("bodyValue").trim() : "";
+        Annotation a = AnnotationMgr.getInstance().updateAnnotation(id, bodyValue, paramRequest.getWebPage().getWebSiteId());
+        
         PrintWriter out = response.getWriter();
         response.setHeader("Cache-Control", "no-cache");
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Content-Type", "application/json");
-
         out.print(mapToStringBuilder(annotationToMap(a,user.getId(),lang)).toString());
     }
     
@@ -311,60 +262,7 @@ System.out.println("user:"+user);
         StringBuilder sb = new StringBuilder();
         sb.append("{\"deleted\":true}");
         out.print(sb.toString());
-    } 
-    /*private String annotationsToJsonString(List<Annotation> annotationList, String userId){
-        
-        StringBuilder sb = new StringBuilder("[");
-        if(annotationList!=null){                        
-            annotationList.forEach((Annotation a)->{
-                sb.append(annotationToJsonStringBuilder(a,userId));
-                sb.append(",");
-            });
-            if(',' == sb.charAt(sb.length()-1)){
-                sb.deleteCharAt(sb.length()-1);
-        }       
     }
-        sb.append("]");
-System.out.println(sb);        
-        return sb.toString();
-    }*/
-   
-   /* public StringBuilder annotationToJsonStringBuilder(Annotation annotation, String userId) {
-        SimpleDateFormat sdf= new SimpleDateFormat(DATE_PATTERN);
-        StringBuilder sb=new StringBuilder("{");
-        if (annotation.getId() != null) {
-            sb.append("\"id\":\"").append(annotation.getId()).append("\",");
-        }
-        if (annotation.getBodyValue() != null) {
-            sb.append("\"bodyValue\":\"").append(annotation.getBodyValue().replace("\n","\\n")).append("\",");
-        }
-        if (annotation.getTarget() != null) {
-            sb.append("\"target\":\"").append(annotation.getTarget()).append("\",");
-        }
-        if (annotation.getCreator() != null && userRepository.getUser(annotation.getCreator())!=null){
-            sb.append("\"creator\":\"").append(userRepository.getUser(annotation.getCreator()).getFullName()).append("\",");
-        }
-        if (annotation.getCreated() != null) {
-            sb.append("\"created\":\"").append(sdf.format(annotation.getCreated())).append("\",");
-        } 
-        if (annotation.getModerator()!= null) {            
-            sb.append("\"moderator\":\"").append(annotation.getModerator()).append("\",");
-        }      
-        if (annotation.getModified()!= null) {
-            sb.append("\"modified\":\"").append(annotation.getModified()).append("\",");
-        }            
-        if (!annotation.isModerated()) { // es modificable
-        sb.append("\"isMod\":\"").append(!annotation.isModerated()).append("\",");
-        } 
-        if (annotation.getCreator().equals(userId)) { 
-        sb.append("\"isOwn\":\"").append(true).append("\",");
-        }
-        if(',' == sb.charAt(sb.length()-1)){
-            sb.deleteCharAt(sb.length()-1);
-        }
-        sb.append("}");
-        return sb;
-    }*/
 
     private Entry getEntry(String id) throws IOException {
         String baseUri = getResourceBase().getWebSite().getModelProperty("search_endPoint");
@@ -373,20 +271,16 @@ System.out.println(sb);
             baseUri = SWBPlatform.getEnv("rnc/endpointURL").trim();
         }
         String uri = baseUri + "/api/v1/search?q="+id+"&attr=oaiid";
-        //String uri = baseUri + "/api/v1/search?identifier="+id;
-        //GetBICRequest req = new GetBICRequest(uri);
-        //Entry entry = req.makeRequest();       
         ListBICRequest req = new ListBICRequest(uri);        
         Document document = req.makeRequest();
-        if(document!=null&&document.getRecords()!=null && document.getRecords().size()>0){
+        if (null != document && null != document.getRecords() && !document.getRecords().isEmpty())
             entry=document.getRecords().get(0);
-        }         
         return entry;
     }
     
     private List<Map<String,String>> annotationsToList(List<Annotation> annotations, String userId, String lang){
         List<Map<String,String>> list = new ArrayList<>();
-        if(annotations!=null){                        
+        if (null != annotations) {                        
             annotations.forEach((Annotation a)->{
                 list.add(annotationToMap(a, userId, lang));
             });
@@ -394,7 +288,7 @@ System.out.println(sb);
         return list;
     } 
     
-    private Map<String,String> annotationToMap(Annotation annotation, String userId,String lang){
+    private Map<String,String> annotationToMap(Annotation annotation, String userId, String lang) {
         Map<String,String> map = new HashMap<>();
         OntModel ont = SWBPlatform.getSemanticMgr().getSchema().getRDFOntModel();
         if(annotation!=null){
@@ -408,7 +302,7 @@ System.out.println(sb);
                 map.put("id",annotation.getId());
             }
             if (annotation.getBodyValue() != null) {
-                map.put("bodyValue",annotation.getBodyValue());
+                map.put("bodyValue", Utils.replaceSpecialChars(annotation.getBodyValue()));
             }
             if (annotation.getTarget() != null) {
                 map.put("target",annotation.getTarget());
@@ -441,6 +335,7 @@ System.out.println(sb);
             if (annotation.getCreator().equals(userId)) { 
                 map.put("isOwn","true");
             }
+            if (null != annotation.getSite()) map.put("site", annotation.getSite());
             try {
                 Entry entry = getEntry(annotation.getTarget());
                 if (entry!=null){                
@@ -479,44 +374,8 @@ System.out.println(sb);
             sb.append(v.replace("\n","\\n").replace("\"", "\\\""));
             sb.append("\",");            
         });        
-        if(',' == sb.charAt(sb.length()-1)){
-            sb.deleteCharAt(sb.length()-1);
-        }
+        if(',' == sb.charAt(sb.length()-1)) sb.deleteCharAt(sb.length()-1);
         sb.append("}");
-//System.out.println(sb);        
         return sb;
     }
-    
-    /*
-    private JsonArray annotationsToJson(List<Annotation> annotationList, UserRepository ur){
-        JsonArrayBuilder json = Json.createArrayBuilder();
-        if(annotationList!=null){                        
-            annotationList.forEach((Annotation a)->{
-                //json.add(annotationToJson(a, ur));
-            });
-        }       
-        return json.build();
-    }
-    /*
-    public JsonObject annotationToJson(Annotation annotation, UserRepository ur) {
-        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
-        JsonObjectBuilder json = Json.createObjectBuilder();
-        if (annotation.getId() != null) {
-            json.add("id",annotation.getId());
-        }
-        if (annotation.getBodyValue() != null) {
-            json.add("bodyValue",annotation.getBodyValue());
-        }
-        if (annotation.getTarget() != null) {
-            json.add("target",annotation.getTarget());
-        }
-        if (annotation.getCreator() != null && ur.getUser(annotation.getCreator())!=null){
-            json.add("creator",ur.getUser(annotation.getCreator()).getFullName());
-        }
-        if (annotation.getCreated() != null) {
-            json.add("created",sdf.format(annotation.getCreated()));
-        } 
-        return json.build();
-    }
-    */
 }
