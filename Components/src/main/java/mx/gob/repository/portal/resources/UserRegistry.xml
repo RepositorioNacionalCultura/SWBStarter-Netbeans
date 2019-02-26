@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<admresource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<xslfile>admresource.xslt</xslfile>
+    <form name="frmUserRegistry" action="true" method="POST">
+		<admdbconnmgr defconn="true"/>
+        <fieldset legend="Anotador">
+            <input type="TEXT" name="AnnRol" label="*Rol del anotador:" size="50" jsrequired="true" />            
+        </fieldset>
+        <fieldset legend="Confirmacion de Registro">
+            <input type="TEXT" name="emailSubRegAck" label="Asunto del correo:" size="50"  jsrequired="true"/>
+            <textarea name="emailMsgRegAck" label="Mensaje" rows="10" cols="80" wrap="virtual"  jsrequired="true"/>
+            <statictext name="txtNote1">
+		<![CDATA[
+			<font style="color: #428AD4; font-family: Verdana; font-size: 10px;">
+				{username} Nombre del usuario <br>
+                                {link} Liga de validación de registro
+			</font>
+		]]>
+            </statictext>
+        </fieldset>
+        <fieldset legend="Notificación de anotador registrado">
+            <input type="TEXT" name="email" label="Correo que recibira la solicitud:" size="50" jsrequired="true" />
+            <input type="TEXT" name="emailSubAnnNtf" label="Asunto del correo:" size="50"  jsrequired="true"/>
+            <textarea name="emailMsgAnnNtf" label="Mensaje" rows="10" cols="80" wrap="virtual"  jsrequired="true"/>
+            <statictext name="txtNote2">
+		<![CDATA[
+			<font style="color: #428AD4; font-family: Verdana; font-size: 10px;">
+				{username} Nombre del usuario <br>                                
+                                {institution} Institucion u organización <br>
+                                {titlejob} Puesto <br>
+                                {email} Correo electrónico <br>
+                                {telefono} Teléfono <br>
+                                {areainteres} Área de Interés
+		]]>
+            </statictext>
+        </fieldset>        
+        <fieldset>
+            <input type="submit" name="btnSave" id="btnSave" value="Guardar"/>
+            <input type="reset"  name="btnReset" id="btnReset" value="Restablecer" />
+        </fieldset>
+	</form>
+</admresource>

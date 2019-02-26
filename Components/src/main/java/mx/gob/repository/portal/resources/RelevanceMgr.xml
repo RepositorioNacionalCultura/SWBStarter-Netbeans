@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<admresource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xslfile>admresource.xslt</xslfile>
+        <form name="frmRelevanceMgr" action="true" method="POST">
+            <admdbconnmgr defconn="true"/>
+            <fieldset legend="Colección">
+                <input type="text" name="collectionID" label="*Identificador de la colección:" size="50" jsrequired="true" />
+                <input type="text" name="jspresponse" label="Ruta relativa del JSP:" size="50" jsrequired="false" />
+            </fieldset>
+            <fieldset>
+                <input type="submit" name="btnSave" id="btnSave" value="Guardar"/>
+                <input type="reset"  name="btnReset" id="btnReset" value="Restablecer" />
+            </fieldset>
+	</form>
+</admresource>

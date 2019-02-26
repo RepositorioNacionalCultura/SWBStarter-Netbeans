@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<admresource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xslfile>mycollections.xslt</xslfile>
+    <form name="frmMyCollections" action="true" method="POST" enctype="multipart/form-data">
+        <admdbconnmgr defconn="true"/>
+        <fieldset>
+            <input type="text" name="minfavs" label="Número mínimo de favoritos:" promptMessage="Número mínimo de favoritos" />            
+            <input type="text" name="maxwords" label="Número máximo de palabras:" promptMessage="Número máximo de palabras" />            
+        </fieldset>
+        <fieldset>
+            <input type="submit" value="Guardar" />
+            <input type="reset"  value="Restablecer" />
+        </fieldset>
+    </form>
+</admresource>
