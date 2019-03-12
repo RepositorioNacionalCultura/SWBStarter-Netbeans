@@ -4,7 +4,7 @@
     Author     : sergio.tellez
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DateDocument, mx.gob.cultura.portal.response.DigitalObject"%>
+<%@ page import="java.util.Map, mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DateDocument, mx.gob.cultura.portal.response.DigitalObject"%>
 <%@ page import="mx.gob.cultura.portal.resources.ArtDetail, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.ArrayList, java.util.List, java.util.Arrays, org.bson.Document"%>
 <%
     String place = "";
@@ -40,6 +40,7 @@
         String state = (null != entry.getState() && !entry.getState().isEmpty()) ? (" " + entry.getState()) : "";
         place = (null != entry.getLugar()) ? "<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ entry.getLugar() + "\">"+entry.getLugar()+state+"</a>" : "";
     }
+    Map mapper = (Map)request.getAttribute("mapper");
 %>
 <a name="showPage"></a>
 <h3 class="oswM"><%=Utils.replaceSpecialChars(title)%></h3>
@@ -54,14 +55,7 @@
         <tr>
             <th colspan="2"><%=Utils.replaceSpecialChars(paramRequest.getLocaleString("usrmsg_view_detail_data_sheet"))%></th>
         </tr>
-        <%=Utils.getTechRepl("recordtitle", holder, title+subtile, paramRequest.getLocaleString("usrmsg_view_detail_title"), true, notNull)%>
-        <%=Utils.getTechRepl("chapter", holder, entry.getChapter(), paramRequest.getLocaleString("usrmsg_view_detail_chapter"), false, notNull)%>
-        <%=Utils.getTechRepl("creator", holder, Utils.getCreator(entry.getCreator()), paramRequest.getLocaleString("usrmsg_view_detail_artist"), true, notNull)%>
-        <%=Utils.getTechRepl("creatorgroup", holder, Utils.getRowData(entry.getCreatorgroup(), 0, true), paramRequest.getLocaleString("usrmsg_view_detail_creator_group"), false, notNull)%>
-        <%=Utils.getTechData("holder", holder, urlholder, Utils.replaceSpecialChars(paramRequest.getLocaleString("usrmsg_view_detail_institution")), true, notNull)%>
-        <%=Utils.getTechRepl("publisher", holder, entry.getPublisher(), paramRequest.getLocaleString("usrmsg_view_detail_publisher"), false, notNull)%>
-        <%=Utils.getTechData("resourcetype", holder, Utils.concatFilter(userLang, site.getId(), "resourcetype", entry.getResourcetype()), paramRequest.getLocaleString("usrmsg_view_detail_type_object"), true, notNull)%>
-        <%=Utils.getTechData("datecreated", holder, null != entry.getDatecreated() ? Utils.c(entry.getDatecreated().getNote()) : "", paramRequest.getLocaleString("usrmsg_view_detail_date"), true, notNull)%>
+        <%=Utils.getTechData(mapper, userLang, uri.toString())%>
         <%
             if (null != entry.getLang() && entry.getLang().size() > 0) {
                 List<String> langs = new ArrayList<>();

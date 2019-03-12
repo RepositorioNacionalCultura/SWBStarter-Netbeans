@@ -259,6 +259,7 @@ public class ArtDetail extends GenericAdmResource {
         entry.setRecordtitle(recordtitle);
         List<String> creators = (ArrayList)mapper.get("author");
         entry.setCreator(creators);
+        entry.setResourcetype((ArrayList)mapper.get("resourcetype"));
         List<DigitalObject> digitalist = new ArrayList<>();
         List<String> digitalObjects = (ArrayList)mapper.get("digitalObjectURL");
         for (String objects : digitalObjects) {

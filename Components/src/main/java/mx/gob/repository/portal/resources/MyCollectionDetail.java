@@ -5,11 +5,12 @@
  */
 package mx.gob.repository.portal.resources;
 
-import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import com.google.gson.Gson;
+
 import java.util.List;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -17,14 +18,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mx.gob.cultura.portal.persist.CollectionMgr;
 import mx.gob.cultura.portal.persist.UserCollectionMgr;
-import mx.gob.cultura.portal.request.GetBICRequest;
+
+import static mx.gob.cultura.portal.resources.MyCollections.ENTRY;
 import static mx.gob.cultura.portal.resources.MyCollections.ACTION_ADD_CLF;
 import static mx.gob.cultura.portal.resources.MyCollections.ACTION_DEL_FAV;
 import static mx.gob.cultura.portal.resources.MyCollections.COLLECTION_RENDER;
-import static mx.gob.cultura.portal.resources.MyCollections.ENTRY;
 
-import mx.gob.cultura.portal.response.Collection;
 import mx.gob.cultura.portal.response.Entry;
+import mx.gob.cultura.portal.response.Collection;
 import static mx.gob.cultura.portal.utils.Constants.COLLECTION;
 import static mx.gob.cultura.portal.utils.Constants.PARAM_REQUEST;
 import org.semanticwb.SWBPlatform;
@@ -80,7 +81,7 @@ public class MyCollectionDetail extends GenericResource{
                 setAuthors(paramRequest, list);
                 collection.setFavorites(umr.countByCollection(collection.getId()).intValue());
                 for (String _id : collection.getElements()) {
-                    Entry entry = getEntry(paramRequest, _id);
+                    Entry entry = ArtDetail.getEntry(request, getUri(paramRequest, _id));
                     if (null != entry) {
                         favorites.add(entry);
                         SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), 0);
@@ -229,16 +230,15 @@ public class MyCollectionDetail extends GenericResource{
              }
          }
      }
-     
-    protected Entry getEntry(SWBParamRequest paramRequest,String _id) {
+    
+    private String getUri(SWBParamRequest paramRequest, String _id) {
         String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
         if (null == baseUri || baseUri.isEmpty()) {
             baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
         }
-        String uri = baseUri + "/api/v1/search?identifier=";
+        String version = null != paramRequest.getWebPage().getWebSite().getModelProperty("version_endPoint") ? paramRequest.getWebPage().getWebSite().getModelProperty("version_endPoint") : "v1";
+        String uri = baseUri + "/api/"+version+"/search?identifier=";
         uri += _id;
-        GetBICRequest req = new GetBICRequest(uri);
-        return req.makeRequest();
+        return uri;
     }
-    
 }
