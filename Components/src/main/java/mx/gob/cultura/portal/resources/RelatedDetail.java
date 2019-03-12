@@ -65,7 +65,7 @@ public class RelatedDetail extends GenericResource {
         List<Entry> related = new ArrayList<>();
         if (null == entry) return new ArrayList<>();
         if (null != entry.getRecordtitle() && !entry.getRecordtitle().isEmpty())
-            entry.getKeywords().add(0,Utils.getTitle(entry.getRecordtitle(), 0));
+            entry.getKeywords().add(0, Utils.getTitle(entry.getRecordtitle(), 0));
         for (String key : entry.getKeywords()) {
             StringBuilder search = new StringBuilder(endpoint.toString());
             if (null != key && !key.trim().isEmpty()) {

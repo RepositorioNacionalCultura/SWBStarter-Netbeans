@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import mx.gob.cultura.portal.persist.CollectionMgr;
-import static mx.gob.cultura.portal.utils.Constants.COLLECTION;
 import mx.gob.cultura.portal.response.Collection;
+import mx.gob.cultura.portal.utils.Utils;
 
 /**
  * Strategy component that writes meta tags for social sharing of BIC.
@@ -54,7 +54,7 @@ public class SocialTags extends GenericAdmResource {
                 default_description = "";
             }
             if (null != entry) {
-                title = !entry.getRecordtitle().isEmpty() ? entry.getRecordtitle().get(0).getValue() : "Sin t&iacute;tulo";
+                title = !entry.getRecordtitle().isEmpty() ? Utils.getTitle(entry.getRecordtitle(), 0) : "Sin t&iacute;tulo";
                 urlImage = entry.getResourcethumbnail() != null ? (entry.getResourcethumbnail().startsWith("/")
                         ? pathBegining + entry.getResourcethumbnail() : entry.getResourcethumbnail()) : "";
                 description = !entry.getDescription().isEmpty() ? entry.getDescription().get(0) : default_description; //

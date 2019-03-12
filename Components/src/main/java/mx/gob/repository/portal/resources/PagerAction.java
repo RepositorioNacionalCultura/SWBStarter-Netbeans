@@ -5,8 +5,8 @@
  */
 package mx.gob.repository.portal.resources;
 
-import org.semanticwb.portal.api.GenericResource;
 import org.semanticwb.portal.api.SWBParamRequest;
+import org.semanticwb.portal.api.GenericResource;
 import org.semanticwb.portal.api.SWBResourceException;
 
 import javax.servlet.ServletException;

@@ -10,7 +10,6 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,13 +21,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mx.gob.cultura.portal.persist.AnnotationMgr;
-import mx.gob.cultura.portal.request.GetBICRequest;
 import mx.gob.cultura.portal.request.ListBICRequest;
 import mx.gob.cultura.portal.response.Annotation;
 import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.response.Entry;
+import mx.gob.cultura.portal.utils.Utils;
 import org.semanticwb.SWBPlatform;
-import org.semanticwb.SWBUtils;
 import org.semanticwb.model.User;
 import org.semanticwb.model.UserRepository;
 import org.semanticwb.portal.api.GenericAdmResource;
@@ -447,10 +445,10 @@ System.out.println(sb);
                     if(entry.getId()!=null){
                         map.put("oid",entry.getId());
                     }    
-                    if(entry.getRecordtitle()!=null && entry.getRecordtitle().size()>0){
-                        map.put("bicTitle",entry.getRecordtitle().get(0).getValue());            
+                    if (null != entry.getRecordtitle() && !entry.getRecordtitle().isEmpty()) {
+                        map.put("bicTitle", Utils.getTitle(entry.getRecordtitle(), 0));            
                     }else{
-                        map.put("bicTitle","sin título");            
+                        map.put("bicTitle","Sin título");            
                     }    
                     if(entry.getCreator()!=null && entry.getCreator().size()>0){
                         map.put("bicCreator",entry.getCreator().get(0));

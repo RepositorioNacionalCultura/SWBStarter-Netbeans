@@ -34,6 +34,9 @@ import java.util.Iterator;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.function.Consumer;
 
 import org.semanticwb.Logger;
 import org.semanticwb.model.WebSite;
@@ -42,6 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import mx.gob.cultura.commons.Util;
 
 import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Title;
@@ -102,6 +106,79 @@ public class Utils {
             .append("   <td>").append(Utils.replaceSpecialChars(key)).append("</td>")
             .append("</tr>");
         return data.toString();
+    }
+    
+     @SuppressWarnings("CallToPrintStackTrace")
+    public static String getTechData(Map mapper, String locale, String searchpage) throws UnsupportedEncodingException {
+        StringBuilder data = new StringBuilder();
+        if (null == mapper || mapper.isEmpty()) return "";
+        Iterator it = mapper.keySet().iterator();
+        while (it.hasNext()) {
+            Map root = null;
+            String url = null;
+            String value = null;
+            String key = (String)it.next();
+            Object o = mapper.get(key);
+            if (null != o) {
+                if (o instanceof Map) {
+                    root = (Map)o;
+                    value =  getValue(root);
+                }else if (o instanceof ArrayList) {
+                    List<Object> values = (ArrayList)o;
+                    for (Object item : values) {
+                        if (item instanceof Map) {
+                            value += ", " + getValue((Map)item);
+                        }else {
+                            value += ", " + item;
+                        }
+                    }
+                    if (null != value && !value.isEmpty())
+                        value = value.replaceFirst(", ", "");
+                }
+                if (null != value && !value.isEmpty()) {
+                    Object uri = null != root && null != root.get("url") ? root.get("url") : "_NAND";
+                    url = (String)uri;
+                    if (!url.isEmpty() && !url.equalsIgnoreCase("_NAND"))
+                        value = "<a href=\"" + url + ">" + value + "</a>";
+                    else if (url.isEmpty() && null != searchpage && !searchpage.isEmpty()) {
+                        String filter = "";
+                        filter = "&filter=" + key + ":" + value;
+                        value = searchpage + value + filter + "\">" + value + "</a>";
+                    }
+                    String label = null != root ? (String)root.get(locale) : key;
+                    data.append("\n")
+                        .append("<tr>")
+                        .append("   <td>").append(label).append("</td>")
+                        .append("   <td>").append(value).append("</td>")
+                        .append("</tr>");
+                }
+            }
+        }
+        return data.toString();
+    }
+    
+    private static String getValue(Object o) {
+        String value = "";
+        if (o instanceof Map) {
+            Map aux = (Map)o;
+            if (null != aux.get("value")) {
+                if (aux.get("value") instanceof ArrayList) {
+                    List<Object> values = (ArrayList)aux.get("value");
+                    for (Object item : values) {
+                        if (item instanceof Map) {
+                            value += ", " + getValue((Map)item);
+                        }else {
+                            value += ", " + item;
+                        }
+                    }
+                    if (!value.isEmpty())
+                        value = value.replaceFirst(", ", "");
+                }else {
+                    value = null != aux.get("value") && aux.get("value") instanceof String ? (String)aux.get("value") : "";
+                }
+            }
+        }
+        return value;
     }
     
     public static String concatLink(String userLang, String site, boolean all, String... args) {
@@ -411,6 +488,79 @@ public class Utils {
             }
         }
         return getRowData(list, size, false);
+    }
+    
+    public static String getFacet(Map<String, List<CountName>> facets, String filters, String lang, String localeSelectAll, String localeShowMore, String localeShowLess ) {
+        int index = 1;
+        if (null == facets || facets.isEmpty()) return "";
+        StringBuilder facet = new StringBuilder();
+        for (String resourcetype : facets.keySet()) {
+            List<CountName> resourcetypes = facets.get(resourcetype);
+            String localeResouceType = null != Util.getPropertyLabel(resourcetype, lang) ? Util.getPropertyLabel(resourcetype, lang) : resourcetype;
+            if (null != resourcetypes && !resourcetypes.isEmpty()) {
+                facet.append("<div class=\"card card-temas\">")
+                        .append("   <div class=\" role=\"tab\" id=\"heading").append(index).append("\">")
+                        .append("       <a data-toggle=\"collapse\" href=\"#collapse").append(index).append("\" aria-expanded=\"true\" aria-controls=\"collapse").append(index).append("\" class=\"btnUpDown collapsed\">").append(localeResouceType)
+                        .append("           <span class=\"mas ion-plus\"></span><span class=\"menos ion-minus\"></span>")
+                        .append("       </a>")
+                        .append("   </div>")
+                        .append("   <div id=\"collapse").append(index).append("\" class=\"collapse show\" role=\"tabpanel\" aria-labelledby=\"heading1\" data-parent=\"#accordion\">")
+                        .append("       <ul>")
+                        .append("           <li>")
+                        .append("               <ul>").append(Utils.chdFtrList(resourcetypes, filters, resourcetype, "vermas", true))
+                        .append(                    "<li><label class=\"form-check-label\"><input class=\"form-check-input\" type=\"checkbox\" onclick=\"selectAll(this)\" name=\"alltype\" value=\"").append(resourcetype).append("\" >")
+                        .append("                        <span>").append(localeSelectAll).append("</span><span> </span><span class=\"checkmark\"></span></label>")
+                        .append("                    </li>")
+                        .append("               </ul>")
+                        .append("           </li>")
+                        .append("       </ul>");
+                if (resourcetypes.size() > 5) {
+                    facet.append("<p class=\"vermas-filtros\">")
+                            .append("   <button class=\"btn-vermas\" type=\"button\" data-toggle=\"collapse\" data-target=\"#vermas\" aria-expanded=\"false\" aria-controls=\"vermas\">")
+                            .append("       <span class=\"ion-plus-circled\"><span>").append(localeShowMore).append("</span></span>")
+                            .append("       <span class=\"ion-minus-circled\"><span>").append(localeShowLess).append("</span></span>")
+                            .append("   </button>")
+                            .append("</p>");
+                }
+                facet.append("</div>")
+                        .append("</div>");
+                index++;
+            }
+        }
+        return facet.toString();
+    }
+    
+    public static String getFilter(Map<String, List<CountName>> facets, String word) {
+        if (null == facets || facets.isEmpty()) return "";
+        StringBuilder filter = new StringBuilder();
+        filter.append("function filter() {")
+            .append("var filters = '&';")
+            .append("var dates = '&datecreated=';");
+        facets.keySet().forEach((String key) -> {
+            StringBuilder append = filter.append("var ").append(key).append(" = '&").append(key).append("=';");
+        });
+	filter.append("var inputElements = document.getElementsByClassName('form-check-input');")
+            .append("  for (i=0; i<inputElements.length; i++) {")
+            .append("       if (inputElements[i].checked) {");
+        facets.keySet().forEach((String key) -> {
+            StringBuilder append = filter.append("       if (inputElements[i].name == '").append(key).append("') {")
+                    .append("               ").append(key).append(" += '::'+inputElements[i].value;")
+                    .append("         }");
+        });
+        filter.append("     }");
+        filter.append("}");
+        facets.keySet().forEach((key) -> {
+            filter.append("     if (").append(key).append(".length > ").append(key.length()+2).append(") {").append(key).append(" = ").append(key).append(".replace(\"=::\",\"=\");}else {").append(key).append("=''}");
+        });
+        filter.append("         if (filterDate) dates+=document.getElementById(\"bx1\").value+\",\"+document.getElementById(\"bx2\").value; else {dates=\"\"}");
+        filter.append("     filters += ");
+        facets.keySet().forEach((String key) -> {
+            filter.append(key).append(" + ");
+        });
+        filter.append("     dates;")
+            .append("   doSort('").append(word).append("'+filters,'imptdes');")
+            .append("}");
+        return filter.toString();
     }
     
     public static String chdFtrList(List<CountName> resourcetypes, String filter, String resourcetype, String moretypes, boolean showcount) {
@@ -733,5 +883,18 @@ public class Utils {
             cl = holder;
         }
         return cl;
+    }
+    
+    public static <K, V> Map<K, V> sortByValue(Map<K, V> unsortMap) {
+        List<MapEntry> list = MapEntry.values(unsortMap);
+        //List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(unsortMap.entrySet());
+        Collections.sort(list, new MapEntry());
+        Map<K, V> result = new LinkedHashMap<>();
+        for (MapEntry entry : list) {
+            if (entry.getVisibility() && entry.getOrder().intValue() > 0) {
+                result.put((K)entry.getKey(), (V)entry.getEntry());
+            }
+        }
+        return result;
     }
 }

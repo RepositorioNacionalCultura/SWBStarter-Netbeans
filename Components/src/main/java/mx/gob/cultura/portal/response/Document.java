@@ -5,8 +5,10 @@
  */
 package mx.gob.cultura.portal.response;
 
-import java.io.Serializable;
+import java.util.Map;
 import java.util.List;
+import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  *
@@ -20,6 +22,11 @@ public class Document implements Serializable {
     private Integer total;
     private List<Entry> records;
     private List<Aggregation> aggs;
+    private Map<String, List<CountName>> facets;
+    
+    public Document() {
+        this.records = new ArrayList<>();
+    }
 
     public List<Entry> getRecords() {
         return records;
@@ -53,8 +60,16 @@ public class Document implements Serializable {
         this.aggs = aggs;
     }
 
+    public Map<String, List<CountName>> getFacets() {
+        return facets;
+    }
+
+    public void setFacets(Map<String, List<CountName>> facets) {
+        this.facets = facets;
+    }
+
     @Override
     public String toString() {
-        return "Document{" + "took=" + took + ", total=" + total + ", records=" + records + ", aggs=" + aggs + '}';
+        return "Document{" + "facets=" + facets + '}';
     }
 }

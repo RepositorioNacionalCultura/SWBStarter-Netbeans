@@ -5,6 +5,8 @@
  */
 package mx.gob.repository.portal.resources;
 
+
+import java.util.Map;
 import java.util.Date;
 import java.util.List;
 import java.util.Calendar;
@@ -35,16 +37,29 @@ import java.nio.charset.StandardCharsets;
 import org.semanticwb.SWBException;
 import mx.gob.cultura.portal.utils.Utils;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Stack;
+import mx.gob.cultura.commons.Util;
+
 import mx.gob.cultura.portal.response.Entry;
-import mx.gob.cultura.portal.response.Aggregation;
+import mx.gob.cultura.portal.response.Title;
+import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.response.CountName;
 import mx.gob.cultura.portal.response.DateRange;
-import mx.gob.cultura.portal.response.Document;
+import mx.gob.cultura.portal.response.Aggregation;
 import mx.gob.cultura.portal.response.DigitalObject;
 import mx.gob.cultura.portal.request.ListBICRequest;
+
 import static mx.gob.cultura.portal.utils.Constants.SORT;
 import static mx.gob.cultura.portal.utils.Constants.WORD;
 import static mx.gob.cultura.portal.utils.Constants.THEME;
+import org.semanticwb.datamanager.DataObject;
 
 /**
  *
@@ -79,6 +94,12 @@ public class SearchCulturalProperty extends PagerAction {
                 ret.append("				</td>");
                 ret.append("			</tr> \n");
                 ret.append("			<tr> \n");
+                ret.append("				<td class=\"datos\">Esquema: </td> \n");
+                ret.append("				<td colspan=\"2\" class=\"valores\"> \n");
+                ret.append("					<TEXTAREA name=\"jsonbase\" label=\"JSON:\" rows=\"10\" cols=\"100\" wrap=\"virtual\" >").append(getResourceBase().getAttribute("jsonbase","").trim()).append("</TEXTAREA>");
+                ret.append("				</td>");
+                ret.append("			</tr> \n");
+                ret.append("			<tr> \n");
                 ret.append("				<td colspan=2 align=right> \n");
                 ret.append("					<br><hr size=1 noshade> \n");
                 ret.append("					<input type=submit name=btnSave value=\"Enviar\" class=boton> \n");
@@ -90,6 +111,7 @@ public class SearchCulturalProperty extends PagerAction {
             }else if ("save".equals(paramRequest.getAction())) {
                 getResourceBase().setAttribute("endpointURL", request.getParameter("endpointURL"));
                 getResourceBase().setAttribute("resultsPage", request.getParameter("resultsPage"));
+                getResourceBase().setAttribute("jsonbase", request.getParameter("jsonbase"));
                 getResourceBase().updateAttributesToDB();
                 SWBResourceURL url=paramRequest.getRenderUrl();
                 url.setMode(SWBResourceModes.Mode_ADMIN);
@@ -109,6 +131,10 @@ public class SearchCulturalProperty extends PagerAction {
                 ret.append("			<tr> \n");
                 ret.append("				<td class=\"datos\">Resultados por página: </td> \n");
                 ret.append("				<td class=\"valores\"> \n").append(getResourceBase().getAttribute("resultsPage","").trim()).append("</td>");
+                ret.append("			</tr> \n");
+                ret.append("			<tr> \n");
+                ret.append("				<td class=\"datos\">Esquema: </td> \n");
+                ret.append("				<td class=\"valores\"> \n").append(getResourceBase().getAttribute("jsonbase","").trim()).append("</td>");
                 ret.append("			</tr> \n");
                 ret.append("			<tr> \n");
                 ret.append("				<td colspan=2 align=right> \n");
@@ -217,6 +243,84 @@ public class SearchCulturalProperty extends PagerAction {
         }
     }
     
+    public static Map getMapper(String json) {
+        Map mapper = null;
+        if (null != json && !json.isEmpty()) {
+            JsonFactory factory = new JsonFactory();
+            try {
+                JsonParser  parser  = factory.createParser(json);
+                mapper = getDetail(parser);
+            } catch (IOException io) {
+                LOG.error(io);
+            }
+        }
+        return mapper;
+    }
+    
+    private static Map getDetail(JsonParser parser) {
+        Stack<Object> pQueue = new Stack<>();
+        Map<String, Object> mapper = new HashMap<>();
+        while (!parser.isClosed()) {
+            JsonToken jsonToken;
+            try {
+                jsonToken = parser.nextToken();
+                if (null != jsonToken) {
+                    switch (jsonToken) {
+                        case START_OBJECT:
+                            pQueue.push(JsonToken.START_OBJECT);
+                            break;
+                        case FIELD_NAME:
+                            pQueue.push(parser.getCurrentName());
+                            break;
+                        case VALUE_STRING:
+                            pQueue.push(parser.getValueAsString());
+                            break;
+                        case VALUE_TRUE:
+                            pQueue.push(parser.getBooleanValue());
+                            break;
+                        case VALUE_FALSE:
+                            pQueue.push(parser.getBooleanValue());
+                            break;
+                        case VALUE_NUMBER_INT:
+                            pQueue.push(parser.getBigIntegerValue());
+                            break;
+                        case VALUE_NULL:
+                            pQueue.push("");
+                            break;
+                        case START_ARRAY:
+                            pQueue.push(JsonToken.START_ARRAY);
+                            break;
+                        case END_ARRAY:
+                            List<Object> list = new ArrayList<>();
+                            while (!pQueue.peek().equals(JsonToken.START_ARRAY)) {
+                                list.add(pQueue.pop());
+                            }
+                            pQueue.pop();//START_ARRAY
+                            pQueue.push(list);
+                            break;
+                        case END_OBJECT:
+                            Map<String, Object> auxmap = new HashMap<>();
+                            while (!pQueue.peek().equals(JsonToken.START_OBJECT)) {
+                                Object value = pQueue.pop();
+                                String key = (String)pQueue.pop();
+                                auxmap.put(key, value);
+                            }
+                            pQueue.pop();//START_OBJECT
+                            if (!pQueue.empty())
+                                pQueue.push(auxmap);
+                            else mapper = auxmap;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }catch (IOException io) {
+                LOG.error(io);
+            }
+        }
+        return mapper;
+    }
+    
     private void setType(HttpServletRequest request, Document document, WebSite site, int page) {
         int i = 0;
         int p = page > 0 ? page-1 : 0;
@@ -227,9 +331,10 @@ public class SearchCulturalProperty extends PagerAction {
                 i++;
             }
         }
+        request.setAttribute("facets", document.getFacets());
         request.setAttribute("aggs", getAggregation(document.getAggs()));
-        request.setAttribute("text", getAgg(document.getAggs(), "text"));
         request.setAttribute("zip", getAgg(document.getAggs(), "zip"));
+        request.setAttribute("text", getAgg(document.getAggs(), "text"));
         request.setAttribute("image", getAgg(document.getAggs(), "image"));
         request.setAttribute("audio", getAgg(document.getAggs(), "audio"));
         request.setAttribute("video", getAgg(document.getAggs(), "video"));
@@ -255,13 +360,12 @@ public class SearchCulturalProperty extends PagerAction {
     private Document getReference(HttpServletRequest request, WebSite site) {
         String filters = "";
         Document document = null;
-        //String words = request.getParameter("word");
         String words = null != request.getParameter("word") && !request.getParameter("word").isEmpty() ? request.getParameter("word") : "*";
         String baseUri = site.getModelProperty("search_endPoint");
+        String version = null != site.getModelProperty("version_endPoint") ? site.getModelProperty("version_endPoint") : "v1";
         if (null == baseUri || baseUri.isEmpty()) baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim();
-        String uri = baseUri + "/api/v1/search?q=";
+        String uri = baseUri + "/api/"+version+"/search?q=";
         try {
-            System.out.println("filter param: " + request.getParameter("filter"));
             filters = null != request.getParameter("filter") ? getPageFilter(request) : getFilters(request);
             uri += URLEncoder.encode(words, StandardCharsets.UTF_8.name());
             uri += filters;
@@ -278,20 +382,81 @@ public class SearchCulturalProperty extends PagerAction {
         }
         ListBICRequest req = new ListBICRequest(uri);
         try {
-            document = req.makeRequest();
+            document = new Document();//req.makeRequest();
+            String json = req.doRequest();//this.getResourceBase().getAttribute("jsonbase", "");
+            Map mapper = getMapper(json);
+            document.setTook((String)mapper.get("took"));
+            List<Object> records = (ArrayList)mapper.get("records");
+            BigInteger total = (BigInteger)mapper.get("total");
+            document.setTotal(total.intValue());
+            setAggs(document, (ArrayList) mapper.get("aggs"));
+            for (Object record : records) {
+                Map map = (Map)record;
+                Entry entry = new Entry();
+                //entry.setResourcethumbnail("https://mexicana.cultura.gob.mx" + (String)map.get("resourcethumbnail"));
+                entry.setResourcethumbnail((String)map.get("resourcethumbnail"));
+                String recordtitle = null != map.get("recordtitle") ? (String)map.get("recordtitle") : "Sin Título";
+                entry.setId((String)map.get("_id"));
+                entry.getRecordtitle().add(new Title(recordtitle));
+                entry.setHolder((ArrayList)map.get("holder"));
+                entry.setCreator((ArrayList)map.get("author"));
+                document.getRecords().add(entry);
+            }
         }catch (Exception se) {
             LOG.error(se);
         }
         return document;
     }
     
+    private void setAggs(Document document, List aggsList) {
+        Aggregation agg = new Aggregation();
+        List<Aggregation> aggs = new ArrayList<>();
+        Map<String, Map> mapAggs = new LinkedHashMap<>();
+        Map<String, List<CountName>> facets = new LinkedHashMap<>();
+        HashMap<String, DataObject> definition = Util.getAllDSFacetProps("Record");
+        Iterator it = definition.keySet().iterator();
+        for (Object o : aggsList) {
+            Map map = (Map)o;
+            Iterator internalit = map.keySet().iterator();
+            if (internalit.hasNext()) {
+                String internalkey = (String)internalit.next();
+                mapAggs.put(internalkey, map);
+            }
+            if (null != map.get("resourcetypes"))
+                agg.setResourcetypes(countNameList(map, "resourcetypes"));
+            if (null != map.get("holder"))
+                agg.setHolders(countNameList(map, "holder"));
+            if (null != map.get("media"))
+                agg.setMediastype(countNameList(map, "media"));
+            if (null != map.get("lang"))
+                agg.setLanguages(countNameList(map, "lang"));
+            if (null != map.get("rightstitle"))
+                agg.setRights(countNameList(map, "rightstitle"));
+        }
+        aggs.add(agg);
+        while (it.hasNext()) {
+            String key = (String)it.next();
+            if (null != mapAggs.get(key))
+                facets.put(key, countNameList(mapAggs.get(key) , key));
+        }
+        document.setAggs(aggs);
+        document.setFacets(facets);
+    }
+    
+    private List<CountName> countNameList(Map map, String filter) {
+        List<CountName> countNameList = new ArrayList<>();
+        List<Map> maprtypes = (ArrayList)map.get(filter);
+        for (Map mrt : maprtypes) {
+            BigInteger count = (BigInteger)mrt.get("count");
+            CountName cn = new CountName((String)mrt.get("name"), count.intValue());
+            countNameList.add(cn);
+        }
+        return countNameList;
+    }
+    
     private String getPageFilter(HttpServletRequest request) throws UnsupportedEncodingException { 
         StringBuilder filters = new StringBuilder();
         String [] params = request.getParameter("filter").split(";;");
-        if (params.length == 1) {
-            String [] pair = params[0].split(":");
-            System.out.println("param: " + URLDecoder.decode(pair[1], StandardCharsets.UTF_8.name()));
-        }
         for (int i=0; i<params.length; i++) {
             String [] pair = params[i].split(":");
             filters.append(";;").append(pair[0]).append(":").append(URLEncoder.encode(pair[1], StandardCharsets.UTF_8.name()));

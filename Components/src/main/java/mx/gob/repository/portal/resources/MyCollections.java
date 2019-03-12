@@ -411,7 +411,7 @@ public class MyCollections extends GenericAdmResource {
                 setAuthors(paramRequest, list);
                 collection.setFavorites(umr.countByCollection(collection.getId()).intValue());
                 for (String _id : collection.getElements()) {
-                    Entry entry = getEntry(paramRequest, _id);
+                    Entry entry = getEntry(request, paramRequest, _id);
                     if (null != entry) {
                         favorites.add(entry);
                         SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), 0);
@@ -832,15 +832,17 @@ public class MyCollections extends GenericAdmResource {
         return collection;
     }
     
-    protected Entry getEntry(SWBParamRequest paramRequest, String _id) {
+    protected Entry getEntry(HttpServletRequest request, SWBParamRequest paramRequest, String _id) {
         String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
         if (null == baseUri || baseUri.isEmpty()) {
             baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
         }
         String uri = baseUri + "/api/v1/search?identifier=";
         uri += _id;
-        GetBICRequest req = new GetBICRequest(uri);
-        return req.makeRequest();
+        //GetBICRequest req = new GetBICRequest(uri);
+        Map mapper =  ArtDetail.getMapper(request, uri);
+        return ArtDetail.getMapEntry(mapper);
+        //return req.makeRequest();
     }
     
     protected void init(HttpServletRequest request) throws SWBResourceException, java.io.IOException {

@@ -113,7 +113,7 @@ public class InCollections extends MyCollections {
                 collection = mgr.findById(request.getParameter(IDENTIFIER));
             if (null != collection && null != collection.getElements()) {
                 for (String _id : collection.getElements()) {
-                    Entry entry = getEntry(paramRequest, _id);
+                    Entry entry = getEntry(request, paramRequest, _id);
                     if (null != entry) {
                         favorites.add(entry);
                         SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), 0);

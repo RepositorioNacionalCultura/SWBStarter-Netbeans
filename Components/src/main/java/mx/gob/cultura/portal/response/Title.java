@@ -23,6 +23,10 @@ public class Title implements Serializable {
         this.type = "";
         this.value = "";
     }
+    
+    public Title(String value) {
+        this.value = value;
+    }
 
     public String getType() {
         return type;

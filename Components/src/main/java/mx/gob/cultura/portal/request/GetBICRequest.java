@@ -57,4 +57,30 @@ public class GetBICRequest {
 
         return entry;
     }
+    
+    public String doRequest() {
+        URL url = null;
+        String entry = null;
+        try {
+            url = new URL(uri);
+        } catch (MalformedURLException mue) {
+            mue.printStackTrace();
+        }
+        if (null != url) {
+            System.out.println("making request to: "+url);
+            HttpURLConnection connection = null;
+            try {
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Accept", "application/json");
+                InputStream is = connection.getInputStream();
+                entry = SWBUtils.IO.readInputStream(is, "UTF-8");
+            } catch (Exception ex) {
+                // ex.printStackTrace();
+            } finally{
+                if(connection!=null) connection.disconnect();
+            }
+        }
+        return entry;
+    }
 }

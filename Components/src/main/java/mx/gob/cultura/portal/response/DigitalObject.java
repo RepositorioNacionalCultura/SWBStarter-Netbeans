@@ -14,6 +14,15 @@ public class DigitalObject implements Serializable {
 
     private static final long serialVersionUID = -6559537162627861962L;
     
+    
+    public DigitalObject() {
+        
+    }
+    
+    public DigitalObject(String url) {
+        this.url = url;
+    }
+    
     private String url;
     private MediaType mediatype;
     private Rights rights;

@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="mx.gob.cultura.portal.response.Aggregation, mx.gob.cultura.portal.response.CountName"%>
+<%@page import="java.util.Map, mx.gob.cultura.portal.response.Aggregation, mx.gob.cultura.portal.response.CountName"%>
 <%@page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.utils.Constants, org.semanticwb.portal.api.SWBParamRequest,org.semanticwb.portal.api.SWBResourceURL,java.util.ArrayList, java.util.List"%>
 <%
     boolean showFilters = false;
@@ -39,6 +39,7 @@
     int upper = null != aggs ? aggs.getInterval().getUpperLimit() : 0;
     String attFilter = null != request.getAttribute("filters") ? (String)request.getAttribute("filters") : "";
     String filters = null != request.getParameter("filter") ? request.getParameter("filter") : attFilter.replaceFirst("&filter=", "");
+    Map<String, List<CountName>> facets = (Map<String, List<CountName>>)request.getAttribute("facets");
 %>
 <script type="text/javascript">
     var filterDate = false;
@@ -57,65 +58,7 @@
         document.getElementById("ex2SliderVal").textContent = document.getElementById("bx2").value;
         doSort('<%=word%>','imptdes');
     }
-    function filter() {
-	var filters = '&';
-	var rights = '&rights=';
-	var holder = '&holder=';
-	var dates = '&datecreated=';
-	var mediastype = '&mediatype=';
-	var languages = '&languages=';
-        var rightsmedia='&rightsmedia=';
-	var resourcetype='resourcetype=';
-	var inputElements = document.getElementsByClassName('form-check-input');
-	for (i=0; i<inputElements.length; i++) {
-            if (inputElements[i].checked) {
-                if (inputElements[i].name == 'resourcetype') {
-                    resourcetype += '::'+inputElements[i].value;
-		}else if (inputElements[i].name == 'rightsmedia') {
-                    if ('Audio' == inputElements[i].value) {
-                        rightsmedia += '<%=audios%>';
-                    }else if ('Texto' == inputElements[i].value) {
-			rightsmedia += '<%=texts%>';
-                    }else if ('Imagen' == inputElements[i].value) {
-			rightsmedia += '<%=images%>';
-                    }else if ('Video' == inputElements[i].value) {
-			rightsmedia += '<%=videos%>';
-                    }else if ('ZIP' == inputElements[i].value) {
-                        rightsmedia += '<%=zips%>';
-                    }else if ('3D' == inputElements[i].value) {
-			rightsmedia += '<%=three%>';
-                    }else if ('Mapa' == inputElements[i].value) {
-                        rightsmedia += '<%=map%>';
-                    }else if ('<%=Constants.MIX%>' == inputElements[i].value) {
-                        rightsmedia += '<%=tech%>';
-                    }else if ('Multimedia' == inputElements[i].value) {
-                        rightsmedia += '<%=media%>';
-                    }else if ('Conjunto de archivos' == inputElements[i].value) {
-                        rightsmedia += '<%=files%>';
-                    }else {
-                        rightsmedia += '::'+inputElements[i].value;
-                    }
-		}else if (inputElements[i].name == 'rights') {
-                    rights += '::'+inputElements[i].value;
-		}else if (inputElements[i].name == 'languages') {
-                    languages += '::'+inputElements[i].value;
-		}else if (inputElements[i].name == 'holder') {
-                    holder += '::'+inputElements[i].value;
-		}else if (inputElements[i].name == 'rightsmedia') {
-                    rightsmedia += '::'+inputElements[i].value;
-		}
-            }
-	}
-	if (languages.length > 11) {languages = languages.replace("=::","=");}else {languages=''}
-        if (rights.length > 8) {rights = rights.replace("=::","=");}else {rights=''}
-        if (holder.length > 8) {holder = holder.replace("=::","=");}else {holder=''}
-        if (mediastype.length > 11) {mediastype = mediastype.replace("=::","=");}else {mediastype=''}
-        if (rightsmedia.length > 13) {rightsmedia = rightsmedia.replace("=::","=");}else {rightsmedia=''}
-        if (resourcetype.length > 13) {resourcetype = resourcetype.replace("=::","=");}else {resourcetype=''}
-        if (filterDate) dates+=document.getElementById("bx1").value+","+document.getElementById("bx2").value; else {dates=""}
-        filters += resourcetype + rightsmedia + rights + languages + holder + dates;
-        doSort('<%=word%>'+filters,'imptdes');
-    }
+    <%=Utils.getFilter(facets, word)%>
     function selectAll(type) {
 	var inputElements = document.getElementsByName(type.value);
 	for (i=0; i<inputElements.length; i++) {
@@ -197,83 +140,10 @@
 </script>
 <div id="sidebar">
     <div id="accordionx" role="tablist">
-    <%	if (null != resourcetypes && !resourcetypes.isEmpty()) { %>
-        <div class="card card-temas">
-            <div class="" role="tab" id="heading1">
-                <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapse1" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_type")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
-            </div>
-            <div id="collapse1" class="collapse show" role="tabpanel" aria-labelledby="heading1" data-parent="#accordion">
-                <ul>
-                    <li>
-                        <ul>
-                            <%=Utils.chdFtrList(resourcetypes, filters, "resourcetype", "vermas", true)%>
-                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="alltype" value="resourcetype" ><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span><span class="checkmark"></span></label></li>
-                        </ul>
-                    </li>
-                </ul>
-		<% if (resourcetypes.size() > 5) { %>
-                    <p class="vermas-filtros">
-                        <button class="btn-vermas" type="button" data-toggle="collapse" data-target="#vermas" aria-expanded="false" aria-controls="vermas">
-                            <span class="ion-plus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span></span>
-                            <span class="ion-minus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span></span> 
-			</button>
-                    </p>
-		<%  } %>
-            </div>
-        </div>
-    <% } %>
-
-    <%	if (null != rightsmedia && !rightsmedia.isEmpty()) { %>
-        <div class="card card-media">
-            <div class="" role="tab" id="heading2">
-                <a data-toggle="collapse" href="#collapse2" aria-expanded="true" aria-controls="collapseOne" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_media")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
-            </div>
-            <div id="collapse2" class="collapse show" role="tabpanel" aria-labelledby="heading2" data-parent="#accordion">
-                <ul>
-                    <li>
-			<ul>
-                            <%=Utils.chdFtrList(rightsmedia, filters, "rightsmedia", "moremedias", true)%>
-                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="alltype" value="rightsmedia" ><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span><span class="checkmark"></span></label></li>
-                        </ul>
-                    </li>
-                </ul>
-                <% if (rightsmedia.size() > 5) { %>
-                    <p class="vermas-filtros">
-                        <button class="btn-vermas" type="button" data-toggle="collapse" data-target="#moremedias" aria-expanded="false" aria-controls="vermas">
-                            <span class="ion-plus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span></span>
-                            <span class="ion-minus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span></span> 
-                        </button>
-                    </p>
-                <% } %>
-            </div>
-        </div>
-    <% } %>
-   
-   <% if (!holders.isEmpty()) { %>
-        <div class="card">
-            <div class="" role="tab" id="heading6">
-                <a data-toggle="collapse" href="#collapse6" aria-expanded="true" aria-controls="collapse6" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_holder")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
-            </div>
-            <div id="collapse6" class="collapse show" role="tabpanel" aria-labelledby="heading5" data-parent="#accordion">
-                <ul>
-                    <li>
-			<ul>
-                            <%=Utils.chdFtrHold(holders, filters, "holder", "moreholders", false)%>
-                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allholder" value="holder"><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span><span class="checkmark"></span></label></li>
-			</ul>			
-                        <% if (holders.size() > 5) { %>
-                            <p class="vermas-filtros">
-                                <button class="btn-vermas" type="button" data-toggle="collapse" data-target="#moreholders" aria-expanded="false" aria-controls="moreholders">
-                                    <span class="ion-plus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span></span>
-                                    <span class="ion-minus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span></span> 
-                                </button>
-                            </p>
-			<% } %>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    <% } %>
+        
+    <% 
+        out.println(Utils.getFacet(facets, filters, "es", paramRequest.getLocaleString("usrmsg_view_search_select_all"), paramRequest.getLocaleString("usrmsg_view_search_show_more"), paramRequest.getLocaleString("usrmsg_view_search_show_less")));
+    %>
 
     <%  if (!dates.isEmpty()) { %>
             <div class="card card-fecha">
@@ -291,32 +161,6 @@
                     </div>
                 </div>
             </div>		
-    <%  } %>
-
-    <%  if (null != rights && !rights.isEmpty()) { %>
-        <div class="card">
-            <div class="" role="tab" id="heading4">
-                <a data-toggle="collapse" href="#collapse4" aria-expanded="false" aria-controls="collapse4" class="btnUpDown collapsed"><%=paramRequest.getLocaleString("usrmsg_view_search_use")%> <span class="mas ion-plus"></span><span class="menos ion-minus"></span></a>
-            </div>
-            <div id="collapse4" class="collapse" role="tabpanel" aria-labelledby="heading4" data-parent="#accordion">
-                <ul>
-                    <li>
-			<ul>
-                            <%=Utils.chdFtrList(rights, filters, "rights", "morerights", true)%>
-                            <li><label class="form-check-label"><input class="form-check-input" type="checkbox" onclick="selectAll(this)" name="allrights" value="rights"><span><%=paramRequest.getLocaleString("usrmsg_view_search_select_all")%></span><span> </span><span class="checkmark"></span></label></li>
-                        </ul>
-			<% if (rights.size() > 5) { %>
-                            <p class="vermas-filtros">
-				<button class="btn-vermas" type="button" data-toggle="collapse" data-target="#morerights" aria-expanded="false" aria-controls="morerights">
-                                    <span class="ion-plus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_more")%></span></span>
-                                    <span class="ion-minus-circled"><span><%=paramRequest.getLocaleString("usrmsg_view_search_show_less")%></span></span>
-				</button>
-                            </p>
-			<%  } %>
-                    </li>
-                </ul>
-            </div>
-        </div>
     <%  } %>
 
     <%	if (null != languages && !languages.isEmpty()) { %>

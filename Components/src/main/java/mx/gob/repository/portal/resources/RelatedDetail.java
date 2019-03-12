@@ -5,21 +5,22 @@
  */
 package mx.gob.repository.portal.resources;
 
+import java.util.Map;
 import java.util.List;
+import java.util.ArrayList;
+import java.net.URLEncoder;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.request.ListBICRequest;
 
 import mx.gob.cultura.portal.response.Entry;
+import mx.gob.cultura.portal.response.Title;
 
 import org.semanticwb.SWBPlatform;
 import org.semanticwb.portal.api.GenericResource;
@@ -28,9 +29,11 @@ import org.semanticwb.portal.api.SWBResourceException;
 
 import org.semanticwb.Logger;
 import org.semanticwb.SWBUtils;
+import mx.gob.cultura.portal.utils.Utils;
+import java.nio.charset.StandardCharsets;
 import static mx.gob.cultura.portal.utils.Constants.IDENTIFIER;
 import static mx.gob.cultura.portal.utils.Constants.NUM_REL;
-import mx.gob.cultura.portal.utils.Utils;
+import static mx.gob.repository.portal.resources.SearchCulturalProperty.getMapper;
 
 
 /**
@@ -48,7 +51,9 @@ public class RelatedDetail extends GenericResource {
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
             StringBuilder base = new StringBuilder(endpoint(paramRequest));
-            base.append("/api/v1/search?");
+            String version = null != paramRequest.getWebPage().getWebSite().getModelProperty("version_endPoint") ? paramRequest.getWebPage().getWebSite().getModelProperty("version_endPoint") : "v1";
+            base.append("/api/").append(version).append("/search?");
+            //base.append("/api/v1/search?");
             StringBuilder uri =  new StringBuilder(base);
             if (null != request.getParameter(IDENTIFIER)) uri.append("identifier=").append(request.getParameter(IDENTIFIER));
             Entry entry = ArtDetail.getEntry(request, uri.toString());
@@ -62,7 +67,6 @@ public class RelatedDetail extends GenericResource {
     
     private List<Entry> getRelated(Entry entry, StringBuilder endpoint, SWBParamRequest paramRequest) {
         endpoint.append("q=");
-        Document document = null;
         List<Entry> related = new ArrayList<>();
         if (null == entry) return new ArrayList<>();
         if (null != entry.getRecordtitle() && !entry.getRecordtitle().isEmpty())
@@ -78,17 +82,26 @@ public class RelatedDetail extends GenericResource {
                 }
                 ListBICRequest req = new ListBICRequest(search.toString());
                 try {
-                    document = req.makeRequest();
-                    if (null != document) {
-                        List<Entry> records = document.getRecords();
-                        if (null != records) {
-                            for (Entry item : records) {
-                                if (null != item && !item.getId().equalsIgnoreCase(entry.getId())) {
-                                    SearchCulturalProperty.setThumbnail(item, paramRequest.getWebPage().getWebSite(), 0);
-                                    related.add(item);
-                                }
-                                if (related.size() >= NUM_REL) break;
+                    //document = req.makeRequest();
+                    String json = req.doRequest();
+                    Map mapper = getMapper(json);
+                    List<Object> objs = (ArrayList)mapper.get("records");
+                    if (null != objs) {
+                        for (Object record : objs) {
+                            Map map = (Map)record;
+                            Entry rec = new Entry();
+                            //rec.setResourcethumbnail("https://mexicana.cultura.gob.mx" + (String)map.get("resourcethumbnail"));
+                            rec.setResourcethumbnail((String)map.get("resourcethumbnail"));
+                            String recordtitle = null != map.get("recordtitle") ? (String)map.get("recordtitle") : "Sin Título";
+                            rec.setId((String)map.get("_id"));
+                            rec.getRecordtitle().add(new Title(recordtitle));
+                            rec.setHolder((ArrayList)map.get("holder"));
+                            rec.setCreator((ArrayList)map.get("author"));
+                            if (!rec.getId().equalsIgnoreCase(entry.getId())) {
+                                related.add(entry);
+                                SearchCulturalProperty.setThumbnail(rec, paramRequest.getWebPage().getWebSite(), 0);
                             }
+                            if (related.size() >= NUM_REL) break;
                         }
                     }
                 } catch (Exception se) {

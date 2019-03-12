@@ -18,6 +18,14 @@ public class MediaType implements Serializable {
     private String mime;
 
     private String name;
+    
+    public MediaType() {
+        
+    }
+    
+    public MediaType(String mime) {
+        this.mime = mime;
+    }
 
     public String getMime() {
         return mime;

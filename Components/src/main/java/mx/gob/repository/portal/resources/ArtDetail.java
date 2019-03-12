@@ -27,25 +27,27 @@ import java.net.URLEncoder;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Map;
+import java.util.List;
+import java.util.Random;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.Map;
-import java.util.List;
-import java.util.Stack;
-import java.util.Random;
+import mx.gob.cultura.commons.Util;
 import mx.gob.cultura.portal.utils.Serie;
 import mx.gob.cultura.portal.utils.Amplitude;
 import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.request.ListBICRequest;
 import mx.gob.cultura.portal.response.DigitalObject;
+import mx.gob.cultura.portal.response.MediaType;
+import mx.gob.cultura.portal.response.Title;
 import static mx.gob.cultura.portal.utils.Constants.SORT;
 import static mx.gob.cultura.portal.utils.Constants.TOTAL;
 import static mx.gob.cultura.portal.utils.Constants.WORD;
@@ -89,10 +91,12 @@ public class ArtDetail extends GenericAdmResource {
         WebSite site = paramRequest.getWebPage().getWebSite();
         String path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/preview.jsp";
         String baseUri = getBaseUri(paramRequest);
-        String uri = getParamUri(baseUri, request);
+        String uri = getParamUri(baseUri, request, paramRequest);
         try {
             if (null != uri) {
-                Entry entry = getEntry(request, uri);
+                //Entry entry = getEntry(request, uri);
+                Map mapper =  getMapper(request, uri);
+                Entry entry = getMapEntry(mapper);
                 if (null != entry) {
                     int position = null != request.getParameter(POSITION) ? Utils.toInt(request.getParameter(POSITION)) : 0;
                     entry.setPosition(position);
@@ -108,6 +112,7 @@ public class ArtDetail extends GenericAdmResource {
                     incHits(entry, baseUri, uri);
                 }
                 request.setAttribute("entry", entry);
+                request.setAttribute("mapper", getOrderedMap(mapper));
                 request.setAttribute("serie", serie(entry, baseUri));
                 request.setAttribute("collection", explore(entry, baseUri));
             }
@@ -124,7 +129,7 @@ public class ArtDetail extends GenericAdmResource {
         //String path = "/swbadmin/jsp/rnc/techrepl.jsp";
         String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/detail/techrepl.jsp";
         String baseUri = getBaseUri(paramRequest);
-        String uri = getParamUri(baseUri, request);
+        String uri = getParamUri(baseUri, request, paramRequest);
         String _index = request.getParameter("_index");
         int index = Utils.toInt(_index)-1;
         try {
@@ -146,7 +151,7 @@ public class ArtDetail extends GenericAdmResource {
     }
     
     public static Entry getEntry(HttpServletRequest request, String uri) {
-        Entry entry = null;
+        /**Entry entry = null;
         Document document = null;
         if (null != request.getParameter(IDENTIFIER)) {
             GetBICRequest req = new GetBICRequest(uri);
@@ -158,8 +163,9 @@ public class ArtDetail extends GenericAdmResource {
                 entry = document.getRecords().get(0);
                 request.setAttribute(TOTAL, document.getTotal());
             }
-        }
-        return entry;
+        }**/
+        Map mapper =  getMapper(request, uri);
+        return getMapEntry(mapper);
     }
 
     public void doDigital(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
@@ -245,6 +251,89 @@ public class ArtDetail extends GenericAdmResource {
         }
     }
     
+    public static Entry getMapEntry(Map mapper) {
+        Entry entry = new Entry();
+        List<Title> recordtitle = new ArrayList<>();
+        Title title = new Title((String)mapper.get("recordtitle"));
+        recordtitle.add(title);
+        entry.setRecordtitle(recordtitle);
+        List<String> creators = (ArrayList)mapper.get("author");
+        entry.setCreator(creators);
+        List<DigitalObject> digitalist = new ArrayList<>();
+        List<String> digitalObjects = (ArrayList)mapper.get("digitalObjectURL");
+        for (String objects : digitalObjects) {
+            DigitalObject dobj = new DigitalObject();
+            //dobj.setUrl("https://mexicana.cultura.gob.mx"+objects);
+            dobj.setUrl(objects);
+            MediaType mediatype = new MediaType((String)mapper.get("media"));
+            dobj.setMediatype(mediatype);
+            digitalist.add(dobj);
+        }
+        entry.setDigitalObject(digitalist);
+        List<String> keywords = (ArrayList)mapper.get("keywords");
+        entry.setKeywords(keywords);
+        entry.setId((String)mapper.get("_id"));
+        entry.setResourcethumbnail((String)mapper.get("resourcethumbnail"));
+        List<String> collection = (ArrayList)mapper.get("collection");
+        entry.setCollection(collection);
+        return entry;
+    }
+    
+    private Map getOrderedMap(Map mapper) {
+        //temporary request
+        Map orderedMap = new LinkedHashMap<>();
+        //Map definition =  SearchCulturalProperty.getMapper(this.getResourceBase().getAttribute("jsonbase", ""));
+        Map definition = Util.getVisibleProps("Record");
+        if (null != definition && !definition.isEmpty()) {
+            //definition = Utils.sortByValue(definition);
+            Iterator it = definition.keySet().iterator();
+            while (it.hasNext()) {
+                String key = (String)it.next();
+                //Set properties from definition
+                if (definition.get(key) instanceof Map) {
+                    Map source = (Map)definition.get(key);
+                    Boolean facet = null != source.get("facetado") ? (Boolean)source.get("facetado") : false;
+                    String es = null != Util.getPropertyLabel(key, "es") ? Util.getPropertyLabel(key, "es") : (String)source.get("title");
+                    String en = null != Util.getPropertyLabel(key, "en") ? Util.getPropertyLabel(key, "em") : (String)source.get("title");
+                    if (mapper.get(key) instanceof Map) {
+                        Map entry = (Map)mapper.get(key);
+                        entry.put("es", es);
+                        entry.put("en", en);
+                        if (facet) entry.put("url", "");
+                        orderedMap.put(key, entry);
+                    }else {
+                        Map<String, Object> auxmap = new HashMap<>();
+                        auxmap.put("es", es);
+                        auxmap.put("en", en);
+                        if (facet) auxmap.put("url", "");
+                        auxmap.put("value", mapper.get(key));
+                        orderedMap.put(key, auxmap);
+                    }
+                }else {
+                    orderedMap.put(key, mapper.get(key));
+                }
+            }
+        }
+        mapper = orderedMap;
+        //end temporary request
+        return mapper;
+    }
+    
+    public static Map getMapper(HttpServletRequest request, String uri) {
+        Map mapper = null;
+        String json = null;
+        if (null != request.getParameter(IDENTIFIER)) {
+            GetBICRequest req = new GetBICRequest(uri);
+            json = req.doRequest();
+            //json = this.getResourceBase().getAttribute("jsonbase", "");
+        }else {
+            ListBICRequest list = new ListBICRequest(uri);
+            json = list.doRequest();
+        }
+        mapper = SearchCulturalProperty.getMapper(json);
+        return mapper;
+    }
+    
     private List<Entry> serie(Entry entry, String endPoint) {
         String key = null;
         List<Entry> serieList = new ArrayList<>();
@@ -274,19 +363,7 @@ public class ArtDetail extends GenericAdmResource {
         return true;
     }
     
-    private String getParamUri(String base, HttpServletRequest request) throws UnsupportedEncodingException {
-        StringBuilder uri = new StringBuilder(base);
-        uri.append("/api/v1/search?");
-        if (null != request.getParameter(IDENTIFIER)) uri.append("identifier=").append(request.getParameter(IDENTIFIER));
-        else {
-            if (null != request.getParameter(WORD)) uri.append("q=").append(URLEncoder.encode(request.getParameter(WORD), StandardCharsets.UTF_8.name()));
-            if (null != request.getParameter(FILTER)) uri.append(getPageFilter(request));
-            if (null != request.getParameter(NUM_RECORD)) uri.append("&from=").append(request.getParameter(NUM_RECORD)).append("&size=1");
-        }
-        return uri.toString();
-    }
-    
-     private String getPageFilter(HttpServletRequest request) throws UnsupportedEncodingException { 
+     private static String getPageFilter(HttpServletRequest request) throws UnsupportedEncodingException { 
         StringBuilder filters = new StringBuilder();
         String [] params = request.getParameter(FILTER).split(",");
         for (int i=0; i<params.length; i++) {
@@ -300,13 +377,26 @@ public class ArtDetail extends GenericAdmResource {
         }
         return filters.toString();
     }
+     
+     private static String getParamUri(String base, HttpServletRequest request, SWBParamRequest paramRequest) throws UnsupportedEncodingException {
+        StringBuilder uri = new StringBuilder(base);
+        String version = null != paramRequest.getWebPage().getWebSite().getModelProperty("version_endPoint") ? paramRequest.getWebPage().getWebSite().getModelProperty("version_endPoint") : "v1";
+        uri.append("/api/").append(version).append("/search?");
+        if (null != request.getParameter(IDENTIFIER)) uri.append("identifier=").append(request.getParameter(IDENTIFIER));
+        else {
+            if (null != request.getParameter(WORD)) uri.append("q=").append(URLEncoder.encode(request.getParameter(WORD), StandardCharsets.UTF_8.name()));
+            if (null != request.getParameter(FILTER)) uri.append(getPageFilter(request));
+            if (null != request.getParameter(NUM_RECORD)) uri.append("&from=").append(request.getParameter(NUM_RECORD)).append("&size=1");
+        }
+        return uri.toString();
+    }
     
     private String getBaseUri(SWBParamRequest paramRequest) {
         //Get baseURI from site properties first
         String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
-        if (null == baseUri || baseUri.isEmpty())
-            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
-        return baseUri;
+        if (null == baseUri || baseUri.isEmpty()) baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim();
+        String uri = baseUri;
+        return uri;
     }
     
     private void setParams(HttpServletRequest request, SWBParamRequest paramRequest) throws IOException {

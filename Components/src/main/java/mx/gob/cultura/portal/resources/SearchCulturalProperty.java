@@ -255,7 +255,6 @@ public class SearchCulturalProperty extends PagerAction {
     private Document getReference(HttpServletRequest request, WebSite site) {
         String filters = "";
         Document document = null;
-        //String words = request.getParameter("word");
         String words = null != request.getParameter("word") && !request.getParameter("word").isEmpty() ? request.getParameter("word") : "*";
         String baseUri = site.getModelProperty("search_endPoint");
         if (null == baseUri || baseUri.isEmpty()) baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim();
