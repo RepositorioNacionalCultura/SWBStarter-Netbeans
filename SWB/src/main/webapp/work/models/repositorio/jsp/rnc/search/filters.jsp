@@ -40,6 +40,9 @@
     String attFilter = null != request.getAttribute("filters") ? (String)request.getAttribute("filters") : "";
     String filters = null != request.getParameter("filter") ? request.getParameter("filter") : attFilter.replaceFirst("&filter=", "");
     Map<String, List<CountName>> facets = (Map<String, List<CountName>>)request.getAttribute("facets");
+    List<String> excluded = new ArrayList<>();
+    excluded.add("datecreated");
+    excluded.add("timelinedate");
 %>
 <script type="text/javascript">
     var filterDate = false;
@@ -58,7 +61,7 @@
         document.getElementById("ex2SliderVal").textContent = document.getElementById("bx2").value;
         doSort('<%=word%>','imptdes');
     }
-    <%=Utils.getFilter(facets, word)%>
+    <%=Utils.getFilter(facets, word, excluded)%>
     function selectAll(type) {
 	var inputElements = document.getElementsByName(type.value);
 	for (i=0; i<inputElements.length; i++) {
