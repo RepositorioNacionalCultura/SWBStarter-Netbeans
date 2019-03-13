@@ -253,6 +253,12 @@ public class ArtDetail extends GenericAdmResource {
     
     public static Entry getMapEntry(Map mapper) {
         Entry entry = new Entry();
+        if (mapper.containsKey("records")) {
+            List records = (ArrayList)mapper.get("records");
+            if (null != records && !records.isEmpty())
+                mapper = (Map)records.get(0);
+            else return entry;
+        }
         List<Title> recordtitle = new ArrayList<>();
         Title title = new Title((String)mapper.get("recordtitle"));
         recordtitle.add(title);
@@ -261,7 +267,7 @@ public class ArtDetail extends GenericAdmResource {
         entry.setCreator(creators);
         entry.setResourcetype((ArrayList)mapper.get("resourcetype"));
         List<DigitalObject> digitalist = new ArrayList<>();
-        List<String> digitalObjects = (ArrayList)mapper.get("digitalObjectURL");
+        List<String> digitalObjects = null != mapper.get("digitalObjectURL") ? (ArrayList)mapper.get("digitalObjectURL") : new ArrayList<>();
         for (String objects : digitalObjects) {
             DigitalObject dobj = new DigitalObject();
             //dobj.setUrl("https://mexicana.cultura.gob.mx"+objects);

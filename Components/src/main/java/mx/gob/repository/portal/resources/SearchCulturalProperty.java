@@ -34,6 +34,7 @@ import java.net.HttpURLConnection;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
+import org.semanticwb.datamanager.DataObject;
 import org.semanticwb.SWBException;
 import mx.gob.cultura.portal.utils.Utils;
 
@@ -59,7 +60,6 @@ import mx.gob.cultura.portal.request.ListBICRequest;
 import static mx.gob.cultura.portal.utils.Constants.SORT;
 import static mx.gob.cultura.portal.utils.Constants.WORD;
 import static mx.gob.cultura.portal.utils.Constants.THEME;
-import org.semanticwb.datamanager.DataObject;
 
 /**
  *
