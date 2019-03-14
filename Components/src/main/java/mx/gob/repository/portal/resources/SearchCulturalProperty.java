@@ -432,6 +432,8 @@ public class SearchCulturalProperty extends PagerAction {
                 agg.setLanguages(countNameList(map, "lang"));
             if (null != map.get("rightstitle"))
                 agg.setRights(countNameList(map, "rightstitle"));
+            if (null != map.get("datecreated"))
+                agg.setDates(countNameList(map, "datecreated"));
         }
         aggs.add(agg);
         while (it.hasNext()) {
@@ -471,13 +473,19 @@ public class SearchCulturalProperty extends PagerAction {
     
     private String getFilters(HttpServletRequest request) throws UnsupportedEncodingException {
         StringBuilder filters = new StringBuilder();
-        filters.append(getFilter(request, "resourcetype"));
-        filters.append(getFilter(request, "mediatype"));
+        HashMap<String, DataObject> definition = Util.getAllDSFacetProps("Record");
+        Iterator it = definition.keySet().iterator();
+        while (it.hasNext()) {
+            String filterkey = (String)it.next();
+            filters.append(getFilter(request, filterkey));
+        }
+        //filters.append(getFilter(request, "resourcetype"));
+        //filters.append(getFilter(request, "mediatype"));
         filters.append(getFilterDate(request, "datecreated"));
-        filters.append(getFilter(request, "rights"));
-        filters.append(getFilter(request, "languages"));
-        filters.append(getFilter(request, "holder"));
-        filters.append(getFilter(request, "rightsmedia"));
+        //filters.append(getFilter(request, "rights"));
+        //filters.append(getFilter(request, "languages"));
+        //filters.append(getFilter(request, "holder"));
+        //filters.append(getFilter(request, "rightsmedia"));
         if (filters.length() > 0) {
             filters.delete(0, 2);
             filters.insert(0, "&filter=");

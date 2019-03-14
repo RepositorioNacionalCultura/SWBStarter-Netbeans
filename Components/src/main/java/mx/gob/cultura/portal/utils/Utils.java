@@ -530,9 +530,14 @@ public class Utils {
         return facet.toString();
     }
     
-    public static String getFilter(Map<String, List<CountName>> facets, String word) {
+    public static String getFilter(Map<String, List<CountName>> facets, String word, List<String> excluded) {
         if (null == facets || facets.isEmpty()) return "";
         StringBuilder filter = new StringBuilder();
+        if (null != excluded) {
+            for (String exdkey : excluded) {
+                if (facets.containsKey(exdkey)) facets.remove(exdkey);
+            }
+        }
         filter.append("function filter() {")
             .append("var filters = '&';")
             .append("var dates = '&datecreated=';");
