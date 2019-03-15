@@ -43,6 +43,7 @@
     List<String> excluded = new ArrayList<>();
     excluded.add("datecreated");
     excluded.add("timelinedate");
+    excluded.add("lang");
 %>
 <script type="text/javascript">
     var filterDate = false;
