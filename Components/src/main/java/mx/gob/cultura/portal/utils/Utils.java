@@ -530,6 +530,7 @@ public class Utils {
         return facet.toString();
     }
     
+    //Excluded List
     public static String getFilter(Map<String, List<CountName>> facets, String word, List<String> excluded) {
         if (null == facets || facets.isEmpty()) return "";
         StringBuilder filter = new StringBuilder();
