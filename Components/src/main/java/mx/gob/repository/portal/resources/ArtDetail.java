@@ -290,7 +290,7 @@ public class ArtDetail extends GenericAdmResource {
         //temporary request
         Map orderedMap = new LinkedHashMap<>();
         //Map definition =  SearchCulturalProperty.getMapper(this.getResourceBase().getAttribute("jsonbase", ""));
-        Map definition = Util.getAllDSProps("Record");
+        Map definition = Util.getAllDSVisibleProps("Record");
         if (null != definition && !definition.isEmpty()) {
             //definition = Utils.sortByValue(definition);
             Iterator it = definition.keySet().iterator();
