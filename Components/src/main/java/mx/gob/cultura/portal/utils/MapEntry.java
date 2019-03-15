@@ -21,10 +21,10 @@ public class MapEntry  implements Comparator {
     
     Map entry;
     String key;
-    String value;
-    BigInteger order;
+    String title;
+    Boolean visible;
     Boolean required;
-    Boolean visibility;
+    Integer order;
     
     public MapEntry() {
         
@@ -33,15 +33,12 @@ public class MapEntry  implements Comparator {
     public MapEntry(Map entry) {
         this.entry = entry;
         if (null != entry) {
-            if (null != entry.get("value")) {
-                if (entry.get("value") instanceof String) this.value = (String)entry.get("value");
-                if (entry.get("value") instanceof Boolean) this.value = ((Boolean)entry.get("value")).toString();
-                if (entry.get("value") instanceof Integer) this.value = ((Integer)entry.get("value")).toString();
-                if (entry.get("value") instanceof BigInteger) this.value = ((BigInteger)entry.get("value")).toString();
-            }else this.value = "";
-            this.order = null != entry.get("order") ? (BigInteger)entry.get("order") : new BigInteger("0");
+            if (null != entry.get("title")) {
+                if (entry.get("title") instanceof String) this.title = (String)entry.get("title");
+            }else this.title = "";
+            this.order = null != entry.get("order") ? (Integer)entry.get("order") : new Integer("0");
             this.required = null != entry.get("required") ? (Boolean)entry.get("required") : false;
-            this.visibility = null != entry.get("visibility") ? (Boolean)entry.get("visibility") : false;
+            this.visible = null != entry.get("visible") ? (Boolean)entry.get("visible") : false;
         }else {
             throw new UnsupportedOperationException("Map entry is null.");
         }
@@ -86,19 +83,11 @@ public class MapEntry  implements Comparator {
         this.key = key;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public BigInteger getOrder() {
+    public Integer getOrder() {
         return order;
     }
 
-    public void setOrder(BigInteger order) {
+    public void setOrder(Integer order) {
         this.order = order;
     }
 
@@ -110,24 +99,32 @@ public class MapEntry  implements Comparator {
         this.required = required;
     }
 
-    public Boolean getVisibility() {
-        return visibility;
+    public String getTitle() {
+        return title;
     }
 
-    public void setVisibility(Boolean visibility) {
-        this.visibility = visibility;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Boolean getVisible() {
+        return visible;
+    }
+
+    public void setVisible(Boolean visible) {
+        this.visible = visible;
     }
     
      @Override
     public int compare(Object o1, Object o2) {
         MapEntry e1 = (MapEntry)o1;
         MapEntry e2 = (MapEntry)o2;
-        if (e1.getOrder().intValue() == e2.getOrder().intValue()) return e1.getValue().compareToIgnoreCase(e2.getValue());
+        if (e1.getOrder().intValue() == e2.getOrder().intValue()) return e1.getTitle().compareToIgnoreCase(e2.getTitle());
         else return e1.getOrder().compareTo(e2.getOrder());
     }
 
     @Override
     public String toString() {
-        return "MapEntry{" + "key=" + key + ", value=" + value + ", order=" + order + ", visibility=" + visibility + '}';
+        return "MapEntry{" + "key=" + key + ", value=" + title + ", order=" + order + ", visibility=" + visible + '}';
     }
 }

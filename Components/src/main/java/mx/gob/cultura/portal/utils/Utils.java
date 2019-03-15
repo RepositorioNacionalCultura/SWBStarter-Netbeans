@@ -108,7 +108,7 @@ public class Utils {
         return data.toString();
     }
     
-     @SuppressWarnings("CallToPrintStackTrace")
+    @SuppressWarnings("CallToPrintStackTrace")
     public static String getTechData(Map mapper, String locale, String searchpage) throws UnsupportedEncodingException {
         StringBuilder data = new StringBuilder();
         if (null == mapper || mapper.isEmpty()) return "";
@@ -891,13 +891,13 @@ public class Utils {
         return cl;
     }
     
-    public static <K, V> Map<K, V> sortByValue(Map<K, V> unsortMap) {
+    public static <K, V> Map<K, V> sortByTitle(Map<K, V> unsortMap) {
         List<MapEntry> list = MapEntry.values(unsortMap);
         //List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(unsortMap.entrySet());
         Collections.sort(list, new MapEntry());
         Map<K, V> result = new LinkedHashMap<>();
         for (MapEntry entry : list) {
-            if (entry.getVisibility() && entry.getOrder().intValue() > 0) {
+            if (entry.getVisible() && entry.getOrder() > 0) {
                 result.put((K)entry.getKey(), (V)entry.getEntry());
             }
         }
