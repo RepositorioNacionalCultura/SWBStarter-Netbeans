@@ -288,6 +288,7 @@ public class Entry implements Serializable {
     private void init() {
         DateDocument date = new DateDocument();
         date.setValue("");
+        this._id = "";
         this.type = "";
         this.datecreated = date;
         periodcreated = new Period();
@@ -300,7 +301,7 @@ public class Entry implements Serializable {
         this.rights = new Rights();
         this.rights.setMedia(new MediaType());
         this.rights.getMedia().setMime("");
-        this._id = "";
+        this.identifier = new ArrayList<>();
         this.digitalObject = new ArrayList<>();
     }
     

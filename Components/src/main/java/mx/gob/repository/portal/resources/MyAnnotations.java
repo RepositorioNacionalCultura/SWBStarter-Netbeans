@@ -54,12 +54,12 @@ public class MyAnnotations extends GenericAdmResource{
 
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
-        String id="";
-        String oid=request.getParameter("id");  
+        String id = "";
+        String oid = request.getParameter("id"); 
         boolean isAnnotator= false;
         if (null != oid && !oid.isEmpty()) {
-            Entry entry = getEntry(oid);
-            if (null != entry && null != entry.getIdentifier() && !entry.getIdentifier().isEmpty()) id= entry.getIdentifier().get(0).getValue(); 
+            Entry entry = getEntry(request, paramRequest);
+            if (null != entry && null != entry.getIdentifier() && !entry.getIdentifier().isEmpty()) id = entry.getIdentifier().get(0).getValue(); 
         }
         User user = paramRequest.getUser();
         if (null != user  && user.isSigned()) isAnnotator = user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", "Anotador")));          
@@ -119,14 +119,16 @@ public class MyAnnotations extends GenericAdmResource{
         }    
     }
     
-    private Entry getEntry(String id) throws IOException {
+    private Entry getEntry(HttpServletRequest request, SWBParamRequest paramRequest) throws IOException {
         String baseUri = getResourceBase().getWebSite().getModelProperty("search_endPoint");
         if (null == baseUri || baseUri.isEmpty()) {
             baseUri = SWBPlatform.getEnv("rnc/endpointURL").trim();
         }
-        String uri = baseUri + "/api/v1/search?identifier="+id;
-        GetBICRequest req = new GetBICRequest(uri);
-        Entry entry = req.makeRequest();         
+        String uri = ArtDetail.getParamUri(baseUri, request, paramRequest);
+        //String uri = baseUri + "/api/v1/search?identifier="+id;
+        //GetBICRequest req = new GetBICRequest(uri);
+        //Entry entry = req.makeRequest(); 
+        Entry entry = ArtDetail.getEntry(request, uri);
         return entry;
     }    
 }

@@ -5,7 +5,7 @@
 --%>
 <%@page import="org.semanticwb.SWBPortal"%>
 <%@page import="mx.gob.cultura.portal.resources.AnnotationsMgr"%>
-<%@page import="org.semanticwb.model.WebPage"%>
+<%@page import="org.semanticwb.model.WebSite, org.semanticwb.model.WebPage"%>
 <%@page import="org.semanticwb.model.Resource"%>
 <%@page import="org.semanticwb.portal.api.SWBResourceURLImp"%>
 <%@page import="org.semanticwb.model.UserRepository"%>
@@ -30,7 +30,7 @@
     urlMng.setMode(AnnotationsMgr.MODE_MANAGE);
     urlMng.setParameter("o","date");
     urlMng.setParameter("d","-1");
-
+    WebSite site = paramRequest.getWebPage().getWebSite();
     if (user != null && user.isSigned() && isAnnotator) {
         SWBResourceURL saveURL = paramRequest.getRenderUrl();
         saveURL.setMode(MyAnnotations.ASYNC_ADD);
@@ -101,15 +101,15 @@
             if (user == null || !user.isSigned()) {
         %>    
         <p><a href="#modal-sesion" data-toggle="modal" data-target="#modal-sesion" class="oswM"><%=paramRequest.getLocaleString("lbl_log_in")%></a></p>    
-        <p><a href="/<%=lang%>/repositorio/Registro?beannotator" class="oswM"><%=paramRequest.getLocaleString("lbl_register")%></a></p> 
+        <p><a href="/<%=lang%>/<%=site.getId()%>/Registro?beannotator" class="oswM"><%=paramRequest.getLocaleString("lbl_register")%></a></p> 
             <%
             } else if (user.isSigned() && !isAnnotator) {
             %>    
-        <p><a href="/<%=lang%>/repositorio/Registro?beannotator" class="oswM"><%=paramRequest.getLocaleString("lbl_register")%></a></p>     
+        <p><a href="/<%=lang%>/<%=site.getId()%>/Registro?beannotator" class="oswM"><%=paramRequest.getLocaleString("lbl_register")%></a></p>     
             <%
             } else if (isAnnotator) {
 
-                String myphoto = "/work/models/repositorio/img/usuario.jpg";
+                String myphoto = "/work/models/"+site.getId()+"img/usuario.jpg";
                 if (null != user.getPhoto() && user.getPhoto().trim().length() > 0) {
                     myphoto = SWBPortal.getWebWorkPath() + user.getPhoto();
                 }
@@ -130,7 +130,7 @@
                 String creatorName, tmpphoto;
                 for (Annotation annotation : annotations) {
                     creatorName = "";
-                    tmpphoto = "/work/models/repositorio/img/usuario.jpg";
+                    tmpphoto = "/work/models/"+ site.getId() +"/img/usuario.jpg";
                     if (ur.getUser(annotation.getCreator()) != null) {
                         User usrcrt = ur.getUser(annotation.getCreator());
                         creatorName = usrcrt.getFullName();

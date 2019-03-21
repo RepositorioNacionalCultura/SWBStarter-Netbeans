@@ -138,7 +138,7 @@ public class AnnotationsMgr extends GenericAdmResource {
         RequestDispatcher dis = request.getRequestDispatcher(path);
         try {
             request.setAttribute("paramRequest", paramRequest);
-            request.setAttribute("annotation", annotationToMap(annotation, user.getId(),lang));
+            request.setAttribute("annotation", annotationToMap(request, annotation, user.getId(),lang));
             request.setAttribute("isAdmin", isAdmin);
             request.setAttribute("isAnnotator", isAnnotator);
             request.setAttribute("order", order);
@@ -189,7 +189,7 @@ public class AnnotationsMgr extends GenericAdmResource {
         RequestDispatcher dis = request.getRequestDispatcher(path);
         try {
             request.setAttribute("paramRequest", paramRequest);
-            request.setAttribute("annotations", annotationsToList(annotationList,paramRequest.getUser().getId(),paramRequest.getUser().getLanguage()));
+            request.setAttribute("annotations", annotationsToList(request, annotationList,paramRequest.getUser().getId(),paramRequest.getUser().getLanguage()));
             request.setAttribute("isAdmin", isAdmin);
             request.setAttribute("isAnnotator", isAnnotator);
             request.setAttribute("currentPage", currentPage);
@@ -213,7 +213,7 @@ public class AnnotationsMgr extends GenericAdmResource {
             response.setHeader("Cache-Control", "no-cache");
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Content-Type", "application/json");
-            String s = mapToStringBuilder(annotationToMap(a,user.getId(),lang)).toString();
+            String s = mapToStringBuilder(annotationToMap(request, a,user.getId(),lang)).toString();
             out.print(s);
         }            
     }
@@ -230,7 +230,7 @@ public class AnnotationsMgr extends GenericAdmResource {
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Content-Type", "application/json");
 
-            out.print(mapToStringBuilder(annotationToMap(a,user.getId(),lang)).toString());
+            out.print(mapToStringBuilder(annotationToMap(request, a,user.getId(),lang)).toString());
         }    
     }
     
@@ -245,7 +245,7 @@ public class AnnotationsMgr extends GenericAdmResource {
         response.setHeader("Cache-Control", "no-cache");
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Content-Type", "application/json");
-        out.print(mapToStringBuilder(annotationToMap(a,user.getId(),lang)).toString());
+        out.print(mapToStringBuilder(annotationToMap(request, a,user.getId(),lang)).toString());
     }
     
     public void asyDelete(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
@@ -264,31 +264,32 @@ public class AnnotationsMgr extends GenericAdmResource {
         out.print(sb.toString());
     }
 
-    private Entry getEntry(String id) throws IOException {
+    private Entry getEntry(HttpServletRequest request, String id) throws IOException {
         String baseUri = getResourceBase().getWebSite().getModelProperty("search_endPoint");
-        Entry entry =new Entry();
         if (null == baseUri || baseUri.isEmpty()) {
             baseUri = SWBPlatform.getEnv("rnc/endpointURL").trim();
         }
-        String uri = baseUri + "/api/v1/search?q="+id+"&attr=oaiid";
-        ListBICRequest req = new ListBICRequest(uri);        
-        Document document = req.makeRequest();
-        if (null != document && null != document.getRecords() && !document.getRecords().isEmpty())
-            entry=document.getRecords().get(0);
+        String version = null != getResourceBase().getWebSite().getModelProperty("version_endPoint") ? getResourceBase().getWebSite().getModelProperty("version_endPoint") : "v1";
+        String uri = baseUri + "/api/"+version+"/search?q="+id+"&attr=oaiid";
+        Entry entry = ArtDetail.getEntry(request, uri);
+        //ListBICRequest req = new ListBICRequest(uri);        
+        //Document document = req.makeRequest();
+        //if (null != document && null != document.getRecords() && !document.getRecords().isEmpty())
+        //    entry=document.getRecords().get(0);
         return entry;
     }
     
-    private List<Map<String,String>> annotationsToList(List<Annotation> annotations, String userId, String lang){
+    private List<Map<String,String>> annotationsToList(HttpServletRequest request, List<Annotation> annotations, String userId, String lang){
         List<Map<String,String>> list = new ArrayList<>();
         if (null != annotations) {                        
             annotations.forEach((Annotation a)->{
-                list.add(annotationToMap(a, userId, lang));
+                list.add(annotationToMap(request, a, userId, lang));
             });
         }       
         return list;
     } 
     
-    private Map<String,String> annotationToMap(Annotation annotation, String userId, String lang) {
+    private Map<String,String> annotationToMap(HttpServletRequest request, Annotation annotation, String userId, String lang) {
         Map<String,String> map = new HashMap<>();
         OntModel ont = SWBPlatform.getSemanticMgr().getSchema().getRDFOntModel();
         if(annotation!=null){
@@ -336,7 +337,7 @@ public class AnnotationsMgr extends GenericAdmResource {
                 map.put("isOwn","true");
             }
             try {
-                Entry entry = getEntry(annotation.getTarget());
+                Entry entry = getEntry(request, annotation.getTarget());
                 if (entry!=null){                
                     if(entry.getId()!=null){
                         map.put("oid",entry.getId());

@@ -698,8 +698,9 @@
 <%
             }
             if (wpRegistry != null) {
+                String lang = null != paramsRequest.getUser().getLanguage() ? paramsRequest.getUser().getLanguage() : "es";
 %>
-                    <a class="dropdown-item" href="<%=wpRegistry.getRealUrl(paramsRequest.getUser().getLanguage())%>"><%=wpRegistry.getTitle(paramsRequest.getUser().getLanguage())%></a>
+                <a class="dropdown-item" href="<%=wpRegistry.getRealUrl(lang)%>"><%=wpRegistry.getDisplayName(lang)%></a>
 <%
             }
             String logoutUrl = new StringBuilder()

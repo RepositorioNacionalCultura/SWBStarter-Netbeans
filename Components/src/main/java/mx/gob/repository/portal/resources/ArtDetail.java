@@ -46,6 +46,7 @@ import mx.gob.cultura.portal.utils.Amplitude;
 import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.request.ListBICRequest;
 import mx.gob.cultura.portal.response.DigitalObject;
+import mx.gob.cultura.portal.response.Identifier;
 import mx.gob.cultura.portal.response.MediaType;
 import mx.gob.cultura.portal.response.Title;
 import static mx.gob.cultura.portal.utils.Constants.SORT;
@@ -263,6 +264,7 @@ public class ArtDetail extends GenericAdmResource {
         Title title = new Title((String)mapper.get("recordtitle"));
         recordtitle.add(title);
         entry.setRecordtitle(recordtitle);
+        entry.getIdentifier().add(new Identifier("oaiid", (String)mapper.get("oaiid")));
         List<String> creators = (ArrayList)mapper.get("author");
         entry.setCreator(creators);
         entry.setResourcetype((ArrayList)mapper.get("resourcetype"));
@@ -385,7 +387,7 @@ public class ArtDetail extends GenericAdmResource {
         return filters.toString();
     }
      
-     private static String getParamUri(String base, HttpServletRequest request, SWBParamRequest paramRequest) throws UnsupportedEncodingException {
+     public static String getParamUri(String base, HttpServletRequest request, SWBParamRequest paramRequest) throws UnsupportedEncodingException {
         StringBuilder uri = new StringBuilder(base);
         String version = null != paramRequest.getWebPage().getWebSite().getModelProperty("version_endPoint") ? paramRequest.getWebPage().getWebSite().getModelProperty("version_endPoint") : "v1";
         uri.append("/api/").append(version).append("/search?");

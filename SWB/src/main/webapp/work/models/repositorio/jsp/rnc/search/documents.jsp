@@ -130,4 +130,4 @@
         </div>
     </div>
 </div>
-<jsp:include page="addtree.jsp" flush="true"/>
+<jsp:include page="../detail/addtree.jsp" flush="true"/>
