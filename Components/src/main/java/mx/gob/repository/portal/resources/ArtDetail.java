@@ -95,7 +95,6 @@ public class ArtDetail extends GenericAdmResource {
         String uri = getParamUri(baseUri, request, paramRequest);
         try {
             if (null != uri) {
-                //Entry entry = getEntry(request, uri);
                 Map mapper =  getMapper(request, uri);
                 Entry entry = getMapEntry(mapper);
                 if (null != entry) {
@@ -254,6 +253,7 @@ public class ArtDetail extends GenericAdmResource {
     
     public static Entry getMapEntry(Map mapper) {
         Entry entry = new Entry();
+        if (null == mapper) return null;
         if (mapper.containsKey("records")) {
             List records = (ArrayList)mapper.get("records");
             if (null != records && !records.isEmpty())
@@ -303,7 +303,7 @@ public class ArtDetail extends GenericAdmResource {
                     Map source = (Map)definition.get(key);
                     Boolean facet = null != source.get("facetado") ? (Boolean)source.get("facetado") : false;
                     String es = null != Util.getPropertyLabel(key, "es") ? Util.getPropertyLabel(key, "es") : (String)source.get("title");
-                    String en = null != Util.getPropertyLabel(key, "en") ? Util.getPropertyLabel(key, "em") : (String)source.get("title");
+                    String en = null != Util.getPropertyLabel(key, "en") ? Util.getPropertyLabel(key, "en") : (String)source.get("title");
                     if (mapper.get(key) instanceof Map) {
                         Map entry = (Map)mapper.get(key);
                         entry.put("es", es);
