@@ -837,11 +837,11 @@ public class MyCollections extends GenericAdmResource {
         if (null == baseUri || baseUri.isEmpty()) {
             baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
         }
-        String uri = baseUri + "/api/v1/search?identifier=";
+        String version = null != getResourceBase().getWebSite().getModelProperty("version_endPoint") ? getResourceBase().getWebSite().getModelProperty("version_endPoint") : "v1";
+        String uri = baseUri + "/api/"+version+"/search?identifier=";
         uri += _id;
         //GetBICRequest req = new GetBICRequest(uri);
-        Map mapper =  ArtDetail.getMapper(request, uri);
-        return ArtDetail.getMapEntry(mapper);
+        return ArtDetail.getEntry(request, uri);
         //return req.makeRequest();
     }
     

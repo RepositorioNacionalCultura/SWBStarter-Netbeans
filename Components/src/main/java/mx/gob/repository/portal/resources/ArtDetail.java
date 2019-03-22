@@ -151,19 +151,6 @@ public class ArtDetail extends GenericAdmResource {
     }
     
     public static Entry getEntry(HttpServletRequest request, String uri) {
-        /**Entry entry = null;
-        Document document = null;
-        if (null != request.getParameter(IDENTIFIER)) {
-            GetBICRequest req = new GetBICRequest(uri);
-            entry = req.makeRequest();
-        }else {
-            ListBICRequest list = new ListBICRequest(uri);
-            document = list.makeRequest();
-            if (null != document && null != document.getRecords() && !document.getRecords().isEmpty()) {
-                entry = document.getRecords().get(0);
-                request.setAttribute(TOTAL, document.getTotal());
-            }
-        }**/
         Map mapper =  getMapper(request, uri);
         return getMapEntry(mapper);
     }
@@ -251,7 +238,7 @@ public class ArtDetail extends GenericAdmResource {
         }
     }
     
-    public static Entry getMapEntry(Map mapper) {
+    private static Entry getMapEntry(Map mapper) {
         Entry entry = new Entry();
         if (null == mapper) return null;
         if (mapper.containsKey("records")) {
