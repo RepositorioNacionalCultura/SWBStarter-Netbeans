@@ -19,6 +19,7 @@ import static mx.gob.cultura.portal.utils.Constants.NUM_PAGE_LIST;
 import static mx.gob.cultura.portal.utils.Constants.PARAM_REQUEST;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORDS_TOTAL;
 import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
+import static mx.gob.cultura.portal.utils.Constants.PAGE_LIST;
 import static mx.gob.cultura.portal.utils.Constants.PAGE_NUM_ROW;
 
 import org.semanticwb.model.User;

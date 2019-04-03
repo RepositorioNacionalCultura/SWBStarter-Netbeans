@@ -43,7 +43,6 @@ public class ListBICRequest {
         }
 
         if (null != url) {
-            //System.out.println("making request to: "+url);
             HttpURLConnection connection = null;
             try {
                 connection = (HttpURLConnection)url.openConnection();
@@ -64,5 +63,33 @@ public class ListBICRequest {
         }
 
         return doc;
+    }
+    
+    public String doRequest() {
+        URL url = null;
+        String jsonText = null;
+        try {
+            url = new URL(uri);
+        } catch (MalformedURLException mue) {
+            mue.printStackTrace();
+        }
+        System.out.println("making request to: "+url);
+        if (null != url) {
+            HttpURLConnection connection = null;
+            try {
+                connection = (HttpURLConnection)url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Accept", "application/json");
+                if (connection.getResponseCode() == 200) {
+                    InputStream is = connection.getInputStream();
+                    jsonText = SWBUtils.IO.readInputStream(is, "UTF-8");
+                }
+            }catch (JsonSyntaxException | IOException e) {
+                e.printStackTrace();
+            } finally{
+                if(null!=connection) connection.disconnect();
+            }
+        }
+        return jsonText;
     }
 }

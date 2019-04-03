@@ -12,15 +12,16 @@ import org.semanticwb.SWBPlatform;
 import mx.gob.cultura.portal.utils.Utils;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.result.UpdateResult;
 import com.mongodb.client.result.DeleteResult;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.and;
 
 import java.util.List;
 import java.util.ArrayList;
 
 import mx.gob.cultura.portal.response.UserCollection;
+import org.bson.conversions.Bson;
 /**
  *l
  * @author sergio.tellez
@@ -143,8 +144,7 @@ public class UserCollectionMgr {
     
     public Long countByUser(String siteid, String userid) {
         MongoCollection<Document> mongoCollection = MongoAccess.getCollection(mHost, mPort, mSource, mCollection);
-        //return mongoCollection.count(Filters.eq("userid", userid));
-        return mongoCollection.count(Filters.and(eq("siteid", siteid), eq("userid", userid)));
+        return mongoCollection.count(collectionBySiteUser(siteid, userid));
     }
     
     public Long countByCollection(String collectionid) {
@@ -163,8 +163,8 @@ public class UserCollectionMgr {
             };
             MongoCollection<Document> mongoCollection = MongoAccess.getCollection(mHost, mPort, mSource, mCollection);
             if (null != from && null != leap)
-                mongoCollection.find(and(eq("siteid", siteid), eq("userid", userid))).skip(leap*(from-1)).limit(leap).forEach(c);
-            else mongoCollection.find(and(eq("siteid", siteid), eq("userid", userid))).forEach(c);
+                mongoCollection.find(collectionBySiteUser(siteid, userid)).skip(leap*(from-1)).limit(leap).forEach(c);
+            else mongoCollection.find(collectionBySiteUser(siteid, userid)).forEach(c);
         }catch (Exception u) {
             LOG.error(u);
         }
@@ -198,6 +198,12 @@ public class UserCollectionMgr {
         ObjectId id = (ObjectId)bson.get("_id");
         uc.setId(id.toString());
         return uc;
+    }
+    
+    private Bson collectionBySiteUser(String siteid, String userid) {
+        if (null != siteid && !siteid.trim().isEmpty())
+            return and(eq("siteid", siteid), eq("userid", userid));
+        return eq("userid", userid);
     }
     
      /**public Long addElement2User(String userid, String _id) {

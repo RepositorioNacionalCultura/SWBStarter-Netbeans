@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<admresource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<xslfile>admresource.xslt</xslfile>
+    <form name="frmNewsletter" action="true" method="POST">
+		<admdbconnmgr defconn="true"/>
+        <fieldset legend="Correo de administración de solicitudes">
+            <input type="TEXT" name="email" label="Correo que recibira la solicitud:" size="50" jsrequired="true" />
+            <input type="TEXT" name="emailSubReq" label="Asunto del correo de solicitud:" size="50" jsrequired="true" />
+            <textarea name="emailMsgReq" label="Mensaje" rows="10" cols="80" wrap="virtual"  jsrequired="true" />            
+        </fieldset>
+        <fieldset legend="Correo para el usuario">
+            <input type="TEXT" name="emailSubAck" label="Asunto del correo:" size="50"  jsrequired="true"/>
+            <textarea name="emailMsgAck" label="Mensaje" rows="10" cols="80" wrap="virtual"  jsrequired="true"/>
+        </fieldset>
+        <fieldset>
+            <input type="submit" name="btnSave" id="btnSave" value="Guardar"/>
+            <input type="reset"  name="btnReset" id="btnReset" value="Restablecer" />
+        </fieldset>
+	</form>
+</admresource>

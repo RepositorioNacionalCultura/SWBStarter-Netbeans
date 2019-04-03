@@ -46,7 +46,7 @@
                     int primeraPaginaBloqueAnterior = (numBloque - 1) * paginasPorBloque + 1;
                     String it = primeraPaginaBloqueAnterior+","+t;
                 %>
-                    <li><a class="ion-ios-arrow-back" aria-hidden="true" title="anterior" href="javascript:doPage(<% out.print("'" + it); %>')">&nbsp;</a></li>
+                    <li><a class="ion-ios-arrow-back" aria-hidden="true" title="anterior" href="javascript:doPage(<% out.print( + it); %>)">&nbsp;</a></li>
             <%
                     }
                 }
@@ -73,7 +73,7 @@
                     int primeraPaginaBloqueSiguiente = (numBloque + 1) * paginasPorBloque + 1;
                     String it = primeraPaginaBloqueSiguiente+","+t;
                 %>
-        <li><a href="#" onclick="doPage('<%= it%>')"><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
+        <li><a href="#" onclick="doPage(<%= it%>)"><i class="ion-ios-arrow-forward" aria-hidden="true"></i></a></li>
                 <%
                         }
                     }

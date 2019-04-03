@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="mx.gob.cultura.portal.response.Aggregation, mx.gob.cultura.portal.response.CountName"%>
-<%@page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.utils.Constants, org.semanticwb.portal.api.SWBParamRequest,org.semanticwb.portal.api.SWBResourceURL,java.util.ArrayList, java.util.List"%>
+<%@page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.utils.Constants, org.semanticwb.portal.api.SWBParamRequest,org.semanticwb.portal.api.SWBResourceURL,java.util.ArrayList, java.util.List, java.util.Map"%>
 <%
     boolean showFilters = false;
     List<CountName> dates = new ArrayList<>();
@@ -11,8 +11,8 @@
     List<CountName> rightsmedia = new ArrayList<>();
     List<CountName> resourcetypes = new ArrayList<>();
     String word = (String)request.getAttribute("word");
-    String texts = Utils.getFilterTypes(request, "text");
     String zips = Utils.getFilterTypes(request, "zip");
+    String texts = Utils.getFilterTypes(request, "text");
     String images = Utils.getFilterTypes(request, "image");
     String audios = Utils.getFilterTypes(request, "audio");
     String videos = Utils.getFilterTypes(request, "video");
@@ -28,8 +28,8 @@
 	if (null !=  aggs.getDates()) dates = aggs.getDates();
 	if (null !=  aggs.getRights()) rights = aggs.getRights();
         if (null !=  aggs.getHolders()) holders = aggs.getHolders();
-        if (null !=  aggs.getLanguages()) languages = aggs.getLanguages();
-	if (null !=  aggs.getMediastype()) mediastype = aggs.getMediastype();
+	if (null !=  aggs.getLanguages()) languages = aggs.getLanguages();
+        if (null !=  aggs.getMediastype()) mediastype = aggs.getMediastype();
         if (null !=  aggs.getRightsmedia()) rightsmedia = aggs.getRightsmedia();
         if (null !=  aggs.getResourcetypes()) resourcetypes = aggs.getResourcetypes();
     }
@@ -39,6 +39,10 @@
     int upper = null != aggs ? aggs.getInterval().getUpperLimit() : 0;
     String attFilter = null != request.getAttribute("filters") ? (String)request.getAttribute("filters") : "";
     String filters = null != request.getParameter("filter") ? request.getParameter("filter") : attFilter.replaceFirst("&filter=", "");
+    Map<String, List<CountName>> facets = (Map<String, List<CountName>>)request.getAttribute("facets");
+    List<String> excluded = new ArrayList<>();
+    excluded.add("datecreated");
+    excluded.add("timelinedate");
 %>
 <script type="text/javascript">
     var filterDate = false;
@@ -48,79 +52,21 @@
     function reset() {
         filterDate = false;
         var inputElements = document.getElementsByClassName('form-check-input');
-	for (i=0; i<inputElements.length; i++) {
-            inputElements[i].checked = false;
-	}
-        document.getElementById("bx1").value = <%=lower%>;
-	document.getElementById("bx2").value = <%=upper%>;
-	document.getElementById("ex1SliderVal").textContent = document.getElementById("bx1").value;
-        document.getElementById("ex2SliderVal").textContent = document.getElementById("bx2").value;
-        doSort('<%=word%>','imptdes');
-    }
-    function filter() {
-	var filters = '&';
-	var rights = '&rights=';
-	var holder = '&holder=';
-	var dates = '&datecreated=';
-	var mediastype = '&mediatype=';
-	var languages = '&languages=';
-        var rightsmedia='&rightsmedia=';
-	var resourcetype='resourcetype=';
-	var inputElements = document.getElementsByClassName('form-check-input');
-	for (i=0; i<inputElements.length; i++) {
-            if (inputElements[i].checked) {
-                if (inputElements[i].name == 'resourcetype') {
-                    resourcetype += '::'+inputElements[i].value;
-		}else if (inputElements[i].name == 'rightsmedia') {
-                    if ('Audio' == inputElements[i].value) {
-                        rightsmedia += '<%=audios%>';
-                    }else if ('Texto' == inputElements[i].value) {
-			rightsmedia += '<%=texts%>';
-                    }else if ('Imagen' == inputElements[i].value) {
-			rightsmedia += '<%=images%>';
-                    }else if ('Video' == inputElements[i].value) {
-			rightsmedia += '<%=videos%>';
-                    }else if ('ZIP' == inputElements[i].value) {
-                        rightsmedia += '<%=zips%>';
-                    }else if ('3D' == inputElements[i].value) {
-			rightsmedia += '<%=three%>';
-                    }else if ('Mapa' == inputElements[i].value) {
-                        rightsmedia += '<%=map%>';
-                    }else if ('<%=Constants.MIX%>' == inputElements[i].value) {
-                        rightsmedia += '<%=tech%>';
-                    }else if ('Multimedia' == inputElements[i].value) {
-                        rightsmedia += '<%=media%>';
-                    }else if ('Conjunto de archivos' == inputElements[i].value) {
-                        rightsmedia += '<%=files%>';
-                    }else {
-                        rightsmedia += '::'+inputElements[i].value;
-                    }
-		}else if (inputElements[i].name == 'rights') {
-                    rights += '::'+inputElements[i].value;
-		}else if (inputElements[i].name == 'languages') {
-                    languages += '::'+inputElements[i].value;
-		}else if (inputElements[i].name == 'holder') {
-                    holder += '::'+inputElements[i].value;
-		}else if (inputElements[i].name == 'rightsmedia') {
-                    rightsmedia += '::'+inputElements[i].value;
+		for (i=0; i<inputElements.length; i++) {
+			inputElements[i].checked = false;
 		}
-            }
-	}
-	if (languages.length > 11) {languages = languages.replace("=::","=");}else {languages=''}
-        if (rights.length > 8) {rights = rights.replace("=::","=");}else {rights=''}
-        if (holder.length > 8) {holder = holder.replace("=::","=");}else {holder=''}
-        if (mediastype.length > 11) {mediastype = mediastype.replace("=::","=");}else {mediastype=''}
-        if (rightsmedia.length > 13) {rightsmedia = rightsmedia.replace("=::","=");}else {rightsmedia=''}
-        if (resourcetype.length > 13) {resourcetype = resourcetype.replace("=::","=");}else {resourcetype=''}
-        if (filterDate) dates+=document.getElementById("bx1").value+","+document.getElementById("bx2").value; else {dates=""}
-        filters += resourcetype + rightsmedia + rights + languages + holder + dates;
-        doSort('<%=word%>'+filters,'imptdes');
+		document.getElementById("bx1").value = <%=lower%>;
+		document.getElementById("bx2").value = <%=upper%>;
+		document.getElementById("ex1SliderVal").textContent = document.getElementById("bx1").value;
+		document.getElementById("ex2SliderVal").textContent = document.getElementById("bx2").value;
+		doSort('<%=word%>','imptdes');
     }
+    <%=Utils.getFilter(facets, word, excluded)%>
     function selectAll(type) {
-	var inputElements = document.getElementsByName(type.value);
-	for (i=0; i<inputElements.length; i++) {
+		var inputElements = document.getElementsByName(type.value);
+		for (i=0; i<inputElements.length; i++) {
             inputElements[i].checked = type.checked;
-	}
+		}
         filter();
     }
     function validate(ele, min, max) {
@@ -152,23 +98,23 @@
     function validateRange(min, max) {
         if (min > max) {
             alert('<%=paramRequest.getLocaleString("usrmsg_view_search_range_min_error")%>');
-		return false;
-            }
-            if (max < min) {
-		alert('<%=paramRequest.getLocaleString("usrmsg_view_search_range_max_error")%>');
-                return false;
-            }
-	return true;
+			return false;
+        }
+        if (max < min) {
+			alert('<%=paramRequest.getLocaleString("usrmsg_view_search_range_max_error")%>');
+            return false;
+        }
+		return true;
     }
     function moveSlide(sliderValue) {
         var str = sliderValue + "";
-	var res = str.split(',');
-	document.getElementById("bx1").value = res[0];
+		var res = str.split(',');
+		document.getElementById("bx1").value = res[0];
         document.getElementById("bx2").value = res[1];
-	document.getElementById("ex1SliderVal").textContent = res[0];
+		document.getElementById("ex1SliderVal").textContent = res[0];
         document.getElementById("ex2SliderVal").textContent = res[1];
-	filterDate = true;
-	return filterDate;
+		filterDate = true;
+		return filterDate;
     }
     function doSort(w, f) {
         dojo.xhrPost({
@@ -180,15 +126,15 @@
         });
     }
     function setBounds() {
-	var slider = new Slider('#ex1', {});
-	slider.on("slide", function(sliderValue) {
-            var str = sliderValue + "";
-            var res = str.split(',');
-            document.getElementById("bx1").value = res[0];
-            document.getElementById("bx2").value = res[1];
-            document.getElementById("ex1SliderVal").textContent = res[0];
-            document.getElementById("ex2SliderVal").textContent = res[1];
-	});
+		var slider = new Slider('#ex1', {});
+		slider.on("slide", function(sliderValue) {
+				var str = sliderValue + "";
+				var res = str.split(',');
+				document.getElementById("bx1").value = res[0];
+				document.getElementById("bx2").value = res[1];
+				document.getElementById("ex1SliderVal").textContent = res[0];
+				document.getElementById("ex2SliderVal").textContent = res[1];
+		});
         slider.on("slideStop", function(sliderValue) {
             if (moveSlide(sliderValue))
 		filter();
@@ -372,6 +318,10 @@
             </div>
         </div>
     <%  } %>
+
+	<% 
+		out.println(Utils.getFacet(facets, filters, "es", paramRequest.getLocaleString("usrmsg_view_search_select_all"), paramRequest.getLocaleString("usrmsg_view_search_show_more"), paramRequest.getLocaleString("usrmsg_view_search_show_less")));
+    %>
 
     <%
         if (showFilters) {

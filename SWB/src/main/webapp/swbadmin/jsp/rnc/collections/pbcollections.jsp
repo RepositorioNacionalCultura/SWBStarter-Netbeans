@@ -15,9 +15,9 @@
     List<Collection> boards = null != request.getAttribute("PAGE_LIST") ? (List<Collection>)request.getAttribute("PAGE_LIST") : new ArrayList();
 %>
 <script type="text/javascript">
-    function doPage(p) {
+    function doPage(p,t) {
         dojo.xhrPost({
-            url: '<%=pageURL%>?p='+p,
+            url: '<%=pageURL%>?p='+p+'&ct='+t,
             load: function(data) {
                 dojo.byId('references').innerHTML=data;
                 location.href = '#showPage';

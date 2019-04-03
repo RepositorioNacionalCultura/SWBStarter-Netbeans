@@ -8,6 +8,7 @@ package mx.gob.cultura.portal.response;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Objects;
 /**
  *
  * @author sergio.tellez
@@ -288,6 +289,7 @@ public class Entry implements Serializable {
     private void init() {
         DateDocument date = new DateDocument();
         date.setValue("");
+        this._id = "";
         this.type = "";
         this.datecreated = date;
         periodcreated = new Period();
@@ -300,7 +302,7 @@ public class Entry implements Serializable {
         this.rights = new Rights();
         this.rights.setMedia(new MediaType());
         this.rights.getMedia().setMime("");
-        this._id = "";
+        this.identifier = new ArrayList<>();
         this.digitalObject = new ArrayList<>();
     }
     
@@ -803,6 +805,25 @@ public class Entry implements Serializable {
 
     public void setUrl_mediateca(String url_mediateca) {
         this.url_mediateca = url_mediateca;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + Objects.hashCode(this._id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Entry other = (Entry) obj;
+        return Objects.equals(this._id, other._id);
     }
     
     @Override

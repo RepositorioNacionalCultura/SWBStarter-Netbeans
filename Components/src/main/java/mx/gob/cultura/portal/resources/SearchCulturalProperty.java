@@ -42,6 +42,8 @@ import mx.gob.cultura.portal.response.DateRange;
 import mx.gob.cultura.portal.response.Document;
 import mx.gob.cultura.portal.response.DigitalObject;
 import mx.gob.cultura.portal.request.ListBICRequest;
+
+import mx.gob.cultura.portal.utils.HtmlEntities;
 import static mx.gob.cultura.portal.utils.Constants.SORT;
 import static mx.gob.cultura.portal.utils.Constants.WORD;
 import static mx.gob.cultura.portal.utils.Constants.THEME;
@@ -249,13 +251,15 @@ public class SearchCulturalProperty extends PagerAction {
         request.setAttribute("LAST_RECORD", last);
         request.setAttribute("FIRST_RECORD", first);
         request.setAttribute(WORD, request.getParameter(WORD));
-        if (null != request.getParameter(THEME)) request.setAttribute(THEME, request.getParameter(THEME));
+        if (null != request.getParameter(THEME)) {
+            String theme = HtmlEntities.chartExpected(request.getParameter(THEME));
+            request.setAttribute(THEME, theme);
+        }
     }
     
     private Document getReference(HttpServletRequest request, WebSite site) {
         String filters = "";
         Document document = null;
-        //String words = request.getParameter("word");
         String words = null != request.getParameter("word") && !request.getParameter("word").isEmpty() ? request.getParameter("word") : "*";
         String baseUri = site.getModelProperty("search_endPoint");
         if (null == baseUri || baseUri.isEmpty()) baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim();
@@ -289,7 +293,8 @@ public class SearchCulturalProperty extends PagerAction {
         String [] params = request.getParameter("filter").split(";;");
         for (int i=0; i<params.length; i++) {
             String [] pair = params[i].split(":");
-            filters.append(";;").append(pair[0]).append(":").append(URLEncoder.encode(pair[1], StandardCharsets.UTF_8.name()));
+            String pairvalue = HtmlEntities.chartExpected(pair[1]);
+            filters.append(";;").append(pair[0]).append(":").append(URLEncoder.encode(pairvalue, StandardCharsets.UTF_8.name()));
         }
         if (filters.length() > 0) {
             filters.delete(0, 2);

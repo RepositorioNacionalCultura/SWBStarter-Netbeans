@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<admresource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xslfile>admresource.xslt</xslfile>
+    <form name="frmMostSeen" action="true" method="POST" enctype="multipart/form-data">
+        <admdbconnmgr defconn="true"/>
+        <fieldset>
+            <input type="TEXT" name="numElements" label="Número de elementos a mostrar:" size="4" maxlength="2" jsvaltype="js_numbers"/>
+            <statictext name="txtNote">
+		<![CDATA[
+			<font style="color: #428AD4; font-family: Verdana; font-size: 10px;">
+				*Se muestran 10 elementos por defecto.
+			</font>
+		]]>
+            </statictext>
+        </fieldset>
+        <fieldset>
+            <input type="SUBMIT" name="btnSave"  value="Guardar" onclick="if(jsValida(this.form)) return true; else return false;"/>
+            <input type="RESET"  name="btnReset" value="Cancelar"/>
+        </fieldset>
+    </form>
+    <script language="JavaScript">
+        <![CDATA[
+            function jsValida(frm) {
+                if (frm.numElements.value) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        ]]>
+    </script>
+</admresource>

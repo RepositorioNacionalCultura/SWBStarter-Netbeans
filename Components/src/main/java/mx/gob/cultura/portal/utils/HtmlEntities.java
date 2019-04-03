@@ -167,6 +167,37 @@ public class HtmlEntities {
     	return str.toString();
     }
     
+    public static String chartExpected(String badEncoding) {
+        if (null == badEncoding || badEncoding.isEmpty()) return "";
+        if (badEncoding.contains("Ã¡"))
+            badEncoding = badEncoding.replace("Ã¡", "á");
+        if (badEncoding.contains("Ã©"))
+            badEncoding = badEncoding.replace("Ã©", "é");
+        if (badEncoding.contains("Ã­"))
+            badEncoding = badEncoding.replace("Ã­", "í");
+        if (badEncoding.contains("Ã³"))
+            badEncoding = badEncoding.replace("Ã³", "ó");
+        if (badEncoding.contains("Ãº"))
+            badEncoding = badEncoding.replace("Ãº", "ú");
+        if (badEncoding.contains("Ã±"))
+            badEncoding = badEncoding.replace("Ã±", "ñ");
+        if (badEncoding.contains("Ã"))
+            badEncoding = checkAscii(badEncoding);
+        System.out.println(badEncoding);
+        return badEncoding;
+    }
+    
+    private static String checkAscii(String badEncoding) {
+        String ascii = "";
+        for (int i=0; i<badEncoding.length(); i++) {
+            if (badEncoding.codePointAt(i) == 195 && badEncoding.codePointAt(i+1) == 147)  {
+                ascii += "Ó";
+                i++;
+            }else ascii += badEncoding.charAt(i);
+        }
+        return ascii;
+    }
+    
     /**
      * Converts html entities (e.g. &amp;) into real characters (ASCII characters, e.g. &amp; -> &)
      * @param decode A string to be decoded.

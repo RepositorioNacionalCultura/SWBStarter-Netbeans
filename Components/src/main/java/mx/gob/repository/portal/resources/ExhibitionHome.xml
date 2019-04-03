@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<admresource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xslfile>admresource.xslt</xslfile>
+    <form name="frmExhibitionIndex" action="true" method="POST" enctype="multipart/form-data">
+        <admdbconnmgr defconn="true"/>
+        <fieldset>
+            <input type="text" name="pageBase" label="Página padre:" promptMessage="Identificador de la página padre" />            
+            <input type="text" name="rolexh" label="Rol administrador de exhibiciones:" promptMessage="Rol administrador de exhibiciones" />            
+        </fieldset>
+        <fieldset>
+            <input type="submit" value="Guardar" />
+            <input type="reset"  value="Restablecer" />
+        </fieldset>
+    </form>
+</admresource>

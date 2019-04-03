@@ -5,7 +5,7 @@
 --%>
 <%@page import="java.util.Arrays"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DateDocument, mx.gob.cultura.portal.response.DigitalObject"%>
+<%@ page import="java.util.Map, mx.gob.cultura.portal.utils.Utils, mx.gob.cultura.portal.response.DateDocument, mx.gob.cultura.portal.response.DigitalObject"%>
 <%@ page import="mx.gob.cultura.portal.resources.ArtDetail, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.Title, org.semanticwb.model.WebSite, 
     org.semanticwb.portal.api.SWBParamRequest, org.semanticwb.portal.api.SWBResourceURL, java.util.ArrayList, java.util.List, org.bson.Document"%>
 <%
@@ -44,6 +44,7 @@
         String state = (null != entry.getState() && !entry.getState().isEmpty()) ? (" " + entry.getState()) : "";
         place = (null != entry.getLugar()) ? "<a href=\"/" + userLang + "/" + site.getId() + "/resultados?word="+ entry.getLugar() + "\">"+entry.getLugar()+state+"</a>" : "";
     }
+    Map mapper = (Map)request.getAttribute("mapper");
 %>
 <div id="tchdta" class="col-12 col-sm-12 col-md-9 col-lg-9 order-md-2 order-sm-1 order-1 ficha ">
     <h3 class="oswM"><%=title%></h3>
@@ -60,6 +61,7 @@
             <tr>
                 <th colspan="2"><%=paramRequest.getLocaleString("usrmsg_view_detail_data_sheet")%></th>
             </tr>
+            <%=Utils.getTechData(mapper, "es", uri.toString())%>
             <%=Utils.getTechData("recordtitle", holder, title+subtile, paramRequest.getLocaleString("usrmsg_view_detail_title"), true, true)%>
             <%=Utils.getTechData("creator", holder, Utils.getCreator(entry.getCreator()), paramRequest.getLocaleString("usrmsg_view_detail_artist"), true, true)%>
             <%=Utils.getTechData("datecreated", holder, null != entry.getDatecreated() ? entry.getDatecreated().getNote() : "", paramRequest.getLocaleString("usrmsg_view_detail_date"), true, true)%>

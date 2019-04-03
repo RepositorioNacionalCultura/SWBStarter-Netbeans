@@ -122,8 +122,8 @@ public class CollectionMgr {
             };
             MongoCollection<Document> mongoCollection = getCollection();
             if (null != from && null != leap)
-                mongoCollection.find(and(eq("siteid", siteid), eq("userid", userid))).sort(getSort()).skip(leap*(from-1)).limit(leap).forEach(c);
-            else mongoCollection.find(and(eq("siteid", siteid), eq("userid", userid))).sort(getSort()).forEach(c);
+                mongoCollection.find(collectionBySiteUser(siteid, userid)).sort(getSort()).skip(leap*(from-1)).limit(leap).forEach(c);
+            else mongoCollection.find(collectionBySiteUser(siteid, userid)).sort(getSort()).forEach(c);
         }catch (Exception u) {
             LOG.error(u);
         }
@@ -141,8 +141,8 @@ public class CollectionMgr {
             };
             MongoCollection<Document> mongoCollection = getCollection();
             if (null != from && null != leap)
-                mongoCollection.find(and(eq("siteid", siteid), eq("status", status))).sort(getSort()).skip(leap*(from-1)).limit(leap).forEach(c);
-            else mongoCollection.find(and(eq("siteid", siteid), eq("status", status))).sort(getSort()).forEach(c);
+                mongoCollection.find(collectionBySiteStatus(siteid, status)).sort(getSort()).skip(leap*(from-1)).limit(leap).forEach(c);
+            else mongoCollection.find(collectionBySiteStatus(siteid, status)).sort(getSort()).forEach(c);
         }catch (Exception u) {
             LOG.error(u);
         }
@@ -166,13 +166,6 @@ public class CollectionMgr {
             LOG.error(u);
         }
         return list;
-    }
-    
-    private Bson exclude(List<String> dictionary) {
-        for (String word : dictionary) {
-            Document bson = new Document("title", "/^Ching.*/");
-        }
-        return not(eq("title", "/^Ching.*/"));
     }
     
     public List<Collection> findByCriteria(String criteria, Boolean status, Integer from, Integer leap) {
@@ -210,12 +203,12 @@ public class CollectionMgr {
 
     public Long countByUser(String siteid, String userid) {
         MongoCollection<Document> mongoCollection = getCollection();
-        return mongoCollection.count(Filters.and(eq("siteid", siteid), eq("userid", userid)));
+        return mongoCollection.count(collectionBySiteUser(siteid, userid));
     } 
     
     public Long countAllByStatus(String siteid, Boolean status) {
         MongoCollection<Document> mongoCollection = getCollection();
-        return mongoCollection.count(Filters.and(eq("siteid", siteid), eq("status", status)));
+        return mongoCollection.count(collectionBySiteStatus(siteid, status));
     }
     
     public Long countByCriteria(String criteria, Boolean status) {
@@ -303,7 +296,7 @@ public class CollectionMgr {
         List<Document> list = new ArrayList<>();
         try {
             MongoCollection<Document> mongoCollection = getCollection();
-            mongoCollection.find(and(eq("siteid", siteid), eq("title", title))).forEach((Block<Document>) record -> {
+            mongoCollection.find(collectionBySiteTitle(siteid, title)).forEach((Block<Document>) record -> {
                 if (record.getString("title").equalsIgnoreCase(title)) {
                     ObjectId id = (ObjectId)record.get("_id");
                     if (null == _id || _id.isEmpty() || !id.toString().equals(_id)) {
@@ -315,5 +308,30 @@ public class CollectionMgr {
             LOG.error(u);
         }
         return !list.isEmpty();
+    }
+    
+    private Bson exclude(List<String> dictionary) {
+        for (String word : dictionary) {
+            Document bson = new Document("title", "/^Ching.*/");
+        }
+        return not(eq("title", "/^Ching.*/"));
+    }
+    
+    private Bson collectionBySiteUser(String siteid, String userid) {
+        if (null != siteid && !siteid.trim().isEmpty())
+            return and(eq("siteid", siteid), eq("userid", userid));
+        return eq("userid", userid);
+    }
+    
+    private Bson collectionBySiteTitle(String siteid, String title) {
+        if (null != siteid && !siteid.trim().isEmpty())
+            return and(eq("siteid", siteid), eq("title", title));
+        return eq("title", title);
+    }
+    
+    private Bson collectionBySiteStatus(String siteid, Boolean status) {
+        if (null != siteid && !siteid.trim().isEmpty())
+            return and(eq("siteid", siteid), eq("status", status));
+        return eq("status", status);
     }
 }

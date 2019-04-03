@@ -118,8 +118,7 @@ public class AnnotationsMgr extends GenericAdmResource {
         }*/
         
         response.setContentType("text/html; charset=UTF-8");
-        //String path = "/swbadmin/jsp/rnc/"+this.getClass().getSimpleName()+"/view.jsp";
-        String path = "/work/models/" + paramRequest.getWebPage().getWebSite().getId() + "/jsp/rnc/" + this.getClass().getSimpleName()+"/view.jsp";
+        String path = "/swbadmin/jsp/rnc/"+this.getClass().getSimpleName()+"/view.jsp";
         Annotation annotation = null;
         if (user.isSigned()) {
             isAdmin=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "Administrador")));
@@ -171,21 +170,20 @@ public class AnnotationsMgr extends GenericAdmResource {
             }   
         }
         response.setContentType("text/html; charset=UTF-8");
-        String site = paramRequest.getWebPage().getWebSite().getId();
-        String path = "/work/models/" + site + "/jsp/rnc/" + this.getClass().getSimpleName()+"/manage.jsp";
+        String path = "/swbadmin/jsp/rnc/"+this.getClass().getSimpleName()+"/manage.jsp";
         List<Annotation> annotationList = new ArrayList<>();
-        if (null != user && user.isSigned()) {
+        if (user!=null && user.isSigned()){
             isAdmin=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "Administrador")));
-            isAnnotator=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", "Anotador")));
-            //TO DO: findBySite
-            if (isAdmin) {                
-                annotationList= AnnotationMgr.getInstance().findByPaged(null,null,RECORDS_PER_PAGE, currentPage,order,-1, site);//TO DO: set site admin user
+            isAnnotator=user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", "Anotador"))); 
+            if(isAdmin){                
+                annotationList= AnnotationMgr.getInstance().findByPaged(null,null,RECORDS_PER_PAGE, currentPage,order,-1, null);
                 totalPages = AnnotationMgr.getInstance().countPages(null, null,RECORDS_PER_PAGE);
             }else{            
-                annotationList= AnnotationMgr.getInstance().findByPaged(null, user.getId(), RECORDS_PER_PAGE, currentPage, order, -1, site);
+                annotationList= AnnotationMgr.getInstance().findByPaged(null,user.getId(),RECORDS_PER_PAGE, currentPage,order,-1, null);
                 totalPages = AnnotationMgr.getInstance().countPages(null, user.getId(),RECORDS_PER_PAGE);
             }            
-        }
+        }    
+        String lang=user.getLanguage();
         RequestDispatcher dis = request.getRequestDispatcher(path);
         try {
             request.setAttribute("paramRequest", paramRequest);
@@ -223,7 +221,6 @@ public class AnnotationsMgr extends GenericAdmResource {
         User user = paramRequest.getUser();
         String lang = user.getLanguage();
         if (user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AdmRol", "")))) {  
-            //TO DO: findBySite
             Annotation a = AnnotationMgr.getInstance().rejectAnnotation(id);
             PrintWriter out = response.getWriter();
             response.setHeader("Cache-Control", "no-cache");

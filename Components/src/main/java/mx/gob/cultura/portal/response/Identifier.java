@@ -16,6 +16,15 @@ public class Identifier implements Serializable {
     private String type;
     private String value;
     private boolean preferred;
+    
+    public Identifier() {
+        
+    }
+    
+    public Identifier(String type, String value) {
+        this.type = null != type ? type : "";
+        this.value = null != value ? value : "";
+    }
 
     public String getType() {
         return type;
