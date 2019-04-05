@@ -26,7 +26,6 @@ import mx.gob.cultura.portal.persist.UserCollectionMgr;
 
 import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.response.Collection;
-import mx.gob.cultura.portal.request.GetBICRequest;
 import mx.gob.cultura.portal.response.UserCollection;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_REST;
 import static mx.gob.cultura.portal.utils.Constants.COUNT_BY_STAT;
@@ -789,6 +788,17 @@ public class MyCollections extends GenericAdmResource {
         return collectionList;
     }
     
+    protected void setCovers(HttpServletRequest request, SWBParamRequest paramRequest, List<Collection> list,  int size) {
+        String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
+        if (null == baseUri || baseUri.isEmpty())
+            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
+        if (null != list) {
+            for (Collection c : list) {
+                c.setCovers(getCovers(request, paramRequest, c.getElements(), baseUri, size, c));
+            }
+        }
+    }
+    
     private List<String> getCovers(HttpServletRequest request, SWBParamRequest paramRequest, List<String> elements, String baseUri, int size, Collection c) {
         Entry entry = null;
         List<String> covers = new ArrayList<>();
@@ -797,7 +807,7 @@ public class MyCollections extends GenericAdmResource {
         String version = null != paramRequest.getWebPage().getWebSite().getModelProperty("version_endPoint") ? paramRequest.getWebPage().getWebSite().getModelProperty("version_endPoint") : "v1";
         while (it.hasNext()) {
             String itnext = (String)it.next();
-            String uri = baseUri + "/api/"+version+"/search?identifier=" + it.next();
+            String uri = baseUri + "/api/"+version+"/search?identifier=" + itnext;
             //GetBICRequest req = new GetBICRequest(uri);
             try {
                 entry = ArtDetail.getEntry(request, uri);
@@ -956,15 +966,6 @@ public class MyCollections extends GenericAdmResource {
             if (null != c && null != c.getUserid()) {
                 c.setUserName(getAuthor(c.getUserid(), paramRequest, null));
             }
-        }
-    }
-     
-    protected void setCovers(HttpServletRequest request, SWBParamRequest paramRequest, List<Collection> list,  int size) {
-        String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
-        if (null == baseUri || baseUri.isEmpty())
-            baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
-        for (Collection c : list) {
-            c.setCovers(getCovers(request, paramRequest, c.getElements(), baseUri, size, c));
         }
     }
     
