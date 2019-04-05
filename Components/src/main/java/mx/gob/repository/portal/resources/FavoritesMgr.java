@@ -124,7 +124,7 @@ public class FavoritesMgr extends GenericResource {
             User user = paramRequest.getUser();
             if (null != user && user.isSigned()) {
                 collectionList = mgr.collections(null, user.getId());
-                setCovers(paramRequest, collectionList, 1);
+                setCovers(request, paramRequest, collectionList, 1);
             }
             request.setAttribute("paramRequest", paramRequest);
             request.setAttribute("mycollections", collectionList);
@@ -148,12 +148,12 @@ public class FavoritesMgr extends GenericResource {
         }
     }
     
-    private void setCovers(SWBParamRequest paramRequest, List<Collection> list,  int size) {
+    private void setCovers(HttpServletRequest request, SWBParamRequest paramRequest, List<Collection> list,  int size) {
         String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
         if (null == baseUri || baseUri.isEmpty())
             baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
         for (Collection c : list) {
-            c.setCovers(MyCollections.getCovers(paramRequest, c.getElements(), baseUri, size));
+            c.setCovers(MyCollections.getCovers(request, paramRequest, c.getElements(), baseUri, size));
         }
     }
     
