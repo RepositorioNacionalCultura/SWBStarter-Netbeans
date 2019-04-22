@@ -14,6 +14,7 @@ import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.request.GetBICRequest;
 import org.semanticwb.portal.api.GenericAdmResource;
 
+import org.semanticwb.model.WebSite;
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceException;
 
@@ -47,7 +48,6 @@ import static mx.gob.cultura.portal.utils.Constants.FILTER;
 import static mx.gob.cultura.portal.utils.Constants.NUM_ROW;
 import static mx.gob.cultura.portal.utils.Constants.NUM_RECORD;
 import static mx.gob.cultura.portal.utils.Constants.IDENTIFIER;
-import org.semanticwb.model.WebSite;
 
 /**
  *

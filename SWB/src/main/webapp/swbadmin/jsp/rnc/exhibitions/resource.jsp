@@ -4,7 +4,8 @@
     SWBParamRequest paramRequest = (SWBParamRequest) request.getAttribute("paramRequest");
     SWBResourceURL saveURL = paramRequest.getActionUrl();
     saveURL.setAction(ExhibitionResource.ACTION_ADD_EXH);
-    //WebSite site = paramRequest.getWebPage().getWebSite();
+    String userlang = paramRequest.getUser().getLanguage();
+    String siteid = paramRequest.getWebPage().getWebSiteId();
     List<EditorTemplate> tmpls = (List<EditorTemplate>)request.getAttribute("tmpls");
     SWBResourceURL delURL = paramRequest.getActionUrl();
     delURL.setAction(ExhibitionResource.ACTION_DEL_EXH);
@@ -30,7 +31,7 @@
 	var url = '<%=delURL%>'+'?exh_del='+uri;
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                location.href = '/es/repositorio/exhibiciones';
+                location.href = '/<%=userlang%>/<%=siteid%>/exhibiciones';
             }
 	};
         xhttp.open("POST", url, true);
@@ -57,12 +58,12 @@
             <div class="row">
                 <div class="col-4 col-sm-5 modal-col1">
                     <div class="modal-izq">
-                        <img src="/work/models/repositorio/img/cabecera-colaborar.jpg">    
+                        <img src="/work/models/<%=siteid%>/img/cabecera-colaborar.jpg">    
                     </div>
                 </div>
                 <div class="col-8 col-sm-7 modal-col2">
                     <div class="modal-header">
-			<h4 class="modal-title oswM rojo">CREAR NUEVA EXHIBICIÓN</h4>  
+			<h4 class="modal-title oswM rojo"><%=paramRequest.getLocaleString("usrmsg_view_create_exh")%></h4>  
                         <button type="button" class="close" data-dismiss="modal">
                             <span class="ion-ios-close-outline"></span>
                         </button>
@@ -71,11 +72,11 @@
                         <form id="addExForm" action="<%=saveURL.toString()%>" method="post" onsubmit="return validate()">
                             <input type="hidden" name="id" value=""/>
                             <div class="form-group">
-                                <label for="crearNombre">Nombre</label><div id="dialog-msg-edit"></div>
+                                <label for="crearNombre"><%=paramRequest.getLocaleString("usrmsg_view_create_exh_name")%></label><div id="dialog-msg-edit"></div>
                                 <input type="text" name="title" id="title" class="form-control" placeholder="60" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <label for="crearDescr">Descripción (opcional)</label>
+                                <label for="crearDescr"><%=paramRequest.getLocaleString("usrmsg_view_create_exh_dialog_desc")%></label>
                                 <textarea name="description" id="description" placeholder="250"></textarea>
-                                <h5 class="modal-title "><div id="dialog-msg-tpl">Selecciona 1 plantilla para diseñar tu exhibición.</div></h5>
+                                <h5 class="modal-title "><div id="dialog-msg-tpl"><%=paramRequest.getLocaleString("usrmsg_view_create_exh_select_tpl")%></div></h5>
                                 <div class="row">
                                     <%
                                         if (!tmpls.isEmpty()) {
@@ -96,7 +97,7 @@
                                     %>
                                 </div>
                             </div>
-                            <button type="submit" class="btn-cultura btn-rojo btn-mayus">Crear exhibición</button>
+                            <button type="submit" class="btn-cultura btn-rojo btn-mayus"><%=paramRequest.getLocaleString("usrmsg_view_create_exh")%></button>
                             <!--
                                 <button type="submit" class="btn-cultura btn-blanco btn-mayus d-none d-lg-block"><span class="ion-trash-a"></span> Eliminar colección</button>
                                 <button type="submit" class="btn-cultura btn-blanco btn-mayus d-block d-lg-none"> Eliminar</button>

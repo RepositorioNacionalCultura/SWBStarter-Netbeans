@@ -36,8 +36,8 @@
                             </a>
                         </div>
                         <div class="mosaico-txt ">
-                            <p><span class="ion-locked rojo"/> Crear exhibición</p>
-                            <p>Dentro de las exhibiciones se encuentran las colecciones de información altamente especializadas</p>
+                            <p><span class="ion-locked rojo"/> <%=paramRequest.getLocaleString("usrmsg_view_create_exh")%></p>
+                            <p><%=paramRequest.getLocaleString("usrmsg_view_create_exh_desc")%></p>
                         </div>
                     </div>
             <%

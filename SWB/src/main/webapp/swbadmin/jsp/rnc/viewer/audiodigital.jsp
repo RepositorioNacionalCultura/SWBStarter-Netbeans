@@ -20,7 +20,6 @@
     SWBResourceURL digitURL = paramRequest.getRenderUrl().setMode("DIGITAL");
     digitURL.setCallMethod(SWBParamRequest.Call_DIRECT);
     WebSite site = paramRequest.getWebPage().getWebSite();
-    String userLang = paramRequest.getUser().getLanguage();
     if (null != entry) {
 	if (null != entry.getDigitalObject()) {
             digitalobjects = entry.getDigitalObject();
@@ -47,7 +46,7 @@
                             .append("       \"artist\": \"").append(creator).append("\",")
                             //.append("       \"album\": \"").append(null != digital.getMediatype() ? digital.getMediatype().getName() : "").append("\",")
                             .append("       \"url\": \"").append(digital.getUrl()).append("\",")
-                            .append("       \"cover_art_url\": \"/work/models/cultura/audio/img/waves.png\"")
+                            .append("       \"cover_art_url\": \"/work/models/").append(site.getId()).append("/audio/img/waves.png\"")
                             .append("	},");
                     }
 		}
@@ -161,11 +160,11 @@
                             </div> <!-- CONTROLES -->
                             <div id="time-container" class="col-12"> 
                                 <span class="current-time"> 
-                                    <span class="amplitude-current-minutes oswM" amplitude-main-current-minutes="true"></span><b>:</b><span class="amplitude-current-seconds oswM" amplitude-main-current-seconds="true"></span>
+                                    <span class="amplitude-current-hours oswM" amplitude-main-current-hours="true"></span><b>:</b><span class="amplitude-current-minutes oswM" amplitude-main-current-minutes="true"></span><b>:</b><span class="amplitude-current-seconds oswM" amplitude-main-current-seconds="true"></span>
                                 </span> <!-- 00 : 00-->
                                 <input type="range" class="amplitude-song-slider" amplitude-main-song-slider="true" step=".1"/> <!-- linea --->
                                 <span class="duration"> 
-                                    <span class="amplitude-duration-minutes oswM" amplitude-main-duration-minutes="true"></span><b>:</b><span class="amplitude-duration-seconds oswM" amplitude-main-duration-seconds="true"></span>
+                                    <span class="amplitude-duration-hours oswM" amplitude-main-duration-hours="true"></span><b>:</b><span class="amplitude-duration-minutes oswM" amplitude-main-duration-minutes="true"></span><b>:</b><span class="amplitude-duration-seconds oswM" amplitude-main-duration-seconds="true"></span>
                                 </span> <!-- 33 : 33-->
                             </div> <!-- TIEMPO -->
 			</div>

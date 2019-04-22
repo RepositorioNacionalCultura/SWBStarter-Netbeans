@@ -8,11 +8,10 @@
 <%@page import="org.semanticwb.portal.api.SWBParamRequest"%>
 <%@page import="java.util.List, mx.gob.cultura.portal.response.Entry, mx.gob.cultura.portal.response.DigitalObject, mx.gob.cultura.portal.response.Rights"%>
 <%
-	int index = 0;
-	List<DigitalObject> digitalobjects = null;
+    int index = 0;
+    List<DigitalObject> digitalobjects = null;
     SWBParamRequest paramRequest = (SWBParamRequest)request.getAttribute("paramRequest");
     Entry entry = null != request.getAttribute("entry") ? (Entry)request.getAttribute("entry") : new Entry();
-	entry.setDescription("HTML5 audio and video library that creates a unified feel for media files (MP4, MP3, FLV), streaming content (HLS, M(PEG)-DASH, RTMP).");
 %>
 <link rel='stylesheet' type='text/css' media='screen' href='/work/models/cultura/css/style.css'/>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/mediaelement@4.2.7/build/mediaelementplayer.min.css">
@@ -21,7 +20,7 @@
 <script>
 	function add(id) {
 		dojo.xhrPost({
-            url: '/swb/cultura/favorito?id='+id,
+            url: '/swb/repositorio/favorito?id='+id,
             load: function(data) {
                 dojo.byId('addCollection').innerHTML=data;
 				$('#addCollection').modal('show');
@@ -31,7 +30,7 @@
 	function addPop(id) {
 		var leftPosition = (screen.width) ? (screen.width-990)/3 : 0;
 		var topPosition = (screen.height) ? (screen.height-150)/3 : 0;
-		var url = '/swb/cultura/favorito?id='+id;
+		var url = '/swb/repositorio/favorito?id='+id;
 		popCln = window.open(
 		url,'popCln','height=220,width=990,left='+leftPosition+',top='+topPosition+',resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no')
 	}
@@ -46,12 +45,12 @@
 			$("#dialog-message-tree" ).dialog( "open" );
 		}
 	  };
-	  xhttp.open("GET", "/swb/cultura/favorito?id="+id, true);
+	  xhttp.open("GET", "/swb/repositorio/favorito?id="+id, true);
 	  xhttp.send();
 	}
 	function loadImg(iEntry, iDigit) {
 		dojo.xhrPost({
-			url: '/es/cultura/detalle/_rid/64/_mto/3/_mod/DIGITAL?id='+iEntry+'&n='+iDigit,
+			url: '/es/repositorio/detalle/_rid/64/_mto/3/_mod/DIGITAL?id='+iEntry+'&n='+iDigit,
             load: function(data) {
                 dojo.byId('idetail').innerHTML=data;
             }
@@ -106,12 +105,12 @@
 				<div>
 					<p class="tit2">Más de la colección</p>
 					<div>
-						<img src="/work/models/cultura/img/agregado-01.jpg" class="img-responsive">
+						<img src="/work/models/repositorio/img/agregado-01.jpg" class="img-responsive">
 						<p>Nombre de la obra</p>
 						<p>Autor Lorem Ipsum</p>
 					</div>
 					<div>
-						<img src="/work/models/cultura/img/agregado-02.jpg" class="img-responsive">
+						<img src="/work/models/repositorio/img/agregado-02.jpg" class="img-responsive">
 						<p>Nombre de la obra</p>
 						<p>Autor Lorem Ipsum</p>
 					</div>

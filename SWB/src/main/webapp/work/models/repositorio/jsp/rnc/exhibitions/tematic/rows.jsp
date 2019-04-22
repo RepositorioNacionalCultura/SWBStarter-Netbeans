@@ -19,8 +19,8 @@
 			</a>
                     </div>
                     <div class="mosaico-txt ">
-                        <p><span class="ion-locked rojo"/> Crear exhibición</p>
-			<p>Dentro de las exhibiciones se encuentran las colecciones de información altamente especializadas</p>
+                        <p><span class="ion-locked rojo"/> <%=paramRequest.getLocaleString("usrmsg_view_create_exh")%></p>
+			<p><%=paramRequest.getLocaleString("usrmsg_view_create_exh_desc")%></p>
                     </div>
                 </div>
        <%
@@ -51,7 +51,7 @@
 				<a href="#" onclick="del('<%=exhibition.getString("url")%>')"><span class="ion-trash-a"></span></a>
                                 <a href="<%=exhibition.getString("url")%>?act=vEdit"><span class="ion-edit"></span></a>
                         <% }else { %>
-                                <p><a href="<%=exhibition.getString("url")%>" class="vermas-1topexh uppercase">Visitar exposición</a></p>
+                                <p><a href="<%=exhibition.getString("url")%>" class="vermas-1topexh uppercase"><%=paramRequest.getLocaleString("usrmsg_view_create_exh_visit")%></a></p>
                         <% } %>
                    </div>
                 </div>
