@@ -85,8 +85,8 @@ public class UserRegistry extends GenericAdmResource {
 
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
-        //String url = "/swbadmin/jsp/rnc/" + this.getClass().getSimpleName() + "/view.jsp";
-        String url = "/work/models/" + paramRequest.getWebPage().getWebSite().getId() + "/jsp/rnc/" + this.getClass().getSimpleName()+"/view.jsp";
+        String url = "/swbadmin/jsp/rnc/" + this.getClass().getSimpleName() + "/view.jsp";
+        //String url = "/work/models/" + paramRequest.getWebPage().getWebSite().getId() + "/jsp/rnc/" + this.getClass().getSimpleName()+"/view.jsp";
         User user = paramRequest.getUser();
         boolean isAnnotator = false;
         if (user != null && user.isSigned()) {

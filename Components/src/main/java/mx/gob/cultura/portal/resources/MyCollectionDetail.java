@@ -68,8 +68,7 @@ public class MyCollectionDetail extends GenericResource{
         Collection collection = null;
         List<Collection> list = new ArrayList<>();
         List<Entry> favorites = new ArrayList<>();
-        //String path = "/swbadmin/jsp/rnc/collections/elements.jsp";
-        String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/collections/elements.jsp";
+        String path = "/swbadmin/jsp/rnc/collections/elements.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
             if (null != request.getParameter(IDENTIFIER) ) {  /** null != user && user.isSigned() &&  && !collectionList.isEmpty()**/
@@ -98,8 +97,7 @@ public class MyCollectionDetail extends GenericResource{
     
     @Override
     public void doEdit(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
-        //String path = "/swbadmin/jsp/rnc/collections/collection.jsp";
-        String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/collections/collection.jsp";
+        String path = "/swbadmin/jsp/rnc/collections/collection.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         if (null != request.getParameter(IDENTIFIER)) {
             Collection c = mgr.findById(request.getParameter(IDENTIFIER));

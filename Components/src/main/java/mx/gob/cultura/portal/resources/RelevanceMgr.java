@@ -76,8 +76,8 @@ public class RelevanceMgr extends GenericResource {
     public void doAdmin(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
         StringBuilder ret = new StringBuilder();
         try {
-            String siteid = paramRequest.getWebPage().getWebSiteId();
-            List<Collection> collectionList = mgr.collectionsByStatus(siteid, COLLECTION_PRIVATE);
+            //String siteid = paramRequest.getWebPage().getWebSiteId();
+            List<Collection> collectionList = mgr.collectionsByStatus(null, COLLECTION_PRIVATE);
             if ("add".equals(paramRequest.getAction()) || "edit".equals(paramRequest.getAction())) {
                 SWBResourceURL url = paramRequest.getRenderUrl();
                 url.setMode(SWBResourceModes.Mode_ADMIN);
@@ -122,7 +122,6 @@ public class RelevanceMgr extends GenericResource {
                 ret.append("	</div> \n");
                 ret.append("</form> \n");
             } else if ("save".equals(paramRequest.getAction())) {
-                System.out.println("_id: " + request.getParameter("collectionID"));
                 getResourceBase().setAttribute("collectionID", request.getParameter("collectionID"));
                 getResourceBase().setAttribute("userid", request.getParameter("userid"));
                 getResourceBase().setAttribute("jspresponse", request.getParameter("jspresponse"));
@@ -183,18 +182,19 @@ public class RelevanceMgr extends GenericResource {
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         Integer total = 0;
         response.setContentType("text/html; charset=UTF-8");
-        String siteid = paramRequest.getWebPage().getWebSite().getId();
-        String path = "/work/models/"+siteid+"/jsp/rnc/collections/homecollection.jsp";
+        //String siteid = paramRequest.getWebPage().getWebSite().getId();
+        //String path = "/work/models/"+siteid+"/jsp/rnc/collections/homecollection.jsp";
+        String path = "/swbadmin/jsp/rnc/collections/homecollection.jsp";
         if (!this.getResourceBase().getAttribute("userid", "").isEmpty()) {
-            //path = "/swbadmin/jsp/rnc/collections/listcollections.jsp";
-            path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/collections/listcollections.jsp";
+            path = "/swbadmin/jsp/rnc/collections/listcollections.jsp";
+            //path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/collections/listcollections.jsp";
         }
         if (!this.getResourceBase().getAttribute("jspresponse", "").isEmpty()) {
             path = this.getResourceBase().getAttribute("jspresponse");
         }
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
-            int count = count(siteid, paramRequest.getUser().getId()).intValue();
+            int count = count(null, paramRequest.getUser().getId()).intValue();
             List<Entry> collectionList = null;
             List<Collection> collections = null;
             if (!this.getResourceBase().getAttribute("userid", "").isEmpty()) {
@@ -211,7 +211,6 @@ public class RelevanceMgr extends GenericResource {
                 //request.setAttribute("collections", collections);
             } else {
                 collectionList = collectionById(this.getResourceBase().getAttribute("collectionID", ""), paramRequest.getWebPage().getWebSite());
-                System.out.println("collectionList: " + collectionList);
                 request.setAttribute("relevants", collectionList);
             }
             request.setAttribute(PARAM_REQUEST, paramRequest);
@@ -315,7 +314,7 @@ public class RelevanceMgr extends GenericResource {
         }
         base += "/api/v1/search?identifier=";
         try {
-            collections = mgr.collections(site.getId(), id);
+            collections = mgr.collections(null, id);
         } catch (Exception se) {
             LOG.info(se.getMessage());
         }
@@ -336,7 +335,6 @@ public class RelevanceMgr extends GenericResource {
         base += "/api/v1/search?identifier=";
         try {
             collection = mgr.findById(id);
-            System.out.println("collection: " + collection);
             if (null != collection && null != collection.getElements()) {
                 for (String _id : collection.getElements()) {
                     String uri = base + _id;
@@ -382,8 +380,8 @@ public class RelevanceMgr extends GenericResource {
         //User user = paramRequest.getUser();
         Collection collection = null;
         List<Entry> favorites = new ArrayList<>();
-        //String path = "/swbadmin/jsp/rnc/collections/pagecollection.jsp"; //elements.jsp
-        String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/collections/pagecollection.jsp";
+        String path = "/swbadmin/jsp/rnc/collections/pagecollection.jsp"; //elements.jsp
+        //String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/collections/pagecollection.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
             if (null != request.getParameter(IDENTIFIER) /**

@@ -46,12 +46,12 @@ public class InCollections extends MyCollections {
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         response.setContentType("text/html; charset=UTF-8");
-        String siteid = paramRequest.getWebPage().getWebSite().getId();
-        String path = "/work/models/"+siteid+"/jsp/rnc/collections/pbcollections.jsp";
+        //String siteid = paramRequest.getWebPage().getWebSite().getId();
+        String path = "/swbadmin/jsp/rnc/collections/pbcollections.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
-            Integer total = count(siteid, null, COLLECTION_PUBLIC).intValue();
-            List<Collection> collectionList = collectionList(siteid, null, 1, NUM_ROW);
+            Integer total = count(null, null, COLLECTION_PUBLIC).intValue();
+            List<Collection> collectionList = collectionList(null, null, 1, NUM_ROW);
             setCovers(paramRequest, collectionList, 3);
             request.setAttribute(FULL_LIST, collectionList);
             request.setAttribute(PARAM_REQUEST, paramRequest);
@@ -84,14 +84,14 @@ public class InCollections extends MyCollections {
         if (pagenum<=0) pagenum = 1;
         request.setAttribute(NUM_PAGE_LIST, pagenum);
         request.setAttribute(PAGE_NUM_ROW, NUM_ROW);
-        String siteid = paramRequest.getWebPage().getWebSite().getId();
-        total = count(siteid, null, COLLECTION_PUBLIC).intValue();
-        collectionList = collectionList(siteid, null, pagenum, NUM_ROW);
+        //String siteid = paramRequest.getWebPage().getWebSite().getId();
+        total = count(null, null, COLLECTION_PUBLIC).intValue();
+        collectionList = collectionList(null, null, pagenum, NUM_ROW);
         setCovers(paramRequest, collectionList, 3);
         request.setAttribute(FULL_LIST, collectionList);
         request.setAttribute(NUM_RECORDS_TOTAL, total);
         page(pagenum, request);
-        String url = "/work/models/"+siteid+"/jsp/rnc/collections/rows.jsp";
+        String url = "/swbadmin/jsp/rnc/collections/rows.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
             request.setAttribute(PARAM_REQUEST, paramRequest);
@@ -105,8 +105,7 @@ public class InCollections extends MyCollections {
     public void collectionById(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         Collection collection = null;
         List<Entry> favorites = new ArrayList<>();
-        //String path = "/swbadmin/jsp/rnc/collections/elements.jsp";
-        String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/collections/elements.jsp";
+        String path = "/swbadmin/jsp/rnc/collections/elements.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
             if (null != request.getParameter(IDENTIFIER))

@@ -130,7 +130,7 @@ public class SearchCulturalProperty extends PagerAction {
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, java.io.IOException {
         //response.setCharacterEncoding("UTF-8");
         List<Entry> publicationList = new ArrayList<>();
-        String url = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/search/documents.jsp";
+        String url = "/swbadmin/jsp/rnc/documents.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(url);
         String q = null != request.getParameter("word") && !request.getParameter("word").isEmpty() ? request.getParameter("word") : "*";
         //if (null != q && !q.isEmpty()) {
@@ -204,7 +204,7 @@ public class SearchCulturalProperty extends PagerAction {
             cassette(request, document.getTotal(), pagenum);
         }
         request.setAttribute("word", request.getParameter("word"));
-        String url = "/work/models/"+paramRequest.getWebPage().getWebSiteId()+"/jsp/rnc/search/rows.jsp";
+        String url = "/swbadmin/jsp/rnc/rows.jsp";
         if (null != request.getParameter("m") && "l".equalsIgnoreCase(request.getParameter("m")))
             request.setAttribute("mode", "row lista");
         else request.setAttribute("mode", "card-columns");

@@ -64,14 +64,14 @@ public class MyAnnotations extends GenericAdmResource{
         User user = paramRequest.getUser();
         if (null != user  && user.isSigned()) isAnnotator = user.hasRole(userRepository.getRole(this.getResourceBase().getAttribute("AnnRol", "Anotador")));          
         response.setContentType("text/html; charset=UTF-8");
-        String site = paramRequest.getWebPage().getWebSite().getId();
-        String path = "/work/models/" + site + "/jsp/rnc/" + this.getClass().getSimpleName()+"/view.jsp";
+        //String site = paramRequest.getWebPage().getWebSite().getId();
+        String path = "/swbadmin/jsp/rnc/"+this.getClass().getSimpleName()+"/view.jsp";
         List<Annotation> annotationList;
         if (user == null) {
-            annotationList = AnnotationMgr.getInstance().findByTarget(id, null, site); //orderby modified direction 1 by default
+            annotationList = AnnotationMgr.getInstance().findByTarget(id, null, null); //orderby modified direction 1 by default
             //annotationList= AnnotationMgr.getInstance().findByTarget(id,null,"created",0); //orderby created direction 0
         }else {
-            annotationList = AnnotationMgr.getInstance().findByTarget(id, user.getId(), site);
+            annotationList = AnnotationMgr.getInstance().findByTarget(id, user.getId(), null);
         }
         RequestDispatcher dis = request.getRequestDispatcher(path);
         try {
