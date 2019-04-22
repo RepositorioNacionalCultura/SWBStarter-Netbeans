@@ -119,30 +119,33 @@ public class ExhibitionHome extends GenericAdmResource {
         if (null != getResourceBase().getAttribute("pageBase"))
             pageBase = paramRequest.getWebPage().getWebSite().getWebPage(getResourceBase().getAttribute("pageBase"));
         request.setAttribute("haveAccess", haveAccess);
-        String usrlanguage = paramRequest.getUser().getLanguage() == null ? "es" : paramRequest.getUser().getLanguage();
+        String usrlanguage = getResourceBase().getLanguage().getId() != null ? getResourceBase().getLanguage().getId() : "es";
         Iterator<WebPage> exhibitions = pageBase.listChilds(usrlanguage, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, null);
         while (exhibitions.hasNext()) {
             boolean add = false;
             List<String> elements = new ArrayList<>();
             WebPage exhibition = (WebPage) exhibitions.next();
-            org.bson.Document bson = new org.bson.Document("url", exhibition.getUrl(usrlanguage, false)).append("path", this.path).append("id", exhibition.getId())
-                .append("target", null != exhibition.getTarget() && !"".equalsIgnoreCase(exhibition.getTarget()) ? exhibition.getTarget() : "_self")
-                .append("desc", exhibition.getDisplayDescription(usrlanguage) == null ? "" : exhibition.getDisplayDescription(usrlanguage))
-                .append("title", exhibition.getDisplayName(usrlanguage)).append("author", exhibition.getCreator().getFullName());
-            if (null != exhibition.getProperty("posters") && !exhibition.getProperty("posters").isEmpty()) {
-                if (exhibition.getProperty("posters").indexOf("#") > 0) {
-                    String [] posters = exhibition.getProperty("posters").split("#");
-                    for (int i=0; i<posters.length; i++) {
-                        elements.add(posters[i]);
-                    }
-                }else elements.add(exhibition.getProperty("posters"));
-                bson.append("posters", elements);
+            String weblanguage = exhibition.getLanguage() != null ? exhibition.getLanguage().getId() : "es";
+            if (usrlanguage.equalsIgnoreCase(weblanguage)) {
+                org.bson.Document bson = new org.bson.Document("url", exhibition.getUrl(usrlanguage, false)).append("path", this.path).append("id", exhibition.getId())
+                    .append("target", null != exhibition.getTarget() && !"".equalsIgnoreCase(exhibition.getTarget()) ? exhibition.getTarget() : "_self")
+                    .append("desc", exhibition.getDisplayDescription(usrlanguage) == null ? "" : exhibition.getDisplayDescription(usrlanguage))
+                    .append("title", exhibition.getDisplayName(usrlanguage)).append("author", exhibition.getCreator().getFullName());
+                if (null != exhibition.getProperty("posters") && !exhibition.getProperty("posters").isEmpty()) {
+                    if (exhibition.getProperty("posters").indexOf("#") > 0) {
+                        String [] posters = exhibition.getProperty("posters").split("#");
+                        for (int i=0; i<posters.length; i++) {
+                            elements.add(posters[i]);
+                        }
+                    }else elements.add(exhibition.getProperty("posters"));
+                    bson.append("posters", elements);
+                }
+                if (haveAccess) {
+                    add = paramRequest.getUser().getId().equalsIgnoreCase(exhibition.getCreator().getId());
+                }else add = exhibition.isValid() && paramRequest.getUser().haveAccess(exhibition);
+                if (add)
+                    exhibitionList.add(bson);
             }
-            if (haveAccess) {
-                add = paramRequest.getUser().getId().equalsIgnoreCase(exhibition.getCreator().getId());
-            }else add = exhibition.isValid() && paramRequest.getUser().haveAccess(exhibition);
-            if (add)
-                exhibitionList.add(bson);
         }
         return exhibitionList;
     }

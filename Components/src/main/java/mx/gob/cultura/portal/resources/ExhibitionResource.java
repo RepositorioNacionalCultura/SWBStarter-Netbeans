@@ -177,6 +177,7 @@ public class ExhibitionResource extends GenericResource {
                 wp.setDescription(descn);
                 wp.setActive(Boolean.TRUE);
                 wp.setParent(response.getWebPage());
+                wp.setLanguage(this.getResourceBase().getLanguage());
                 Template templateIndex = Template.ClassMgr.getTemplate(idTmpl, response.getWebPage().getWebSite());// se agrega plantilla para mostrar foro
                 TemplateRef temrefindex = TemplateRef.ClassMgr.createTemplateRef(response.getWebPage().getWebSite());
                 temrefindex.setActive(Boolean.TRUE);

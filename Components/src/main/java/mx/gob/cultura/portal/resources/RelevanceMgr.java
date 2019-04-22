@@ -122,7 +122,7 @@ public class RelevanceMgr extends GenericResource {
                 ret.append("	</div> \n");
                 ret.append("</form> \n");
             } else if ("save".equals(paramRequest.getAction())) {
-                System.out.println("_id: " + request.getParameter("collectionID"));
+//                System.out.println("_id: " + request.getParameter("collectionID"));
                 getResourceBase().setAttribute("collectionID", request.getParameter("collectionID"));
                 getResourceBase().setAttribute("userid", request.getParameter("userid"));
                 getResourceBase().setAttribute("jspresponse", request.getParameter("jspresponse"));
@@ -211,7 +211,7 @@ public class RelevanceMgr extends GenericResource {
                 //request.setAttribute("collections", collections);
             } else {
                 collectionList = collectionById(this.getResourceBase().getAttribute("collectionID", ""), paramRequest.getWebPage().getWebSite());
-                System.out.println("collectionList: " + collectionList);
+//                System.out.println("collectionList: " + collectionList);
                 request.setAttribute("relevants", collectionList);
             }
             request.setAttribute(PARAM_REQUEST, paramRequest);
@@ -336,7 +336,7 @@ public class RelevanceMgr extends GenericResource {
         base += "/api/v1/search?identifier=";
         try {
             collection = mgr.findById(id);
-            System.out.println("collection: " + collection);
+//            System.out.println("collection: " + collection);
             if (null != collection && null != collection.getElements()) {
                 for (String _id : collection.getElements()) {
                     String uri = base + _id;

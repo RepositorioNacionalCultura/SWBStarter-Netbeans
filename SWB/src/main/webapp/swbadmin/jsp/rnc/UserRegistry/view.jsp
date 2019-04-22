@@ -237,7 +237,7 @@
 <%
         if (canChangePwd) {
                 if (editMode) {
-%>                 <h4 class="rojo">Cambiar contraseña</h4>
+%>                 <h4 class="rojo">Si deseas actualizar tú contraseña</h4>
 <%
                 }
 %>                 

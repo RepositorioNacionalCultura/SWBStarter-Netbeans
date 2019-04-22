@@ -73,7 +73,7 @@ public class ListBICRequest {
         } catch (MalformedURLException mue) {
             mue.printStackTrace();
         }
-        System.out.println("making request to: "+url);
+//        System.out.println("making request to: "+url);
         if (null != url) {
             HttpURLConnection connection = null;
             try {
