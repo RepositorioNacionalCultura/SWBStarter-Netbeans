@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.io.IOException;
 import java.net.URLEncoder;
 import org.semanticwb.Logger;
-import java.nio.charset.StandardCharsets;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
@@ -63,6 +63,26 @@ public class Exhibition extends GenericResource {
     
     private static final Logger LOG = SWBUtils.getLogger(Exhibition.class);
     
+    public void doViewFix(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
+        String path = "/swbadmin/jsp/rnc/exhibitions/admExhibition.jsp";
+        try {
+            request.setAttribute("base", getResourceBase());
+	    request.setAttribute("paramRequest", paramRequest);
+            /**if ("SEARCH".equals(paramRequest.getAction())) {
+                doAdminFilter(request, response, paramRequest);
+            }else if ("PAGE".equals(paramRequest.getAction())) {
+                doAdminPage(request, response, paramRequest);
+            }/**else if ("SAVE".equals(paramRequest.getAction())) {
+                doAdminSave(request, response, paramRequest);
+            }else {**/
+            RequestDispatcher rd = request.getRequestDispatcher(path);
+            rd.include(request, response);
+            //}
+        } catch (ServletException ex) {
+            LOG.error(ex);
+        }
+    }
+    
     @Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         response.setContentType("text/html; charset=UTF-8");
@@ -86,17 +106,13 @@ public class Exhibition extends GenericResource {
     	request.setCharacterEncoding("UTF-8");
         Document document = null;
         List<Entry> publicationList = new ArrayList<>();
-        WebSite site = paramRequest.getWebPage().getWebSite();
-    	String base = site.getModelProperty("search_endPoint");
-        if (null == base || base.isEmpty())
-            base = SWBPlatform.getEnv("rnc/endpointURL",getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim() + "/api/v1/search?q=";
-        else base += "/api/v1/search?q=";
-        String url = "/work/models/"+site.getId()+"/jsp/rnc/exhibitions/exhibitions.jsp";
+    	String url = "/swbadmin/jsp/rnc/exhibitions/exhibitions.jsp";
     	RequestDispatcher rd = request.getRequestDispatcher(url);
     	try {
+
             if (null != getResourceBase() && null != getResourceBase().getAttribute("criteria")) {
 
-    		document = getReference(request, base);
+    		document = getReference(request);
                 List<String> favs = getElements("favorites");
                 List<String> hds = getElements("hiddenarts");
                 if (null != document) {
@@ -117,35 +133,12 @@ public class Exhibition extends GenericResource {
 	    request.setAttribute("paramRequest", paramRequest);
 	    rd.include(request, response);
 	}catch (ServletException se) {
-            se.printStackTrace();
+            
 	}
     }
     
-    public void doViewFix(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
-        WebSite site = paramRequest.getWebPage().getWebSite();
-        String path = "/work/models/"+site.getId()+"/jsp/rnc/exhibitions/admExhibition.jsp";
-        try {
-            request.setAttribute("base", getResourceBase());
-	    request.setAttribute("paramRequest", paramRequest);
-            System.out.println("ACTION: " + paramRequest.getAction());
-            /**if ("SEARCH".equals(paramRequest.getAction())) {
-                doAdminFilter(request, response, paramRequest);
-            }else if ("PAGE".equals(paramRequest.getAction())) {
-                doAdminPage(request, response, paramRequest);
-            }/**else if ("SAVE".equals(paramRequest.getAction())) {
-                doAdminSave(request, response, paramRequest);
-            }else {**/
-            RequestDispatcher rd = request.getRequestDispatcher(path);
-            rd.include(request, response);
-            //}
-        } catch (ServletException ex) {
-            LOG.error(ex);
-        }
-    }
-    
     public void doAdminFilter(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
-        WebSite site = paramRequest.getWebPage().getWebSite();
-        String path = "/work/models/"+site.getId()+"/jsp/rnc/exhibitions/admExFilter.jsp";
+    	String path = "/swbadmin/jsp/rnc/exhibitions/admExFilter.jsp";
     	try {
             if (null != request.getParameter("criteria") && !request.getParameter("criteria").isEmpty()) {
                 getResourceBase().setAttribute("sort", request.getParameter("sort"));
@@ -155,7 +148,7 @@ public class Exhibition extends GenericResource {
                 getResourceBase().setAttribute("criteria", request.getParameter("criteria"));
                 //getResourceBase().setAttribute("endpointURL", request.getParameter("endpointURL"));
                 getResourceBase().updateAttributesToDB();
-                Document document = getReference(request, paramRequest.getWebPage().getWebSite());
+                Document document = getReference(request);//getReference(request, paramRequest.getWebPage().getWebSite());
                 if (null != document) {
                     List<ArtWork> arts = getArts(request, document);
                     //request.setAttribute("aggs", document.getAggs());
@@ -218,7 +211,7 @@ public class Exhibition extends GenericResource {
     
     public void doAdminSave(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
     	try {
-            /**configPage(request);
+            configPage(request);
             List<ArtWork> arts = (List<ArtWork>)request.getSession().getAttribute("arts");
             if (null != arts) {
                 StringBuilder favorites = new StringBuilder();
@@ -231,7 +224,7 @@ public class Exhibition extends GenericResource {
             }
             if (null != request.getParameterValues("hiddenarts")) {
                 getResourceBase().setAttribute("hiddenarts", getChekedEl(request, "hiddenarts"));
-            }**/
+            }
             getResourceBase().updateAttributesToDB();
             doAdminResume(request, response, paramRequest);
 	} catch (IOException | SWBException ex) {
@@ -240,8 +233,7 @@ public class Exhibition extends GenericResource {
     }
     
     public void doAdminResume(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
-        WebSite site = paramRequest.getWebPage().getWebSite();
-        String path = "/work/models/"+site.getId()+"/jsp/rnc/exhibitions/admExResume.jsp";
+        String path = "/swbadmin/jsp/rnc/exhibitions/admExResume.jsp";
         try {
             request.setAttribute("base", getResourceBase());
 	    request.setAttribute("paramRequest", paramRequest);
@@ -271,8 +263,7 @@ public class Exhibition extends GenericResource {
             page(pagenum, request);
         }
         request.setAttribute("criteria", request.getParameter("criteria"));
-        WebSite site = paramRequest.getWebPage().getWebSite();
-        String url = "/work/models/"+site.getId()+"/jsp/rnc/exhibitions/admExRows.jsp";
+        String url = "/swbadmin/jsp/rnc/exhibitions/admExRows.jsp";
         request.setAttribute("mode", "card-columns");
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
@@ -300,9 +291,7 @@ public class Exhibition extends GenericResource {
             }
             request.setAttribute("references", publicationList);
             request.setAttribute("paramRequest", paramRequest);
-            //String url = "/swbadmin/jsp/rnc/exhibitions/admExRows.jsp";
-            WebSite site = paramRequest.getWebPage().getWebSite();
-            String url = "/work/models/"+site.getId()+"/jsp/rnc/exhibitions/admExRows.jsp";
+            String url = "/swbadmin/jsp/rnc/exhibitions/admExRows.jsp";
             request.setAttribute("mode", "card-columns");
             RequestDispatcher rd = request.getRequestDispatcher(url);
             rd.include(request, response);
@@ -445,11 +434,11 @@ public class Exhibition extends GenericResource {
         return document;
     }
     
-    private Document getReference(HttpServletRequest request, String endpoint) {
+    private Document getReference(HttpServletRequest request) {
         Document document = null;
-        if (null == endpoint || endpoint.isEmpty()) return null;
         String words = getResourceBase().getAttribute("criteria", "");
-    	String uri = endpoint + getParamSearch(words);
+    	String uri = SWBPlatform.getEnv("rnc/endpointURL",getResourceBase().getAttribute("endpointURL","http://localhost:8080")).trim() + "/api/v1/search?q=";
+    	uri += getParamSearch(words);
         if (null != getResourceBase().getAttribute("sort") && null != getResourceBase().getAttribute("order")) {
             String sorted = getResourceBase().getAttribute("sort") + getResourceBase().getAttribute("order");
             if (sorted.equalsIgnoreCase("datedes")) uri += "&sort=-datecreated.value";

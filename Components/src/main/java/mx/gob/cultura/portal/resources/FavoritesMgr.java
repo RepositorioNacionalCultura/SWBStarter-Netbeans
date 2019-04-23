@@ -67,10 +67,9 @@ public class FavoritesMgr extends GenericResource {
         if (null != user && user.isSigned() && ACTION_ADD_FAV.equals(response.getAction())) {
             if ((null == request.getParameter(IDENTIFIER) || request.getParameter(IDENTIFIER).isEmpty()) && null != request.getParameter("title")) {
                 String title = request.getParameter("title").trim();
-                if (!exist(response.getWebPage().getWebSiteId(), title, null)) {
+                if (!exist(null, title, null)) {
                     c = new Collection(title, Utils.getStatus(request.getParameter("status"), false), "");
                     c.setUserid(user.getId());
-                    c.setSiteid(response.getWebPage().getWebSiteId());
                     c.setUserName(MyCollections.getAuthor(user.getId(), null, response));
                     String id = mgr.insertCollection(c);
                     if (null != id) c.setId(id);
@@ -117,14 +116,13 @@ public class FavoritesMgr extends GenericResource {
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         response.setContentType("text/html; charset=UTF-8");
-        String siteid = paramRequest.getWebPage().getWebSite().getId();
-        String path = "/work/models/"+siteid+"/jsp/rnc/collections/treecollection.jsp";
+        String path = "/swbadmin/jsp/rnc/collections/treecollection.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         List<Collection> collectionList = new ArrayList<>();
         try {
             User user = paramRequest.getUser();
             if (null != user && user.isSigned()) {
-                collectionList = mgr.collections(siteid, user.getId());
+                collectionList = mgr.collections(null, user.getId());
                 setCovers(paramRequest, collectionList, 1);
             }
             request.setAttribute("paramRequest", paramRequest);
@@ -137,8 +135,7 @@ public class FavoritesMgr extends GenericResource {
     }
     
     public void doDialog(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
-        //String path = "/swbadmin/jsp/rnc/collections/newcollection.jsp";
-        String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/collections/newcollection.jsp";
+        String path = "/swbadmin/jsp/rnc/collections/newcollection.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(path);
         try {
             request.setAttribute("paramRequest", paramRequest);

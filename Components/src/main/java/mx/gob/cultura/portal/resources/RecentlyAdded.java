@@ -27,8 +27,7 @@ public class RecentlyAdded extends GenericAdmResource {
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
 
         List<Entry> references;
-        //String url = "/swbadmin/jsp/rnc/recentlyAddedCarousel.jsp";
-        String url = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/resources/recentlyAddedCarousel.jsp";
+        String url = "/swbadmin/jsp/rnc/recentlyAddedCarousel.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
             references = getReferences(paramRequest.getWebPage().getWebSite());

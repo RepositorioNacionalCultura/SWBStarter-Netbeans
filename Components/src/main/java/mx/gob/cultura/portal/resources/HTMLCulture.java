@@ -126,8 +126,7 @@ public class HTMLCulture extends GenericResource {
             request.setAttribute("fileContent", content);
             request.setAttribute("paramRequest", paramRequest);
             response.setContentType("text/html;charset=ISO-8859-1");
-            String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/exhibitions/htmlExContent.jsp";
-            RequestDispatcher rd = request.getRequestDispatcher(path);
+            RequestDispatcher rd = request.getRequestDispatcher("/swbadmin/jsp/rnc/exhibitions/htmlExContent.jsp");
             rd.include(request, response);
         } catch (ServletException se) {
             log.error(se);
@@ -307,8 +306,7 @@ public class HTMLCulture extends GenericResource {
             request.setAttribute("fileContent", content);
             request.setAttribute("paramRequest", paramRequest);
             request.setAttribute("numversion", versionNumber);
-            String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/exhibitions/htmlExContent.jsp";
-            RequestDispatcher rd = request.getRequestDispatcher(path);
+            RequestDispatcher rd = request.getRequestDispatcher("/swbadmin/jsp/rnc/exhibitions/htmlExContent.jsp");
             rd.include(request, response);
         } catch (ServletException e) {
             log.debug(e);

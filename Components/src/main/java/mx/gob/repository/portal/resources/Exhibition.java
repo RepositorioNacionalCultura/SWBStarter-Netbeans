@@ -127,7 +127,6 @@ public class Exhibition extends GenericResource {
         try {
             request.setAttribute("base", getResourceBase());
 	    request.setAttribute("paramRequest", paramRequest);
-            System.out.println("ACTION: " + paramRequest.getAction());
             /**if ("SEARCH".equals(paramRequest.getAction())) {
                 doAdminFilter(request, response, paramRequest);
             }else if ("PAGE".equals(paramRequest.getAction())) {

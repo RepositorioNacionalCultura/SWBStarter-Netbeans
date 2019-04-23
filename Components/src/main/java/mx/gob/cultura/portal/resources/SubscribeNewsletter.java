@@ -41,8 +41,7 @@ public class SubscribeNewsletter extends GenericAdmResource{
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException, IOException {
         //User user = paramRequest.getUser();
         response.setContentType("text/html; charset=UTF-8");
-        //String path = "/swbadmin/jsp/rnc/"+this.getClass().getSimpleName()+"/view.jsp";
-        String path = "/work/models/" + paramRequest.getWebPage().getWebSite().getId() + "/jsp/rnc/" + this.getClass().getSimpleName()+"/view.jsp";
+        String path = "/swbadmin/jsp/rnc/"+this.getClass().getSimpleName()+"/view.jsp";
         RequestDispatcher dis = request.getRequestDispatcher(path);
         try {
             request.setAttribute("paramRequest", paramRequest);

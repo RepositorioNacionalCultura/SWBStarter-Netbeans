@@ -41,7 +41,6 @@ public class ListBICRequest {
         } catch (MalformedURLException mue) {
             mue.printStackTrace();
         }
-
         if (null != url) {
             HttpURLConnection connection = null;
             try {

@@ -183,7 +183,6 @@ public class HtmlEntities {
             badEncoding = badEncoding.replace("Ã±", "ñ");
         if (badEncoding.contains("Ã"))
             badEncoding = checkAscii(badEncoding);
-        System.out.println(badEncoding);
         return badEncoding;
     }
     

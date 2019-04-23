@@ -14,7 +14,6 @@ import mx.gob.cultura.portal.response.Entry;
 import mx.gob.cultura.portal.request.GetBICRequest;
 import org.semanticwb.portal.api.GenericAdmResource;
 
-import org.semanticwb.model.WebSite;
 import org.semanticwb.portal.api.SWBParamRequest;
 import org.semanticwb.portal.api.SWBResourceException;
 
@@ -80,9 +79,7 @@ public class ArtDetail extends GenericAdmResource {
 
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
-        //String path = "/swbadmin/jsp/rnc/preview.jsp";
-        WebSite site = paramRequest.getWebPage().getWebSite();
-        String path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/preview.jsp";
+        String path = "/swbadmin/jsp/rnc/preview.jsp";
         String baseUri = getBaseUri(paramRequest);
         String uri = getParamUri(baseUri, request);
         try {
@@ -94,11 +91,11 @@ public class ArtDetail extends GenericAdmResource {
                     DigitalObject ob = getDigitalObject(entry.getDigitalObject(), position);
                     SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), position);
                     if (null != request.getParameter(POSITION)) {
-                        path = this.getViewerPath(site, ob, SWBParamRequest.Mode_VIEW);
+                        path = this.getViewerPath(ob, SWBParamRequest.Mode_VIEW);
                     }else {
                         String mime = null != entry.getRights() && null != entry.getRights().getMedia() ? entry.getRights().getMedia().getMime() : "";
                         if (null == mime || mime.isEmpty() || mime.toLowerCase().startsWith("text")) mime = getMimeType(ob);
-                        path = getViewerPath(site, mime, SWBParamRequest.Mode_VIEW);
+                        path = getViewerPath(mime, SWBParamRequest.Mode_VIEW);
                     }
                     incHits(entry, baseUri, uri);
                 }
@@ -116,8 +113,7 @@ public class ArtDetail extends GenericAdmResource {
     
     public void doTchdta(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
         Entry tch = null;
-        //String path = "/swbadmin/jsp/rnc/techrepl.jsp";
-        String path = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/detail/techrepl.jsp";
+        String path = "/swbadmin/jsp/rnc/techrepl.jsp";
         String baseUri = getBaseUri(paramRequest);
         String uri = getParamUri(baseUri, request);
         String _index = request.getParameter("_index");
@@ -159,13 +155,11 @@ public class ArtDetail extends GenericAdmResource {
 
     public void doDigital(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
         int iDigit = 0;
-        WebSite site = paramRequest.getWebPage().getWebSite();
-        String baseUri = site.getModelProperty("search_endPoint");
+        String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
         if (null == baseUri || baseUri.isEmpty())
             baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
         String uri = baseUri + "/api/v1/search?identifier=";
-        //String path = "/swbadmin/jsp/rnc/digitalobj.jsp";
-        String path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/digitalobj.jsp";
+        String path = "/swbadmin/jsp/rnc/digitalobj.jsp";
         try {
             if (null != request.getParameter(IDENTIFIER)) {
                 uri += request.getParameter(IDENTIFIER);
@@ -179,8 +173,8 @@ public class ArtDetail extends GenericAdmResource {
                     SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), iDigit);
                     int images = null != entry.getDigitalObject() ? entry.getDigitalObject().size() : 0;
                     if (null != request.getParameter(POSITION))
-                        path = getViewerPath(site, ob, MODE_DIGITAL);
-                    else path = getViewerPath(site, entry.getRights().getMedia().getMime(), MODE_DIGITAL);
+                        path = getViewerPath(ob, MODE_DIGITAL);
+                    else path = getViewerPath(entry.getRights().getMedia().getMime(), MODE_DIGITAL);
                     if (iDigit >= 0 && iDigit <= images) {
                         request.setAttribute("iDigit", iDigit);
                         request.setAttribute("digital", entry.getDigitalObject().get(iDigit));
@@ -204,13 +198,11 @@ public class ArtDetail extends GenericAdmResource {
     
     public void doViewer(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws java.io.IOException {
         int iDigit = 0;
-        WebSite site = paramRequest.getWebPage().getWebSite();
-        String baseUri = site.getModelProperty("search_endPoint");
+        String baseUri = paramRequest.getWebPage().getWebSite().getModelProperty("search_endPoint");
         if (null == baseUri || baseUri.isEmpty())
             baseUri = SWBPlatform.getEnv("rnc/endpointURL", getResourceBase().getAttribute("url", "http://localhost:8080")).trim();
         String uri = baseUri + "/api/v1/search?identifier=";
-        //String path = "/swbadmin/jsp/rnc/resources/artdetail.jsp";
-        String path = "/work/models/"+site.getId()+"/jsp/rnc/resources/artdetail.jsp";
+        String path = "/swbadmin/jsp/rnc/resources/artdetail.jsp";
         try {
             if (null != request.getParameter(POSITION)) iDigit = Utils.toInt(request.getParameter(POSITION));
             if (null != request.getParameter(IDENTIFIER)) {
@@ -226,8 +218,8 @@ public class ArtDetail extends GenericAdmResource {
                     }
                     DigitalObject ob = getDigitalObject(entry.getDigitalObject(), iDigit);
                     SearchCulturalProperty.setThumbnail(entry, paramRequest.getWebPage().getWebSite(), iDigit);
-                    if (null != request.getParameter(POSITION)) path = getViewerPath(site, ob, MODE_DIGITAL);
-                    else path = getViewerPath(site, entry.getRights().getMedia().getMime(), MODE_DIGITAL);
+                    if (null != request.getParameter(POSITION)) path = getViewerPath(ob, MODE_DIGITAL);
+                    else path = getViewerPath(entry.getRights().getMedia().getMime(), MODE_DIGITAL);
                 }
                 request.setAttribute("entry", entry);
             }
@@ -412,83 +404,80 @@ public class ArtDetail extends GenericAdmResource {
         return iprev;
     }
     
-    private String getViewerPath(WebSite site, String type, String mode) {
-        //String path = "/swbadmin/jsp/rnc/preview.jsp";
-        String path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/preview.jsp";
+    private String getViewerPath(String type, String mode) {
+        String path = "/swbadmin/jsp/rnc/preview.jsp";
         if (null == type || type.isEmpty() || type.equalsIgnoreCase("conjunto de archivos")) return path;
         if (mode.equalsIgnoreCase(MODE_DIGITAL)) {
             if (type.equalsIgnoreCase("pdf") || type.equalsIgnoreCase("application/pdf")) {
-                //path = "/swbadmin/jsp/rnc/viewer/pdfdigital.jsp";
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/pdfdigital.jsp";
+                path = "/swbadmin/jsp/rnc/viewer/pdfdigital.jsp";
             }else if (type.equalsIgnoreCase("video") || type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("mov"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/videodigital.jsp";//path = "/swbadmin/jsp/rnc/viewer/videodigital.jsp";
+                path = "/swbadmin/jsp/rnc/viewer/videodigital.jsp";
             else if (type.equalsIgnoreCase("epub"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/epubdigital.jsp";//path = "/swbadmin/jsp/rnc/viewer/epubdigital.jsp";
+                path = "/swbadmin/jsp/rnc/viewer/epubdigital.jsp";
             else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/audiodigital.jsp";//path = "/swbadmin/jsp/rnc/viewer/audiodigital.jsp";
+                path = "/swbadmin/jsp/rnc/viewer/audiodigital.jsp";
             else if (type.equalsIgnoreCase("3d") || type.contains("3d"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/sketchdigital.jsp";//path = "/swbadmin/jsp/rnc/viewer/sketchdigital.jsp";
+                path = "/swbadmin/jsp/rnc/viewer/sketchdigital.jsp";
             else
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/digitalobj.jsp";//path = "/swbadmin/jsp/rnc/digitalobj.jsp";
+                path = "/swbadmin/jsp/rnc/digitalobj.jsp";
         } else {
             if (type.equalsIgnoreCase("imagen") || type.startsWith("image") || type.equalsIgnoreCase("jpg") || type.equalsIgnoreCase("png"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/artdetail.jsp";//path = "/swbadmin/jsp/rnc/artdetail.jsp";
+                path = "/swbadmin/jsp/rnc/artdetail.jsp";
             else if (type.equalsIgnoreCase("pdf") || type.equalsIgnoreCase("application/pdf"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/pdfdetail.jsp";//path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
+                path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
             else if (type.equalsIgnoreCase("video") || type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("mov"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/videodetail.jsp";//path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
+                path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
             else if (type.equalsIgnoreCase("epub"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/epubdetail.jsp";//path = "/swbadmin/jsp/rnc/viewer/epubdetail.jsp";
+                path = "/swbadmin/jsp/rnc/viewer/epubdetail.jsp";
             else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/audiodetail.jsp";//path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
+                path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
             else if (type.equalsIgnoreCase("3d") || type.contains("3d"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/sketchdetail.jsp";//path = "/swbadmin/jsp/rnc/viewer/sketchdetail.jsp";
+                path = "/swbadmin/jsp/rnc/viewer/sketchdetail.jsp";
         }
         return path;
     }
 
-    private String getViewerPath(WebSite site, DigitalObject digital, String mode) {
-        //String path = "/swbadmin/jsp/rnc/artdetail.jsp";
-        String path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/artdetail.jsp";
-        if (null == digital) return path;
-        String type = getMimeType(digital);
-        if (null == type || type.isEmpty()) return path;
-        if (mode.equalsIgnoreCase(MODE_DIGITAL)) {
-            if (type.equalsIgnoreCase("pdf") || type.equalsIgnoreCase("application/pdf"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/pdfdigital.jsp";//path = "/swbadmin/jsp/rnc/viewer/pdfdigital.jsp";
-            else if (type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("mov"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/videodigital.jsp";//path = "/swbadmin/jsp/rnc/viewer/videodigital.jsp";
-            else if (type.equalsIgnoreCase("epub"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/epubdigital.jsp";//path = "/swbadmin/jsp/rnc/viewer/epubdigital.jsp";
-            else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/audiodigital.jsp";//path = "/swbadmin/jsp/rnc/viewer/audiodigital.jsp";
-            else if (type.equalsIgnoreCase("3d") || type.contains("3d"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/sketchdigital.jsp";//path = "/swbadmin/jsp/rnc/viewer/sketchdigital.jsp";
-            else
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/digitalobj.jsp";//path = "/swbadmin/jsp/rnc/digitalobj.jsp";
-        } else {
-            if (type.equalsIgnoreCase("imagen") || type.startsWith("image") || type.equalsIgnoreCase("jpg") || type.equalsIgnoreCase("png"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/artdetail.jsp";//path = "/swbadmin/jsp/rnc/artdetail.jsp";
-            else if (type.equalsIgnoreCase("pdf") || type.equalsIgnoreCase("application/pdf"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/pdfdetail.jsp";//path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
-            else if (type.equalsIgnoreCase("video") || type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("mov"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/videodetail.jsp";//path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
-            else if (type.equalsIgnoreCase("epub"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/epubdetail.jsp";//path = "/swbadmin/jsp/rnc/viewer/epubdetail.jsp";
-            else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3") || type.startsWith("audio"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/audiodetail.jsp";//path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
-            else if (type.equalsIgnoreCase("3d") || type.contains("3d"))
-                path = "/work/models/"+site.getId()+"/jsp/rnc/detail/viewer/sketchdetail.jsp";//path = "/swbadmin/jsp/rnc/viewer/sketchdetail.jsp";
-        }
-        return path;
-    }
-    
     private String getMimeType(DigitalObject digital) {
         if (null != digital && null != digital.getMediatype() && null != digital.getMediatype().getMime()) {
             return digital.getMediatype().getMime();
         } else {
             return "";
         }
+    }
+
+    private String getViewerPath(DigitalObject digital, String mode) {
+        String path = "/swbadmin/jsp/rnc/artdetail.jsp";
+        if (null == digital) return path;
+        String type = getMimeType(digital);
+        if (null == type || type.isEmpty()) return path;
+        if (mode.equalsIgnoreCase(MODE_DIGITAL)) {
+            if (type.equalsIgnoreCase("pdf") || type.equalsIgnoreCase("application/pdf"))
+                path = "/swbadmin/jsp/rnc/viewer/pdfdigital.jsp";
+            else if (type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("mov"))
+                path = "/swbadmin/jsp/rnc/viewer/videodigital.jsp";
+            else if (type.equalsIgnoreCase("epub"))
+                path = "/swbadmin/jsp/rnc/viewer/epubdigital.jsp";
+            else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3"))
+                path = "/swbadmin/jsp/rnc/viewer/audiodigital.jsp";
+            else if (type.equalsIgnoreCase("3d") || type.contains("3d"))
+                path = "/swbadmin/jsp/rnc/viewer/sketchdigital.jsp";
+            else
+                path = "/swbadmin/jsp/rnc/digitalobj.jsp";
+        } else {
+            if (type.equalsIgnoreCase("imagen") || type.startsWith("image") || type.equalsIgnoreCase("jpg") || type.equalsIgnoreCase("png"))
+                path = "/swbadmin/jsp/rnc/artdetail.jsp";
+            else if (type.equalsIgnoreCase("pdf") || type.equalsIgnoreCase("application/pdf"))
+                path = "/swbadmin/jsp/rnc/viewer/pdfdetail.jsp";
+            else if (type.equalsIgnoreCase("video") || type.equalsIgnoreCase("mp4") || type.equalsIgnoreCase("mov"))
+                path = "/swbadmin/jsp/rnc/viewer/videodetail.jsp";
+            else if (type.equalsIgnoreCase("epub"))
+                path = "/swbadmin/jsp/rnc/viewer/epubdetail.jsp";
+            else if (type.equalsIgnoreCase("audio") || type.equalsIgnoreCase("wav") || type.equalsIgnoreCase("mp3") || type.startsWith("audio"))
+                path = "/swbadmin/jsp/rnc/viewer/audiodetail.jsp";
+            else if (type.equalsIgnoreCase("3d") || type.contains("3d"))
+                path = "/swbadmin/jsp/rnc/viewer/sketchdetail.jsp";
+        }
+        return path;
     }
 
     private void incHits(Entry entry, String baseUri, String uri) {

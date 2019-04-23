@@ -86,8 +86,7 @@ public class SessionInitializer extends GenericResource {
      */
     private void showStrategyView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws SWBResourceException {
         
-        //String url = "/swbadmin/jsp/rnc/sessionInitializerMenu.jsp";
-        String url = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/sessionInitializerMenu.jsp";
+        String url = "/swbadmin/jsp/rnc/sessionInitializerMenu.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
             request.setAttribute("paramRequest", paramRequest);

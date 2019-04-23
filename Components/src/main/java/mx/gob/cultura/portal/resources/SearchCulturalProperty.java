@@ -240,7 +240,7 @@ public class SearchCulturalProperty extends PagerAction {
         request.setAttribute("map", getAgg(document.getAggs(), "map"));
         request.setAttribute("mix", getAgg(document.getAggs(), "mix"));
         request.setAttribute("multimedia", getAgg(document.getAggs(), "multimedia"));
-        }
+    }
 
     private void cassette(HttpServletRequest request, int total, int pagenum) {
         int last = 0;

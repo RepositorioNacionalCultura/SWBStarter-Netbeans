@@ -24,8 +24,7 @@ public class HomeCollectionsSession extends GenericResource {
     @Override
     public void doView(HttpServletRequest request, HttpServletResponse response, SWBParamRequest paramRequest) throws IOException {
         
-        //String url = "/swbadmin/jsp/rnc/homeCollectionsSession.jsp";
-        String url = "/work/models/"+paramRequest.getWebPage().getWebSite().getId()+"/jsp/rnc/homeCollectionsSession.jsp";
+        String url = "/swbadmin/jsp/rnc/homeCollectionsSession.jsp";
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
             request.setAttribute("paramsRequest", (Object)paramRequest);
